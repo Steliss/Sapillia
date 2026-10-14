@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 
 // 입력 종류
@@ -89,10 +90,17 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EInput.Move, direction);
     }
 
+    // ※
+    private void HandleSpace(float value)
+    {
+        Execute(EInput.Space, value);
+    }
+    /*
     private void HandleSpace()
     {
         Execute(EInput.Space);
     }
+    */
     private void HandleMouseR()
     {
         Execute(EInput.MouseR);

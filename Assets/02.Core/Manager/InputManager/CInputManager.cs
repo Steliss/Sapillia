@@ -20,7 +20,9 @@ public class CInputManager : MonoBehaviour
     public event Action<Vector2> OnMove;
     public event Action OnMouseR;
     public event Action OnMouseL;
-    public event Action OnSpace;
+    // 대쉬와 뛰기 구분용으로 잠시 테스트 중입니다. ※
+    public event Action<float> OnSpace;
+    // public event Action OnSpace;
     public event Action OnE;
     public event Action OnF;
     public event Action OnR;
@@ -36,6 +38,8 @@ public class CInputManager : MonoBehaviour
         _moveAction.action.canceled += MoveInputCancled;
 
         _spaceAction.action.performed += SpaceInput;
+        //※ 테스트용
+        _spaceAction.action.performed += SpaceInputCancled;
         _mouseRAction.action.performed += MouseRInput;
         _mouseLAction.action.performed += MouseLInput;
         _EAction.action.performed += KeyboardEInput;
@@ -57,6 +61,9 @@ public class CInputManager : MonoBehaviour
         _moveAction.action.canceled -= MoveInputCancled;
 
         _spaceAction.action.performed -= SpaceInput;
+        // 테스트용 ※
+        _spaceAction.action.performed -= SpaceInputCancled;
+
         _mouseRAction.action.performed -= MouseRInput;
         _mouseLAction.action.performed -= MouseLInput;
         _EAction.action.performed -= KeyboardEInput;
@@ -86,11 +93,27 @@ public class CInputManager : MonoBehaviour
         OnMove?.Invoke(Vector2.zero);
     }
 
+
+
+    // 누를때
+    private void SpaceInput(InputAction.CallbackContext ctx)
+    {
+        OnSpace?.Invoke(1f);
+    }
+
+    // 땔 때
+    private void SpaceInputCancled(InputAction.CallbackContext ctx)
+    {
+        OnSpace?.Invoke(0f);
+    }
+
+    /* 대쉬와 뛰기 구분용으로 잠시 테스트 중입니다. ※
+
     private void SpaceInput(InputAction.CallbackContext ctx)
     {
         OnSpace?.Invoke();
     }
-
+    */
     private void MouseRInput(InputAction.CallbackContext ctx)
     {
         OnMouseR?.Invoke();
