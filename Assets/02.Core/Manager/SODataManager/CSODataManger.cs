@@ -75,8 +75,20 @@ public static class CSaveData
             return false;
         }
     }
+}
 
 
+public class CDataManager : MonoBehaviour
+{
+    // ※ : TODO : 
+    // 현 진행 상태에 대한 SO 종합 관리
+    // 관련 SO를 들고 올거니 저장 로드도 여기서 진행
 
+    // 매니저 데이터 (게임 상태 흐름 등등)
+    // 플레이어 기본 데이터 / 현재 데이터 
+    // 인벤토리 데이터      / 현재 데이터
+    // 퍼사드 패턴 참고하기
+
+    //[SerializeField] private 
 
 }
