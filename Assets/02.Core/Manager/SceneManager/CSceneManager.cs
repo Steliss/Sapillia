@@ -165,14 +165,5 @@ public class CSceneManager : MonoBehaviour
     {
         _fadeCts?.Cancel();
     }
-
-    // test
-    private void Update()
-    {
-        if(Input.GetKey(KeyCode.Alpha1))
-        {
-            CSaveData.Save(_sceneList,"test");
-        }
-    }
 }
 
