@@ -27,27 +27,6 @@ public class CSceneManager : MonoBehaviour
         _fadeImage.color = color;
     }
 
-    // ※ : Test 씬 전환
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            ChangeScreenAsync(EScene.Menu).Forget();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            ChangeScreenAsync(EScene.Town).Forget();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            ChangeScreenAsync(EScene.Field).Forget();
-        }
-        if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            ChangeScreenAsync(EScene.BossRoom).Forget();
-        }
-    }
-
     // 씬 전환 함수
     private void ChangeScene(CSceneInfo scene)
     {
@@ -185,6 +164,15 @@ public class CSceneManager : MonoBehaviour
     private void OnDestroy()
     {
         _fadeCts?.Cancel();
+    }
+
+    // test
+    private void Update()
+    {
+        if(Input.GetKey(KeyCode.Alpha1))
+        {
+            CSaveData.Save(_sceneList,"test");
+        }
     }
 }
 

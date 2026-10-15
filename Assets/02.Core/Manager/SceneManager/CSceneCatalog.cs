@@ -38,7 +38,7 @@ public class CSceneInfo
 
 
 // 씬 리스트 SO
-[CreateAssetMenu(fileName = "SceneList", menuName = "Game/Scene List")]
+[CreateAssetMenu(fileName = "SceneList", menuName = "SO/Scene/Scene List")]
 public class CSceneListSO : ScriptableObject
 {
     [SerializeField] private List<CSceneInfo> _scenes = new List<CSceneInfo>();
