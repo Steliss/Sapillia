@@ -150,7 +150,7 @@ public class CPlayerData : MonoBehaviour
 		}
 
 		_currentHP = (int)MathF.Min(_stats.MaxHP, _currentHP + amount);
-		OnHPChanged(_currentHP, _stats.MaxHP);
+		OnHPChanged?.Invoke(_currentHP, _stats.MaxHP);
 	}
 
 
@@ -205,7 +205,7 @@ public class CPlayerData : MonoBehaviour
 
 
 	// 대쉬 사용 시도
-	public bool TryConsumDash()
+	public bool TryConsumeDash()
 	{
 		if(_currentDashCount < 1)
 		{

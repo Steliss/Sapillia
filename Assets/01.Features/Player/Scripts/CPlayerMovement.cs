@@ -90,7 +90,9 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     private void FixedUpdate()
     {
-
+        UpdateDashCoolDown();
+        TryStartDash();
+        UpdateMovement();
     }
 
 
@@ -125,13 +127,13 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     }
 
     // WASD 입력 시
-    public void Excute(Vector2 direction)
+    public void Execute(Vector2 direction)
     {
         _moveDirection = Vector2.ClampMagnitude(direction, 1f);
     }
 
     // Space 입력 시 (누름 : 1 / 땜 : 0)
-    public void Excute(float value)
+    public void Execute(float value)
     {
         bool pressed = value > 0.5f;
 
@@ -184,7 +186,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         // 대쉬 잔여 횟수 확인하고 없으면 탈출
-        if (!_playerdata.TryConsumDash())
+        if (!_playerdata.TryConsumeDash())
         {
             return;
         }
@@ -261,7 +263,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             _dashTimer = 0f;
         }
     }
+
    
-
-
 }
