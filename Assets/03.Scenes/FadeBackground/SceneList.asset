@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 0}
+  m_Name: SceneList
+  m_EditorClassIdentifier: Assembly-CSharp::CSceneListSO
+  _scenes:
+  - _sceneID: 0
+    _sceneName: Menu
+    _useFade: 1
+    _fadeOutDuration: 1
+    _fadeInDuration: 1
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 0}
+  - _sceneID: 1
+    _sceneName: Town
+    _useFade: 1
+    _fadeOutDuration: 2
+    _fadeInDuration: 2
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 0}
+  - _sceneID: 2
+    _sceneName: Field
+    _useFade: 1
+    _fadeOutDuration: 3
+    _fadeInDuration: 1
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 0}
+  - _sceneID: 3
+    _sceneName: BossRoom
+    _useFade: 1
+    _fadeOutDuration: 1
+    _fadeInDuration: 3
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 0}
