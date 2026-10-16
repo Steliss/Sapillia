@@ -139,7 +139,7 @@ public struct SPlayerStats
         }
     }
 
-    // 초기화
+    // 초기화 및 최소값 보정
     public void Validate()
     {
         DashSpeed = Mathf.Max(0f, DashSpeed);
