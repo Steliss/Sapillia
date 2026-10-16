@@ -24,7 +24,6 @@ public class CArtifactDataSO : ScriptableObject
 
     [SerializeField] private List<SArtifactLevelData> _starStats = new List<SArtifactLevelData>();
 
-    [SerializeField] private float _attackSpeedMul;
     #endregion
 
     #region 프로퍼티
@@ -38,8 +37,6 @@ public class CArtifactDataSO : ScriptableObject
     public int MaxStars => _maxStars;
 
     public EArtifactSynergy Synergy => _synergy;
-
-
     public IReadOnlyList<SArtifactLevelData> StarStats => _starStats;
 
     #endregion
