@@ -1,25 +1,25 @@
 using UnityEngine;
 
-[RequireComponent(typeof(CPlayerData))]
+
 public class CPlayerTest : MonoBehaviour
 {
-    [SerializeField] private CPlayerData _data;
+    [SerializeField] private CPlayerGamingDataSO _data;
 
     [ContextMenu("DEBUG / Test Player Data")]
     private void TestPlayerData()
     {
         if (!Application.isPlaying)
         {
-            CLog.Warn("Play Mode¿¡¼­ ½ÇÇàÇÏ¼¼¿ä.");
+            CLog.Warn("Play Modeì—ì„œ í…ŒìŠ¤íŠ¸ í•˜ì„¸ìš”.");
             return;
         }
 
-        // ±âº» ÀÚ¿ø ¼Òºñ
+        // ï¿½âº» ï¿½Ú¿ï¿½ ï¿½Òºï¿½
         _data.TakeDamage(20);
         _data.TryUseMP(30);
         _data.TryConsumeDash();
 
-        // ´É·ÂÄ¡ º¯°æ
+        // ï¿½É·ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½
         SPlayerStats stats = _data.Stats;
 
         stats.Movement_Speed += 1f;
@@ -28,14 +28,14 @@ public class CPlayerTest : MonoBehaviour
 
         _data.SetStats(stats);
 
-        // ¼Ó¼º °ø°İ·Â Áõ°¡
+        // ï¿½Ó¼ï¿½ ï¿½ï¿½ï¿½İ·ï¿½ ï¿½ï¿½ï¿½ï¿½
         _data.AddAttributePower(EAttribute.Fire, 10);
 
-        // ·¹º§ ¹× ÀçÈ­
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½È­
         _data.AddEXP(150);
         _data.AddMoney(200);
 
-        // ÇöÀç »óÅÂ Ãâ·Â
+        // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
         CLog.Log(
             $"Level: {_data.Level}\n" +
             $"HP: {_data.CurrentHP}/{_data.Stats.MaxHP}\n" +
@@ -46,7 +46,7 @@ public class CPlayerTest : MonoBehaviour
             $"Money: {_data.Money}"
         );
 
-        // ÀüÃ¼ ´É·ÂÄ¡¸¦ JSON ÇüÅÂ·Î Ãâ·Â
+        // ï¿½ï¿½Ã¼ ï¿½É·ï¿½Ä¡ï¿½ï¿½ JSON ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½
         CLog.Log(JsonUtility.ToJson(_data.Stats, true));
     }
 

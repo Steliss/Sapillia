@@ -4,21 +4,21 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/Player/PlayerData", fileName = "PlayerStats")]
 public class CPlayerDataSO : ScriptableObject
 {
-    #region ÀÎ½ºÆåÅÍ
-    [Header("±âº» ÇÃ·¹ÀÌ¾î ½ºÅÝ")]
-    private SPlayerStats _baseStats = SPlayerStats.CreateDefault();
+    #region ì¸ìŠ¤íŽ™í„°
+    [Header("ê¸°ë³¸ í”Œë ˆì´ì–´ ìŠ¤íƒ¯")]
+    [SerializeField] private SPlayerStats _baseStats = SPlayerStats.CreateDefault();
 
-    [Header("½ÃÀÛ ÀÚ¿ø")]
+    [Header("ì‹œìž‘ ìž¬í™”")]
     [Min(0)]
     [SerializeField] private int _startingMoney = 500;
 
-    [Header("·¹º§¾÷")]
+    [Header("ê²½í—˜ì¹˜")]
     [Min(1f)]
     [SerializeField] private float _expGrowthMultiplier = 1.2f;
 
     #endregion
 
-    #region ÇÁ·ÎÆÛÆ¼
+    #region í”„ë¡œí¼í‹°
     public SPlayerStats BaseStats => _baseStats;
     public int StartMoney => _startingMoney;
     public float ExpGrowthMultiplier => _expGrowthMultiplier;
