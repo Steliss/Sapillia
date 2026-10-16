@@ -11,90 +11,89 @@ public enum EAttribute
 
 [Serializable]
 public struct SPlayerStats
-{	
-	#region SpaceDash
-	[Header("Dash")]
-	[Min(0f)] public float DashSpeed;
+{
+    #region SpaceDash
+    [Header("Dash")]
+    [Min(0f)] public float DashSpeed;
     [Min(0f)] public float DashDuration;
     [Min(0f)] public float DashCooldown;
-	[Min(1f)] public int DashCount;
+    [Min(1f)] public int DashCount;
     [Min(0f)] public float DashRegainSpeed;
 
     #endregion
 
-    #region Ã¼·Â / ¸¶³ª / ¸¶³ªÈ¸º¹
+    #region ì²´ë ¥ / ë§ˆë‚˜ / ë§ˆë‚˜ íšŒë³µ
     [Min(1)] public int MaxHP;
-	[Min(1)] public int MaxMP;
-	[Min(0f)] public float MP_Regin;
-	#endregion
-
-	#region °ø°İ ¼Ó¼º
-	// ÀÌÂÊ ¼öÁ¤ÇØ¾ß ÇÔ. ¿­°ÅÇüÀÌ ÁÁ³ª? ±×·¯¸é µñ¼Å³Ê¸®¸¦ ½á¾ßÇÏ³ª?
-	// ¾Æ´Ï¸é ±×³É int ÇüÀ¸·Î µÎ´Â°Ô ¸Â³ª?
-	
-
-	[Min(0)] public int Attribute_Physical;
-	[Min(0)] public int Attribute_Fire;
-	[Min(0)] public int Attribute_Ice;
-	[Min(0)] public int Attribute_Lightning;
-	#endregion
-
-	#region ¹æ¾î
-	[Min(0)] public int Def;
-	[Min(0)] public int Str;
-	[Range(0, 100)] public int Evasion;
-
-	#endregion
-
-	#region Ä¡¸íÅ¸
-	[Min(0f)] public float Critical_Rate;
-	[Min(0f)] public float Critical_Damage;
-	#endregion
-
-	#region ¼Óµµ°ü·Ã
-	[Min(1f)] public float Attack_Speed;
-	[Min(1f)] public float Movement_Speed;
-	[Min(1f)] public float Run_SpeedMulitplier;
-	#endregion
-
-	#region ÀçÈ­ ¹× Çà¿î
-	[Min(0)] public int Bargain;
-	[Min(0f)] public int Luck;
-	#endregion
-
-	#region ·¹º§¾÷ ¹× ÀçÈ­
-	[Min(0f)] public int RequiredEXP;
-	[Min(0f)] public float PickUpMoney_Rate;
-	[Min(0f)] public float Levelup_Heal;
-	#endregion
-
-	#region ÇÇÇØ
-	[Min(0f)] public float Damage_All;
-	[Min(0)] public int Damage_Fixed;
-	[Range(0f, 100f)] public float Damage_Break;
-	[Range(0f, 100f)] public float Damage_Reflect;
-	#endregion
-
-	#region ¹«±â
-	[Min(0f)] public float Damage_Weapon;
-	[Min(0f)] public float Damage_Normal;
-	[Min(0f)] public float Damage_Dash;
-	[Min(0f)] public float Damage_Special;
-	#endregion
-
-	#region Èí¼ö
-	[Min(0)] public int Drain_HP;
-	[Min(0)] public int Drain_MP;
-	#endregion
-
-	#region ¼®±ÃÀÏ°æ¿ì¸¸ Ãß°¡
-	[Min(1)] public int Ammo_Cap;
-	[Min(1)] public int Ammo_Count;
-	[Min(1)] public float Ammo_Speed;
-	[Min(1)] public float Ammo_ReloadSpeed;
+    [Min(1)] public int MaxMP;
+    [Min(0f)] public float MP_Regin;
     #endregion
 
-	// ¼Ó¼º °ø°İ·Â °¡Á®¿À±â
+    #region ê³µê²© ì†ì„±
+    // ì†ì„± ìŠ¤íƒ¯ì˜ ìë£Œêµ¬ì¡°ë¥¼ ê²°ì •í•´ì•¼ í•¨.
+    // ë”•ì…”ë„ˆë¦¬ë¡œ ê´€ë¦¬í• ì§€, í˜„ì¬ì²˜ëŸ¼ int í•„ë“œë¡œ ê°ê° ê´€ë¦¬í• ì§€ ê²€í† .
+
+    [Min(0)] public int Attribute_Physical;
+    [Min(0)] public int Attribute_Fire;
+    [Min(0)] public int Attribute_Ice;
+    [Min(0)] public int Attribute_Lightning;
+    #endregion
+
+    #region ëŠ¥ë ¥ì¹˜
+    [Min(0)] public int Def;
+    [Min(0)] public int Str;
+    [Range(0, 100)] public int Evasion;
+
+    #endregion
+
+    #region ì¹˜ëª…íƒ€
+    [Min(0f)] public float Critical_Rate;
+    [Min(0f)] public float Critical_Damage;
+    #endregion
+
+    #region ì†ë„ ê´€ë ¨
+    [Min(1f)] public float Attack_Speed;
+    [Min(1f)] public float Movement_Speed;
+    [Min(1f)] public float Run_SpeedMulitplier;
+    #endregion
+
+    #region ìƒì  ë° ìš´
+    [Min(0)] public int Bargain;
+    [Min(0f)] public int Luck;
+    #endregion
+
+    #region ê²½í—˜ì¹˜ ë° ì„±ì¥
+    [Min(0f)] public int RequiredEXP;
+    [Min(0f)] public float PickUpMoney_Rate;
+    [Min(0f)] public float Levelup_Heal;
+    #endregion
+
+    #region ë°ë¯¸ì§€ ê´€ë ¨
+    [Min(0f)] public float Damage_All;
+    [Min(0)] public int Damage_Fixed;
+    [Range(0f, 100f)] public float Damage_Break;
+    [Range(0f, 100f)] public float Damage_Reflect;
+    #endregion
+
+    #region ê³µê²©ë³„ ë°ë¯¸ì§€
+    [Min(0f)] public float Damage_Weapon;
+    [Min(0f)] public float Damage_Normal;
+    [Min(0f)] public float Damage_Dash;
+    [Min(0f)] public float Damage_Special;
+    #endregion
+
+    #region í¡ìˆ˜
+    [Min(0)] public int Drain_HP;
+    [Min(0)] public int Drain_MP;
+    #endregion
+
+    #region ì´ê¸°ì¸ ê²½ìš°ë§Œ ì¶”ê°€
+    [Min(1)] public int Ammo_Cap;
+    [Min(1)] public int Ammo_Count;
+    [Min(1)] public float Ammo_Speed;
+    [Min(1)] public float Ammo_ReloadSpeed;
+    #endregion
+
+    // ì†ì„± ê³µê²©ë ¥ ê°€ì ¸ì˜¤ê¸°
     public int GetAttributePower(EAttribute attribute)
     {
         switch (attribute)
@@ -116,7 +115,7 @@ public struct SPlayerStats
         }
     }
 
-	// ¼Ó¼ºÄ¡ Áõ°¨
+    // ì†ì„±ì¹˜ ì¶”ê°€
     public void AddAttributePower(EAttribute attribute, int amount)
     {
         switch (attribute)
@@ -139,7 +138,7 @@ public struct SPlayerStats
         }
     }
 
-    // ÃÊ±âÈ­ ¹× ÃÖ¼Ò°ª º¸Á¤
+    // ì´ˆê¸°í™” ë° ìµœì†Œê°’ ë³´ì •
     public void Validate()
     {
         DashSpeed = Mathf.Max(0f, DashSpeed);
@@ -193,7 +192,7 @@ public struct SPlayerStats
     }
 
 
-    // °¡Àå ±âº»ÀûÀÎ ÇÃ·¹ÀÌ¾î ½ºÅÈ »ı¼º ¡æ ¾Æ¹« °¡ÁßÄ¡ ¾ø´Â ±âº» ÇÃ·¹ÀÌ¾î
+    // ë³„ë„ë¡œ ê¸°ë³¸ê°’ì„ ì„¤ì •í•˜ì§€ ì•Šì€ í”Œë ˆì´ì–´ì—ê²Œ ì ìš©í•˜ëŠ” ê¸°ë³¸ ìŠ¤íƒ¯
     public static SPlayerStats CreateDefault()
     {
         return new SPlayerStats
@@ -250,6 +249,3 @@ public struct SPlayerStats
     }
 
 }
-
-
-
