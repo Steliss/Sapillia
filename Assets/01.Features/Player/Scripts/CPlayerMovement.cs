@@ -10,31 +10,30 @@ public enum EPlayerMoveState
 }
 
 [RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(CPlayerData))]
 public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputCommand<float>
 {
-    #region ÀÎ½ºÆåÅÍ
+    #region ì¸ìŠ¤í™í„°
     [Header("InputCommandHub")]
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
-    [SerializeField] private CPlayerData _playerData;
+    [SerializeField] private CPlayerGamingDataSO _playerData;
 
     [Header("Test")]
     [SerializeField] private bool _isInCombat;
 
     #endregion
 
-    #region ³»ºÎº¯¼ö
+    #region ë‚´ë¶€ë³€ìˆ˜
     private Rigidbody2D _rb;
-    private CPlayerData _playerdata;
+    private CPlayerGamingDataSO _playerdata;
 
-    // ÀÌµ¿ °ü·Ã
+    // ì´ë™ ê´€ë ¨
     private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
     private Vector2 _moveDirection;
     private Vector2 _facingDirection = Vector2.down;
     private Vector2 _dashDirection;
 
-    // ´ë½¬ °ü·Ã
+    // ëŒ€ì‹œ ê´€ë ¨
     private float _dashTimer;
     private float _dashCooldownTimer;
 
@@ -42,7 +41,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     private bool _dashRequested;
     #endregion
 
-    #region ÇÁ·ÎÆÛÆ¼
+    #region í”„ë¡œí¼í‹°
     public EPlayerMoveState MoveState => _moveState;
 
     public Vector2 MoveDirection => _moveDirection;
@@ -67,7 +66,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     {
         if (_inputHub == null)
         {
-            CLog.Error("CInputCommandHub ¿¬°á ¿À·ù");
+            CLog.Error("CInputCommandHub ì°¸ì¡° ëˆ„ë½");
             return;
         }
 
@@ -96,25 +95,14 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     }
 
 
-
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-
-    }
-
-    // Ä¿¸Çµå µî·Ï
+    // ì»¤ë§¨ë“œ ë“±ë¡
     private void RegisterInput()
     {
         _inputHub.Register(EInput.Move, (IInputCommand<Vector2>)this);
         _inputHub.Register(EInput.Space, (IInputCommand<float>)this);
     }
 
-    // Ä¿¸Çµå ÇØÁ¦
+    // ì»¤ë§¨ë“œ í•´ì œ
     private void UnRegisterInput()
     {
         if (_inputHub == null)
@@ -126,18 +114,18 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _inputHub.Unregister(EInput.Space, (IInputCommand<float>)this);
     }
 
-    // WASD ÀÔ·Â ½Ã
+    // WASD ì…ë ¥ ê°’
     public void Execute(Vector2 direction)
     {
         _moveDirection = Vector2.ClampMagnitude(direction, 1f);
     }
 
-    // Space ÀÔ·Â ½Ã (´©¸§ : 1 / ¶« : 0)
+    // Space ì…ë ¥ ê°’ (ëˆ„ë¦„ : 1 / ë—Œ : 0)
     public void Execute(float value)
     {
         bool pressed = value > 0.5f;
 
-        // ÀüÅõ »óÅÂ¿¡¼­´Â »õ·Ó°Ô ´©¸¦¶§¸¸ ´ë½¬
+        // ì „íˆ¬ ìƒíƒœì—ì„œëŠ” ìƒˆë¡­ê²Œ ëˆŒë €ì„ ë•Œ ëŒ€ì‹œ ìš”ì²­
         if (_isInCombat && pressed && !_spaceHeld)
         {
             _dashRequested = true;
@@ -146,18 +134,18 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _spaceHeld = pressed;
     }
 
-    // ´ë½¬ ÄğÅ¸ÀÓ
+    // ëŒ€ì‹œ ì¿¨íƒ€ì„
     private void UpdateDashCoolDown()
     {
-        if(_dashCooldownTimer < 0f)
+        if (_dashCooldownTimer < 0f)
         {
             return;
         }
-        
+
         _dashCooldownTimer = Mathf.Max(0f, _dashCooldownTimer - Time.fixedDeltaTime);
     }
 
-    // ´ë½¬ ½Ãµµ
+    // ëŒ€ì‹œ ì‹œë„
     private void TryStartDash()
     {
         if (!_dashRequested)
@@ -172,8 +160,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             return;
         }
 
-        // ´ë½¬ÁßÀÌ°Å³ª ÄğÅ¸ÀÓ ÁøÇàÁßÀÏ ½Ã ´ë½¬ ºÒ°¡´É
-        if(_dashTimer > 0f || _dashCooldownTimer > 0f)
+        // ëŒ€ì‹œ ì¤‘ì´ê±°ë‚˜ ì¿¨íƒ€ì„ì´ ë‚¨ì•„ ìˆìœ¼ë©´ ëŒ€ì‹œ ë¶ˆê°€ëŠ¥
+        if (_dashTimer > 0f || _dashCooldownTimer > 0f)
         {
             return;
         }
@@ -185,19 +173,19 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             return;
         }
 
-        // ´ë½¬ ÀÜ¿© È½¼ö È®ÀÎÇÏ°í ¾øÀ¸¸é Å»Ãâ
+        // ëŒ€ì‹œ ì”ì—¬ íšŸìˆ˜ í™•ì¸í•˜ê³  ìì› ì°¨ê°
         if (!_playerdata.TryConsumeDash())
         {
             return;
         }
-        
-        // ´ë½¬ ¹æÇâ ¼³Á¤
+
+        // ëŒ€ì‹œ ë°©í–¥ ê²°ì •
         _dashDirection = _moveDirection.sqrMagnitude > 0.00001f ? _moveDirection.normalized : _facingDirection;
 
         _facingDirection = _dashDirection;
-        
+
         _dashTimer = stats.DashDuration;
-        _dashCooldownTimer = stats.DashDuration;
+        _dashCooldownTimer = stats.DashCooldown;
     }
 
     private void UpdateMovement()
@@ -206,7 +194,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         Vector2 velocity = Vector2.zero;
 
-        // ´ë½¬ »óÅÂ
+        // ëŒ€ì‹œ ìƒíƒœ
         if (_dashTimer > 0f)
         {
             _moveState = EPlayerMoveState.Dash;
@@ -215,12 +203,12 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
             _dashTimer = Mathf.Max(0f, _dashTimer - Time.fixedDeltaTime);
         }
-        // Á¤Áö »óÅÂ
-        else if(_moveDirection.sqrMagnitude < 0.0001f)
+        // ì •ì§€ ìƒíƒœ
+        else if (_moveDirection.sqrMagnitude < 0.0001f)
         {
             _moveState = EPlayerMoveState.Idle;
         }
-        // °È±â / ¶Ù±â
+        // ê±·ê¸° / ë‹¬ë¦¬ê¸°
         else
         {
             bool canRun = !_isInCombat && _spaceHeld;
@@ -237,16 +225,16 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             velocity = _moveDirection * speed;
         }
 
-        if(_moveState != EPlayerMoveState.Dash && _moveDirection.sqrMagnitude > 0.0001f)
+        if (_moveState != EPlayerMoveState.Dash && _moveDirection.sqrMagnitude > 0.0001f)
         {
             _facingDirection = _moveDirection.normalized;
-            // ³ªÁß¿¡ ¸¶¿ì½º ¹æÇâÀ¸·Î º¯°æ¿¹Á¤
+            // ë‚˜ì¤‘ì— ë§ˆìš°ìŠ¤ ìœ„ì¹˜ë¡œ ë°©í–¥ ë³€ê²½ ì˜ˆì •
         }
 
         _rb.MovePosition(_rb.position + velocity * Time.fixedDeltaTime);
     }
 
-    // Combat ÀüÅõ
+    // Combat ì„¤ì •
     public void SetCombatState(bool isCombat)
     {
         if (_isInCombat == isCombat)
@@ -256,7 +244,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _isInCombat = isCombat;
 
-        // ºñÀüÅõ ÁøÀÔ ½Ã ´ë½¬ Ãë¼Ò
+        // ì „íˆ¬ ì¢…ë£Œ ì‹œ ëŒ€ì‹œ ì·¨ì†Œ
         if (!_isInCombat)
         {
             _dashRequested = false;
@@ -264,5 +252,5 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
     }
 
-   
+
 }
