@@ -16,7 +16,12 @@ public class CDataBaseSO<T> : ScriptableObject, ISerializationCallbackReceiver w
 
     public T this[int index] => _datas[index];
 
-    // 검색 후 데이터 반환
+    /// <summary>
+    /// 검색 후 데이터 검색 성공 여부를 반환
+    /// </summary>
+    /// <param name="id">id로 검색</param>
+    /// <param name="data">검색한 데이터</param>
+    /// <returns></returns>
     public bool TryGet(string id, out T data)
     {
         // 리턴 하기 전에 확인
@@ -88,11 +93,11 @@ public class CDataBaseSO<T> : ScriptableObject, ISerializationCallbackReceiver w
 
     public void OnAfterDeserialize()
     {
-        // Do Noting
+        _isDirty = true;
     }
 
     public void OnBeforeSerialize()
     {
-        
+        // Do Nothing
     }
 }
