@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c890975a72da7df45b7f48764b80db8c, type: 3}
-  m_Name: ArtifactData_CharmOfPower
+  m_Name: ArtifactData_ThornCharm
   m_EditorClassIdentifier: 
-  _artifactID: 1
-  _artifactName: "\uD798\uC758 \uBD80\uC801"
+  _artifactID: 028
+  _artifactName: "\uAC00\uC2DC \uBD80\uC801"
   _unique: 1
-  _description: "- \uBB3C\uB9AC \uD53C\uD574 +2"
-  _grade: 0
-  _story: "\uBBFF\uC74C\uC9C1\uC2A4\uB7FD\uC9C0 \uC54A\uAC8C '\uD798'\uC774\uB77C
-    \uC801\uD600\uC788\uB2E4"
-  _icon: {fileID: 21300000, guid: b07a1b1730549444e9c36a884d4a2d68, type: 2}
+  _description: "\uCE58\uD6552 \uBB3C\uB9AC\uD53C\uD5741"
+  _grade: 1
+  _story: "\uAC00\uBC29\uC5D0 \uB123\uC5B4\uB450\uBA74 \uAC00\uC2DC\uAC00 \uC090\uC838\uB098\uC62C
+    \uAC83 \uAC19"
+  _icon: {fileID: 21300000, guid: c2d48a10b66de3140a555bce57d23a3a, type: 2}
   _synergy: 0
   _maxStars: 3
   _starStats:
@@ -33,14 +33,14 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 2
+      Attribute_Physical: 1
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
       Def: 0
       Str: 0
       Evasion: 0
-      Critical_Rate: 0
+      Critical_Rate: 2
       Critical_Damage: 0
       Attack_Speed: 0
       Movement_Speed: 0
@@ -77,14 +77,14 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 3
+      Attribute_Physical: 2
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
       Def: 0
       Str: 0
       Evasion: 0
-      Critical_Rate: 0
+      Critical_Rate: 4
       Critical_Damage: 0
       Attack_Speed: 0
       Movement_Speed: 0
@@ -121,14 +121,14 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 4
+      Attribute_Physical: 3
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
       Def: 0
       Str: 0
       Evasion: 0
-      Critical_Rate: 0
+      Critical_Rate: 6
       Critical_Damage: 0
       Attack_Speed: 0
       Movement_Speed: 0
@@ -165,14 +165,14 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 6
+      Attribute_Physical: 5
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
       Def: 0
       Str: 0
       Evasion: 0
-      Critical_Rate: 0
+      Critical_Rate: 10
       Critical_Damage: 0
       Attack_Speed: 0
       Movement_Speed: 0

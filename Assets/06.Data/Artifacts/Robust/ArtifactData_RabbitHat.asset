@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c890975a72da7df45b7f48764b80db8c, type: 3}
   m_Name: ArtifactData_RabbitHat
   m_EditorClassIdentifier: 
-  _artifactID: 35
-  _artifactName: "\uD1A0\uB07C\uB9C8\uC744 \uACBD\uBE44\uBCD1 \uD22C"
+  _artifactID: 035
+  _artifactName: "\uD1A0\uB07C\uB9C8\uC744 \uACBD\uBE44\uBCD1 \uD22C\uAD6C "
   _unique: 1
   _description: "\uBB34\uAE30\uD53C\uD574\uB7C9 + \uD68C\uD53C -"
   _grade: 2
@@ -39,7 +39,7 @@ MonoBehaviour:
       Attribute_Lightning: 0
       Def: 0
       Str: 0
-      Evasion: 0
+      Evasion: -4
       Critical_Rate: 0
       Critical_Damage: 0
       Attack_Speed: 0
@@ -67,7 +67,7 @@ MonoBehaviour:
     AttackSpeed: 1
     SpecialAttackMPReduce: 0
     MaxHPPercent: 1
-  - Level: 0
+  - Level: 1
     playerStats:
       DashSpeed: 0
       DashDuration: 0
@@ -83,7 +83,7 @@ MonoBehaviour:
       Attribute_Lightning: 0
       Def: 0
       Str: 0
-      Evasion: 0
+      Evasion: -4
       Critical_Rate: 0
       Critical_Damage: 0
       Attack_Speed: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 0
+      Damage_Weapon: 8
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -108,10 +108,10 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0
+    AttackSpeed: 1
     SpecialAttackMPReduce: 0
-    MaxHPPercent: 0
-  - Level: 0
+    MaxHPPercent: 1
+  - Level: 2
     playerStats:
       DashSpeed: 0
       DashDuration: 0
@@ -127,7 +127,7 @@ MonoBehaviour:
       Attribute_Lightning: 0
       Def: 0
       Str: 0
-      Evasion: 0
+      Evasion: -8
       Critical_Rate: 0
       Critical_Damage: 0
       Attack_Speed: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 0
+      Damage_Weapon: 12
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -152,10 +152,10 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0
+    AttackSpeed: 1
     SpecialAttackMPReduce: 0
-    MaxHPPercent: 0
-  - Level: 0
+    MaxHPPercent: 1
+  - Level: 3
     playerStats:
       DashSpeed: 0
       DashDuration: 0
@@ -171,7 +171,7 @@ MonoBehaviour:
       Attribute_Lightning: 0
       Def: 0
       Str: 0
-      Evasion: 0
+      Evasion: -8
       Critical_Rate: 0
       Critical_Damage: 0
       Attack_Speed: 0
@@ -186,7 +186,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 0
+      Damage_Weapon: 16
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -196,6 +196,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0
+    AttackSpeed: 1
     SpecialAttackMPReduce: 0
-    MaxHPPercent: 0
+    MaxHPPercent: 1
