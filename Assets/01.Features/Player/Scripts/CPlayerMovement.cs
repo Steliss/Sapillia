@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public enum EPlayerMoveState
 {
     Idle,
@@ -13,10 +12,11 @@ public enum EPlayerMoveState
 public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputCommand<float>
 {
     #region 인스펙터
-    [Header("InputCommandHub")]
+
+    [Header("참조")]
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
-    [SerializeField] private CPlayerGamingDataSO _playerData;
+    [SerializeField] private CPlayerController _playerController;
 
     [Header("Test")]
     [SerializeField] private bool _isInCombat;
@@ -24,53 +24,91 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #endregion
 
     #region 내부변수
-    private Rigidbody2D _rb;
-    private CPlayerGamingDataSO _playerdata;
+
+    // 런타임 데이터
+    private CPlayerGamingDataSO _playerData;
 
     // 이동 관련
     private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
+
     private Vector2 _moveDirection;
     private Vector2 _facingDirection = Vector2.down;
     private Vector2 _dashDirection;
 
-    // 대시 관련
+    // 대쉬 관련
     private float _dashTimer;
     private float _dashCooldownTimer;
 
     private bool _spaceHeld;
     private bool _dashRequested;
+
+    // 데이터 확인
+    private bool _warnedMissingData;
+
     #endregion
 
     #region 프로퍼티
+
     public EPlayerMoveState MoveState => _moveState;
 
     public Vector2 MoveDirection => _moveDirection;
     public Vector2 FacingDirection => _facingDirection;
-
     public bool IsInCombat => _isInCombat;
-
     public float DashRemainingTime => _dashTimer;
     public float DashCoolRemaining => _dashCooldownTimer;
 
     #endregion
 
-
+    #region Unity Lifecycle
 
     private void Awake()
     {
-        _rb = _rb2D;
-        _playerdata = _playerData;
+        if (_rb2D == null)
+        {
+            CLog.Error("[Movement] Rigidbody2D 참조 누락");
+        }
+
+        if (_playerController == null)
+        {
+            CLog.Error("[Movement] PlayerController 참조 누락");
+        }
+
+        if (_inputHub == null)
+        {
+            CLog.Error("[Movement] InputHub 참조 누락");
+        }
     }
 
     private void OnEnable()
     {
         if (_inputHub == null)
         {
-            CLog.Error("CInputCommandHub 참조 누락");
             return;
         }
 
         RegisterInput();
+    }
+
+    private void Start()
+    {
+        TryBindPlayerData();
+    }
+
+    private void FixedUpdate()
+    {
+        if (_rb2D == null)
+        {
+            return;
+        }
+
+        if (!TryBindPlayerData())
+        {
+            return;
+        }
+
+        UpdateDashCoolDown();
+        TryStartDash();
+        UpdateMovement();
     }
 
     private void OnDisable()
@@ -87,22 +125,51 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _moveState = EPlayerMoveState.Idle;
     }
 
-    private void FixedUpdate()
+    #endregion
+
+    #region PlayerData
+
+    private bool TryBindPlayerData()
     {
-        UpdateDashCoolDown();
-        TryStartDash();
-        UpdateMovement();
+        if (_playerController == null)
+        {
+            return false;
+        }
+
+        // Controller가 관리하는 현재 런타임 SO 참조
+        _playerData = _playerController.PlayerData;
+
+        if (_playerData == null)
+        {
+            if (!_warnedMissingData)
+            {
+                CLog.Warn("[Movement] PlayerData 연결 대기 중");
+                _warnedMissingData = true;
+            }
+
+            return false;
+        }
+
+        if (_warnedMissingData)
+        {
+            CLog.Log("[Movement] PlayerData 연결 완료");
+            _warnedMissingData = false;
+        }
+
+        return true;
     }
 
+    #endregion
 
-    // 커맨드 등록
+    #region Input Command
+
     private void RegisterInput()
     {
         _inputHub.Register(EInput.Move, (IInputCommand<Vector2>)this);
+
         _inputHub.Register(EInput.Space, (IInputCommand<float>)this);
     }
 
-    // 커맨드 해제
     private void UnRegisterInput()
     {
         if (_inputHub == null)
@@ -111,21 +178,21 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         _inputHub.Unregister(EInput.Move, (IInputCommand<Vector2>)this);
+
         _inputHub.Unregister(EInput.Space, (IInputCommand<float>)this);
     }
 
-    // WASD 입력 값
+    // WASD
     public void Execute(Vector2 direction)
     {
         _moveDirection = Vector2.ClampMagnitude(direction, 1f);
     }
 
-    // Space 입력 값 (누름 : 1 / 뗌 : 0)
+    // Space (누름: 1 / 뗌: 0)
     public void Execute(float value)
     {
         bool pressed = value > 0.5f;
 
-        // 전투 상태에서는 새롭게 눌렀을 때 대시 요청
         if (_isInCombat && pressed && !_spaceHeld)
         {
             _dashRequested = true;
@@ -134,10 +201,13 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _spaceHeld = pressed;
     }
 
-    // 대시 쿨타임
+    #endregion
+
+    #region Dash
+
     private void UpdateDashCoolDown()
     {
-        if (_dashCooldownTimer < 0f)
+        if (_dashCooldownTimer <= 0f)
         {
             return;
         }
@@ -145,7 +215,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _dashCooldownTimer = Mathf.Max(0f, _dashCooldownTimer - Time.fixedDeltaTime);
     }
 
-    // 대시 시도
     private void TryStartDash()
     {
         if (!_dashRequested)
@@ -160,26 +229,24 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             return;
         }
 
-        // 대시 중이거나 쿨타임이 남아 있으면 대시 불가능
         if (_dashTimer > 0f || _dashCooldownTimer > 0f)
         {
             return;
         }
 
-        SPlayerStats stats = _playerdata.Stats;
+        SPlayerStats stats = _playerData.Stats;
 
         if (stats.DashSpeed <= 0f || stats.DashDuration <= 0f)
         {
             return;
         }
 
-        // 대시 잔여 횟수 확인하고 자원 차감
-        if (!_playerdata.TryConsumeDash())
+        if (!_playerData.TryConsumeDash())
         {
             return;
         }
 
-        // 대시 방향 결정
+        // 대쉬 방향 고정
         _dashDirection = _moveDirection.sqrMagnitude > 0.00001f ? _moveDirection.normalized : _facingDirection;
 
         _facingDirection = _dashDirection;
@@ -188,13 +255,17 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _dashCooldownTimer = stats.DashCooldown;
     }
 
+    #endregion
+
+    #region Movement
+
     private void UpdateMovement()
     {
-        SPlayerStats stats = _playerdata.Stats;
+        SPlayerStats stats = _playerData.Stats;
 
         Vector2 velocity = Vector2.zero;
 
-        // 대시 상태
+        // 대쉬
         if (_dashTimer > 0f)
         {
             _moveState = EPlayerMoveState.Dash;
@@ -203,7 +274,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
             _dashTimer = Mathf.Max(0f, _dashTimer - Time.fixedDeltaTime);
         }
-        // 정지 상태
+        // 정지
         else if (_moveDirection.sqrMagnitude < 0.0001f)
         {
             _moveState = EPlayerMoveState.Idle;
@@ -225,16 +296,20 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             velocity = _moveDirection * speed;
         }
 
+        // 바라보는 방향
         if (_moveState != EPlayerMoveState.Dash && _moveDirection.sqrMagnitude > 0.0001f)
         {
             _facingDirection = _moveDirection.normalized;
-            // 나중에 마우스 위치로 방향 변경 예정
         }
 
-        _rb.MovePosition(_rb.position + velocity * Time.fixedDeltaTime);
+        // Rigidbody 이동
+        _rb2D.MovePosition(_rb2D.position + velocity * Time.fixedDeltaTime);
     }
 
-    // Combat 설정
+    #endregion
+
+    #region Combat
+
     public void SetCombatState(bool isCombat)
     {
         if (_isInCombat == isCombat)
@@ -244,7 +319,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _isInCombat = isCombat;
 
-        // 전투 종료 시 대시 취소
         if (!_isInCombat)
         {
             _dashRequested = false;
@@ -252,5 +326,5 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
     }
 
-
+    #endregion
 }
