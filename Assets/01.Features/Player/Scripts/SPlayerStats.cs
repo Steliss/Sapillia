@@ -41,7 +41,7 @@ public struct SPlayerStats
     #region 능력치
     [Min(0)] public int Def;
     [Min(0)] public int Str;
-    [Range(0, 100)] public int Evasion;
+    public int Evasion;
 
     #endregion
 
@@ -52,7 +52,7 @@ public struct SPlayerStats
 
     #region 속도 관련
     [Min(1f)] public float Attack_Speed;
-    [Min(1f)] public float Movement_Speed;
+    public float Movement_Speed;
     [Min(1f)] public float Run_SpeedMulitplier;
     #endregion
 
