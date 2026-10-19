@@ -1,8 +1,4 @@
-using FMOD;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
 public class CEnemyState_Move : IEnemyState
 {
@@ -18,35 +14,35 @@ public class CEnemyState_Move : IEnemyState
 
     public void StateEnter()
     {
-        _mashine.Enemy.Nav.isStopped = false;
-        _mashine.Enemy.Ani.SetBool("bMove", true);
+        _mashine.Nav.isStopped = false;
+        _mashine.Ani.SetBool("bMove", true);
 
-        if (_mashine.Enemy.IsPatrol)
+        if (_mashine.IsPatrol)
         {
-            Vector3 targetPos = _mashine.Enemy.transform.position;
+            Vector3 targetPos = _mashine.transform.position;
             float z = Random.Range(0f, 360f);
             Quaternion angle = Quaternion.Euler(0f, 0f, z);
 
             _target = targetPos + (angle * new Vector3(_patrolRange, 0f, 0f));
-            _mashine.Enemy.Nav.SetDestination(_target);
+            _mashine.Nav.SetDestination(_target);
         }
     }
 
     public void StateExit()
     {
-        _mashine.Enemy.Nav.isStopped = true;
-        _mashine.Enemy.Ani.SetBool("bMove", false);
+        _mashine.Nav.isStopped = true;
+        _mashine.Ani.SetBool("bMove", false);
     }
 
     public void StateUpdate()
     {
-        if (_mashine.Enemy.Nav.velocity.x > 0)
+        if (_mashine.Nav.velocity.x > 0)
         {
-            _mashine.Enemy.Sprite.flipX = false;
+            _mashine.Sprite.flipX = false;
         }
-        else if (_mashine.Enemy.Nav.velocity.x < 0)
+        else if (_mashine.Nav.velocity.x < 0)
         {
-            _mashine.Enemy.Sprite.flipX = true;
+            _mashine.Sprite.flipX = true;
         }
 
 

@@ -11,7 +11,6 @@ public class CEnemyState_Idle : IEnemyState
     public CEnemyState_Idle(CStateMashine mashine)
     {
         _mashine = mashine;
-        
     }
 
 
