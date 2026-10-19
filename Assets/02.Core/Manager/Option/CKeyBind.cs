@@ -6,7 +6,7 @@ public class CKeyBind : MonoBehaviour
 
     [Header("참조")]
     [SerializeField] private CFlowDataSO _flowData;
-    [SerializeField] private PlayerInput _playerInput;
+    [SerializeField] private InputActionAsset _inputActions;
 
     [Header("변경할 동작")]
     [SerializeField] private EKeyAction _keyAction;
@@ -39,7 +39,7 @@ public class CKeyBind : MonoBehaviour
 
             CKeyBindingData binding = _flowData.GetKeyBinding(keyAction);
 
-            InputAction action = _playerInput.actions.FindAction(binding._actionName, throwIfNotFound: true);
+            InputAction action = _inputActions.FindAction(binding._actionName, throwIfNotFound: true);
 
             action.ApplyBindingOverride(binding._primaryIndex, binding._primary);
             action.ApplyBindingOverride(binding._secondaryIndex, binding._secondary);
@@ -59,7 +59,7 @@ public class CKeyBind : MonoBehaviour
         _binding = _flowData.GetKeyBinding(_keyAction);
 
         _actionName = _binding._actionName;
-        _action = _playerInput.actions.FindAction(_actionName, throwIfNotFound: true);
+        _action = _inputActions.FindAction(_actionName, throwIfNotFound: true);
 
         if (primary)
         {

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 374c55d34d14c1b43b12bfd1b80c299a, type: 3}
-  m_Name: OptionSO
+  m_Name: OptionData_Play
   m_EditorClassIdentifier: 
   _currentScene: 0
   _skipBoss: 0
@@ -24,68 +24,134 @@ MonoBehaviour:
   _height: 1080
   _screenMode: 3
   _moveUp:
+    _actionName: Player/Move
     _primary: <Keyboard>/w
     _secondary: 
+    _primaryIndex: 1
+    _secondaryIndex: 6
   _moveDown:
+    _actionName: Player/Move
     _primary: <Keyboard>/s
     _secondary: 
+    _primaryIndex: 2
+    _secondaryIndex: 7
   _moveLeft:
+    _actionName: Player/Move
     _primary: <Keyboard>/a
     _secondary: 
+    _primaryIndex: 3
+    _secondaryIndex: 8
   _moveRight:
+    _actionName: Player/Move
     _primary: <Keyboard>/d
     _secondary: 
+    _primaryIndex: 4
+    _secondaryIndex: 9
   _attack:
+    _actionName: Player/Attack
     _primary: <Mouse>/leftButton
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _specialAttack:
+    _actionName: Player/SpecialAttack
     _primary: <Mouse>/rightButton
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _dash:
+    _actionName: Player/Dash
     _primary: <Keyboard>/space
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _rapidCasting1:
+    _actionName: Player/RapidCasting1
     _primary: <Keyboard>/1
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _rapidCasting2:
+    _actionName: Player/RapidCasting2
     _primary: <Keyboard>/2
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _interaction:
+    _actionName: Player/Interaction
     _primary: <Keyboard>/f
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _usePotion:
+    _actionName: Player/UsePotion
     _primary: <Keyboard>/r
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _openMap:
+    _actionName: Player/OpenMap
     _primary: <Keyboard>/tab
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _inventory:
+    _actionName: Player/Inventory
     _primary: <Keyboard>/v
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _playerStats:
+    _actionName: Player/Stats
     _primary: <Keyboard>/c
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _talent:
+    _actionName: Player/Talent
     _primary: <Keyboard>/p
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _presetSetting:
+    _actionName: Player/PresetSetting
     _primary: <Keyboard>/b
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _chatting:
+    _actionName: Player/Chatting
     _primary: <Keyboard>/enter
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _reloading:
+    _actionName: Player/Reloading
     _primary: <Keyboard>/g
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _ping:
+    _actionName: Player/Ping
     _primary: <Mouse>/middleButton
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _choosePotion:
+    _actionName: Player/ChoosePotion
     _primary: <Keyboard>/backquote
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _before:
+    _actionName: Player/Before
     _primary: <Keyboard>/q
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
   _next:
+    _actionName: Player/Next
     _primary: <Keyboard>/e
     _secondary: 
+    _primaryIndex: 0
+    _secondaryIndex: 1
