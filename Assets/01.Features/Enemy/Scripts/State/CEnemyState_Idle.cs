@@ -16,7 +16,7 @@ public class CEnemyState_Idle : IEnemyState
 
     public void StateEnter()
     {
-
+        _mashine.Ani.Play(_mashine.HashIdle);
     }
 
     public void StateExit()

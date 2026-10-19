@@ -14,7 +14,7 @@ public class CEnemyState_Move : IEnemyState
     public void StateEnter()
     {
         _mashine.Nav.isStopped = false;
-        _mashine.Ani.SetBool("bMove", true);
+        _mashine.Ani.Play(_mashine.HashMove);
 
         if (_mashine.IsPatrol)
         {
@@ -30,7 +30,6 @@ public class CEnemyState_Move : IEnemyState
     public void StateExit()
     {
         _mashine.Nav.isStopped = true;
-        _mashine.Ani.SetBool("bMove", false);
     }
 
     public void StateUpdate()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,7 +8,16 @@ public class CStateMashine : MonoBehaviour
     #region 인스펙터    
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
+    [Header("공격 패턴 SO")]
     [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
+
+    [Header("애니메이터 스테이트")]
+    [SerializeField] private string _paramIdle = "Idle";
+    [SerializeField] private string _paramMove = "Move";
+    [SerializeField] private string _paramAttack = "Attack";
+    [SerializeField] private string _paramAttReady = "AttReady";
+    [SerializeField] private string _paramAir = "Air";
+    [SerializeField] private string _paramDown = "Down";
     #endregion
 
     #region 내부 변수
@@ -45,6 +55,14 @@ public class CStateMashine : MonoBehaviour
     public float Defense => _defense;
     public float Attack => _attack;
     public float Speed => _speed;
+
+    // 애니메이터 해쉬
+    public int HashMove { get; private set; }
+    public int HashAttack { get; private set; }
+    public int HashAttReady { get; private set; }
+    public int HashAir { get; private set; }
+    public int HashIdle { get; private set; }
+    public int HashDown { get; private set; }
     #endregion
 
 
@@ -64,6 +82,7 @@ public class CStateMashine : MonoBehaviour
         _state = next;
 
         _state.StateEnter();
+        int hash = Animator.StringToHash(_id);
     }
 
 
@@ -99,14 +118,7 @@ public class CStateMashine : MonoBehaviour
         }
 
         // 애니메이터, 네브메쉬에이전트, 스프라이트 가져오기
-        _ani = GetComponent<Animator>();
-
-        if (Ani == null)
-        {
-            CLog.Warn($"{name} : 애니메이터 누락");
-            return;
-        }
-
+        AnimatorSet();
 
         _nav = GetComponent<NavMeshAgent>();
 
@@ -117,7 +129,6 @@ public class CStateMashine : MonoBehaviour
         }
         Nav.updateRotation = false;
         Nav.updateUpAxis = false;
-
         Nav.speed = _speed;
 
 
@@ -147,6 +158,25 @@ public class CStateMashine : MonoBehaviour
         {
             State.StateUpdate();
         }
+    }
+
+    // 애니메이터 awake 세팅
+    private void AnimatorSet()
+    {
+        _ani = GetComponent<Animator>();
+
+        if (Ani == null)
+        {
+            CLog.Warn($"{name} : 애니메이터 누락");
+            return;
+        }
+
+        HashMove = Animator.StringToHash(_paramMove);
+        HashAttack = Animator.StringToHash(_paramAttack);
+        HashAir = Animator.StringToHash(_paramAir);
+        HashIdle = Animator.StringToHash(_paramIdle);
+        HashAttReady = Animator.StringToHash(_paramAttReady);
+        HashDown = Animator.StringToHash(_paramDown);
     }
 
 
