@@ -13,6 +13,7 @@ public class CEnemyState_Move : IEnemyState
 
     public void StateEnter()
     {
+        CLog.Log("이동 시작");
         _mashine.Nav.isStopped = false;
         _mashine.Ani.Play(_mashine.HashMove);
 
@@ -48,7 +49,8 @@ public class CEnemyState_Move : IEnemyState
         // Idle 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
         {
-            _mashine.StateChanged(_mashine.IdleState);
+            _mashine.StateChanged(_mashine.AttackState[0]);
+
         }
         
     }

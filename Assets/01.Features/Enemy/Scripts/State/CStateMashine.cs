@@ -24,6 +24,7 @@ public class CStateMashine : MonoBehaviour
     private Animator _ani;
     private NavMeshAgent _nav;
     private SpriteRenderer _sprite;
+    private Rigidbody2D _rb;
     private bool _isPatrol = true;
     #endregion
 
@@ -46,10 +47,14 @@ public class CStateMashine : MonoBehaviour
     public Animator Ani => _ani;
     public NavMeshAgent Nav => _nav;
     public SpriteRenderer Sprite => _sprite;
+    public Rigidbody2D Rigidbody => _rb;
     public bool IsPatrol => _isPatrol;
     public CEnemyState_Idle IdleState => _idleState;
     public CEnemyState_Move MoveState => _moveState;
+    public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
+
+    // 스탯
     public float Hp => _hp;
     public float SuperArmor => _superArmor;
     public float Defense => _defense;
@@ -81,8 +86,7 @@ public class CStateMashine : MonoBehaviour
 
         _state = next;
 
-        _state.StateEnter();
-        int hash = Animator.StringToHash(_id);
+        next.StateEnter();
     }
 
 
@@ -133,11 +137,17 @@ public class CStateMashine : MonoBehaviour
 
 
         _sprite = GetComponent<SpriteRenderer>();
-
         if (Sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
         }
+
+        _rb = GetComponent<Rigidbody2D>();
+        if (_rb == null)
+        {
+            CLog.Warn($"{name} : 리지드바디2D 컴포넌트 누락");
+        }
+
 
         // 공격 패턴 생성
         if (_attackState.Count > 0)
@@ -152,7 +162,7 @@ public class CStateMashine : MonoBehaviour
         StateChanged(IdleState);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (State != null)
         {
@@ -160,7 +170,7 @@ public class CStateMashine : MonoBehaviour
         }
     }
 
-    // 애니메이터 awake 세팅
+    // 애니메이터 해시 세팅
     private void AnimatorSet()
     {
         _ani = GetComponent<Animator>();
