@@ -16,12 +16,12 @@ public class CEnemyState_Idle : IEnemyState
 
     public void StateEnter()
     {
-        CLog.Log("Idle진입");
+
     }
 
     public void StateExit()
     {
-        CLog.Log("Idle퇴장");
+
     }
 
     public void StateUpdate()

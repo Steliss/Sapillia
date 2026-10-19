@@ -5,7 +5,6 @@ public class CEnemyState_Move : IEnemyState
     private CStateMashine _mashine;
     private Vector3 _target;
     private float _patrolRange = 3f;
-    private float _moveTime = 0f;
 
     public CEnemyState_Move(CStateMashine mashine)
     {
@@ -36,6 +35,7 @@ public class CEnemyState_Move : IEnemyState
 
     public void StateUpdate()
     {
+        // 왼쪽 오른쪽 전환
         if (_mashine.Nav.velocity.x > 0)
         {
             _mashine.Sprite.flipX = false;
@@ -46,12 +46,13 @@ public class CEnemyState_Move : IEnemyState
         }
 
 
-        _moveTime += Time.deltaTime;
-        if (_moveTime > 2f)
+        // Idle 전환
+        if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
         {
-            _moveTime = 0f;
             _mashine.StateChanged(_mashine.IdleState);
         }
-
+        
     }
+
+
 }

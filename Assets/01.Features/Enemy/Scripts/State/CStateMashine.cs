@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -6,6 +7,7 @@ public class CStateMashine : MonoBehaviour
     #region 인스펙터    
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
+    [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
     #endregion
 
     #region 내부 변수
@@ -124,6 +126,15 @@ public class CStateMashine : MonoBehaviour
         if (Sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
+        }
+
+        // 공격 패턴 생성
+        if (_attackState.Count > 0)
+        {
+            for (int i = 0; i < _attackState.Count; i++)
+            {
+                _attackState[i] = new CEnemyStateSO_Attack(this);
+            }
         }
 
         // idle 상태로 시작
