@@ -98,8 +98,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // 커맨드 등록
     private void RegisterInput()
     {
-        _inputHub.Register(EInput.Move, (IInputCommand<Vector2>)this);
-        _inputHub.Register(EInput.Space, (IInputCommand<float>)this);
+        _inputHub.Register(EKeyAction.Move, (IInputCommand<Vector2>)this);
+        _inputHub.Register(EKeyAction.Dash, (IInputCommand<float>)this);
     }
 
     // 커맨드 해제
@@ -110,8 +110,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             return;
         }
 
-        _inputHub.Unregister(EInput.Move, (IInputCommand<Vector2>)this);
-        _inputHub.Unregister(EInput.Space, (IInputCommand<float>)this);
+        _inputHub.Unregister(EKeyAction.Move, (IInputCommand<Vector2>)this);
+        _inputHub.Unregister(EKeyAction.Dash, (IInputCommand<float>)this);
     }
 
     // WASD 입력 값

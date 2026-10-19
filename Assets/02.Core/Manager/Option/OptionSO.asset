@@ -1,0 +1,91 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 374c55d34d14c1b43b12bfd1b80c299a, type: 3}
+  m_Name: OptionSO
+  m_EditorClassIdentifier: 
+  _currentScene: 0
+  _skipBoss: 0
+  _cameraShakeMultiplier: 1
+  _displayEffect: 1
+  _masterSound: 1
+  _BGMSound: 1
+  _effectSound: 1
+  _enviromentSound: 1
+  _width: 1920
+  _height: 1080
+  _screenMode: 3
+  _moveUp:
+    _primary: <Keyboard>/w
+    _secondary: 
+  _moveDown:
+    _primary: <Keyboard>/s
+    _secondary: 
+  _moveLeft:
+    _primary: <Keyboard>/a
+    _secondary: 
+  _moveRight:
+    _primary: <Keyboard>/d
+    _secondary: 
+  _attack:
+    _primary: <Mouse>/leftButton
+    _secondary: 
+  _specialAttack:
+    _primary: <Mouse>/rightButton
+    _secondary: 
+  _dash:
+    _primary: <Keyboard>/space
+    _secondary: 
+  _rapidCasting1:
+    _primary: <Keyboard>/1
+    _secondary: 
+  _rapidCasting2:
+    _primary: <Keyboard>/2
+    _secondary: 
+  _interaction:
+    _primary: <Keyboard>/f
+    _secondary: 
+  _usePotion:
+    _primary: <Keyboard>/r
+    _secondary: 
+  _openMap:
+    _primary: <Keyboard>/tab
+    _secondary: 
+  _inventory:
+    _primary: <Keyboard>/v
+    _secondary: 
+  _playerStats:
+    _primary: <Keyboard>/c
+    _secondary: 
+  _talent:
+    _primary: <Keyboard>/p
+    _secondary: 
+  _presetSetting:
+    _primary: <Keyboard>/b
+    _secondary: 
+  _chatting:
+    _primary: <Keyboard>/enter
+    _secondary: 
+  _reloading:
+    _primary: <Keyboard>/g
+    _secondary: 
+  _ping:
+    _primary: <Mouse>/middleButton
+    _secondary: 
+  _choosePotion:
+    _primary: <Keyboard>/backquote
+    _secondary: 
+  _before:
+    _primary: <Keyboard>/q
+    _secondary: 
+  _next:
+    _primary: <Keyboard>/e
+    _secondary: 

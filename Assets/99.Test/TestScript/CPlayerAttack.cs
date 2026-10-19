@@ -22,7 +22,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     {
         if(_inputHub != null)
         {
-            _inputHub.Register(EInput.MouseL, this);
+            _inputHub.Register(EKeyAction.Attack, this);
         }
     }
 
