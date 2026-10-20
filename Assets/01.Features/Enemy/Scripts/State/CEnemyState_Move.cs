@@ -13,8 +13,9 @@ public class CEnemyState_Move : IEnemyState
 
     public void StateEnter()
     {
+        CLog.Log("이동 시작");
         _mashine.Nav.isStopped = false;
-        _mashine.Ani.SetBool("bMove", true);
+        _mashine.Ani.Play(_mashine.HashMove);
 
         if (_mashine.IsPatrol)
         {
@@ -30,7 +31,6 @@ public class CEnemyState_Move : IEnemyState
     public void StateExit()
     {
         _mashine.Nav.isStopped = true;
-        _mashine.Ani.SetBool("bMove", false);
     }
 
     public void StateUpdate()
@@ -49,7 +49,8 @@ public class CEnemyState_Move : IEnemyState
         // Idle 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
         {
-            _mashine.StateChanged(_mashine.IdleState);
+            _mashine.StateChanged(_mashine.AttackState[0]);
+
         }
         
     }

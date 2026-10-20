@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -7,13 +8,23 @@ public class CStateMashine : MonoBehaviour
     #region 인스펙터    
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
+    [Header("공격 패턴 SO")]
     [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
+
+    [Header("애니메이터 스테이트")]
+    [SerializeField] private string _paramIdle = "Idle";
+    [SerializeField] private string _paramMove = "Move";
+    [SerializeField] private string _paramAttack = "Attack";
+    [SerializeField] private string _paramAttReady = "AttReady";
+    [SerializeField] private string _paramAir = "Air";
+    [SerializeField] private string _paramDown = "Down";
     #endregion
 
     #region 내부 변수
     private Animator _ani;
     private NavMeshAgent _nav;
     private SpriteRenderer _sprite;
+    private Rigidbody2D _rb;
     private bool _isPatrol = true;
     #endregion
 
@@ -36,15 +47,27 @@ public class CStateMashine : MonoBehaviour
     public Animator Ani => _ani;
     public NavMeshAgent Nav => _nav;
     public SpriteRenderer Sprite => _sprite;
+    public Rigidbody2D Rigidbody => _rb;
     public bool IsPatrol => _isPatrol;
     public CEnemyState_Idle IdleState => _idleState;
     public CEnemyState_Move MoveState => _moveState;
+    public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
+
+    // 스탯
     public float Hp => _hp;
     public float SuperArmor => _superArmor;
     public float Defense => _defense;
     public float Attack => _attack;
     public float Speed => _speed;
+
+    // 애니메이터 해쉬
+    public int HashMove { get; private set; }
+    public int HashAttack { get; private set; }
+    public int HashAttReady { get; private set; }
+    public int HashAir { get; private set; }
+    public int HashIdle { get; private set; }
+    public int HashDown { get; private set; }
     #endregion
 
 
@@ -63,7 +86,7 @@ public class CStateMashine : MonoBehaviour
 
         _state = next;
 
-        _state.StateEnter();
+        next.StateEnter();
     }
 
 
@@ -99,14 +122,7 @@ public class CStateMashine : MonoBehaviour
         }
 
         // 애니메이터, 네브메쉬에이전트, 스프라이트 가져오기
-        _ani = GetComponent<Animator>();
-
-        if (Ani == null)
-        {
-            CLog.Warn($"{name} : 애니메이터 누락");
-            return;
-        }
-
+        AnimatorSet();
 
         _nav = GetComponent<NavMeshAgent>();
 
@@ -117,16 +133,21 @@ public class CStateMashine : MonoBehaviour
         }
         Nav.updateRotation = false;
         Nav.updateUpAxis = false;
-
         Nav.speed = _speed;
 
 
         _sprite = GetComponent<SpriteRenderer>();
-
         if (Sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
         }
+
+        _rb = GetComponent<Rigidbody2D>();
+        if (_rb == null)
+        {
+            CLog.Warn($"{name} : 리지드바디2D 컴포넌트 누락");
+        }
+
 
         // 공격 패턴 생성
         if (_attackState.Count > 0)
@@ -141,12 +162,31 @@ public class CStateMashine : MonoBehaviour
         StateChanged(IdleState);
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if (State != null)
         {
             State.StateUpdate();
         }
+    }
+
+    // 애니메이터 해시 세팅
+    private void AnimatorSet()
+    {
+        _ani = GetComponent<Animator>();
+
+        if (Ani == null)
+        {
+            CLog.Warn($"{name} : 애니메이터 누락");
+            return;
+        }
+
+        HashMove = Animator.StringToHash(_paramMove);
+        HashAttack = Animator.StringToHash(_paramAttack);
+        HashAir = Animator.StringToHash(_paramAir);
+        HashIdle = Animator.StringToHash(_paramIdle);
+        HashAttReady = Animator.StringToHash(_paramAttReady);
+        HashDown = Animator.StringToHash(_paramDown);
     }
 
 

@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c890975a72da7df45b7f48764b80db8c, type: 3}
-  m_Name: ArtifactData_ShieldMate
+  m_Name: ArtifactData_AgmaSword
   m_EditorClassIdentifier: 
-  _artifactID: 3
-  _artifactName: "\uC2E4\uB4DC \uBA54\uC774\uD2B8"
+  _artifactID: 033
+  _artifactName: "\uC544\uADF8\uB9C8 \uD22C\uC601\uAC80 190,191"
   _unique: 1
-  _description: "\uD2B9\uC218 \uACF5\uACA9 MP\uC18C\uBAA8 -15%"
-  _grade: 3
-  _story: "\uBC29\uD328\uB97C \uB354 \uC548\uC815\uC801\uC73C\uB85C \uC0AC\uC6A9\uD560
-    \uC218 \uC788\uB3C4\uB85D \uC124\uACC4\uB41C \uAC74\uD2C0\uB9BF"
-  _icon: {fileID: 21300000, guid: 18e5693721b26be498939dec944ddd7a, type: 3}
+  _description: "\uBB3C\uB9AC\uD53C\uD574+"
+  _grade: 2
+  _story: "190\uBC88\uC9F8. \uD615\uCCB4\uB294 \uAC80\uACFC \uD761\uC0AC\uD558\uB2E4.
+    \uC5D0\uB108\uC9C0\uB294 \uB300\uCE6D\uC801\uC778 \uD615\uD0DC\uB85C\uB9CC \uB4DC\uB7EC\uB098\uBA70,
+    \uCE7C\uB0A0 \uC790\uCCB4\uB294 \uB098\uD0C0\uB098\uC9C0 \uC54A\uB294\uB2E4.
+    -\uC544\uADF8"
+  _icon: {fileID: 21300000, guid: 0bb71a36f32b06b4099f58caad82dbe5, type: 3}
   _synergy: 0
-  _maxStars: 6
+  _maxStars: 7
   _starStats:
   - Level: 0
     playerStats:
@@ -33,7 +35,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 2
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -42,7 +44,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 1
+      Attack_Speed: 0
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -54,7 +56,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 2
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -64,8 +66,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
-    SpecialAttackMPReduce: 0.15
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 1
     playerStats:
@@ -77,7 +79,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 3
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -98,7 +100,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 4
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -108,8 +110,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
-    SpecialAttackMPReduce: 0.3
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 2
     playerStats:
@@ -121,7 +123,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 4
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -142,7 +144,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 6
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -152,8 +154,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
-    SpecialAttackMPReduce: 0.45
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 3
     playerStats:
@@ -165,7 +167,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 6
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -186,7 +188,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 9
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -196,8 +198,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.9
-    SpecialAttackMPReduce: 0.6
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 4
     playerStats:
@@ -209,7 +211,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 8
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -230,7 +232,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 12
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -240,8 +242,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.95
-    SpecialAttackMPReduce: 0.7
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 5
     playerStats:
@@ -253,7 +255,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 10
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -274,7 +276,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 15
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -284,8 +286,8 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.95
-    SpecialAttackMPReduce: 0.8
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
   - Level: 6
     playerStats:
@@ -297,7 +299,7 @@ MonoBehaviour:
       MaxHP: 0
       MaxMP: 0
       MP_Regin: 0
-      Attribute_Physical: 0
+      Attribute_Physical: 12
       Attribute_Fire: 0
       Attribute_Ice: 0
       Attribute_Lightning: 0
@@ -318,7 +320,7 @@ MonoBehaviour:
       Damage_Fixed: 0
       Damage_Break: 0
       Damage_Reflect: 0
-      Damage_Weapon: 20
+      Damage_Weapon: 0
       Damage_Normal: 0
       Damage_Dash: 0
       Damage_Special: 0
@@ -329,5 +331,49 @@ MonoBehaviour:
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
     AttackSpeed: 1
-    SpecialAttackMPReduce: 1
+    SpecialAttackMPReduce: 0
+    MaxHPPercent: 1
+  - Level: 7
+    playerStats:
+      DashSpeed: 0
+      DashDuration: 0
+      DashCooldown: 0
+      DashCount: 0
+      DashRegainSpeed: 0
+      MaxHP: 0
+      MaxMP: 0
+      MP_Regin: 0
+      Attribute_Physical: 14
+      Attribute_Fire: 0
+      Attribute_Ice: 0
+      Attribute_Lightning: 0
+      Def: 0
+      Str: 0
+      Evasion: 0
+      Critical_Rate: 0
+      Critical_Damage: 0
+      Attack_Speed: 0
+      Movement_Speed: 0
+      Run_SpeedMulitplier: 0
+      Bargain: 0
+      Luck: 0
+      RequiredEXP: 0
+      PickUpMoney_Rate: 0
+      Levelup_Heal: 0
+      Damage_All: 0
+      Damage_Fixed: 0
+      Damage_Break: 0
+      Damage_Reflect: 0
+      Damage_Weapon: 0
+      Damage_Normal: 0
+      Damage_Dash: 0
+      Damage_Special: 0
+      Drain_HP: 0
+      Drain_MP: 0
+      Ammo_Cap: 0
+      Ammo_Count: 0
+      Ammo_Speed: 0
+      Ammo_ReloadSpeed: 0
+    AttackSpeed: 1
+    SpecialAttackMPReduce: 0
     MaxHPPercent: 1
