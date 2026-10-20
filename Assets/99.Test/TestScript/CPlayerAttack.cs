@@ -42,7 +42,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     {
         if(_inputHub != null)
         {
-            _inputHub.Unregister(EInput.MouseL, (IInputCommand)this);
+            _inputHub.Unregister(EKeyAction.Attack, this);
         }
 
         _attackQueued = false;
