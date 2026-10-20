@@ -105,9 +105,9 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EKeyAction.Dash, value);
     }
 
-    private void Attack()
+    private void Attack(float value)
     {
-        Execute(EKeyAction.Attack);
+        Execute(EKeyAction.Attack, value);
     }
 
     private void SpecialAttack()
