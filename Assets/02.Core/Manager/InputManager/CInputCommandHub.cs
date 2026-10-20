@@ -1,20 +1,7 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-
-// 입력 종류
-public enum EInput
-{
-    Move,
-    Space,
-    MouseR,
-    MouseL,
-    F,
-    E,
-    R
-}
 
 public class CInputCommandHub : MonoBehaviour
 {
@@ -23,9 +10,9 @@ public class CInputCommandHub : MonoBehaviour
     #endregion
 
     #region 내부변수
-    private readonly Dictionary<EInput, IInputCommand> _commands = new Dictionary<EInput, IInputCommand>();
-    private readonly Dictionary<EInput, IInputCommand<Vector2>> _vectorCommands = new Dictionary<EInput, IInputCommand<Vector2>>();
-    private readonly Dictionary<EInput, IInputCommand<float>> _floatCommands = new Dictionary<EInput, IInputCommand<float>>();
+    private readonly Dictionary<EKeyAction, IInputCommand> _commands = new Dictionary<EKeyAction, IInputCommand>();
+    private readonly Dictionary<EKeyAction, IInputCommand<Vector2>> _vectorCommands = new Dictionary<EKeyAction, IInputCommand<Vector2>>();
+    private readonly Dictionary<EKeyAction, IInputCommand<float>> _floatCommands = new Dictionary<EKeyAction, IInputCommand<float>>();
 
     private bool _subscribed;
     #endregion
@@ -50,13 +37,25 @@ public class CInputCommandHub : MonoBehaviour
             return;
         }
 
-        _inputManager.OnMove += HandleMove;
-        _inputManager.OnSpace += HandleSpace;
-        _inputManager.OnMouseR += HandleMouseR;
-        _inputManager.OnMouseL += HandleMouseL;
-        _inputManager.OnE += HandleOnE;
-        _inputManager.OnF += HandleOnF;
-        _inputManager.OnR += HandleOnR;
+        _inputManager.OnMove += Move;
+        _inputManager.OnDash += Dash;
+        _inputManager.OnAttack += Attack;
+        _inputManager.OnSpecialAttack += SpecialAttack;
+        _inputManager.OnRapidCasting1 += RapidCasting1;
+        _inputManager.OnRapidCasting2 += RapidCasting2;
+        _inputManager.OnInteraction += Interaction;
+        _inputManager.OnUsePotion += UsePotion;
+        _inputManager.OnOpenMap += OpenMap;
+        _inputManager.OnInventory += Inventory;
+        _inputManager.OnPlayerStats += PlayerStats;
+        _inputManager.OnTalent += Talent;
+        _inputManager.OnPresetSetting += PresetSetting;
+        _inputManager.OnChatting += Chatting;
+        _inputManager.OnReloading += Reloading;
+        _inputManager.OnPing += Ping;
+        _inputManager.OnChoosePotion += ChoosePotion;
+        _inputManager.OnBefore += Before;
+        _inputManager.OnNext += Next;
 
         _subscribed = true;
     }
@@ -70,62 +69,131 @@ public class CInputCommandHub : MonoBehaviour
 
         if (_inputManager != null)
         {
-            _inputManager.OnMove -= HandleMove;
-            _inputManager.OnSpace -= HandleSpace;
-            _inputManager.OnMouseR -= HandleMouseR;
-            _inputManager.OnMouseL -= HandleMouseL;
-            _inputManager.OnE -= HandleOnE;
-            _inputManager.OnF -= HandleOnF;
-            _inputManager.OnR -= HandleOnR;
+            _inputManager.OnMove -= Move;
+            _inputManager.OnDash -= Dash;
+            _inputManager.OnAttack -= Attack;
+            _inputManager.OnSpecialAttack -= SpecialAttack;
+            _inputManager.OnRapidCasting1 -= RapidCasting1;
+            _inputManager.OnRapidCasting2 -= RapidCasting2;
+            _inputManager.OnInteraction -= Interaction;
+            _inputManager.OnUsePotion -= UsePotion;
+            _inputManager.OnOpenMap -= OpenMap;
+            _inputManager.OnInventory -= Inventory;
+            _inputManager.OnPlayerStats -= PlayerStats;
+            _inputManager.OnTalent -= Talent;
+            _inputManager.OnPresetSetting -= PresetSetting;
+            _inputManager.OnChatting -= Chatting;
+            _inputManager.OnReloading -= Reloading;
+            _inputManager.OnPing -= Ping;
+            _inputManager.OnChoosePotion -= ChoosePotion;
+            _inputManager.OnBefore -= Before;
+            _inputManager.OnNext -= Next;
         }
 
         _subscribed = false;
     }
     #endregion
 
-
     #region 입력 처리
-    private void HandleMove(Vector2 direction)
+    private void Move(Vector2 direction)
     {
-        Execute(EInput.Move, direction);
+        Execute(EKeyAction.Move, direction);
     }
 
-    // ※
-    private void HandleSpace(float value)
+    private void Dash(float value)
     {
-        Execute(EInput.Space, value);
+        Execute(EKeyAction.Dash, value);
     }
-    /*
-    private void HandleSpace()
+
+    private void Attack()
     {
-        Execute(EInput.Space);
+        Execute(EKeyAction.Attack);
     }
-    */
-    private void HandleMouseR()
+
+    private void SpecialAttack()
     {
-        Execute(EInput.MouseR);
+        Execute(EKeyAction.SpecialAttack);
     }
-    private void HandleMouseL()
+
+    private void RapidCasting1()
     {
-        Execute(EInput.MouseL);
+        Execute(EKeyAction.RapidCasting1);
     }
-    private void HandleOnE()
+
+    private void RapidCasting2()
     {
-        Execute(EInput.E);
+        Execute(EKeyAction.RapidCasting2);
     }
-    private void HandleOnF()
+
+    private void Interaction()
     {
-        Execute(EInput.F);
+        Execute(EKeyAction.Interaction);
     }
-    private void HandleOnR()
+
+    private void UsePotion()
     {
-        Execute(EInput.R);
+        Execute(EKeyAction.UsePotion);
+    }
+
+    private void OpenMap()
+    {
+        Execute(EKeyAction.OpenMap);
+    }
+
+    private void Inventory()
+    {
+        Execute(EKeyAction.Inventory);
+    }
+
+    private void PlayerStats()
+    {
+        Execute(EKeyAction.PlayerStats);
+    }
+
+    private void Talent()
+    {
+        Execute(EKeyAction.Talent);
+    }
+
+    private void PresetSetting()
+    {
+        Execute(EKeyAction.PresetSetting);
+    }
+
+    private void Chatting()
+    {
+        Execute(EKeyAction.Chatting);
+    }
+
+    private void Reloading()
+    {
+        Execute(EKeyAction.Reloading);
+    }
+
+    private void Ping()
+    {
+        Execute(EKeyAction.Ping);
+    }
+
+    private void ChoosePotion()
+    {
+        Execute(EKeyAction.ChoosePotion);
+    }
+
+    private void Before()
+    {
+        Execute(EKeyAction.Before);
+    }
+
+    private void Next()
+    {
+        Execute(EKeyAction.Next);
     }
     #endregion
 
 
     #region 커맨드 등록
-    public void Register(EInput key, IInputCommand command)
+    public void Register(EKeyAction key, IInputCommand command)
     {
         if (command == null)
         {
@@ -136,7 +204,7 @@ public class CInputCommandHub : MonoBehaviour
         _commands[key] = command;
     }
 
-    public void Register(EInput key, IInputCommand<Vector2> command)
+    public void Register(EKeyAction key, IInputCommand<Vector2> command)
     {
         if (command == null)
         {
@@ -147,7 +215,7 @@ public class CInputCommandHub : MonoBehaviour
         _vectorCommands[key] = command;
     }
 
-    public void Register(EInput key, IInputCommand<float> command)
+    public void Register(EKeyAction key, IInputCommand<float> command)
     {
         if (command == null)
         {
@@ -161,7 +229,7 @@ public class CInputCommandHub : MonoBehaviour
 
 
     #region 커맨드 해제
-    public void Unregister(EInput key)
+    public void Unregister(EKeyAction key)
     {
         _commands.Remove(key);
         _vectorCommands.Remove(key);
@@ -169,7 +237,7 @@ public class CInputCommandHub : MonoBehaviour
     }
 
     // 자신이 등록한 커맨드와 같을 때만 해제
-    public void Unregister(EInput key, IInputCommand command)
+    public void Unregister(EKeyAction key, IInputCommand command)
     {
         if (_commands.TryGetValue(key, out var registered)
             && ReferenceEquals(registered, command))
@@ -178,7 +246,7 @@ public class CInputCommandHub : MonoBehaviour
         }
     }
 
-    public void Unregister(EInput key, IInputCommand<Vector2> command)
+    public void Unregister(EKeyAction key, IInputCommand<Vector2> command)
     {
         if (_vectorCommands.TryGetValue(key, out var registered)
             && ReferenceEquals(registered, command))
@@ -187,7 +255,7 @@ public class CInputCommandHub : MonoBehaviour
         }
     }
 
-    public void Unregister(EInput key, IInputCommand<float> command)
+    public void Unregister(EKeyAction key, IInputCommand<float> command)
     {
         if (_floatCommands.TryGetValue(key, out var registered)
             && ReferenceEquals(registered, command))
@@ -199,7 +267,7 @@ public class CInputCommandHub : MonoBehaviour
 
 
     #region 커맨드 실행
-    public void Execute(EInput key)
+    public void Execute(EKeyAction key)
     {
         if (_commands.TryGetValue(key, out var command))
         {
@@ -207,7 +275,7 @@ public class CInputCommandHub : MonoBehaviour
         }
     }
 
-    public void Execute(EInput key, Vector2 value)
+    public void Execute(EKeyAction key, Vector2 value)
     {
         if (_vectorCommands.TryGetValue(key, out var command))
         {
@@ -215,7 +283,7 @@ public class CInputCommandHub : MonoBehaviour
         }
     }
 
-    public void Execute(EInput key, float value)
+    public void Execute(EKeyAction key, float value)
     {
         if (_floatCommands.TryGetValue(key, out var command))
         {
