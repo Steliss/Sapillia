@@ -2,6 +2,10 @@ using UnityEngine;
 
 public class CManagerDontDestroy : MonoBehaviour
 {
+    [SerializeField] private CSceneManager _sceneManager;
+
+
+    public CSceneManager SceneManager => _sceneManager;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()
@@ -11,6 +15,11 @@ public class CManagerDontDestroy : MonoBehaviour
         {
             Destroy(gameObject);
             return;
+        }
+
+        if(_sceneManager == null)
+        {
+            CLog.Log("_sceneManager : Null");
         }
 
         Instance = this;
