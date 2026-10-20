@@ -34,7 +34,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     {
         if(_inputHub != null)
         {
-            _inputHub.Register(EInput.MouseL, (IInputCommand)this);
+            _inputHub.Register(EKeyAction.Attack, this);
         }
     }
 

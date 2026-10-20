@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 683087253}
   - component: {fileID: 683087255}
   - component: {fileID: 683087254}
+  - component: {fileID: 683087256}
   m_Layer: 0
   m_Name: InputManager
   m_TagString: Untagged
@@ -181,12 +182,40 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveAction: {fileID: -1680190386980627800, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _spaceAction: {fileID: 773414770716259769, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _mouseRAction: {fileID: 8315380024094016238, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _mouseLAction: {fileID: 1120369429361536294, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _EAction: {fileID: -3217178006621530774, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _FAction: {fileID: 863134984116093145, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _RAction: {fileID: -2734185849038626466, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _dashAction: {fileID: 773414770716259769, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _attackAction: {fileID: 1120369429361536294, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _specialAttackAction: {fileID: 8315380024094016238, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _rapidCasting1Action: {fileID: -1859258014276354938, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _rapidCasting2Action: {fileID: -1472291473580703546, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _interactionAction: {fileID: 863134984116093145, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _usePotionAction: {fileID: -2734185849038626466, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _openMapAction: {fileID: 3420022060598787869, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _inventoryAction: {fileID: 2286946391869988240, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _playerStatsAction: {fileID: -3773736269679020405, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _talentAction: {fileID: -5333897083222163281, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _presetSettingAction: {fileID: -1207298698489875335, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _chattingAction: {fileID: 3482209823841290629, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _reloadingAction: {fileID: 8459253343192779557, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _pingAction: {fileID: -2932518709213286940, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _choosePotionAction: {fileID: -1356359924033364122, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _beforeAction: {fileID: -668416955517265663, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _nextAction: {fileID: -3217178006621530774, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+--- !u!114 &683087256
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 683087252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eff50aa45ef017468d930ac6448d73d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _flowData: {fileID: 11400000, guid: 7dbc8c8d3c0d0934cb51f4197758d3f1, type: 2}
+  _inputActions: {fileID: -944628639613478452, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _keyAction: 0
+  _actionName: 
 --- !u!1 &1054467087
 GameObject:
   m_ObjectHideFlags: 0
