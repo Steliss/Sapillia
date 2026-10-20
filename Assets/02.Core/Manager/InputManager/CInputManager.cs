@@ -10,132 +10,242 @@ public class CInputManager : MonoBehaviour
 {
 
     [SerializeField] private InputActionReference _moveAction;
-    [SerializeField] private InputActionReference _spaceAction;
-    [SerializeField] private InputActionReference _mouseRAction;
-    [SerializeField] private InputActionReference _mouseLAction;
-    [SerializeField] private InputActionReference _EAction;
-    [SerializeField] private InputActionReference _FAction;
-    [SerializeField] private InputActionReference _RAction;
+    [SerializeField] private InputActionReference _dashAction;
+    [SerializeField] private InputActionReference _attackAction;
+    [SerializeField] private InputActionReference _specialAttackAction;
+    [SerializeField] private InputActionReference _rapidCasting1Action;
+    [SerializeField] private InputActionReference _rapidCasting2Action;
+    [SerializeField] private InputActionReference _interactionAction;
+    [SerializeField] private InputActionReference _usePotionAction;
+    [SerializeField] private InputActionReference _openMapAction;
+    [SerializeField] private InputActionReference _inventoryAction;
+    [SerializeField] private InputActionReference _playerStatsAction;
+    [SerializeField] private InputActionReference _talentAction;
+    [SerializeField] private InputActionReference _presetSettingAction;
+    [SerializeField] private InputActionReference _chattingAction;
+    [SerializeField] private InputActionReference _reloadingAction;
+    [SerializeField] private InputActionReference _pingAction;
+    [SerializeField] private InputActionReference _choosePotionAction;
+    [SerializeField] private InputActionReference _beforeAction;
+    [SerializeField] private InputActionReference _nextAction;
 
     public event Action<Vector2> OnMove;
-    public event Action OnMouseR;
-    public event Action OnMouseL;
-    // 대쉬와 뛰기 구분용으로 잠시 테스트 중입니다. ※
-    public event Action<float> OnSpace;
-    // public event Action OnSpace;
-    public event Action OnE;
-    public event Action OnF;
-    public event Action OnR;
-
+    public event Action<float> OnDash;
+    public event Action OnAttack;
+    public event Action OnSpecialAttack;
+    public event Action OnRapidCasting1;
+    public event Action OnRapidCasting2;
+    public event Action OnInteraction;
+    public event Action OnUsePotion;
+    public event Action OnOpenMap;
+    public event Action OnInventory;
+    public event Action OnPlayerStats;
+    public event Action OnTalent;
+    public event Action OnPresetSetting;
+    public event Action OnChatting;
+    public event Action OnReloading;
+    public event Action OnPing;
+    public event Action OnChoosePotion;
+    public event Action OnBefore;
+    public event Action OnNext;
 
 
     private void OnEnable()
     {
-        // 바인드 연결을 수업처럼 Awake 에서 처리할지여부
-        // 해당 스크립트는 매니저 객체에 붙어서 싱글톤 처리를 일일히 해줄 필요는 없음 
+        _moveAction.action.performed += moveAction;
+        _moveAction.action.canceled += moveActionCanceled;
 
-        _moveAction.action.performed += MoveInput;
-        _moveAction.action.canceled += MoveInputCancled;
+        _dashAction.action.performed += dashAction;
+        _dashAction.action.canceled += dashActionCanceled;
 
-        _spaceAction.action.performed += SpaceInput;
-        //※ 테스트용
-        _spaceAction.action.performed += SpaceInputCancled;
-        _mouseRAction.action.performed += MouseRInput;
-        _mouseLAction.action.performed += MouseLInput;
-        _EAction.action.performed += KeyboardEInput;
-        _FAction.action.performed += KeyboardFInput;
-        _RAction.action.performed += KeyboardRInput;
+        _attackAction.action.performed += attackAction;
+        _specialAttackAction.action.performed += specialAttackAction;
+        _rapidCasting1Action.action.performed += rapidCasting1Action;
+        _rapidCasting2Action.action.performed += rapidCasting2Action;
+        _interactionAction.action.performed += interactionAction;
+        _usePotionAction.action.performed += usePotionAction;
+        _openMapAction.action.performed += openMapAction;
+        _inventoryAction.action.performed += inventoryAction;
+        _playerStatsAction.action.performed += playerStatsAction;
+        _talentAction.action.performed += talentAction;
+        _presetSettingAction.action.performed += presetSettingAction;
+        _chattingAction.action.performed += chattingAction;
+        _reloadingAction.action.performed += reloadingAction;
+        _pingAction.action.performed += pingAction;
+        _choosePotionAction.action.performed += choosePotionAction;
+        _beforeAction.action.performed += beforeAction;
+        _nextAction.action.performed += nextAction;
 
         _moveAction.action.Enable();
-        _spaceAction.action.Enable();
-        _mouseRAction.action.Enable();
-        _mouseLAction.action.Enable();
-        _EAction.action.Enable();
-        _FAction.action.Enable();
-        _RAction.action.Enable();
+        _dashAction.action.Enable();
+        _attackAction.action.Enable();
+        _specialAttackAction.action.Enable();
+        _rapidCasting1Action.action.Enable();
+        _rapidCasting2Action.action.Enable();
+        _interactionAction.action.Enable();
+        _usePotionAction.action.Enable();
+        _openMapAction.action.Enable();
+        _inventoryAction.action.Enable();
+        _playerStatsAction.action.Enable();
+        _talentAction.action.Enable();
+        _presetSettingAction.action.Enable();
+        _chattingAction.action.Enable();
+        _reloadingAction.action.Enable();
+        _pingAction.action.Enable();
+        _choosePotionAction.action.Enable();
+        _beforeAction.action.Enable();
+        _nextAction.action.Enable();
     }
 
     private void OnDisable()
     {
-        _moveAction.action.performed -= MoveInput;
-        _moveAction.action.canceled -= MoveInputCancled;
+        _moveAction.action.performed -= moveAction;
+        _moveAction.action.canceled -= moveActionCanceled;
 
-        _spaceAction.action.performed -= SpaceInput;
-        // 테스트용 ※
-        _spaceAction.action.performed -= SpaceInputCancled;
+        _dashAction.action.performed -= dashAction;
+        _dashAction.action.canceled -= dashActionCanceled;
 
-        _mouseRAction.action.performed -= MouseRInput;
-        _mouseLAction.action.performed -= MouseLInput;
-        _EAction.action.performed -= KeyboardEInput;
-        _FAction.action.performed -= KeyboardFInput;
-        _RAction.action.performed -= KeyboardRInput;
+        _attackAction.action.performed -= attackAction;
+        _specialAttackAction.action.performed -= specialAttackAction;
+        _rapidCasting1Action.action.performed -= rapidCasting1Action;
+        _rapidCasting2Action.action.performed -= rapidCasting2Action;
+        _interactionAction.action.performed -= interactionAction;
+        _usePotionAction.action.performed -= usePotionAction;
+        _openMapAction.action.performed -= openMapAction;
+        _inventoryAction.action.performed -= inventoryAction;
+        _playerStatsAction.action.performed -= playerStatsAction;
+        _talentAction.action.performed -= talentAction;
+        _presetSettingAction.action.performed -= presetSettingAction;
+        _chattingAction.action.performed -= chattingAction;
+        _reloadingAction.action.performed -= reloadingAction;
+        _pingAction.action.performed -= pingAction;
+        _choosePotionAction.action.performed -= choosePotionAction;
+        _beforeAction.action.performed -= beforeAction;
+        _nextAction.action.performed -= nextAction;
 
         _moveAction.action.Disable();
-        _spaceAction.action.Disable();
-        _mouseRAction.action.Enable();
-        _mouseLAction.action.Enable();
-        _EAction.action.Enable();
-        _FAction.action.Enable();
-        _RAction.action.Enable();
+        _dashAction.action.Disable();
+        _attackAction.action.Disable();
+        _specialAttackAction.action.Disable();
+        _rapidCasting1Action.action.Disable();
+        _rapidCasting2Action.action.Disable();
+        _interactionAction.action.Disable();
+        _usePotionAction.action.Disable();
+        _openMapAction.action.Disable();
+        _inventoryAction.action.Disable();
+        _playerStatsAction.action.Disable();
+        _talentAction.action.Disable();
+        _presetSettingAction.action.Disable();
+        _chattingAction.action.Disable();
+        _reloadingAction.action.Disable();
+        _pingAction.action.Disable();
+        _choosePotionAction.action.Disable();
+        _beforeAction.action.Disable();
+        _nextAction.action.Disable();
     }
 
-    private void MoveInput(InputAction.CallbackContext ctx)
+    private void moveAction(InputAction.CallbackContext ctx)
     {
-        Vector2 direction = ctx.ReadValue<Vector2>();
-
-        OnMove?.Invoke(direction);
+        OnMove?.Invoke(ctx.ReadValue<Vector2>());
     }
 
-    private void MoveInputCancled(InputAction.CallbackContext ctx)
+    private void moveActionCanceled(InputAction.CallbackContext ctx)
     {
-        Vector2 direction = ctx.ReadValue<Vector2>();
-
         OnMove?.Invoke(Vector2.zero);
     }
 
-
-
-    // 누를때
-    private void SpaceInput(InputAction.CallbackContext ctx)
+    private void dashAction(InputAction.CallbackContext ctx)
     {
-        OnSpace?.Invoke(1f);
+        OnDash?.Invoke(1f);
     }
 
-    // 땔 때
-    private void SpaceInputCancled(InputAction.CallbackContext ctx)
+    private void dashActionCanceled(InputAction.CallbackContext ctx)
     {
-        OnSpace?.Invoke(0f);
+        OnDash?.Invoke(0f);
     }
 
-    /* 대쉬와 뛰기 구분용으로 잠시 테스트 중입니다. ※
-
-    private void SpaceInput(InputAction.CallbackContext ctx)
+    private void attackAction(InputAction.CallbackContext ctx)
     {
-        OnSpace?.Invoke();
-    }
-    */
-    private void MouseRInput(InputAction.CallbackContext ctx)
-    {
-        OnMouseR?.Invoke();
+        OnAttack?.Invoke();
     }
 
-    private void MouseLInput(InputAction.CallbackContext ctx)
+    private void specialAttackAction(InputAction.CallbackContext ctx)
     {
-        OnMouseL?.Invoke();
+        OnSpecialAttack?.Invoke();
     }
 
-    private void KeyboardFInput(InputAction.CallbackContext ctx)
+    private void rapidCasting1Action(InputAction.CallbackContext ctx)
     {
-        OnF?.Invoke();
+        OnRapidCasting1?.Invoke();
     }
 
-    private void KeyboardEInput(InputAction.CallbackContext ctx)
+    private void rapidCasting2Action(InputAction.CallbackContext ctx)
     {
-        OnE?.Invoke();
+        OnRapidCasting2?.Invoke();
     }
 
-    private void KeyboardRInput(InputAction.CallbackContext ctx)
+    private void interactionAction(InputAction.CallbackContext ctx)
     {
-        OnR?.Invoke();
+        OnInteraction?.Invoke();
+    }
+
+    private void usePotionAction(InputAction.CallbackContext ctx)
+    {
+        OnUsePotion?.Invoke();
+    }
+
+    private void openMapAction(InputAction.CallbackContext ctx)
+    {
+        OnOpenMap?.Invoke();
+    }
+
+    private void inventoryAction(InputAction.CallbackContext ctx)
+    {
+        OnInventory?.Invoke();
+    }
+
+    private void playerStatsAction(InputAction.CallbackContext ctx)
+    {
+        OnPlayerStats?.Invoke();
+    }
+
+    private void talentAction(InputAction.CallbackContext ctx)
+    {
+        OnTalent?.Invoke();
+    }
+
+    private void presetSettingAction(InputAction.CallbackContext ctx)
+    {
+        OnPresetSetting?.Invoke();
+    }
+
+    private void chattingAction(InputAction.CallbackContext ctx)
+    {
+        OnChatting?.Invoke();
+    }
+
+    private void reloadingAction(InputAction.CallbackContext ctx)
+    {
+        OnReloading?.Invoke();
+    }
+
+    private void pingAction(InputAction.CallbackContext ctx)
+    {
+        OnPing?.Invoke();
+    }
+
+    private void choosePotionAction(InputAction.CallbackContext ctx)
+    {
+        OnChoosePotion?.Invoke();
+    }
+
+    private void beforeAction(InputAction.CallbackContext ctx)
+    {
+        OnBefore?.Invoke();
+    }
+
+    private void nextAction(InputAction.CallbackContext ctx)
+    {
+        OnNext?.Invoke();
     }
 }

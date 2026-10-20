@@ -163,11 +163,175 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     #region Input Command
 
+using UnityEngine;
+
+public enum EPlayerMoveState
+{
+    Idle,
+    Walk,
+    Run,
+    Dash
+}
+
+[RequireComponent(typeof(Rigidbody2D))]
+public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputCommand<float>
+{
+    #region 인스펙터
+
+    [Header("참조")]
+    [SerializeField] private CInputCommandHub _inputHub;
+    [SerializeField] private Rigidbody2D _rb2D;
+    [SerializeField] private CPlayerController _playerController;
+
+    [Header("Test")]
+    [SerializeField] private bool _isInCombat;
+
+    #endregion
+
+    #region 내부변수
+
+    // 런타임 데이터
+    private CPlayerGamingDataSO _playerData;
+
+    // 이동 관련
+    private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
+
+    private Vector2 _moveDirection;
+    private Vector2 _facingDirection = Vector2.down;
+    private Vector2 _dashDirection;
+
+    // 대쉬 관련
+    private float _dashTimer;
+    private float _dashCooldownTimer;
+
+    private bool _spaceHeld;
+    private bool _dashRequested;
+
+    // 데이터 확인
+    private bool _warnedMissingData;
+
+    #endregion
+
+    #region 프로퍼티
+
+    public EPlayerMoveState MoveState => _moveState;
+
+    public Vector2 MoveDirection => _moveDirection;
+    public Vector2 FacingDirection => _facingDirection;
+    public bool IsInCombat => _isInCombat;
+    public float DashRemainingTime => _dashTimer;
+    public float DashCoolRemaining => _dashCooldownTimer;
+
+    #endregion
+
+    #region Unity Lifecycle
+
+    private void Awake()
+    {
+        if (_rb2D == null)
+        {
+            CLog.Error("[Movement] Rigidbody2D 참조 누락");
+        }
+
+        if (_playerController == null)
+        {
+            CLog.Error("[Movement] PlayerController 참조 누락");
+        }
+
+        if (_inputHub == null)
+        {
+            CLog.Error("[Movement] InputHub 참조 누락");
+        }
+    }
+
+    private void OnEnable()
+    {
+        if (_inputHub == null)
+        {
+            return;
+        }
+
+        RegisterInput();
+    }
+
+    private void Start()
+    {
+        TryBindPlayerData();
+    }
+
+    private void FixedUpdate()
+    {
+        if (_rb2D == null)
+        {
+            return;
+        }
+
+        if (!TryBindPlayerData())
+        {
+            return;
+        }
+
+        UpdateDashCoolDown();
+        TryStartDash();
+        UpdateMovement();
+    }
+
+    private void OnDisable()
+    {
+        UnRegisterInput();
+
+        _moveDirection = Vector2.zero;
+        _spaceHeld = false;
+        _dashRequested = false;
+
+        _dashTimer = 0f;
+        _dashCooldownTimer = 0f;
+
+        _moveState = EPlayerMoveState.Idle;
+    }
+
+    #endregion
+
+    #region PlayerData
+
+    private bool TryBindPlayerData()
+    {
+        if (_playerController == null)
+        {
+            return false;
+        }
+
+        // Controller가 관리하는 현재 런타임 SO 참조
+        _playerData = _playerController.PlayerData;
+
+        if (_playerData == null)
+        {
+            if (!_warnedMissingData)
+            {
+                CLog.Warn("[Movement] PlayerData 연결 대기 중");
+                _warnedMissingData = true;
+            }
+
+            return false;
+        }
+
+        if (_warnedMissingData)
+        {
+            CLog.Log("[Movement] PlayerData 연결 완료");
+            _warnedMissingData = false;
+        }
+
+        return true;
+    }
+
+    #endregion
+
+    #region Input Command
+
     private void RegisterInput()
     {
-        _inputHub.Register(EInput.Move, (IInputCommand<Vector2>)this);
-
-        _inputHub.Register(EInput.Space, (IInputCommand<float>)this);
+        _inputHub.Register(EKeyAction.Move, (IInputCommand<Vector2>)this);
+        _inputHub.Register(EKeyAction.Dash, (IInputCommand<float>)this);
     }
 
     private void UnRegisterInput()
@@ -177,10 +341,156 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             return;
         }
 
-        _inputHub.Unregister(EInput.Move, (IInputCommand<Vector2>)this);
-
-        _inputHub.Unregister(EInput.Space, (IInputCommand<float>)this);
+        _inputHub.Unregister(EKeyAction.Move, (IInputCommand<Vector2>)this);
+        _inputHub.Unregister(EKeyAction.Dash, (IInputCommand<float>)this);
     }
+
+    // WASD
+    public void Execute(Vector2 direction)
+    {
+        _moveDirection = Vector2.ClampMagnitude(direction, 1f);
+    }
+
+    // Space (누름: 1 / 뗌: 0)
+    public void Execute(float value)
+    {
+        bool pressed = value > 0.5f;
+
+        if (_isInCombat && pressed && !_spaceHeld)
+        {
+            _dashRequested = true;
+        }
+
+        _spaceHeld = pressed;
+    }
+
+    #endregion
+
+    #region Dash
+
+    private void UpdateDashCoolDown()
+    {
+        if (_dashCooldownTimer <= 0f)
+        {
+            return;
+        }
+
+        _dashCooldownTimer = Mathf.Max(0f, _dashCooldownTimer - Time.fixedDeltaTime);
+    }
+
+    private void TryStartDash()
+    {
+        if (!_dashRequested)
+        {
+            return;
+        }
+
+        _dashRequested = false;
+
+        if (!_isInCombat)
+        {
+            return;
+        }
+
+        if (_dashTimer > 0f || _dashCooldownTimer > 0f)
+        {
+            return;
+        }
+
+        SPlayerStats stats = _playerData.Stats;
+
+        if (stats.DashSpeed <= 0f || stats.DashDuration <= 0f)
+        {
+            return;
+        }
+
+        if (!_playerData.TryConsumeDash())
+        {
+            return;
+        }
+
+        // 대쉬 방향 고정
+        _dashDirection = _moveDirection.sqrMagnitude > 0.00001f ? _moveDirection.normalized : _facingDirection;
+
+        _facingDirection = _dashDirection;
+
+        _dashTimer = stats.DashDuration;
+        _dashCooldownTimer = stats.DashCooldown;
+    }
+
+    #endregion
+
+    #region Movement
+
+    private void UpdateMovement()
+    {
+        SPlayerStats stats = _playerData.Stats;
+
+        Vector2 velocity = Vector2.zero;
+
+        // 대쉬
+        if (_dashTimer > 0f)
+        {
+            _moveState = EPlayerMoveState.Dash;
+
+            velocity = _dashDirection * stats.DashSpeed;
+
+            _dashTimer = Mathf.Max(0f, _dashTimer - Time.fixedDeltaTime);
+        }
+        // 정지
+        else if (_moveDirection.sqrMagnitude < 0.0001f)
+        {
+            _moveState = EPlayerMoveState.Idle;
+        }
+        // 걷기 / 달리기
+        else
+        {
+            bool canRun = !_isInCombat && _spaceHeld;
+
+            _moveState = canRun ? EPlayerMoveState.Run : EPlayerMoveState.Walk;
+
+            float speed = stats.Movement_Speed;
+
+            if (canRun)
+            {
+                speed *= stats.Run_SpeedMulitplier;
+            }
+
+            velocity = _moveDirection * speed;
+        }
+
+        // 바라보는 방향
+        if (_moveState != EPlayerMoveState.Dash && _moveDirection.sqrMagnitude > 0.0001f)
+        {
+            _facingDirection = _moveDirection.normalized;
+        }
+
+        // Rigidbody 이동
+        _rb2D.MovePosition(_rb2D.position + velocity * Time.fixedDeltaTime);
+    }
+
+    #endregion
+
+    #region Combat
+
+    public void SetCombatState(bool isCombat)
+    {
+        if (_isInCombat == isCombat)
+        {
+            return;
+        }
+
+        _isInCombat = isCombat;
+
+        if (!_isInCombat)
+        {
+            _dashRequested = false;
+            _dashTimer = 0f;
+        }
+    }
+
+    #endregion
+}
 
     // WASD
     public void Execute(Vector2 direction)
