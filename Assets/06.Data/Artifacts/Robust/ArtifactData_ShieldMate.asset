@@ -42,7 +42,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 1
+      Attack_Speed: -20
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -64,7 +64,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
     SpecialAttackMPReduce: 0.15
     MaxHPPercent: 1
   - Level: 1
@@ -86,7 +85,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 0
+      Attack_Speed: -20
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -108,7 +107,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
     SpecialAttackMPReduce: 0.3
     MaxHPPercent: 1
   - Level: 2
@@ -130,7 +128,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 0
+      Attack_Speed: -20
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -152,7 +150,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.8
     SpecialAttackMPReduce: 0.45
     MaxHPPercent: 1
   - Level: 3
@@ -174,7 +171,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 0
+      Attack_Speed: -10
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -196,7 +193,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.9
     SpecialAttackMPReduce: 0.6
     MaxHPPercent: 1
   - Level: 4
@@ -218,7 +214,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 0
+      Attack_Speed: -5
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -240,7 +236,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.95
     SpecialAttackMPReduce: 0.7
     MaxHPPercent: 1
   - Level: 5
@@ -262,7 +257,7 @@ MonoBehaviour:
       Evasion: 0
       Critical_Rate: 0
       Critical_Damage: 0
-      Attack_Speed: 0
+      Attack_Speed: -5
       Movement_Speed: 0
       Run_SpeedMulitplier: 0
       Bargain: 0
@@ -284,7 +279,6 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 0.95
     SpecialAttackMPReduce: 0.8
     MaxHPPercent: 1
   - Level: 6
@@ -328,6 +322,5 @@ MonoBehaviour:
       Ammo_Count: 0
       Ammo_Speed: 0
       Ammo_ReloadSpeed: 0
-    AttackSpeed: 1
     SpecialAttackMPReduce: 1
     MaxHPPercent: 1
