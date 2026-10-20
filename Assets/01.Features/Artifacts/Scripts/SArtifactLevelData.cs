@@ -11,4 +11,5 @@ public struct SArtifactLevelData
     public SPlayerStats playerStats;
     public float AttackSpeed;
     public float SpecialAttackMPReduce;
+    public float MaxHPPercent;
 }
