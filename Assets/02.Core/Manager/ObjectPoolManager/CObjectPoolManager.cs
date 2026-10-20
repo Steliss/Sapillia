@@ -1,26 +1,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 오브젝트 풀에 담긴 오브젝트는 이 클래스를 가져가게 됨
+// 오브젝트 풀을 거쳐간 오브젝트는 이 클래스를 가져가게 됨
 public class CObjectPoolId : MonoBehaviour
 {
     public int Id;
-    /*
-    private void OnDisable()
-    {
-        if (CObjectPoolManager.Instance == null)
-        {
-            return;
-        }
-
-        if (CObjectPoolManager.Instance.IsRemoving)
-        {
-            return;
-        }
-
-        CObjectPoolManager.Instance.ReturnPool(gameObject);
-    }
-    */
 }
 
 
