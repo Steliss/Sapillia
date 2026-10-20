@@ -51,7 +51,7 @@ public struct SPlayerStats
     #endregion
 
     #region 속도 관련
-    [Min(1f)] public float Attack_Speed;
+    public float Attack_Speed;
     public float Movement_Speed;
     [Min(1f)] public float Run_SpeedMulitplier;
     #endregion
