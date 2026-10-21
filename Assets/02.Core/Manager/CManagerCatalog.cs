@@ -7,8 +7,9 @@ public enum EScene
 {
     Menu,
     Town,
-    Field,
-    BossRoom
+    stage1,
+    stage2,
+    stage3
 }
 
 
@@ -89,4 +90,21 @@ public class CKeyBindingData
         _primary = primary;
         _secondary = "";
     }
+}
+
+
+// LocalizationSO 관련 필드 
+[Serializable]
+public class CLocalizationEntry
+{
+    public string key;
+    public string value;
+}
+
+[Serializable]
+public class CLocalizationData
+{
+    public CLocalizationEntry[] items;
+    public CLocalizationEntry[] talk;
+    public CLocalizationEntry[] scene;
 }

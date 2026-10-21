@@ -6,13 +6,14 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/Data/Data", fileName = "OptionSO")]
 public class CFlowDataSO : ScriptableObject
 {
-    [SerializeField] private int _currentScene = 0; // 맵 정보 
+    [SerializeField] private EScene _currentScene; // 맵 정보 
 
     [Header("GamePlay")]
     [SerializeField] private bool _skipBoss = false;
     [Range(0f, 1f)]
     [SerializeField] private float _cameraShakeMultiplier = 1.0f;
     [SerializeField] private bool _displayEffect = true;
+    [SerializeField] private ELanguage _currentLanhuage;
 
     [Header("Sound")]
     [Range(0f, 1f)]
@@ -54,7 +55,7 @@ public class CFlowDataSO : ScriptableObject
     [SerializeField] private CKeyBindingData _next = new CKeyBindingData("<Keyboard>/e");
 
 
-    public int CurrentScene => _currentScene;
+    public EScene CurrentScene => _currentScene;
     public bool SkipBoss => _skipBoss;
     public float CameraShakeMultiplier => _cameraShakeMultiplier;
     public bool DisplayEffect => _displayEffect;
@@ -65,9 +66,10 @@ public class CFlowDataSO : ScriptableObject
     public int Width => _width;
     public int Height => _height;
     public FullScreenMode ScreenMode => _screenMode;
+    public ELanguage CurrentLanhuage => _currentLanhuage;
 
-    
-    public void SetCurrentScene(int currentScene)
+
+    public void SetCurrentScene(EScene currentScene)
     {
         _currentScene = currentScene;
     }
@@ -105,7 +107,10 @@ public class CFlowDataSO : ScriptableObject
     {
         _enviromentSound = sound;
     }
-
+    public void SetCurrentLanhuage(ELanguage language)
+    {
+        _currentLanhuage = language;
+    }
 
     // 화면 설정 UI에서 호출할때 수정 필요
     public void SetDisplay(int width, int height, FullScreenMode screenMode)
@@ -119,6 +124,7 @@ public class CFlowDataSO : ScriptableObject
         _height = height;
         _screenMode = screenMode;
     }
+
 
 
     // 키 설정 조회
