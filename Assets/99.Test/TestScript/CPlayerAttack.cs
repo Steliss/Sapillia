@@ -8,6 +8,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
 
+    [Header("애니메이션")]
+    [SerializeField] private CPlayerAnimation _playerAnimation;
+
     [Header("무기")]
     [SerializeField] private CWeaponDataSO _weaponData;
     [SerializeField] private CWeaponMotion _weaponMotion;
@@ -177,7 +180,13 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         if (!_weaponMotion.TryPlay(attack, _weaponData.BaseDamage, stats))
         {
             return false;
-        }            
+        }
+
+        // 실제 무기 공격이 시작됐을 때 애니메이션 재생
+        if (_playerAnimation != null)
+        {
+            _playerAnimation.PlayAttack(_nextComboIndex + 1, stats.Attack_Speed);
+        }
 
         // 다음 공격 인덱스
         _nextComboIndex = (_nextComboIndex + 1) % _weaponData.AttackCount;
