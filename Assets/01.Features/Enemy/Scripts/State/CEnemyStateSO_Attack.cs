@@ -1,8 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SO/Enemy/State_Attack", fileName = "Enemy_Attack_")]
@@ -16,7 +13,6 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
     [SerializeField] private float _attackRange = 3f;
     
     private CStateMashine _mashine;
-    private CUniTaskOnes _uni = new CUniTaskOnes();
 
     public void Init(CStateMashine mashine)
     {
@@ -25,15 +21,21 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
 
     public void StateEnter()
     {
-        _uni.Cancel();
-        _uni.Run(async ct =>
+        _mashine.Uni.Cancel();
+        _mashine.Uni.Run(async ct =>
         {
             // 선딜레이
+            _mashine.Nav.velocity = Vector3.zero;
             _mashine.Ani.Play(_mashine.HashAttReady);
 
-            Vector3 myPos = _mashine.transform.position;
-            Vector3 tarPos = _mashine.transform.position + (Vector3.right * _rushDistanse);
-            Vector3 dir = tarPos - myPos;
+            Vector2 myPos = _mashine.transform.position;
+            Vector2 tarPos = _mashine.Target.position;
+
+            // 방향
+            Vector2 dir = (tarPos - myPos).normalized;
+            // 법선
+            Vector2 dir90 = new Vector2(-dir.y, dir.x);
+
             float z = (Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg) - 90f;
             Quaternion angle = Quaternion.Euler(0, 0, z);
 
@@ -46,43 +48,56 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
                 _mashine.Sprite.flipX = false;
             }
 
-            GameObject line1 = null;
-            GameObject line2 = null;
-            //GameObject line3 = null;
-            //GameObject line4 = null;
+            Vector2 linePos = myPos + (dir * _rushDistanse / 2f);
 
+            // 고정된 라인
+            GameObject line1 = CreateAttackObject
+            (_warningLine, _beforeDelay, linePos + dir90 * 1f, angle);
+            GameObject line2 = CreateAttackObject
+            (_warningLine, _beforeDelay, linePos + -dir90 * 1f, angle);
+            // 움직이는 라인
+            GameObject line3 = CreateAttackObject
+            (_warningLine, _beforeDelay, linePos, angle);
+            GameObject line4 = CreateAttackObject
+            (_warningLine, _beforeDelay, linePos, angle);
 
-            if (_warningLine != null && CObjectPoolManager.Instance != null)
+            Vector3 scale = line1.transform.localScale;
+            scale.y = _rushDistanse;
+
+            line1.transform.localScale = scale;
+            line2.transform.localScale = scale;
+            line3.transform.localScale = scale;
+            line4.transform.localScale = scale;
+            
+            // 라인 점점 벌리기
+            float delayTime = 0f;
+            while (delayTime < _beforeDelay)
             {
-                line1 = CObjectPoolManager.Instance.TryGetObjectPool(_warningLine, _beforeDelay + 1f);
-                line2 = CObjectPoolManager.Instance.TryGetObjectPool(_warningLine, _beforeDelay + 1f);
+                delayTime += Time.deltaTime;
 
-                //line3 = CObjectPoolManager.Instance.TryGetObjectPool(_warningLine, _beforeDelay + 1f);
-                //line4 = CObjectPoolManager.Instance.TryGetObjectPool(_warningLine, _beforeDelay + 1f);
+                float t = Mathf.Lerp(0.3f, 1f, delayTime / _beforeDelay);
 
-                Vector3 pos1 = myPos + Vector3.up * (_rushDistanse / 2f);
-                Vector3 pos2 = myPos + Vector3.up * (_rushDistanse / 2f);
-                pos1.x += 1f;
-                pos2.x -= 1f;
+                line3.transform.position = Vector2.MoveTowards
+                    (
+                    linePos, 
+                    line1.transform.position, 
+                    t
+                    );
 
-                line1.transform.RotateAround(myPos, Vector3.forward, z);
-                line2.transform.RotateAround(myPos, Vector3.forward, z);
+                line4.transform.position = Vector2.MoveTowards
+                    (
+                    linePos,
+                    line2.transform.position,
+                    t
+                    );
 
-                /*
-                line1.transform.position = myPos + (dir.normalized * (_rushDistanse / 2f));
-                line1.transform.rotation = angle;
-                line2.transform.position = myPos + (dir.normalized * (_rushDistanse / 2f));
-                line2.transform.rotation = angle;
-                */
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
-
-
-            await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), false, PlayerLoopTiming.Update, ct);
 
 
             // 공격
             _mashine.Ani.Play(_mashine.HashAttack);
-            _mashine.Rigidbody.AddForce(Vector2.right * _rushDistanse, ForceMode2D.Impulse);
+            _mashine.Rigidbody.AddForce(dir * _rushDistanse, ForceMode2D.Impulse);
             
 
             GameObject go = null; 
@@ -92,7 +107,7 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
                 go = CObjectPoolManager.Instance.TryGetObjectPool(_projectile, _afterDelay);
                 go.transform.localRotation = Quaternion.identity;
                 go.transform.rotation = angle;
-                go.transform.position = _mashine.gameObject.transform.position + dir.normalized;
+                go.transform.position = myPos + dir.normalized;
                 go.transform.parent = _mashine.gameObject.transform;
             }
 
@@ -105,12 +120,26 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
 
     public void StateExit()
     {
-        _uni.Cancel();
+        _mashine.Uni.Cancel();
     }
 
     public void StateUpdate()
     {
         
+    }
+
+    private GameObject CreateAttackObject(GameObject prefeb, float lifeTime, Vector2 pos, Quaternion angle)
+    {
+        GameObject go = null;
+
+        if (prefeb != null && CObjectPoolManager.Instance != null)
+        {
+            go = CObjectPoolManager.Instance.TryGetObjectPool(prefeb, lifeTime);
+            go.transform.rotation = angle;
+            go.transform.position = pos;
+        }
+
+        return go;
     }
 
 }

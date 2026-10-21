@@ -3,8 +3,8 @@ using UnityEngine;
 public class CEnemyState_Move : IEnemyState
 {
     private CStateMashine _mashine;
-    private Vector3 _target;
-    private float _patrolRange = 3f;
+    private Vector3 _ranPos;
+    private float _patrolRange => _mashine.PatrolMoveRange;
 
     public CEnemyState_Move(CStateMashine mashine)
     {
@@ -13,18 +13,18 @@ public class CEnemyState_Move : IEnemyState
 
     public void StateEnter()
     {
-        CLog.Log("이동 시작");
         _mashine.Nav.isStopped = false;
         _mashine.Ani.Play(_mashine.HashMove);
 
         if (_mashine.IsPatrol)
         {
+            CLog.Log("랜덤이동 시작");
             Vector3 targetPos = _mashine.transform.position;
             float z = Random.Range(0f, 360f);
             Quaternion angle = Quaternion.Euler(0f, 0f, z);
 
-            _target = targetPos + (angle * new Vector3(_patrolRange, 0f, 0f));
-            _mashine.Nav.SetDestination(_target);
+            _ranPos = targetPos + (angle * new Vector3(_patrolRange, 0f, 0f));
+            _mashine.Nav.SetDestination(_ranPos);
         }
     }
 
@@ -45,21 +45,41 @@ public class CEnemyState_Move : IEnemyState
             _mashine.Sprite.flipX = true;
         }
 
+        // 플레이어 원형 검색
+        if (_mashine.IsPatrol)
+        {
+            _mashine.PatrolSearch();
+            _mashine.Nav.SetDestination(_ranPos);
+        }
+        else
+        {
+            _mashine.Nav.SetDestination(_mashine.Target.position);
+        }
 
-        // Idle 전환
+
+
+        // 거리 계산중이면 리턴
+        if(_mashine.Nav.pathPending)
+        {
+            return;
+        }
+
+
+        // 상태 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
         {
-            if (_mashine.AttackState.Count >= 1)
-            {
-                _mashine.StateChanged(_mashine.AttackState[0]);
-            }
-            else
+            if (_mashine.IsPatrol)
             {
                 _mashine.StateChanged(_mashine.IdleState);
             }
+            else
+            {
+                _mashine.StateChanged(_mashine.AttackState[0]);
+            }
 
         }
-        
+
+
     }
 
 
