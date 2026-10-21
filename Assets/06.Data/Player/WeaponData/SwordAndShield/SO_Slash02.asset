@@ -13,67 +13,49 @@ MonoBehaviour:
   m_Name: SO_Slash02
   m_EditorClassIdentifier: 
   _duration: 0.3
-  _recovery: 0.08
+  _recovery: 0.18
   _damageMultiplier: 1
-  _gripOffset: {x: 0.2, y: 0.25}
+  _gripOffset: {x: 0.2, y: 0.5}
   _hitDistance: 1
   _hitRadius: 0.28
   _angleCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0
-      value: 90.188675
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      time: 0.000021412037
+      value: -240
+      inSlope: 47.233936
+      outSlope: 47.233936
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.098906204
-      value: 89.635925
-      inSlope: -10.595964
-      outSlope: -10.595964
-      tangentMode: 0
+      time: 0.17220458
+      value: -231.86711
+      inSlope: 39.966522
+      outSlope: 39.966522
+      tangentMode: 136
       weightedMode: 0
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.15158553
-      value: 85.566
-      inSlope: -14.816353
-      outSlope: -14.816353
+      time: 0.8139915
+      value: -30.207186
+      inSlope: -0.041340247
+      outSlope: -0.041340247
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0.26842308
     - serializedVersion: 3
-      time: 0.7
-      value: 80
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.74981266
-      value: -88.94191
-      inSlope: -215.99863
-      outSlope: -215.99863
-      tangentMode: 0
+      time: 0.9984741
+      value: -30.261795
+      inSlope: -0.2960132
+      outSlope: -0.2960132
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -101,7 +83,7 @@ MonoBehaviour:
       outWeight: 0
     - serializedVersion: 3
       time: 1
-      value: 0
+      value: 0.0009460449
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -113,5 +95,5 @@ MonoBehaviour:
     m_RotationOrder: 4
   _hitStart: 0.15
   _hitEnd: 0.8
-  _slashSprite: {fileID: 21300000, guid: 6357419ef392ec840a4ad30585b16e86, type: 2}
+  _slashSprite: {fileID: 21300000, guid: df45e4c3371331640ad4823e62f8673f, type: 3}
   _slashScale: 1

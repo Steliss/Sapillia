@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// 플레이어가 바라보는 위치 조정 → 마우스 트래킹
 public class CPlayerFacing : MonoBehaviour
 {
     #region 인스펙터

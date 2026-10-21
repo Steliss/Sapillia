@@ -21,6 +21,9 @@ public class CWeaponMotion : MonoBehaviour
     [Header("공격 데이터")]
     [SerializeField] private CWeaponAttackDataSO _attackData;
 
+    [Header("공격자 위치 Transform")]
+    [SerializeField] private Transform _attacker;
+
 
     // ※ 테스트 용도
     [Header("테스트 용도")]
@@ -381,6 +384,13 @@ public class CWeaponMotion : MonoBehaviour
         {
             return;
         }
+
+        Vector2 incomingDircetion = (Vector2)targetCollider.bounds.center - (Vector2)_attacker.position;
+
+        SDamageInfo damageInfo = new SDamageInfo(_damage, incomingDircetion);
+
+        CDamageUtility.DealDamage(target, damageInfo);
+
 
         // 같은 공격 패턴 중 몬스터당 1회만 타격
         if (!_hitTargets.Add(target))
