@@ -1,5 +1,9 @@
 
+public interface IDamageable
+{
+    void TakeDamage(float damage, UnityEngine.Vector2 pos);
 
+}
 
 
 
