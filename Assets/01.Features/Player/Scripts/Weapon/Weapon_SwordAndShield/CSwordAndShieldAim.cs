@@ -9,8 +9,14 @@ public class CSwordAndShieldAim : MonoBehaviour
     [Header("Weapon")]
     [SerializeField] private Transform _weaponPivot;
 
+    [Header("Player Transform")]
+    [SerializeField] private Transform _player;
+
     [Header("Camera")]
     [SerializeField] private Camera _camera;
+
+    [Header("CPlayerFacing")]
+    [SerializeField] private CPlayerFacing _playerFacing;
 
     [Header("Aim Limit")]
     [Range(0f, 89f)]
@@ -18,8 +24,17 @@ public class CSwordAndShieldAim : MonoBehaviour
     #endregion
 
     #region 변수
+    private Vector2 _aimDirection = Vector2.right;
 
-    private bool _facingLeft;
+    // 무기 회전 잠금(전투)
+    private bool _isAimLocked;
+
+    #endregion
+
+    #region 프로퍼티
+
+    public Vector2 AimDirection => _aimDirection;
+    public bool IsAimLocked => _isAimLocked;
 
     #endregion
 
@@ -38,12 +53,23 @@ public class CSwordAndShieldAim : MonoBehaviour
 
     private void Update()
     {
-        UpdateAim();
+        UpdateAimDirection();
+
+        if(_playerFacing != null)
+        {
+            _playerFacing.UpdateFacing(_aimDirection);
+        }
+
+        if (!_isAimLocked)
+        {
+            UpdateWeaponRotation();
+        }
+       
     }
 
-    #region Aim
+    #region 마우스 방향 계산
 
-    private void UpdateAim()
+    private void UpdateAimDirection()
     {
         if (_weaponPivot == null || _camera == null || Mouse.current == null)
         {
@@ -60,37 +86,65 @@ public class CSwordAndShieldAim : MonoBehaviour
         Vector3 mouseWorld = _camera.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, distance));
 
         // 무기에서 마우스까지의 방향
-        Vector2 direction = mouseWorld - _weaponPivot.position;
+        Vector2 direction = (Vector2)(mouseWorld - _weaponPivot.position);
 
-        if (direction.sqrMagnitude < 0.001f)
+        if (direction.sqrMagnitude < 0.0001f)
         {
             return;
         }
 
-        // 방향 → 회전각
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // 무기 잠금 상관없이 갱신
+        _aimDirection = direction.normalized;
+    }
+    #endregion
 
-        // 마지막으로 바라본 좌우 방향 기억
-        if (Mathf.Abs(direction.x) > 0.01f)
+    #region 무기 회전
+    private void UpdateWeaponRotation()
+    {
+        if(_weaponPivot == null)
         {
-            _facingLeft = direction.x < 0f;
+            return;
         }
 
-        // 아래쪽 회전각 제한
-        if (direction.y < 0f)
+        float angle = Mathf.Atan2(_aimDirection.y, _aimDirection.x) * Mathf.Rad2Deg;
+
+        if(_aimDirection.y < 0f)
         {
-            if (_facingLeft)
-            {
-                angle = Mathf.Min(angle, -180f + _maxDownAngle);
-            }
-            else
+            if (_aimDirection.x >= 0f)
             {
                 angle = Mathf.Max(angle, -_maxDownAngle);
             }
+            else
+            {
+                angle = Mathf.Min(angle, -180 + _maxDownAngle);
+            }
         }
 
-        // 실제 무기 회전 적용
         _weaponPivot.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+    #endregion
+
+    #region 무기 잠금
+
+
+    public void LockAim()
+    {
+        // 공격 시작 순간의 최신 방향 반영
+        UpdateAimDirection();
+        UpdateWeaponRotation();
+
+        // 이후 무기 회전만 고정
+        _isAimLocked = true;
+    }
+
+    public void UnlockAim()
+    {
+        _isAimLocked = false;
+    }
+
+    private void OnDisable()
+    {
+        _isAimLocked = false;
     }
 
     #endregion

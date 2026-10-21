@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public class CPlayerAttack : MonoBehaviour, IInputCommand
+public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 {
     #region 인스펙터
 
     [Header("입력 참조")]
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
+
+    [Header("애니메이션")]
+    [SerializeField] private CPlayerAnimation _playerAnimation;
 
     [Header("무기")]
     [SerializeField] private CWeaponDataSO _weaponData;
@@ -19,14 +22,15 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     [Range(0f, 1f)]
     [SerializeField] private float _inputBufferStart = 0.5f;
 
-    [Header("Test")]
-    [SerializeField] private float _attackInterval = 0.35f;
-
     #endregion
 
     #region 내부변수
     private int _nextComboIndex;
-    private float _lastAttackTime = float.NegativeInfinity;
+    // 콤보 유지 시간
+    private float _comboExpireTime = float.NegativeInfinity;
+    // 좌클릭 유지 여부
+    private bool _isAttackHeld;
+    // 다음 공격 예약
     private bool _attackQueued;
     #endregion
 
@@ -34,7 +38,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     {
         if(_inputHub != null)
         {
-            _inputHub.Register(EKeyAction.Attack, this);
+            _inputHub.Register(EKeyAction.Attack, (IInputCommand<float>)this);
         }
     }
 
@@ -42,10 +46,13 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
     {
         if(_inputHub != null)
         {
-            _inputHub.Unregister(EKeyAction.Attack, this);
+            _inputHub.Unregister(EKeyAction.Attack, (IInputCommand<float>)this);
         }
 
+        _isAttackHeld = false;
         _attackQueued = false;
+
+        _comboExpireTime = float.NegativeInfinity;
         _nextComboIndex = 0;
     }
     private void Update()
@@ -56,70 +63,93 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
             return;
         }
 
-        // 예약된 다음 공격 실행
-        if (_attackQueued && _weaponMotion.CanStart)
+        // 현재 공격 끝까지 수행
+        if (!_weaponMotion.CanStart)
         {
-            _attackQueued = false;
-            StartNextAttack();
+            return;
         }
 
+        // 좌클릭 유지 또는 예약된 공격
+        if (_isAttackHeld || _attackQueued)
+        {
+            if (StartNextAttack())
+            {
+                _attackQueued = false;
+            }
+
+            return;
+        }
+
+
         // 오랫동안 공격하지 않았다면 콤보 초기화
-        if (!_attackQueued && _weaponMotion.CanStart && Time.time - _lastAttackTime > _comboResetTime)
+        if (!_attackQueued && Time.time > _comboExpireTime)
         {
             _nextComboIndex = 0;
         }
     }
 
-    public void Execute()
+    public void Execute(float value)
     {
+        bool pressed = value > 0.5f;
+                
         if (_weaponMotion == null)
         {
             CLog.Warn($"{this}.Excute 무기 비어있음");
             return;
         }
 
+        // 좌클릭 땜
+        if (!pressed)
+        {
+            _isAttackHeld = false;
+            return;
+        }
+
+        if (_isAttackHeld)
+        {
+            return;
+        }
+
+        _isAttackHeld = true;        
+
         if (_weaponMotion.CanStart)
         {
-            StartNextAttack();
+            if (StartNextAttack())
+            {
+                _attackQueued = false;
+            }
+            
             return;
         }
         // 공격 중 후반부 입력은 다음 공격으로 예약
-        if (_weaponMotion.Progress >= _inputBufferStart)
+        if (_weaponMotion.IsAttacking && _weaponMotion.Progress >= _inputBufferStart)
         {
             _attackQueued = true;
         }
     }
 
-    private void StartNextAttack()
+    private bool StartNextAttack()
     {
-        /*
-        if (_weaponData == null || _playerController == null || _playerController.PlayerData == null)
-        {
-            CLog.Warn($"{_weaponData}.StartNextAttack 문제 있음");
-            
-            CLog.Warn($"{_playerController.PlayerData}.StartNextAttack 문제 있음");
-            return;
-        }*/
-
+       
         // ※ 테스트용도
         if (_weaponData == null)
         {
             CLog.Warn("[PlayerAttack] WeaponData 누락");
-            return;
+            return false;
         }
 
         if (_weaponMotion == null)
         {
             CLog.Warn("[PlayerAttack] WeaponMotion 누락");
-            return;
+            return false;
         }
 
         if (_playerController == null)
         {
             CLog.Warn("[PlayerAttack] PlayerController 누락");
-            return;
-        }        
-
+            return false;
+        }
+        
         if (_playerController.PlayerData == null)
         {
             CLog.Warn($"[PlayerAttack.PlayerData] PlayerController 누락");
@@ -128,11 +158,11 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
         if (_weaponData.AttackCount <= 0)
         {
             CLog.Warn("[PlayerAttack] 공격 패턴 없음");
-            return;
+            return false;
         }
 
-        // 콤보 유효 시간 확인
-        if (Time.time - _lastAttackTime > _comboResetTime)
+        // 콤보 유효 시간 확인 → 콤보 시간 지났으면 1타부터 시작
+        if (Time.time > _comboExpireTime)
         {
             _nextComboIndex = 0;
         }
@@ -142,19 +172,34 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand
         if (attack == null)
         {
             CLog.Warn("[PlayerAttack] AttackData 누락");
-            return;
+            return false;
         }            
 
         SPlayerStats stats = _playerController.PlayerData.Stats;
 
         if (!_weaponMotion.TryPlay(attack, _weaponData.BaseDamage, stats))
         {
-            return;
-        }            
+            return false;
+        }
+
+        // 실제 무기 공격이 시작됐을 때 애니메이션 재생
+        if (_playerAnimation != null)
+        {
+            _playerAnimation.PlayAttack(_nextComboIndex + 1, stats.Attack_Speed);
+        }
 
         // 다음 공격 인덱스
         _nextComboIndex = (_nextComboIndex + 1) % _weaponData.AttackCount;
-        _lastAttackTime = Time.time;
+
+        // 공격 속도 반영
+        float speed = Mathf.Max(0.01f, stats.Attack_Speed);
+        float duration = Mathf.Max(0.01f, attack.Duration / speed);
+        float recovery = Mathf.Max(0f, attack.Recovery / speed);
+
+        // 현재 공격이 끝난 후에도 콤보 유지 시간 적용
+        _comboExpireTime = Time.time + duration + recovery + _comboResetTime;
+
+        return true;
     }
 
 

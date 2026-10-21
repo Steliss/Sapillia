@@ -9,6 +9,9 @@ public class CWeaponMotion : MonoBehaviour
     [SerializeField] private Transform _weaponSwing;
     [SerializeField] private Transform _hitPoint;
 
+    [Header("무기 조준")]
+    [SerializeField] private CSwordAndShieldAim _aim;
+
     [Header("공격 이펙트")]
     [SerializeField] private SpriteRenderer _slashRenderer;
 
@@ -18,19 +21,34 @@ public class CWeaponMotion : MonoBehaviour
     [Header("공격 데이터")]
     [SerializeField] private CWeaponAttackDataSO _attackData;
 
+    [Header("공격자 위치 Transform")]
+    [SerializeField] private Transform _attacker;
+
 
     // ※ 테스트 용도
     [Header("테스트 용도")]
     [SerializeField] CWeaponAttackDataSO _previewAttack;
     #endregion
 
-    #region Variables
+    #region 내부변수
+    private bool _isAttacking;
+    private bool _isHolding;
+
     private float _elapsedTime;
     private float _duration;
     private float _nextAttackTime;
 
+    private float _holdTimer;
+    private float _holdDuration;
+
+    // 최초 자세
+    private Vector3 _initialLocalPosition;
+    private Quaternion _initialLocalRotation;
+    private Vector3 _initialHitPointPosition;
+
+    private bool _hasInitialPose;
+
     private int _damage;
-    private bool _isAttacking;
 
 
     private readonly HashSet<IDamageable> _hitTargets = new HashSet<IDamageable>();
@@ -42,7 +60,8 @@ public class CWeaponMotion : MonoBehaviour
     #region 프로퍼티
 
     public bool IsAttacking => _isAttacking;
-    public bool CanStart => !_isAttacking && Time.time >= _nextAttackTime;
+    public bool IsHolding => _isHolding;
+    public bool CanStart => isActiveAndEnabled && !_isAttacking && Time.time >= _nextAttackTime;
     public float Progress => _duration > 0f ? Mathf.Clamp01(_elapsedTime / _duration) : 1f;
     #endregion
 
@@ -54,6 +73,9 @@ public class CWeaponMotion : MonoBehaviour
             enabled = false;
             return;
         }
+
+        // 최초 무기 위치 및 회전 저장
+        SaveInitialPose();
 
         if (_slashRenderer != null)
         {
@@ -68,47 +90,45 @@ public class CWeaponMotion : MonoBehaviour
             return;
         }
 
+        if (_isHolding)
+        {
+            UpdateHold(Time.deltaTime);
+            return;
+        }
+
         UpdateAttack(Time.deltaTime);
     }
 
-    #region Attack
-
-    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats)
+    // Inspector에서 설정한 최초 Transform 저장
+    private void SaveInitialPose()
     {
-        if (!isActiveAndEnabled || !CanStart || attack == null)
-        {
-            return false;
-        }
+        
+        _initialLocalPosition = _weaponSwing.localPosition;
+        _initialLocalRotation = _weaponSwing.localRotation;
+        _initialHitPointPosition = _hitPoint.localPosition;
 
-        _attackData = attack;
-
-        float speed = Mathf.Max(0.01f, stats.Attack_Speed);
-
-        _duration = attack.Duration / speed;
-        _elapsedTime = 0f;
-
-        _nextAttackTime = Time.time + _duration + attack.Recovery / speed;
-
-        // 데미지 계산
-        float damage = baseDamage * attack.DamageMultiplier * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Normal;
-        _damage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
-
-        _hitTargets.Clear();
-        _isAttacking = true;
-
-        // 검 끝 판정 위치 설정
-        _hitPoint.localPosition = Vector3.right * attack.HitDistance;
-
-        if (_slashRenderer != null)
-        {
-            _slashRenderer.sprite = attack.SlashSprite;
-            _slashRenderer.enabled = false;
-        }
-
-        ApplyPose(0f);
-
-        return true;
+        _hasInitialPose = true;
     }
+
+    private void ResetPose()
+    {
+        if(!_hasInitialPose || _weaponSwing == null)
+        {
+            return;
+        }
+
+        // 최초 손잡이 위치 복원
+        _weaponSwing.localPosition = _initialLocalPosition;
+
+        // 최초 무기 회전 복원
+        _weaponSwing.localRotation = _initialLocalRotation;
+
+        if(_hitPoint != null)
+        {
+            _hitPoint.localPosition = _initialHitPointPosition;
+        }
+    }
+
 
     private void UpdateAttack(float deltaTime)
     {
@@ -127,21 +147,83 @@ public class CWeaponMotion : MonoBehaviour
 
         if (current >= 1f)
         {
-            EndAttack();
+            BeginHold();
+            
         }
     }
+
+    #region 공격
+    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats)
+    {
+        if (!CanStart || attack == null)
+        {
+            return false;
+        }
+
+        _attackData = attack;
+
+        float speed = Mathf.Max(0.01f, stats.Attack_Speed);
+
+        _duration = Mathf.Max(0.01f, attack.Duration / speed);
+        _holdDuration = Mathf.Max(0f, attack.Recovery / speed);
+        
+        _nextAttackTime = Time.time + _duration + attack.Recovery / speed;
+
+        _elapsedTime = 0f;
+        _holdTimer = 0f;
+
+        _isAttacking = true;
+        _isHolding = false;
+
+        // 무기 잠금
+        if(_aim != null)
+        {
+            _aim.LockAim();
+        }
+
+        // 데미지 계산
+        float damage = baseDamage * attack.DamageMultiplier * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Normal;
+        _damage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
+
+        _hitTargets.Clear();
+        
+        // 검 끝 판정 위치 설정
+        _hitPoint.localPosition = Vector3.right * attack.HitDistance;
+
+        if (_slashRenderer != null)
+        {
+            _slashRenderer.sprite = attack.SlashSprite;
+            _slashRenderer.enabled = false;
+        }
+
+        ApplyPose(0f);
+
+        return true;
+    }
+
 
     private void EndAttack()
     {
         _isAttacking = false;
-        _hitTargets.Clear();
+        _isHolding = false;
 
-        _weaponSwing.localRotation = Quaternion.identity;
-        _weaponSwing.localPosition = (Vector3)_attackData.GripOffset;
+        _elapsedTime = 0f;
+        _holdTimer = 0f;
+
+        _hitTargets.Clear();
 
         if (_slashRenderer != null)
         {
             _slashRenderer.enabled = false;
+        }
+
+        // 최초 무기 자세로 복귀
+        ResetPose();
+
+        // 무기 잠금 해제
+        if(_aim != null )
+        {
+            _aim.UnlockAim();
         }
     }
 
@@ -151,6 +233,11 @@ public class CWeaponMotion : MonoBehaviour
 
     private void ApplyPose(float progress)
     {
+        if(_attackData == null || _weaponSwing == null)
+        {
+            return;
+        }
+
         float angle = _attackData.EvaluateAngle(progress);
         float reach = _attackData.EvaluateReach(progress);
 
@@ -174,12 +261,46 @@ public class CWeaponMotion : MonoBehaviour
 
     #endregion
 
+    #region 공격 후 자세 유지
+    private void BeginHold()
+    {
+        _isHolding = true;
+
+        // Recovery만큼 마지막 자세 유지
+        _holdTimer = _holdDuration;
+
+        _hitTargets.Clear();
+
+        if(_slashRenderer != null)
+        {
+            _slashRenderer.enabled = false;
+        }
+
+        if(_holdTimer <= 0f)
+        {
+            EndAttack();
+        }
+    }
+
+    private void UpdateHold(float deltaTime)
+    {
+        _holdTimer = Mathf.Max(0f, _holdTimer - deltaTime);
+
+        if(_holdTimer <= 0f)
+        {
+            EndAttack();
+        }
+    }
+
+    #endregion
+
     #region 공격 적중 판정
 
     private void DetectHits(float previous, float current)
     {
         float start = Mathf.Max(previous, _attackData.HitStart);
         float end = Mathf.Min(current, _attackData.HitEnd);
+
         if (start > end)
         {
             return;
@@ -264,6 +385,13 @@ public class CWeaponMotion : MonoBehaviour
             return;
         }
 
+        Vector2 incomingDircetion = (Vector2)targetCollider.bounds.center - (Vector2)_attacker.position;
+
+        SDamageInfo damageInfo = new SDamageInfo(_damage, incomingDircetion);
+
+        CDamageUtility.DealDamage(target, damageInfo);
+
+
         // 같은 공격 패턴 중 몬스터당 1회만 타격
         if (!_hitTargets.Add(target))
         {
@@ -280,7 +408,7 @@ public class CWeaponMotion : MonoBehaviour
     // 검로 이펙트
     private void UpdateSlashEffect(float progress)
     {
-        if (_slashRenderer == null)
+        if (_slashRenderer == null || _attackData == null)
         {
             return;
         }
@@ -315,6 +443,11 @@ public class CWeaponMotion : MonoBehaviour
     private void OnDisable()
     {
         _isAttacking = false;
+        _isHolding = false;
+
+        _elapsedTime = 0f;
+        _holdTimer = 0f;
+
         _hitTargets.Clear();
 
         if (_slashRenderer != null)
@@ -322,15 +455,7 @@ public class CWeaponMotion : MonoBehaviour
             _slashRenderer.enabled = false;
         }
 
-        if (_weaponSwing != null)
-        {
-            _weaponSwing.localRotation = Quaternion.identity;
-
-            if (_attackData != null)
-            {
-                _weaponSwing.localPosition = (Vector3)_attackData.GripOffset;
-            }
-        }
+        ResetPose();
     }
 
     // 검 궤적 미리보기
@@ -367,4 +492,6 @@ public class CWeaponMotion : MonoBehaviour
             previous = world;
         }
     }
+
+
 }
