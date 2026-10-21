@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 5084299206290456387}
   - component: {fileID: 5837437654986070764}
   - component: {fileID: 4797694903285798742}
+  - component: {fileID: 236559921305948902}
   m_Layer: 0
   m_Name: Duelist_Mole
   m_TagString: Untagged
@@ -144,10 +145,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _id: 
   _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
-  _attackState: []
+  _attackState:
+  - {fileID: 11400000, guid: b6bb2dcfe949c5b47849ebb47cf8fa9d, type: 2}
   _paramIdle: Idle
   _paramMove: Move
   _paramAttack: Attack
   _paramAttReady: AttReady
   _paramAir: Air
   _paramDown: Down
+--- !u!50 &236559921305948902
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522623101185354470}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 2
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 4
