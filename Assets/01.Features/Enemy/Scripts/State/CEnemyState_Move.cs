@@ -49,7 +49,14 @@ public class CEnemyState_Move : IEnemyState
         // Idle 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
         {
-            _mashine.StateChanged(_mashine.AttackState[0]);
+            if (_mashine.AttackState.Count >= 1)
+            {
+                _mashine.StateChanged(_mashine.AttackState[0]);
+            }
+            else
+            {
+                _mashine.StateChanged(_mashine.IdleState);
+            }
 
         }
         

@@ -29,8 +29,8 @@ public class CStateMashine : MonoBehaviour
     #endregion
 
     #region 스테이트
-    private CEnemyState_Idle _idleState;
-    private CEnemyState_Move _moveState;
+    private IEnemyState _idleState;
+    private IEnemyState _moveState;
     private IEnemyState _state;
     #endregion
 
@@ -49,8 +49,8 @@ public class CStateMashine : MonoBehaviour
     public SpriteRenderer Sprite => _sprite;
     public Rigidbody2D Rigidbody => _rb;
     public bool IsPatrol => _isPatrol;
-    public CEnemyState_Idle IdleState => _idleState;
-    public CEnemyState_Move MoveState => _moveState;
+    public IEnemyState IdleState => _idleState;
+    public IEnemyState MoveState => _moveState;
     public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
 
@@ -129,7 +129,8 @@ public class CStateMashine : MonoBehaviour
         if (Nav == null)
         {
             CLog.Warn($"{name} : 네브메쉬 에이전트 컴포넌트 누락");
-            return;
+            gameObject.AddComponent<NavMeshAgent>();
+            _nav = GetComponent<NavMeshAgent>();
         }
         Nav.updateRotation = false;
         Nav.updateUpAxis = false;
@@ -140,12 +141,16 @@ public class CStateMashine : MonoBehaviour
         if (Sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
+            gameObject.AddComponent<SpriteRenderer>();
+            _sprite = GetComponent<SpriteRenderer>();
         }
 
         _rb = GetComponent<Rigidbody2D>();
         if (_rb == null)
         {
             CLog.Warn($"{name} : 리지드바디2D 컴포넌트 누락");
+            gameObject.AddComponent<Rigidbody2D>();
+            _rb = GetComponent<Rigidbody2D>();
         }
 
 
@@ -154,7 +159,10 @@ public class CStateMashine : MonoBehaviour
         {
             for (int i = 0; i < _attackState.Count; i++)
             {
-                _attackState[i] = new CEnemyStateSO_Attack(this);
+                CEnemyStateSO_Attack instance = Instantiate(_attackState[i]);
+                instance.Init(this);
+                _attackState[i] = instance;
+                
             }
         }
 
