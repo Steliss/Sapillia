@@ -8,6 +8,10 @@ public class CStateMashine : MonoBehaviour
     #region 인스펙터    
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
+    [SerializeField] private float _patrolRadius = 3f;
+    [SerializeField] private float _patrolMoveRange = 3f;
+    [SerializeField] private LayerMask _playerMask;
+
     [Header("공격 패턴 SO")]
     [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
 
@@ -26,6 +30,8 @@ public class CStateMashine : MonoBehaviour
     private SpriteRenderer _sprite;
     private Rigidbody2D _rb;
     private bool _isPatrol = true;
+    private CUniTaskOnes _uni = new CUniTaskOnes();
+    private Transform _target;
     #endregion
 
     #region 스테이트
@@ -53,6 +59,9 @@ public class CStateMashine : MonoBehaviour
     public IEnemyState MoveState => _moveState;
     public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
+    public CUniTaskOnes Uni => _uni;
+    public Transform Target => _target;
+    public float PatrolMoveRange => _patrolMoveRange;
 
     // 스탯
     public float Hp => _hp;
@@ -83,6 +92,8 @@ public class CStateMashine : MonoBehaviour
         {
             State.StateExit();
         }
+
+        CLog.Log($"상태변경 {_state} -> {next}");
 
         _state = next;
 
@@ -170,7 +181,7 @@ public class CStateMashine : MonoBehaviour
         StateChanged(IdleState);
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         if (State != null)
         {
@@ -197,5 +208,23 @@ public class CStateMashine : MonoBehaviour
         HashDown = Animator.StringToHash(_paramDown);
     }
 
+    public void PatrolSearch()
+    {
+        if (!_isPatrol)
+        {
+            return;
+        }
+
+
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _playerMask);
+
+        if (hit != null)
+        {
+            CLog.Log("플레이어 발견");
+            _target = hit.transform;
+            _isPatrol = false;
+            StateChanged(_moveState);
+        }
+    }
 
 }

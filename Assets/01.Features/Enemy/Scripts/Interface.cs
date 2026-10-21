@@ -1,8 +1,5 @@
 
 
-
-
-
 public interface IEnemyState
 {
     void StateEnter();

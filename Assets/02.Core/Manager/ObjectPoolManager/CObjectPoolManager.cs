@@ -85,9 +85,8 @@ public class CObjectPoolManager : MonoBehaviour
 
         Queue<GameObject> pool = TryPoolGet(id, prefeb.name);
 
-        // 풀에 오브젝트 부족하면 생성
+        // 풀에서 오브젝트 꺼내기. 부족하면 생성
         GameObject go;
-
         if (pool.Count == 0)
         {
             go = Instantiate(prefeb);
@@ -98,7 +97,7 @@ public class CObjectPoolManager : MonoBehaviour
         {
             go = pool.Dequeue();
         }
-        go.transform.parent = null;
+
 
         // 장부 등록
         if (!_alives.Contains(go))
@@ -106,6 +105,16 @@ public class CObjectPoolManager : MonoBehaviour
             _alives.Add(go);
         }
         go.SetActive(true);
+
+        // 초기 세팅 보장
+        go.transform.parent = null;
+        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
+        if (rb != null)
+        {
+            rb.WakeUp();
+        }
+        go.transform.localScale = prefeb.transform.localScale;
+        go.transform.rotation = prefeb.transform.rotation;
         return go;
     }
 
