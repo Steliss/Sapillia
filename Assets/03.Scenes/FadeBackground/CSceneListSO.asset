@@ -19,25 +19,32 @@ MonoBehaviour:
     _fadeOutDuration: 1
     _fadeInDuration: 1
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 3516772682243292145, guid: 8b5a568bfbf6114459c9441ab3f15cee, type: 3}
+    _backGroundPrefab: {fileID: 0}
   - _sceneID: 1
     _sceneName: Town
     _useFade: 1
     _fadeOutDuration: 2
     _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 5547667760990865433, guid: 63d62dfbcd6c11a4eb4ab0bd1e1b1725, type: 3}
+    _backGroundPrefab: {fileID: 0}
   - _sceneID: 2
-    _sceneName: Field
+    _sceneName: Stage1
     _useFade: 1
     _fadeOutDuration: 3
     _fadeInDuration: 3
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 6640260451546590623, guid: 9e22d8612eb7e6c48a11a2a9bd2504f4, type: 3}
+    _backGroundPrefab: {fileID: 3619708469065384050, guid: 87fd27d061fc38345a2083be5d587273, type: 3}
   - _sceneID: 3
-    _sceneName: BossRoom
+    _sceneName: Stage2
     _useFade: 1
     _fadeOutDuration: 4
     _fadeInDuration: 4
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 0}
+    _backGroundPrefab: {fileID: 7456792324361176558, guid: 9c64ce45d5086b749a7806a5b92287c2, type: 3}
+  - _sceneID: 4
+    _sceneName: Stage3
+    _useFade: 1
+    _fadeOutDuration: 4
+    _fadeInDuration: 4
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 4696838907827715837, guid: 53c7eadd91b1307488a3f82f0a6eb308, type: 3}

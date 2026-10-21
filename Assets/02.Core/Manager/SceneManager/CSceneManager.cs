@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,7 +9,17 @@ using UnityEngine.UI;
 public class CSceneManager : MonoBehaviour
 {
     [SerializeField] private CSceneListSO _sceneList;
+    [SerializeField] private CFlowDataSO _flowData;
+    [SerializeField] private CLocalizationManager _localization;
+
+    [Header("페이드 관련")]
+    [SerializeField] private GameObject _fadeCanvas;
     [SerializeField] private Image _fadeImage;
+    [SerializeField] private TextMeshProUGUI _floorText;
+    [SerializeField] private TextMeshProUGUI _MapNameText;
+    [SerializeField] private TextMeshProUGUI _MapDescText1;
+    [SerializeField] private TextMeshProUGUI _MapDescText2;
+    
 
     private CancellationTokenSource _fadeCts;
     private GameObject _backGroundInstance; 
@@ -21,10 +32,19 @@ public class CSceneManager : MonoBehaviour
         {
             CLog.Warn($"{_sceneList} 인스펙터 연결 필요");
         }
+        if (_flowData == null)
+        {
+            CLog.Warn($"{_flowData} 인스펙터 연결 필요");
+        }
+        if (_localization == null)
+        {
+            CLog.Warn($"{_localization} 인스펙터 연결 필요");
+        }
 
         Color color = _fadeImage.color;
         color.a = 0f;
         _fadeImage.color = color;
+        _fadeCanvas.SetActive(false);
     }
 
     // 씬 전환 함수
@@ -68,6 +88,7 @@ public class CSceneManager : MonoBehaviour
         }
 
         _isChanging = true;
+        _fadeCanvas.SetActive(true);
 
         try
         {
@@ -78,6 +99,7 @@ public class CSceneManager : MonoBehaviour
                 _fadeImage.color = color;
 
                 CreateBackGround(scene.BackGroundPrefab);
+                SetLoadingText(true);
                 SetBackGroundActive(true);
 
                 await FadeAsync(1f, scene.FadeOutDuration);
@@ -91,11 +113,14 @@ public class CSceneManager : MonoBehaviour
             {
                 await FadeAsync(0f, scene.FadeInDuration);
 
+                _flowData.SetCurrentScene(sceneID);
                 SetBackGroundActive(false);
+                SetLoadingText(false);
             }
         }
         finally
         {
+            _fadeCanvas.SetActive(false);
             _isChanging = false;
         }
     }
@@ -128,6 +153,57 @@ public class CSceneManager : MonoBehaviour
             Destroy(_backGroundInstance);
         }
     }
+
+    // 타이틀 로딩 씬 설명
+    private void SetLoadingText(bool isActive)
+    {
+        if (isActive)
+        {
+            if (_flowData.CurrentScene == EScene.Menu)
+            {
+                _floorText.text = _localization.GetText("scene.enmpty.text");
+                _MapNameText.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText1.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText2.text = _localization.GetText("scene.enmpty.text");
+            }
+            else if (_flowData.CurrentScene == EScene.Town)
+            {
+                _floorText.text = _localization.GetText("scene.stage1.floorname");
+                _MapNameText.text = _localization.GetText("scene.stage1.mapname");
+                _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
+                _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
+            }
+            else if(_flowData.CurrentScene == EScene.stage1)
+            {
+                _floorText.text = _localization.GetText("scene.stage1.floorname");
+                _MapNameText.text = _localization.GetText("scene.stage1.mapname");
+                _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
+                _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
+            }
+            else if (_flowData.CurrentScene == EScene.stage2)
+            {
+                _floorText.text = _localization.GetText("scene.stage2.floorname");
+                _MapNameText.text = _localization.GetText("scene.stage2.mapname");
+                _MapDescText1.text = _localization.GetText("scene.stage2.desc1");
+                _MapDescText2.text = _localization.GetText("scene.stage2.desc2");
+            }
+            else if (_flowData.CurrentScene == EScene.stage3)
+            {
+                _floorText.text = _localization.GetText("scene.stage3.floorname");
+                _MapNameText.text = _localization.GetText("scene.stage3.mapname");
+                _MapDescText1.text = _localization.GetText("scene.stage3.desc1");
+                _MapDescText2.text = _localization.GetText("scene.stage3.desc2");
+            }
+        }
+        else
+        {
+            _floorText.text = _localization.GetText("scene.enmpty.text");
+            _MapNameText.text = _localization.GetText("scene.enmpty.text");
+            _MapDescText1.text = _localization.GetText("scene.enmpty.text");
+            _MapDescText2.text = _localization.GetText("scene.enmpty.text");
+        }
+    }
+
 
     // 페이드 설정
     private async UniTask FadeAsync(float targetAlpha, float duration)
@@ -165,5 +241,8 @@ public class CSceneManager : MonoBehaviour
     {
         _fadeCts?.Cancel();
     }
+
+
+
 }
 
