@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum EGuardResult
 {
@@ -77,6 +78,8 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void OnEnable()
     {
+        CLog.Log("[Guard] OnEnable 작동 완료");
+
         if (_inputHub != null)
         {
             _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
@@ -99,6 +102,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void Update()
     {
+        // 테스트용: 실제 우클릭 입력 확인
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            CLog.Log("[Guard] 실제 마우스 우클릭 감지");
+        }
+
         // GuardBreak 상태 처리
         if (IsGuardBroken)
         {
@@ -119,6 +128,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
+        CLog.Log($"Gaurd Execute 호출 : {value}");
         bool pressed = value > 0.5f;
 
         // 우클릭 해제
@@ -127,6 +137,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             _buttonHeld = false;
 
             EndGuard();
+            CLog.Log("방어 해제");
             return;
         }
 
@@ -165,6 +176,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         }
 
         _guardState = EPlayerGuardState.Guard;
+        CLog.Log("가드 중");
 
         // 퍼펙트 가드 판정 시작
         _guardStartTime = Time.time;
