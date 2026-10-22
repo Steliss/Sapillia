@@ -8,6 +8,7 @@ public class CEnemyState_Idle : IEnemyState
 {
     private CStateMashine _mashine;
     private float _idleTime = 3f;
+    private float _time = 0f;
 
     public CEnemyState_Idle(CStateMashine mashine)
     {
@@ -17,24 +18,22 @@ public class CEnemyState_Idle : IEnemyState
 
     public void StateEnter()
     {
-        _mashine.Uni.Cancel();
-        _mashine.Uni.Run(async ct =>
-        {
-            _mashine.Ani.Play(_mashine.HashIdle);
-            await UniTask.Delay(TimeSpan.FromSeconds(_idleTime));
-
-            _mashine.StateChanged(_mashine.MoveState);
-        });
+        _time = 0f;
+        _mashine.Ani.Play(_mashine.HashIdle);
     }
 
     public void StateExit()
     {
-        _mashine.Uni.Cancel();
+
     }
 
     public void StateUpdate()
     {
-        _mashine.PatrolSearch();
+        _time += Time.deltaTime;
+        if (_time > _idleTime)
+        {
+            _mashine.StateChanged(_mashine.MoveState);
+        }
     }
 
 }

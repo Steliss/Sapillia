@@ -16,6 +16,7 @@ public class CEnemyState_Move : IEnemyState
         _mashine.Nav.isStopped = false;
         _mashine.Ani.Play(_mashine.HashMove);
 
+        // 순찰 상태면 _patrolRange거리를 랜덤방향 이동
         if (_mashine.IsPatrol)
         {
             CLog.Log("랜덤이동 시작");
@@ -25,6 +26,10 @@ public class CEnemyState_Move : IEnemyState
 
             _ranPos = targetPos + (angle * new Vector3(_patrolRange, 0f, 0f));
             _mashine.Nav.SetDestination(_ranPos);
+        }
+        else
+        {
+            _mashine.Nav.SetDestination(_mashine.Target.position);
         }
     }
 
@@ -45,25 +50,17 @@ public class CEnemyState_Move : IEnemyState
             _mashine.Sprite.flipX = true;
         }
 
-        // 플레이어 원형 검색
-        if (_mashine.IsPatrol)
-        {
-            _mashine.PatrolSearch();
-            _mashine.Nav.SetDestination(_ranPos);
-        }
-        else
-        {
-            _mashine.Nav.SetDestination(_mashine.Target.position);
-        }
-
-
-
         // 거리 계산중이면 리턴
-        if(_mashine.Nav.pathPending)
+        if (_mashine.Nav.pathPending)
         {
             return;
         }
 
+
+        if (!_mashine.IsPatrol)
+        {
+            _mashine.Nav.SetDestination(_mashine.Target.position);
+        }
 
         // 상태 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)
@@ -76,7 +73,6 @@ public class CEnemyState_Move : IEnemyState
             {
                 _mashine.StateChanged(_mashine.AttackState[0]);
             }
-
         }
 
 
