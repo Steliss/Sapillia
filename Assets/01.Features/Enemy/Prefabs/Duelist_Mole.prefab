@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1538da89f7b6a0c469c628148e18ae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 
+  _id: Duelist_Mole
   _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
   _patrolRadius: 3
   _patrolMoveRange: 5
@@ -152,12 +152,12 @@ MonoBehaviour:
     m_Bits: 8192
   _attackState:
   - {fileID: 11400000, guid: b6bb2dcfe949c5b47849ebb47cf8fa9d, type: 2}
-  _paramIdle: Idle
-  _paramMove: Move
-  _paramAttack: Attack
-  _paramAttReady: AttReady
-  _paramAir: Air
-  _paramDown: Down
+  _stateIdle: Idle
+  _stateMove: Move
+  _stateAttack: Attack
+  _stateAttReady: AttReady
+  _stateAir: Air
+  _stateDown: Down
 --- !u!50 &236559921305948902
 Rigidbody2D:
   serializedVersion: 4
