@@ -46,11 +46,6 @@ public class CPlayerController : MonoBehaviour
 
     }
 
-    void Update()
-    {
-        PlayerData.RecoverMPperTime(Time.fixedDeltaTime);
-        PlayerData.ReChargeDashperTime(Time.fixedDeltaTime);
-    }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)
     {

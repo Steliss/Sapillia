@@ -6,9 +6,6 @@ public class CPlayerRunSession : MonoBehaviour
 {
     #region 인스펙터
 
-    [Header("플레이어 데이터")]
-    [SerializeField] private CPlayerGamingDataSO _playerDataTemplate;
-
     [Header("스테이지 단독 테스트")]
     [SerializeField] private bool _autoStartForTest;
     [SerializeField] private CCostumeDataSO _testCostume;
@@ -17,9 +14,9 @@ public class CPlayerRunSession : MonoBehaviour
 
     #region 프로퍼티
 
-    public CPlayerGamingDataSO PlayerData { get; private set;}
+    public CPlayerGamingDataSO PlayerData { get; private set; }
 
-    public CCostumeDataSO RunCostume { get; private set;}
+    public CCostumeDataSO RunCostume { get; private set; }
 
     public bool IsAdventureActive => PlayerData != null;
 
@@ -58,7 +55,9 @@ public class CPlayerRunSession : MonoBehaviour
     private void Update()
     {
         if (PlayerData == null)
+        {
             return;
+        }
 
         float deltaTime = Time.deltaTime;
 
@@ -92,12 +91,6 @@ public class CPlayerRunSession : MonoBehaviour
             return false;
         }
 
-        if (_playerDataTemplate == null)
-        {
-            CLog.Error("[RunSession] PlayerData Template 누락");
-            return false;
-        }
-
         if (costume == null)
         {
             CLog.Warn("[RunSession] Costume 데이터 누락");
@@ -109,7 +102,7 @@ public class CPlayerRunSession : MonoBehaviour
 
         // 2. 기본 능력치 초기화
         data.Initalize();
-               
+
         // 3. 코스튬 추가 능력치 적용
         data.SetCostumeBonus(costume.Bonus);
 
@@ -144,7 +137,7 @@ public class CPlayerRunSession : MonoBehaviour
         {
             return;
         }
-                
+
         PlayerData = null;
     }
 
