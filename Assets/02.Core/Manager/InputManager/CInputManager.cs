@@ -32,7 +32,7 @@ public class CInputManager : MonoBehaviour
     public event Action<Vector2> OnMove;
     public event Action<float> OnDash;
     public event Action<float> OnAttack;
-    public event Action OnSpecialAttack;
+    public event Action <float> OnSpecialAttack;
     public event Action OnRapidCasting1;
     public event Action OnRapidCasting2;
     public event Action OnInteraction;
@@ -62,6 +62,8 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled += attackActionCanceled;
 
         _specialAttackAction.action.performed += specialAttackAction;
+        _specialAttackAction.action.performed += specialAttackActionCanceled;
+
         _rapidCasting1Action.action.performed += rapidCasting1Action;
         _rapidCasting2Action.action.performed += rapidCasting2Action;
         _interactionAction.action.performed += interactionAction;
@@ -111,6 +113,8 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled -= attackActionCanceled;
 
         _specialAttackAction.action.performed -= specialAttackAction;
+        _specialAttackAction.action.performed -= specialAttackActionCanceled;
+
         _rapidCasting1Action.action.performed -= rapidCasting1Action;
         _rapidCasting2Action.action.performed -= rapidCasting2Action;
         _interactionAction.action.performed -= interactionAction;
@@ -180,11 +184,17 @@ public class CInputManager : MonoBehaviour
         OnAttack?.Invoke(0f);
     }
 
+    // 우클릭 누름
     private void specialAttackAction(InputAction.CallbackContext ctx)
     {
-        OnSpecialAttack?.Invoke();
+        OnSpecialAttack?.Invoke(1f);
     }
 
+    // 우클릭 땜
+    private void specialAttackActionCanceled(InputAction.CallbackContext ctx)
+    {
+        OnSpecialAttack?.Invoke(0f);
+    }
     private void rapidCasting1Action(InputAction.CallbackContext ctx)
     {
         OnRapidCasting1?.Invoke();
