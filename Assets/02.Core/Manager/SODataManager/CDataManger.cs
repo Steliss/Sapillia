@@ -2,22 +2,18 @@ using System;
 using System.IO;
 using UnityEngine;
 
+#region 저장 불러오기
+
 /// <summary>
-/// SO 저장 호출 함수 저장 클래스 
+/// 공통 JSON 저장 및 불러오기
 /// </summary>
 public static class CSaveData
 {
-    /// <summary>
-    /// SO 저장 호출 함수. 
-    /// </summary>
-    /// <param name="data"> 저장할 데이터가 들어갈 SO</param>
-    /// <param name="fileName"> 저장할 파일의 이름</param>
-    /// <returns></returns>
-    public static bool Save(ScriptableObject data, string fileName)
+    public static bool Save(object data, string fileName)
     {
         if (data == null)
         {
-            CLog.Warn("CSaveData: SO = Null");
+            CLog.Warn("CSaveData: 저장할 데이터가 없습니다.");
             return false;
         }
 
@@ -28,7 +24,7 @@ public static class CSaveData
 
             File.WriteAllText(path, json);
 
-            CLog.Log($"CSaveData: 저장 완료 - {fileName}");
+            CLog.Log($"CSaveData: 저장 완료 - {path}");
             return true;
         }
         catch (Exception exception)
@@ -38,20 +34,14 @@ public static class CSaveData
         }
     }
 
-    /// <summary>
-    /// SO 불러오기 호출 함수.
-    /// </summary>
-    /// <param name="data"> 불러올 데이터를 저장할 SO</param>
-    /// <param name="fileName"> 풀러올 파일의 이름</param>
-    /// <returns></returns>
-    public static bool Load(ScriptableObject data, string fileName)
+    public static bool Load(object data, string fileName)
     {
         if (data == null)
         {
-            CLog.Warn("CSaveData: SO = Null");
+            CLog.Warn("CSaveData: 불러올 데이터를 받을 대상이 없습니다.");
             return false;
         }
-        
+
         try
         {
             string path = Path.Combine(Application.persistentDataPath, fileName + ".json");
@@ -77,18 +67,31 @@ public static class CSaveData
     }
 }
 
+#endregion
 
-public class CDataManager : MonoBehaviour
+//
+public class CDataManger : MonoBehaviour
 {
-    // ※ : TODO : 
-    // 현 진행 상태에 대한 SO 종합 관리
-    // 관련 SO를 들고 올거니 저장 로드도 여기서 진행
+    [SerializeField] private CFlowData _flowData; // 진행 상황 및 옵션
 
-    // 매니저 데이터 (게임 상태 흐름 등등)
-    // 플레이어 기본 데이터 / 현재 데이터 
-    // 인벤토리 데이터      / 현재 데이터
-    // 퍼사드 패턴 참고하기
+    public bool SaveSettings()
+    {
+        return CSaveData.Save(_flowData.CurrentSetting, "Setting");
+    }
 
-    //[SerializeField] private 
+    public bool LoadSettings()
+    {
+        return CSaveData.Load(_flowData.CurrentSetting, "Setting");
+    }
+
+    public bool SaveGame(int slot)
+    {
+        return CSaveData.Save(_flowData.CurrentFlow, $"CurrentGame_{slot}");
+    }
+
+    public bool LoadGame(int slot)
+    {
+        return CSaveData.Load(_flowData.CurrentFlow, $"CurrentGame_{slot}");
+    }
 
 }

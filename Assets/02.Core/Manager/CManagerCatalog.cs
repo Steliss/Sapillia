@@ -85,10 +85,14 @@ public class CKeyBindingData
     public int _primaryIndex;
     public int _secondaryIndex;
 
-    public CKeyBindingData(string primary)
+    public CKeyBindingData(string action, string primary, int primaryIndex = 0, int secondaryIndex = 0 + 1)
     {
+        _actionName = action;
         _primary = primary;
         _secondary = "";
+
+        _primaryIndex = primaryIndex;
+        _secondaryIndex = secondaryIndex;
     }
 }
 

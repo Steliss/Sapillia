@@ -1,16 +1,101 @@
 using Cysharp.Threading.Tasks;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+#region CSaveSlotUI 필드
+[Serializable]
+public class CSaveSlotUI
+{
+    [SerializeField] private Button _startGameStartButton;
+    [SerializeField] private TextMeshProUGUI _startGameStartButtonText;
+    [SerializeField] private TextMeshProUGUI _palyerNameText;
+    [SerializeField] private TextMeshProUGUI _playerNameSOText;
+    [SerializeField] private TextMeshProUGUI _playerProgressText;
+    [SerializeField] private TextMeshProUGUI _playerProgressSOText;
+    [SerializeField] private TextMeshProUGUI _playerRetryCountText;
+    [SerializeField] private TextMeshProUGUI _playerRetryCountSOText;
+    [SerializeField] private TextMeshProUGUI _playerPlayTimeText;
+    [SerializeField] private TextMeshProUGUI _playerPlayTimeSOText;
+
+    public Button StartGameStartButton
+    {
+        get => _startGameStartButton;
+        set => _startGameStartButton = value;
+    }
+
+    public TextMeshProUGUI StartGameStartButtonText
+    {
+        get => _startGameStartButtonText;
+        set => _startGameStartButtonText = value;
+    }
+
+    public TextMeshProUGUI PlayerNameText
+    {
+        get => _palyerNameText;
+        set => _palyerNameText = value;
+    }
+
+    public TextMeshProUGUI PlayerNameSOText
+    {
+        get => _playerNameSOText;
+        set => _playerNameSOText = value;
+    }
+
+    public TextMeshProUGUI PlayerProgressText
+    {
+        get => _playerProgressText;
+        set => _playerProgressText = value;
+    }
+
+    public TextMeshProUGUI PlayerProgressSOText
+    {
+        get => _playerProgressSOText;
+        set => _playerProgressSOText = value;
+    }
+
+    public TextMeshProUGUI PlayerRetryCountText
+    {
+        get => _playerRetryCountText;
+        set => _playerRetryCountText = value;
+    }
+
+    public TextMeshProUGUI PlayerRetryCountSOText
+    {
+        get => _playerRetryCountSOText;
+        set => _playerRetryCountSOText = value;
+    }
+
+    public TextMeshProUGUI PlayerPlayTimeText
+    {
+        get => _playerPlayTimeText;
+        set => _playerPlayTimeText = value;
+    }
+
+    public TextMeshProUGUI PlayerPlayTimeSOText
+    {
+        get => _playerPlayTimeSOText;
+        set => _playerPlayTimeSOText = value;
+    }
+}
+#endregion
+
+
 public class CTitleUI : MonoBehaviour
 {
-    [Header("버튼")]
+    [SerializeField] private CLocalizationManager _localization;
+
+    [Header("메뉴버튼")]
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
     [SerializeField] private GameObject _discordButtonObject;
     [SerializeField] private GameObject _creditButtonObject;
     [SerializeField] private GameObject _exitButtonObject;
+
+    [Header("게임 시작 UI")]
+    [SerializeField] private GameObject _startGameUI;
+    [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
 
     private CSceneManager _cSceneManager;
@@ -29,6 +114,13 @@ public class CTitleUI : MonoBehaviour
         _discordButton = SetButton(_discordButtonObject);
         _creditButton = SetButton(_creditButtonObject);
         _exitButton = SetButton(_exitButtonObject);
+
+        // 세이브 슬롯 불러오기 
+
+        // 세이브 슬롯이 없다면 빈 키
+        // 있다면 해당 키 
+
+        _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.enmpty.text");
     }
 
     private void Start()
@@ -39,6 +131,14 @@ public class CTitleUI : MonoBehaviour
         {
             // ※ : TODO : 잡아주는 과정 추가 필요.
             CLog.Warn("_cSceneManager : Null");
+        }
+    }
+
+    private void Update()
+    {
+        if(_cSceneManager.IsChanging)
+        {
+            gameObject.SetActive(false);
         }
     }
 
@@ -92,6 +192,11 @@ public class CTitleUI : MonoBehaviour
 
     private void GameStart()
     {
+
+
+
+
+
         _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
     }
 
