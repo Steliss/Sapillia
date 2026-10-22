@@ -193,12 +193,12 @@ Transform:
   m_GameObject: {fileID: 3894465129180864208}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.25, y: 0.20000005, z: -0.2}
+  m_LocalPosition: {x: -0.25, y: 0.20000014, z: -0.20000005}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2235301068768214255}
-  m_Father: {fileID: 6968218646092971892}
+  m_Father: {fileID: 564728055894460903}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4554515422890130728
 GameObject:
@@ -231,6 +231,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 8764588536979352721}
   - {fileID: 2940273657299145489}
   m_Father: {fileID: 6968218646092971892}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -248,11 +249,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _weaponSwing: {fileID: 2940273657299145489}
   _hitPoint: {fileID: 8725183788813968005}
+  _aim: {fileID: 0}
   _slashRenderer: {fileID: 0}
   _targetLayers:
     serializedVersion: 2
     m_Bits: 0
   _attackData: {fileID: 11400000, guid: 54ca2fba242931948bb02fb4982c08a3, type: 2}
+  _attacker: {fileID: 0}
   _previewAttack: {fileID: 11400000, guid: 54ca2fba242931948bb02fb4982c08a3, type: 2}
 --- !u!114 &6473475933077767356
 MonoBehaviour:
@@ -267,7 +270,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _weaponPivot: {fileID: 2940273657299145489}
+  _player: {fileID: 0}
   _camera: {fileID: 0}
+  _playerFacing: {fileID: 0}
   _maxDownAngle: 60
 --- !u!1 &5682882903616357870
 GameObject:
@@ -327,7 +332,7 @@ Transform:
   m_GameObject: {fileID: 6996573615958751100}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.75, z: 0}
+  m_LocalPosition: {x: 0, y: 0.9166667, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -370,7 +375,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8764588536979352721}
   - {fileID: 564728055894460903}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -480,7 +484,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputHub: {fileID: 0}
   _rb2D: {fileID: 8481619257565836891}
-  _playerData: {fileID: 11400000, guid: 9eaa3eef4089fba41a309936a7003d1c, type: 2}
+  _playerController: {fileID: 0}
   _isInCombat: 0
 --- !u!114 &1956093274443642226
 MonoBehaviour:
@@ -543,8 +547,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputHub: {fileID: 0}
   _playerController: {fileID: 5907863237118194890}
+  _playerAnimation: {fileID: 0}
   _weaponData: {fileID: 11400000, guid: af3cc18bb63c96b46bbc1c14e5417261, type: 2}
   _weaponMotion: {fileID: 2808201352545307530}
   _comboResetTime: 1
   _inputBufferStart: 0.5
-  _attackInterval: 0.35

@@ -19,8 +19,7 @@ public class CPlayerRunSession : MonoBehaviour
 
     public CPlayerGamingDataSO PlayerData { get; private set;}
 
-    public CCostumeDataSO RunCostume { get; private set;
-    }
+    public CCostumeDataSO RunCostume { get; private set;}
 
     public bool IsAdventureActive => PlayerData != null;
 
@@ -106,19 +105,11 @@ public class CPlayerRunSession : MonoBehaviour
         }
 
         // 1. 런타임 플레이어 데이터 생성
-        CPlayerGamingDataSO data = Instantiate(_playerDataTemplate);
+        CPlayerGamingDataSO data = new CPlayerGamingDataSO();
 
         // 2. 기본 능력치 초기화
         data.Initalize();
-
-        if (!data.IsInitialized)
-        {
-            CLog.Error("[RunSession] PlayerData 초기화 실패");
-
-            Destroy(data);
-            return false;
-        }
-
+               
         // 3. 코스튬 추가 능력치 적용
         data.SetCostumeBonus(costume.Bonus);
 
@@ -153,9 +144,7 @@ public class CPlayerRunSession : MonoBehaviour
         {
             return;
         }
-
-        Destroy(PlayerData);
-
+                
         PlayerData = null;
     }
 
@@ -214,7 +203,7 @@ public class CPlayerRunSession : MonoBehaviour
         }
 
         // 중복 연결 방지
-        if (controller.PlayerData == PlayerData)
+        if (ReferenceEquals(controller.PlayerData, PlayerData))
         {
             return;
         }
