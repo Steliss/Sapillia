@@ -1356,6 +1356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _localization: {fileID: 65533640}
+  _dataManger: {fileID: 1566022588}
   _startButtonObject: {fileID: 978551937}
   _settingButtonObject: {fileID: 967452562}
   _discordButtonObject: {fileID: 540963647}
@@ -5896,8 +5897,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3eaa946019c389c4f8bb9f8a68dd56c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultData:
-    _currentScene: 0
+  _defaultSetting:
     _skipBoss: 0
     _cameraShakeMultiplier: 1
     _displayEffect: 1
@@ -6041,8 +6041,7 @@ MonoBehaviour:
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
-  _currentData:
-    _currentScene: 0
+  _currentSetting:
     _skipBoss: 0
     _cameraShakeMultiplier: 1
     _displayEffect: 1
@@ -6186,6 +6185,10 @@ MonoBehaviour:
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
+  _defalutFlow:
+    _currentScene: 0
+  _currentFlow:
+    _currentScene: 0
 --- !u!1 &1536730695
 GameObject:
   m_ObjectHideFlags: 0
@@ -6433,11 +6436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c53a0ec2aa66b7428ec6d3f094cfbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flowData: {fileID: 0}
-  _PlayerDefaultData: {fileID: 11400000, guid: 9e659e27f8b6bbd4fa058c92a74d8fdf, type: 2}
-  _playerCurrentData: {fileID: 0}
-  _playerDefalutCostume: {fileID: 0}
-  _playerCurrentCostume: {fileID: 0}
+  _flowData: {fileID: 1521394031}
 --- !u!1 &1623986762
 GameObject:
   m_ObjectHideFlags: 0
@@ -8064,7 +8063,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sceneManager: {fileID: 1159534783}
-  _inputCommandHub: {fileID: 0}
+  _inputCommandHub: {fileID: 683087254}
 --- !u!1 &2130196812
 GameObject:
   m_ObjectHideFlags: 0

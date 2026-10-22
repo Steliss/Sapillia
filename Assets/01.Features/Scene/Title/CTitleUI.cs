@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 public class CSaveSlotUI
 {
     [SerializeField] private Button _startGameStartButton;
+    [SerializeField] private Image _startButtonBackImage;
     [SerializeField] private TextMeshProUGUI _startGameStartButtonText;
     [SerializeField] private TextMeshProUGUI _palyerNameText;
     [SerializeField] private TextMeshProUGUI _playerNameSOText;
@@ -23,6 +25,11 @@ public class CSaveSlotUI
     {
         get => _startGameStartButton;
         set => _startGameStartButton = value;
+    }
+    public Image StartButtonBackImage
+    {
+        get => _startButtonBackImage;
+        set => _startButtonBackImage = value;
     }
 
     public TextMeshProUGUI StartGameStartButtonText
@@ -85,6 +92,7 @@ public class CSaveSlotUI
 public class CTitleUI : MonoBehaviour
 {
     [SerializeField] private CLocalizationManager _localization;
+    [SerializeField] private CDataManger _dataManger;
 
     [Header("메뉴버튼")]
     [SerializeField] private GameObject _startButtonObject;
@@ -114,13 +122,9 @@ public class CTitleUI : MonoBehaviour
         _discordButton = SetButton(_discordButtonObject);
         _creditButton = SetButton(_creditButtonObject);
         _exitButton = SetButton(_exitButtonObject);
-
-        // 세이브 슬롯 불러오기 
-
-        // 세이브 슬롯이 없다면 빈 키
-        // 있다면 해당 키 
-
-        _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.enmpty.text");
+        _saveSlots[0].StartGameStartButton = SetButton2(_saveSlots[0].StartGameStartButton, _saveSlots[0].StartButtonBackImage);
+        _saveSlots[1].StartGameStartButton = SetButton2(_saveSlots[1].StartGameStartButton, _saveSlots[1].StartButtonBackImage);
+        _saveSlots[2].StartGameStartButton = SetButton2(_saveSlots[2].StartGameStartButton, _saveSlots[2].StartButtonBackImage);
     }
 
     private void Start()
@@ -132,6 +136,38 @@ public class CTitleUI : MonoBehaviour
             // ※ : TODO : 잡아주는 과정 추가 필요.
             CLog.Warn("_cSceneManager : Null");
         }
+
+        string path = Path.Combine(Application.persistentDataPath, "CurrentGame_0.json");
+        if (!File.Exists(path))
+        {
+            _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
+            _saveSlots[0].PlayerNameText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerNameSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerProgressText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerProgressSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerRetryCountText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerRetryCountSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerPlayTimeText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[0].PlayerPlayTimeSOText.text = _localization.GetText("scene.enmpty.text");
+        }
+
+        if (_dataManger.LoadGame(0))
+        {
+            _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
+            _saveSlots[0].PlayerNameText.text = _localization.GetText("scene.playername.text");
+            _saveSlots[0].PlayerNameSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerName}");
+            _saveSlots[0].PlayerProgressText.text = _localization.GetText("scene.playerprogress.text");
+            _saveSlots[0].PlayerProgressSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerProgress}");
+            _saveSlots[0].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
+            _saveSlots[0].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
+            _saveSlots[0].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
+            _saveSlots[0].PlayerPlayTimeSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.Playerplaytime}");
+        }
+
+        // ※ : TODO : 1,2번 데이터 확정되고 마무리 
+
+
+
     }
 
     private void Update()
@@ -144,16 +180,18 @@ public class CTitleUI : MonoBehaviour
 
     private void OnEnable()
     {
-        _startButton.onClick.AddListener(GameStart);
+        _startButton.onClick.AddListener(OpenCharacterSlot);
         _settingButton.onClick.AddListener(SettingGame);
         _discordButton.onClick.AddListener(DiscordOpen);
         _creditButton.onClick.AddListener(CreditOpen);
         _exitButton.onClick.AddListener(GameExit);
+
+        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart);
     }
 
     private void OnDisable()
     {
-        _startButton.onClick.RemoveListener(GameStart);
+        _startButton.onClick.RemoveListener(OpenCharacterSlot);
         _settingButton.onClick.RemoveListener(SettingGame);
         _discordButton.onClick.RemoveListener(DiscordOpen);
         _creditButton.onClick.RemoveListener(CreditOpen);
@@ -187,6 +225,33 @@ public class CTitleUI : MonoBehaviour
         return button;
     }
 
+    // 마우스 이동에 버튼 테두리 변화
+    private Button SetButton2(Button button, Image image)
+    {
+        // 상태에 따라 색상을 바꿀 테두리
+        button.targetGraphic = image;
+        button.transition = Selectable.Transition.ColorTint;
+
+        Color color = image.color;
+        color.a = 1f;
+        image.color = color;
+
+        ColorBlock colors = button.colors;
+        colors.normalColor = new Color(1f, 1f, 1f, 0f);
+        colors.highlightedColor = new Color(1f, 1f, 1f, 1f);
+        colors.pressedColor = new Color(1f, 1f, 1f, 1f);
+        colors.selectedColor = new Color(1f, 1f, 1f, 0f);
+
+        button.colors = colors;
+
+        return button;
+    }
+
+    // 캐릭터 슬롯 열기
+    private void OpenCharacterSlot()
+    {
+        _startGameUI.SetActive(true);
+    }
 
 
 
