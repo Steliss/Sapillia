@@ -10,7 +10,7 @@ public enum ELanguage
 
 public class CLocalizationManager : MonoBehaviour
 {
-    [SerializeField] private CFlowDataSO _FlowDataSO;
+    [SerializeField] private CFlowData _flowData;
     [SerializeField] private TextAsset _koreanJson;
     [SerializeField] private TextAsset _englishJson;
 
@@ -21,7 +21,7 @@ public class CLocalizationManager : MonoBehaviour
 
     private void Awake()
     {
-        if(_FlowDataSO == null)
+        if(_flowData == null)
         {
             CLog.Log("_FlowDataSO : Null");
         }
@@ -34,7 +34,7 @@ public class CLocalizationManager : MonoBehaviour
             CLog.Log("_englishJson : Null");
         }
 
-        LoadLanguage(_FlowDataSO.CurrentLanhuage);
+        LoadLanguage(_flowData.CurrentSetting.CurrentLanhuage);
     }
 
     /// <summary>
@@ -82,7 +82,7 @@ public class CLocalizationManager : MonoBehaviour
         AddEntries(data.talk);
         AddEntries(data.scene);
 
-        _FlowDataSO.SetCurrentLanhuage(language);
+        _flowData.CurrentSetting.SetCurrentLanhuage(language);
 
         OnLanguageChanged?.Invoke();
     }

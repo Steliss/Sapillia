@@ -1,29 +1,30 @@
 using System;
 using UnityEngine;
 
-
-// 씬 및 옵션 관리 SO
-[CreateAssetMenu(menuName = "SO/Data/Data", fileName = "OptionSO")]
-public class CFlowDataSO : ScriptableObject
+[Serializable]
+public class CSettings
 {
-    [SerializeField] private EScene _currentScene; // 맵 정보 
-
     [Header("GamePlay")]
     [SerializeField] private bool _skipBoss = false;
+
     [Range(0f, 1f)]
-    [SerializeField] private float _cameraShakeMultiplier = 1.0f;
+    [SerializeField] private float _cameraShakeMultiplier = 1f;
+
     [SerializeField] private bool _displayEffect = true;
     [SerializeField] private ELanguage _currentLanhuage;
 
     [Header("Sound")]
     [Range(0f, 1f)]
-    [SerializeField] private float _masterSound = 1.0f;
+    [SerializeField] private float _masterSound = 1f;
+
     [Range(0f, 1f)]
-    [SerializeField] private float _BGMSound = 1.0f;
+    [SerializeField] private float _BGMSound = 1f;
+
     [Range(0f, 1f)]
-    [SerializeField] private float _effectSound = 1.0f;
+    [SerializeField] private float _effectSound = 1f;
+
     [Range(0f, 1f)]
-    [SerializeField] private float _enviromentSound = 1.0f;
+    [SerializeField] private float _enviromentSound = 1f;
 
     [Header("Display")]
     [SerializeField] private int _width = 1920;
@@ -31,31 +32,29 @@ public class CFlowDataSO : ScriptableObject
     [SerializeField] private FullScreenMode _screenMode = FullScreenMode.Windowed;
 
     [Header("KeySetting")]
-    [SerializeField] private CKeyBindingData _moveUp = new CKeyBindingData("<Keyboard>/w");
-    [SerializeField] private CKeyBindingData _moveDown = new CKeyBindingData("<Keyboard>/s");
-    [SerializeField] private CKeyBindingData _moveLeft = new CKeyBindingData("<Keyboard>/a");
-    [SerializeField] private CKeyBindingData _moveRight = new CKeyBindingData("<Keyboard>/d");
-    [SerializeField] private CKeyBindingData _attack = new CKeyBindingData("<Mouse>/leftButton");
-    [SerializeField] private CKeyBindingData _specialAttack = new CKeyBindingData("<Mouse>/rightButton");
-    [SerializeField] private CKeyBindingData _dash = new CKeyBindingData("<Keyboard>/space");
-    [SerializeField] private CKeyBindingData _rapidCasting1 = new CKeyBindingData("<Keyboard>/1");
-    [SerializeField] private CKeyBindingData _rapidCasting2 = new CKeyBindingData("<Keyboard>/2");
-    [SerializeField] private CKeyBindingData _interaction = new CKeyBindingData("<Keyboard>/f");
-    [SerializeField] private CKeyBindingData _usePotion = new CKeyBindingData("<Keyboard>/r");
-    [SerializeField] private CKeyBindingData _openMap = new CKeyBindingData("<Keyboard>/tab");
-    [SerializeField] private CKeyBindingData _inventory = new CKeyBindingData("<Keyboard>/v");
-    [SerializeField] private CKeyBindingData _playerStats = new CKeyBindingData("<Keyboard>/c");
-    [SerializeField] private CKeyBindingData _talent = new CKeyBindingData("<Keyboard>/p");
-    [SerializeField] private CKeyBindingData _presetSetting = new CKeyBindingData("<Keyboard>/b");
-    [SerializeField] private CKeyBindingData _chatting = new CKeyBindingData("<Keyboard>/enter");
-    [SerializeField] private CKeyBindingData _reloading = new CKeyBindingData("<Keyboard>/g");
-    [SerializeField] private CKeyBindingData _ping = new CKeyBindingData("<Mouse>/middleButton");
-    [SerializeField] private CKeyBindingData _choosePotion = new CKeyBindingData("<Keyboard>/backquote");
-    [SerializeField] private CKeyBindingData _before = new CKeyBindingData("<Keyboard>/q");
-    [SerializeField] private CKeyBindingData _next = new CKeyBindingData("<Keyboard>/e");
+    [SerializeField] private CKeyBindingData _moveUp = new CKeyBindingData("Move", "<Keyboard>/w", 1, 6);
+    [SerializeField] private CKeyBindingData _moveDown = new CKeyBindingData("Move", "<Keyboard>/s", 2, 7);
+    [SerializeField] private CKeyBindingData _moveLeft = new CKeyBindingData("Move", "<Keyboard>/a", 3, 8);
+    [SerializeField] private CKeyBindingData _moveRight = new CKeyBindingData("Move", "<Keyboard>/d", 4, 9);
+    [SerializeField] private CKeyBindingData _attack = new CKeyBindingData("Attack","<Mouse>/leftButton");
+    [SerializeField] private CKeyBindingData _specialAttack = new CKeyBindingData("SpecialAttack","<Mouse>/rightButton");
+    [SerializeField] private CKeyBindingData _dash = new CKeyBindingData("Dash","<Keyboard>/space");
+    [SerializeField] private CKeyBindingData _rapidCasting1 = new CKeyBindingData("RapidCasting1","<Keyboard>/1");
+    [SerializeField] private CKeyBindingData _rapidCasting2 = new CKeyBindingData("RapidCasting2","<Keyboard>/2");
+    [SerializeField] private CKeyBindingData _interaction = new CKeyBindingData("Interaction", "<Keyboard>/f");
+    [SerializeField] private CKeyBindingData _usePotion = new CKeyBindingData("UsePotion", "<Keyboard>/r");
+    [SerializeField] private CKeyBindingData _openMap = new CKeyBindingData("OpenMap", "<Keyboard>/tab");
+    [SerializeField] private CKeyBindingData _inventory = new CKeyBindingData("Inventory", "<Keyboard>/v");
+    [SerializeField] private CKeyBindingData _playerStats = new CKeyBindingData("Stats","<Keyboard>/c");
+    [SerializeField] private CKeyBindingData _talent = new CKeyBindingData("Talent", "<Keyboard>/p"); 
+    [SerializeField] private CKeyBindingData _presetSetting = new CKeyBindingData("PresetSetting", "<Keyboard>/b");
+    [SerializeField] private CKeyBindingData _chatting = new CKeyBindingData("Chatting", "<Keyboard>/enter");
+    [SerializeField] private CKeyBindingData _reloading = new CKeyBindingData("Reloading", "<Keyboard>/g");
+    [SerializeField] private CKeyBindingData _ping = new CKeyBindingData("Ping", "<Mouse>/middleButton");
+    [SerializeField] private CKeyBindingData _choosePotion = new CKeyBindingData("ChoosePotion", "<Keyboard>/backquote");
+    [SerializeField] private CKeyBindingData _before = new CKeyBindingData("Before", "<Keyboard>/q");
+    [SerializeField] private CKeyBindingData _next = new CKeyBindingData("Next", "<Keyboard>/e");
 
-
-    public EScene CurrentScene => _currentScene;
     public bool SkipBoss => _skipBoss;
     public float CameraShakeMultiplier => _cameraShakeMultiplier;
     public bool DisplayEffect => _displayEffect;
@@ -69,14 +68,9 @@ public class CFlowDataSO : ScriptableObject
     public ELanguage CurrentLanhuage => _currentLanhuage;
 
 
-    public void SetCurrentScene(EScene currentScene)
+    public void SetSkipBoss(bool skipBoss)
     {
-        _currentScene = currentScene;
-    }
-
-    public void SetSkipBoss(bool skipboss)
-    {
-        _skipBoss = skipboss;
+        _skipBoss = skipBoss;
     }
 
     public void SetCameraShakeMultiplier(float multiplier)
@@ -84,40 +78,46 @@ public class CFlowDataSO : ScriptableObject
         _cameraShakeMultiplier = multiplier;
     }
 
-    public void SetDisplayEffect(bool skipboss)
+    public void SetDisplayEffect(bool displayEffect)
     {
-        _displayEffect = skipboss;
+        _displayEffect = displayEffect;
     }
 
-
-    // 사운드 설정
     public void SetMasterSound(float sound)
     {
         _masterSound = sound;
     }
+
     public void SetBGMSound(float sound)
     {
         _BGMSound = sound;
     }
+
     public void SetEffectSound(float sound)
     {
         _effectSound = sound;
     }
+
     public void SetEnvironmentSound(float sound)
     {
         _enviromentSound = sound;
     }
+
     public void SetCurrentLanhuage(ELanguage language)
     {
         _currentLanhuage = language;
     }
 
-    // 화면 설정 UI에서 호출할때 수정 필요
     public void SetDisplay(int width, int height, FullScreenMode screenMode)
     {
-        if (width <= 0 || height <= 0)
+        if (width <= 0)
         {
-            throw new ArgumentOutOfRangeException(nameof(width), "해상도 높이 너비 오류");
+            throw new ArgumentOutOfRangeException(nameof(width), "해상도 너비 오류");
+        }
+
+        if (height <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(height), "해상도 높이 오류");
         }
 
         _width = width;
@@ -125,9 +125,6 @@ public class CFlowDataSO : ScriptableObject
         _screenMode = screenMode;
     }
 
-
-
-    // 키 설정 조회
     public CKeyBindingData GetKeyBinding(EKeyAction action)
     {
         switch (action)
@@ -203,7 +200,6 @@ public class CFlowDataSO : ScriptableObject
         }
     }
 
-    // 키 설정 변경
     public void SetKeyBinding(EKeyAction action, EKeySlot slot, string keyPath)
     {
         CKeyBindingData binding = GetKeyBinding(action);
@@ -222,5 +218,18 @@ public class CFlowDataSO : ScriptableObject
                 throw new ArgumentOutOfRangeException(nameof(slot), slot, null);
         }
     }
+}
 
+
+[Serializable]
+public class CFlowGame
+{
+    [SerializeField] private EScene _currentScene;
+
+    public EScene CurrentScene => _currentScene;
+
+    public void SetCurrentScene(EScene currentScene)
+    {
+        _currentScene = currentScene;
+    }
 }

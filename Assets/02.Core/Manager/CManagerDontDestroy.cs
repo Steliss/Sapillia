@@ -3,9 +3,11 @@ using UnityEngine;
 public class CManagerDontDestroy : MonoBehaviour
 {
     [SerializeField] private CSceneManager _sceneManager;
+    [SerializeField] private CInputCommandHub _inputCommandHub;
 
 
     public CSceneManager SceneManager => _sceneManager;
+    public CInputCommandHub InputCommandHub => _inputCommandHub;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()

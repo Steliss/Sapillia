@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class CSceneManager : MonoBehaviour
 {
     [SerializeField] private CSceneListSO _sceneList;
-    [SerializeField] private CFlowDataSO _flowData;
+    [SerializeField] private CFlowData _flowData;
     [SerializeField] private CLocalizationManager _localization;
 
     [Header("페이드 관련")]
@@ -24,6 +24,8 @@ public class CSceneManager : MonoBehaviour
     private CancellationTokenSource _fadeCts;
     private GameObject _backGroundInstance; 
     private bool _isChanging;
+
+    public bool IsChanging => _isChanging;
 
 
     private void Awake()
@@ -113,7 +115,7 @@ public class CSceneManager : MonoBehaviour
             {
                 await FadeAsync(0f, scene.FadeInDuration);
 
-                _flowData.SetCurrentScene(sceneID);
+                _flowData.CurrentFlow.SetCurrentScene(sceneID);
                 SetBackGroundActive(false);
                 SetLoadingText(false);
             }
@@ -159,35 +161,35 @@ public class CSceneManager : MonoBehaviour
     {
         if (isActive)
         {
-            if (_flowData.CurrentScene == EScene.Menu)
+            if (_flowData.CurrentFlow.CurrentScene == EScene.Menu)
             {
                 _floorText.text = _localization.GetText("scene.enmpty.text");
                 _MapNameText.text = _localization.GetText("scene.enmpty.text");
                 _MapDescText1.text = _localization.GetText("scene.enmpty.text");
                 _MapDescText2.text = _localization.GetText("scene.enmpty.text");
             }
-            else if (_flowData.CurrentScene == EScene.Town)
+            else if (_flowData.CurrentFlow.CurrentScene == EScene.Town)
             {
                 _floorText.text = _localization.GetText("scene.stage1.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage1.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
             }
-            else if(_flowData.CurrentScene == EScene.stage1)
+            else if(_flowData.CurrentFlow.CurrentScene == EScene.stage1)
             {
                 _floorText.text = _localization.GetText("scene.stage1.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage1.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
             }
-            else if (_flowData.CurrentScene == EScene.stage2)
+            else if (_flowData.CurrentFlow.CurrentScene == EScene.stage2)
             {
                 _floorText.text = _localization.GetText("scene.stage2.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage2.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage2.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage2.desc2");
             }
-            else if (_flowData.CurrentScene == EScene.stage3)
+            else if (_flowData.CurrentFlow.CurrentScene == EScene.stage3)
             {
                 _floorText.text = _localization.GetText("scene.stage3.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage3.mapname");

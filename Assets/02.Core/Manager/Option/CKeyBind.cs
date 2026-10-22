@@ -5,7 +5,7 @@ public class CKeyBind : MonoBehaviour
 {
 
     [Header("참조")]
-    [SerializeField] private CFlowDataSO _flowData;
+    [SerializeField] private CFlowData _flowData;
     [SerializeField] private InputActionAsset _inputActions;
 
     [Header("변경할 동작")]
@@ -37,7 +37,7 @@ public class CKeyBind : MonoBehaviour
                 continue;
             }
 
-            CKeyBindingData binding = _flowData.GetKeyBinding(keyAction);
+            CKeyBindingData binding = _flowData.CurrentSetting.GetKeyBinding(keyAction);
 
             InputAction action = _inputActions.FindAction(binding._actionName, throwIfNotFound: true);
 
@@ -56,7 +56,7 @@ public class CKeyBind : MonoBehaviour
         }
 
         _keyAction = keyAction;
-        _binding = _flowData.GetKeyBinding(_keyAction);
+        _binding = _flowData.CurrentSetting.GetKeyBinding(_keyAction);
 
         _actionName = _binding._actionName;
         _action = _inputActions.FindAction(_actionName, throwIfNotFound: true);
@@ -92,7 +92,7 @@ public class CKeyBind : MonoBehaviour
             {
                 string keyPath = _action.bindings[bindingIndex].effectivePath;
             
-                _flowData.SetKeyBinding(_keyAction, slot, keyPath);
+                _flowData.CurrentSetting.SetKeyBinding(_keyAction, slot, keyPath);
             
                 FinishRebind();
             
