@@ -7,16 +7,15 @@ using UnityEngine;
 
 */
 
-[CreateAssetMenu(menuName = "SO/Player/PlayerData", fileName = "PlayerData")]
-public class CPlayerGamingDataSO : ScriptableObject
+public class CPlayerGamingDataSO
 {
     #region 인스펙터
-    [Header("Base Data")]
-    [SerializeField] private CPlayerDataSO _baseData;
+
 
     #endregion
 
     #region 내부 변수
+    private SPlayerStats _baseData;
     private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
     private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
     private SPlayerStats _stats; // 최종 능력치
@@ -33,6 +32,8 @@ public class CPlayerGamingDataSO : ScriptableObject
     private float _mpRegenProgress;
     private float _dashRegenProgress;
 
+    private int _startMoney = 500;
+    private float _expGrowthMultiplier = 1.2f;
     #endregion
 
     #region 프로퍼티
@@ -65,15 +66,11 @@ public class CPlayerGamingDataSO : ScriptableObject
     public void Initalize()
     {
         IsInitialized = false;
-
-        if (_baseData == null)
-        {
-            CLog.Warn("Player Data 누락");
-            return;
-        }
+                
+        _baseData = SPlayerStats.CreateDefault();
 
         // 기본 데이터를 현재 게임 데이터로 복사
-        _coreStats = _baseData.BaseStats;
+        _coreStats = _baseData;
         _coreStats.Validate();
 
         _costumeBonus = default;
@@ -89,7 +86,7 @@ public class CPlayerGamingDataSO : ScriptableObject
         _requiredEXP = _stats.RequiredEXP;
         _level = 1;
 
-        _money = _baseData.StartMoney;
+        _money = _startMoney;
 
         _mpRegenProgress = 0f;
         _dashRegenProgress = 0f;
@@ -122,7 +119,7 @@ public class CPlayerGamingDataSO : ScriptableObject
         }
 
         newStats.Validate();
-        _stats = newStats;
+        _coreStats = newStats;
         RecalculateStats();
 
         // 최대치 변경 후 현재값 보정
@@ -200,7 +197,7 @@ public class CPlayerGamingDataSO : ScriptableObject
     // 속성치 증가
     public void AddAttributePower(EAttribute attribute, int amount)
     {
-        SPlayerStats newStats = _stats;
+        SPlayerStats newStats = _coreStats;
 
         newStats.AddAttributePower(attribute, amount);
 
@@ -345,7 +342,7 @@ public class CPlayerGamingDataSO : ScriptableObject
     {
         _level++;
 
-        float growth = _baseData.ExpGrowthMultiplier;
+        float growth = _expGrowthMultiplier;
 
         // Mathf.CeilToInt()는 소수점 이하를 올림하여 int로 변환
         _requiredEXP = Mathf.Max(1, Mathf.CeilToInt(_requiredEXP * growth));

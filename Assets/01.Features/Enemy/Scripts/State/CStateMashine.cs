@@ -1,23 +1,28 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class CStateMashine : MonoBehaviour
+public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 {
-    #region 인스펙터    
+    #region 인스펙터
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
+    [SerializeField] private float _patrolRadius = 3f;
+    [SerializeField] private float _patrolMoveRange = 3f;
+    [SerializeField] private LayerMask _playerMask;
+
     [Header("공격 패턴 SO")]
     [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
 
     [Header("애니메이터 스테이트")]
-    [SerializeField] private string _paramIdle = "Idle";
-    [SerializeField] private string _paramMove = "Move";
-    [SerializeField] private string _paramAttack = "Attack";
-    [SerializeField] private string _paramAttReady = "AttReady";
-    [SerializeField] private string _paramAir = "Air";
-    [SerializeField] private string _paramDown = "Down";
+    [SerializeField] private string _stateIdle = "Idle";
+    [SerializeField] private string _stateMove = "Move";
+    [SerializeField] private string _stateAttack = "Attack";
+    [SerializeField] private string _stateAttReady = "AttReady";
+    [SerializeField] private string _stateAir = "Air";
+    [SerializeField] private string _stateDown = "Down";
     #endregion
 
     #region 내부 변수
@@ -26,6 +31,9 @@ public class CStateMashine : MonoBehaviour
     private SpriteRenderer _sprite;
     private Rigidbody2D _rb;
     private bool _isPatrol = true;
+    private CUniTaskOnes _uni = new CUniTaskOnes();
+    private CUniTaskOnes _searchUni = new CUniTaskOnes();
+    private Transform _target;
     #endregion
 
     #region 스테이트
@@ -53,6 +61,9 @@ public class CStateMashine : MonoBehaviour
     public IEnemyState MoveState => _moveState;
     public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
+    public CUniTaskOnes Uni => _uni;
+    public Transform Target => _target;
+    public float PatrolMoveRange => _patrolMoveRange;
 
     // 스탯
     public float Hp => _hp;
@@ -84,6 +95,8 @@ public class CStateMashine : MonoBehaviour
             State.StateExit();
         }
 
+        CLog.Log($"상태변경 {_state} -> {next}");
+
         _state = next;
 
         next.StateEnter();
@@ -103,27 +116,10 @@ public class CStateMashine : MonoBehaviour
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
 
-        // 데이터베이스에서 스탯 가져오기
-        if (_dataBase == null)
-        {
-            CLog.Warn($"{name} : 참조할 데이터 베이스 누락");
-            return;
-        }
-
-        _dataBase.TryGet(_id, out CDataEnemySO data);
-
-        if (data != null)
-        {
-            _hp = data.Hp;
-            _superArmor = data.SuperArmor;
-            _defense = data.Defense;
-            _attack = data.Attack;
-            _speed = data.Speed;
-        }
-
-        // 애니메이터, 네브메쉬에이전트, 스프라이트 가져오기
+        // 애니메이터 해시 세팅 
         AnimatorSet();
 
+        // 네브메쉬에이전트, 스프라이트, 리지드바디 가져오기
         _nav = GetComponent<NavMeshAgent>();
 
         if (Nav == null)
@@ -134,7 +130,6 @@ public class CStateMashine : MonoBehaviour
         }
         Nav.updateRotation = false;
         Nav.updateUpAxis = false;
-        Nav.speed = _speed;
 
 
         _sprite = GetComponent<SpriteRenderer>();
@@ -170,7 +165,22 @@ public class CStateMashine : MonoBehaviour
         StateChanged(IdleState);
     }
 
-    private void FixedUpdate()
+    private void OnEnable()
+    {
+        // 데이터 베이스에서 데이터 갱신
+        EnemyInit();
+        _searchUni.Run(async ct =>
+        {
+            while (_isPatrol)
+            {
+                PatrolSearch();
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+            }
+        });
+    }
+
+
+    private void Update()
     {
         if (State != null)
         {
@@ -189,13 +199,72 @@ public class CStateMashine : MonoBehaviour
             return;
         }
 
-        HashMove = Animator.StringToHash(_paramMove);
-        HashAttack = Animator.StringToHash(_paramAttack);
-        HashAir = Animator.StringToHash(_paramAir);
-        HashIdle = Animator.StringToHash(_paramIdle);
-        HashAttReady = Animator.StringToHash(_paramAttReady);
-        HashDown = Animator.StringToHash(_paramDown);
+        HashMove = Animator.StringToHash(_stateMove);
+        HashAttack = Animator.StringToHash(_stateAttack);
+        HashAir = Animator.StringToHash(_stateAir);
+        HashIdle = Animator.StringToHash(_stateIdle);
+        HashAttReady = Animator.StringToHash(_stateAttReady);
+        HashDown = Animator.StringToHash(_stateDown);
     }
 
+    public void PatrolSearch()
+    {
+        if (!_isPatrol)
+        {
+            return;
+        }
 
+
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _playerMask);
+
+        if (hit != null)
+        {
+            CLog.Log("플레이어 발견");
+            _uni.Cancel();
+            _target = hit.transform;
+            _isPatrol = false;
+            StateChanged(_moveState);
+        }
+    }
+
+    // 데이터베이스에서 스탯 갱신
+    private void EnemyInit()
+    {
+        if (_dataBase == null)
+        {
+            CLog.Warn($"{name} : 참조할 데이터 베이스 누락");
+            return;
+        }
+
+        _dataBase.TryGet(_id, out CDataEnemySO data);
+
+        if (data != null)
+        {
+            _hp = data.Hp;
+            _superArmor = data.SuperArmor;
+            _defense = data.Defense;
+            _attack = data.Attack;
+            _speed = data.Speed;
+
+            Nav.speed = _speed;
+        }
+    }
+
+    public void TakeDamage(SDamageInfo damageInfo)
+    {
+        int finalDamage = damageInfo.Damage;
+
+        _hp = Mathf.Max(0, _hp - Mathf.Max(0, finalDamage));
+
+        if (_hp <= 0)
+        {
+            // 임시 사망처리
+            gameObject.SetActive(false);
+        }
+    }
+
+    public void TakeDamage(int damage)
+    {
+        TakeDamage(new SDamageInfo(damage, Vector2.zero));
+    }
 }
