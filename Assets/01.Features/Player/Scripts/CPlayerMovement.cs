@@ -1,4 +1,3 @@
-#region Input Command
 
 using UnityEngine;
 
@@ -349,7 +348,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     #endregion
 
-    #endregion
+
 }
 
 
