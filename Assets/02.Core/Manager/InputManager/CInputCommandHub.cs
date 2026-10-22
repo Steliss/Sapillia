@@ -110,9 +110,9 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EKeyAction.Attack, value);
     }
 
-    private void SpecialAttack()
+    private void SpecialAttack(float value)
     {
-        Execute(EKeyAction.SpecialAttack);
+        Execute(EKeyAction.SpecialAttack,value);
     }
 
     private void RapidCasting1()
