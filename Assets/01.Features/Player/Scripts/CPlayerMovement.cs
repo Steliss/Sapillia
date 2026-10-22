@@ -16,6 +16,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #region 인스펙터
 
     [Header("참조")]
+    // Test에서는 사용 ※
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
     [SerializeField] private CPlayerController _playerController;
@@ -26,7 +27,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #endregion
 
     #region 내부변수
-
+    
     // 런타임 데이터
     private CPlayerGamingDataSO _playerData;
 
@@ -89,12 +90,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         RegisterInput();
-    }
-
-    private void Start()
-    {
-        TryBindPlayerData();
-    }
+    }   
 
     private void FixedUpdate()
     {
@@ -125,6 +121,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _dashCooldownTimer = 0f;
 
         _moveState = EPlayerMoveState.Idle;
+
+        // 참조 해제
+        _playerData = null;
+        _warnedMissingData = false;
     }
 
     #endregion
@@ -133,9 +133,21 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     private bool TryBindPlayerData()
     {
-        if (_playerController == null)
+        CPlayerGamingDataSO currentData = _playerController != null ? _playerController.PlayerData : null;
+
+        if(currentData == null || !currentData.IsInitialized)
         {
-            return false;
+            if(_playerData != null)
+            {
+                _playerData = null;
+
+                // 이동 상태 초기화
+                _moveState = EPlayerMoveState.Idle;
+                _moveDirection = Vector2.zero;
+                _dashRequested = false;
+                _dashTimer = 0f;
+                _dashCooldownTimer = 0f;
+            }
         }
 
         // Controller가 관리하는 현재 런타임 SO 참조
@@ -149,14 +161,23 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
                 _warnedMissingData = true;
             }
 
+            if (_warnedMissingData)
+            {
+                CLog.Log("[Movement] PlayerData 연결 완료");
+                _warnedMissingData = false;
+            }
+
             return false;
         }
 
-        if (_warnedMissingData)
+        // 새로운 런타임 데이터가 연결된 경우
+        if (!ReferenceEquals(_playerData, currentData))
         {
+            _playerData = currentData;
             CLog.Log("[Movement] PlayerData 연결 완료");
-            _warnedMissingData = false;
         }
+
+        _warnedMissingData = false;
 
         return true;
     }
