@@ -56,6 +56,9 @@ public class CMeleeProjectile : MonoBehaviour
                 info.HasDirection = true;
 
                 player.TakeDamage(info);
+                CLog.Log($"[EnemyAttack : {this}");
+                CLog.Log($"[EnemyAttack Damage : {info.Damage}");
+                CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
             }
         }
     }

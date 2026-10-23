@@ -62,6 +62,10 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
         {
             _playerController.PlayerData.TakeDamage(finalDamage);
         }
+
+        CLog.Log($"[PlayerDamage] 받은 공격 : {damageInfo.Damage}");
+        CLog.Log($"최종 데미지 : {finalDamage}");
+        CLog.Log($"HP : {_playerController.PlayerData.CurrentHP}");
     }
 
     
