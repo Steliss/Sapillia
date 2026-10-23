@@ -25,6 +25,8 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     #endregion
 
     #region 내부변수
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
+
     private int _nextComboIndex;
     // 콤보 유지 시간
     private float _comboExpireTime = float.NegativeInfinity;
@@ -36,15 +38,19 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
     private void OnEnable()
     {
-        if(_inputHub != null)
+        _inputTask.Run(async token =>
         {
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
             _inputHub.Register(EKeyAction.Attack, (IInputCommand<float>)this);
-        }
+            CLog.Log("CPlayerAttack OnEnable 작업 완료");
+        });
     }
 
     private void OnDisable()
     {
-        if(_inputHub != null)
+        _inputTask.Cancel();
+
+        if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.Attack, (IInputCommand<float>)this);
         }
@@ -57,6 +63,12 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     }
     private void Update()
     {
+        // _inputHub 안잡혔을때 잡힐때까지 대기
+        if(_inputHub == null)
+        {
+            return;
+        }
+
         if (_weaponMotion == null)
         {
             CLog.Warn($"{this} 무기 비어있음");
