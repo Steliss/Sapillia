@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class FirstMiniBossGate : MonoBehaviour
 {
-    #region ÀÎ½ºÆåÅÍ
+    #region ì¸ìŠ¤í™í„°
 
-    [Header("¹® ½ºÇÁ¶óÀÌÆ®")]
+    [Header("ë¬¸ ìŠ¤í”„ë¼ì´íŠ¸")]
     [SerializeField] private Animator _anim;
 
     #endregion
 
-    #region ³»ºÎº¯¼ö
+    #region ì¸ìŠ¤í™í„°
 
     private bool _isOpened = true;
 

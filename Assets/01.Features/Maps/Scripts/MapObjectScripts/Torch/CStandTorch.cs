@@ -4,19 +4,19 @@ using UnityEngine;
 
 public class CStandTorch : MonoBehaviour
 {
-    #region ÀÎ½ºÆåÅÍ
+    #region ì¸ìŠ¤í™í„°
 
-    [Header("È¶ºÒ")]
+    [Header("íšƒë¶ˆ")]
     [SerializeField] private GameObject _animationTorch;
     [SerializeField] private GameObject _remains;
 
-    [Header("ÆÄÆí")]
+    [Header("íŒŒí¸")]
     [SerializeField] private CTorchFragment _fragmentA;
     [SerializeField] private CTorchFragment _fragmentB;
 
     #endregion
 
-    #region ³»ºÎº¯¼ö
+    #region ë‚´ë¶€ë³€ìˆ˜
 
     private bool _isDestroyed;
 

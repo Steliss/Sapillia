@@ -6427,6 +6427,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6266349770922885836}
+  - component: {fileID: -7613697480834462395}
   m_Layer: 0
   m_Name: CaveCombatRoomR1
   m_TagString: Untagged
@@ -6450,6 +6451,27 @@ Transform:
   - {fileID: 541542245896691731}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7613697480834462395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8300944400286224367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe1d8fa3da125342a480d4c76880627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomSize: {x: 1, y: 1}
+  _up1: 0
+  _up2: 0
+  _down1: 0
+  _down2: 0
+  _left1: 0
+  _left2: 0
+  _right1: 1
+  _right2: 0
 --- !u!1 &8639034351262700040
 GameObject:
   m_ObjectHideFlags: 0

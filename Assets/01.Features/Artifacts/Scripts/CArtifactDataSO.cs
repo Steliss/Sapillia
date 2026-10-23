@@ -5,8 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ArtifactData_", menuName = "SO/Artifact/ArtifactData")]
 public class CArtifactDataSO : ScriptableObject
 {
-    #region ÀÎ½ºÆåÅÍ
-    [Header("±âº»Á¤º¸")]
+    #region ì¸ìŠ¤í™í„°
+    [Header("ê¸°ë³¸ì •ë³´")]
     [SerializeField] private string _artifactID;
     [SerializeField] private string _artifactName;
     [SerializeField] private bool _unique;
@@ -15,10 +15,10 @@ public class CArtifactDataSO : ScriptableObject
     [SerializeField] private string _story;
     [SerializeField] private Sprite _icon;
 
-    [Header("½Ã³ÊÁö")]
+    [Header("ì‹œë„ˆì§€")]
     [SerializeField] private EArtifactSynergy _synergy;
 
-    [Header("´É·ÂÄ¡")]
+    [Header("ëŠ¥ë ¥ì¹˜")]
     [Min(0)]
     [SerializeField] private int _maxStars;
 
@@ -26,7 +26,7 @@ public class CArtifactDataSO : ScriptableObject
 
     #endregion
 
-    #region ÇÁ·ÎÆÛÆ¼
+    #region í”„ë¡œí¼í‹°
     public string ArtifactID => _artifactID;
     public string ArtifactName => _artifactName;
     public string Description => _description;
@@ -66,7 +66,7 @@ public class CArtifactDataSO : ScriptableObject
 
         }
 
-        Debug.Log("µ¥ÀÌÅÍ ¾øÀ½");
+        Debug.Log("ë°ì´í„° ì—†ìŒ");
         return default;
 
     }
