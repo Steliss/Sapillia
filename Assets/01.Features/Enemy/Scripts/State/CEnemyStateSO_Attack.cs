@@ -30,8 +30,8 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
 
     public void StateEnter()
     {
-        _mashine.Uni.Cancel();
-        _mashine.Uni.Run(async ct =>
+        _mashine.AttackUni.Cancel();
+        _mashine.AttackUni.Run(async ct =>
         {
             // 선딜레이
             _mashine.Nav.velocity = Vector3.zero;
@@ -130,7 +130,7 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
 
     public void StateExit()
     {
-        _mashine.Uni.Cancel();
+        _mashine.AttackUni.Cancel();
 
         // 생성한 오브젝트들 모두 꺼주기
         for (int i = 0; i < _gameObjects.Count; i++)

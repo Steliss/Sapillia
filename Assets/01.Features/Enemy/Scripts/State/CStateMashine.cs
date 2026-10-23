@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 {
     #region 인스펙터
+    [Header("몬스터 기본 정보")]
     [SerializeField] private string _id;
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
     [SerializeField] private float _patrolRadius = 3f;
@@ -15,6 +17,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
     [Header("공격 패턴 SO")]
     [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
+
+    [Header("체력 바")]
+    [SerializeField] private Slider _hpBar;
+    [SerializeField] private Slider _superArmorBar;
+
 
     [Header("애니메이터 스테이트")]
     [SerializeField] private string _stateIdle = "Idle";
@@ -31,9 +38,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private SpriteRenderer _sprite;
     private Rigidbody2D _rb;
     private bool _isPatrol = true;
-    private CUniTaskOnes _uni = new CUniTaskOnes();
+    private CUniTaskOnes _attackUni = new CUniTaskOnes();
     private CUniTaskOnes _searchUni = new CUniTaskOnes();
+    private CUniTaskOnes _hurtUni = new CUniTaskOnes();
     private Transform _target;
+    private Vector3 _startScale;
+    private Color _startColor;
     #endregion
 
     #region 스테이트
@@ -43,6 +53,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     #endregion
 
     #region 스탯
+    private CDataEnemySO _data;
     private float _hp;
     private float _superArmor;
     private float _defense;
@@ -61,7 +72,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public IEnemyState MoveState => _moveState;
     public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
     public IEnemyState State => _state;
-    public CUniTaskOnes Uni => _uni;
+    public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
     public float PatrolMoveRange => _patrolMoveRange;
 
@@ -149,6 +160,10 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
+        _startScale = transform.localScale;
+        _startColor = _sprite.color;
+
+
         // 공격 패턴 생성
         if (_attackState.Count > 0)
         {
@@ -220,7 +235,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         if (hit != null)
         {
             CLog.Log("플레이어 발견");
-            _uni.Cancel();
+            _attackUni.Cancel();
             _target = hit.transform;
             _isPatrol = false;
             StateChanged(_moveState);
@@ -236,31 +251,107 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             return;
         }
 
-        _dataBase.TryGet(_id, out CDataEnemySO data);
+        _dataBase.TryGet(_id, out _data);
 
-        if (data != null)
+        if (_data != null)
         {
-            _hp = data.Hp;
-            _superArmor = data.SuperArmor;
-            _defense = data.Defense;
-            _attack = data.Attack;
-            _speed = data.Speed;
+            _hp = _data.Hp;
+            _superArmor = _data.SuperArmor;
+            _defense = _data.Defense;
+            _attack = _data.Attack;
+            _speed = _data.Speed;
 
             Nav.speed = _speed;
         }
     }
 
+    // 피격 피드백
+    public void HultFeedback()
+    {
+        _hurtUni.Cancel();
+        _hurtUni.Run(async ct =>
+        {
+            float t = 0f;
+            float tMax = 0.1f;
+            try
+            {
+                while (t < tMax)
+                {
+                    _sprite.color = Color.red;
+                    t += Time.deltaTime;
+                    float t1510 = Mathf.Lerp(1.5f, 1f, t/tMax);
+
+                    Vector3 scale = _startScale;
+                    scale.y = t1510;
+                    transform.localScale = scale;
+
+                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                }
+            }
+            finally
+            {
+                transform.localScale = _startScale;
+                _sprite.color = _startColor;
+            }
+        });
+    }
+
+    private void HpBarUpdate()
+    {
+        if (_hpBar == null || _superArmorBar == null)
+        {
+            return;
+        }
+
+
+        if (_superArmor <= 0)
+        {
+            _superArmorBar.gameObject.SetActive(false);
+        }
+        else
+        {
+            _superArmorBar.gameObject.SetActive(true);
+            _superArmorBar.maxValue = _data.SuperArmor;
+            _superArmorBar.value = _superArmor;
+        }
+
+        if (_hp <= 0)
+        {
+            _hpBar.gameObject.SetActive(false);
+        }
+        else
+        {
+            _hpBar.gameObject.SetActive(true);
+            _hpBar.maxValue = _data.Hp;
+            _hpBar.value = _hp;
+        }
+    }
+
     public void TakeDamage(SDamageInfo damageInfo)
     {
-        int finalDamage = damageInfo.Damage;
+        float finalDamage = damageInfo.Damage;
 
-        _hp = Mathf.Max(0, _hp - Mathf.Max(0, finalDamage));
+        if (_superArmor > 0)
+        {
+            _superArmor -= finalDamage;
+            finalDamage *= 0.5f;
+        }
+        float reduction = 1 - (1.025f * Mathf.Log10(1f + (0.025f * _defense)));
+        
+
+        _hp -= finalDamage * reduction;
+
+        CLog.Log($"데미지 : {finalDamage} / 감소율 : {reduction} / 최종값 {finalDamage * reduction}");
+
+        HpBarUpdate();
 
         if (_hp <= 0)
         {
             // 임시 사망처리
             gameObject.SetActive(false);
         }
+
+        HultFeedback();
     }
 
     public void TakeDamage(int damage)
