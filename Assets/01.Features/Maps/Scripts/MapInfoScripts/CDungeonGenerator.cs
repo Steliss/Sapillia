@@ -1,58 +1,55 @@
-    using System.Collections;
-    using System.Collections.Generic;
-    using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-    public class CDungeonGenerator : MonoBehaviour
+public class CDungeonGenerator : MonoBehaviour
+{
+    #region Ïù∏Ïä§ÌéôÌÑ∞
+
+    [Header("Î∞© Ï†ïÎ≥¥")]
+    [SerializeField] private CRoomData _firstRoom;
+    [SerializeField] private CRoomData _secondRoom;
+
+    [Header("Î∞© ÎîîÌè¥Ìä∏ ÏÇ¨Ïù¥Ï¶à")]
+    [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
+
+    #endregion
+
+    #region ÎÇ¥Î∂Ä Î≥ÄÏàò
+    private CRoomPlacer _roomPlacer;
+
+
+    #endregion
+
+
+    private void Awake()
     {
-	    #region ¿ŒΩ∫∆Â≈Õ
+        _roomPlacer = new CRoomPlacer(_defaultSize);
+    }
 
-	    [Header("πÊ «¡∏Æ∆’")]
-	    [SerializeField] private CRoomData _firstRoom;
-	    [SerializeField] private CRoomData _secondRoom;
-
-        [Header("πÊ µ∆˙∆Æ ±‘∞›")]
-        [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
-
-        #endregion
-
-
-        private void Start()
+    private void Start()
+    {
+        if (_firstRoom == null || _secondRoom == null)
         {
-
-            if(!_firstRoom.Right2 || !_secondRoom.Left1)
-            {
-                return;
-            }
-
-            Instantiate(_firstRoom, Vector3.zero, Quaternion.identity);
-
-            Vector3 secondRoomPos = GetRightRoomPosition(Vector3.zero, _firstRoom, _secondRoom, 2, 1);
-
-            Instantiate(_secondRoom, secondRoomPos, Quaternion.identity);
-
+            return;
         }
 
-
-
-        private Vector3 GetRightRoomPosition(
-            Vector3 currentPos, 
-            CRoomData currentRoom, 
-            CRoomData nextRoom,
-            int currentNumber,
-            int nextNumber)
-        { 
-        
-            float x = currentPos.x + currentRoom.RoomSize.x * _defaultSize.x;
-            
-            float currentY = (currentRoom.RoomSize.y - currentNumber) * _defaultSize.y;
-            float nextY = (nextRoom.RoomSize.y - nextNumber) * _defaultSize.y;
-
-
-            float y = currentPos.y + currentY - nextY;
-
-            return new Vector3(x, y, currentPos.z);
-
+        if(!_firstRoom.Down1 || !_secondRoom.Up1)
+        {
+            return;
         }
+
+        Instantiate(_firstRoom, Vector3.zero, Quaternion.identity);
+
+        Vector3 secondRoomPos = _roomPlacer.GetDownRoomPosition(Vector3.zero, _firstRoom, _secondRoom, 1, 1);
+
+        Instantiate(_secondRoom, secondRoomPos, Quaternion.identity);
+
+
+
 
 
     }
+
+
+}

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CTorchFragment : MonoBehaviour
 {
-    #region ÀÎ½ºÆåÅÍ
+    #region ì¸ìŠ¤í™í„°
 
-    [Header("³¯¾Æ°¡´ÂÈû")]
+    [Header("ë‚ ì•„ê°€ëŠ” í˜")]
     [SerializeField] private float _force = 3f;
     #endregion
 
-    #region ³»ºÎº¯¼ö
+    #region ë‚´ë¶€ë³€ìˆ˜
     private Rigidbody2D _rb;
     private SpriteRenderer _spriteRenderer;
 
