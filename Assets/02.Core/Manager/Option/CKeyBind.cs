@@ -31,8 +31,8 @@ public class CKeyBind : MonoBehaviour
     {
         foreach (EKeyAction keyAction in System.Enum.GetValues(typeof(EKeyAction)))
         {
-            // 인풋 매니저에서 쓰는 값
-            if (keyAction == EKeyAction.Move)
+            // 인풋 매니저에서 쓰는 값, ESC는 고정값
+            if (keyAction == EKeyAction.Move || keyAction == EKeyAction.ESC)
             {
                 continue;
             }

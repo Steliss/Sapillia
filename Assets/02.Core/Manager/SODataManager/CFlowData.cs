@@ -8,22 +8,8 @@ public class CFlowData : MonoBehaviour
     [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
 
     public CSettings CurrentSetting => _currentSetting;
+    public CSettings DefaultSetting => _defaultSetting;
 
     public CFlowGame CurrentFlow => _currentFlow;
-
-    private void Update()
-    {
-        if(Input.GetKeyUp(KeyCode.Alpha1))
-        {
-            CSaveData.Save(_currentSetting, "currentFlow");
-        }
-
-        if (Input.GetKeyUp(KeyCode.Alpha2))
-        {
-            CSaveData.Load(_currentSetting, "currentFlow");
-        }
-
-    }
-
-
+    public CFlowGame DefalutFlow => _defalutFlow;
 }

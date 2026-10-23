@@ -43,6 +43,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     #endregion
 
     #region 내부변수
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
     private EPlayerGuardState _guardState = EPlayerGuardState.Idle;
 
@@ -80,14 +81,21 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     {
         CLog.Log("[Guard] OnEnable 작동 완료");
 
+        _inputTask.Run(async token =>
+        {
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
+            CLog.Log("CPlayerGuard OnEnable 작업 완료");
+        });
         if (_inputHub != null)
         {
-            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
         }
     }
 
     private void OnDisable()
     {
+        _inputTask.Cancel();
+
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
@@ -102,6 +110,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void Update()
     {
+        // _inputHub 안잡혔을때 잡힐때까지 대기
+        if (_inputHub == null)
+        {
+            return;
+        }
+
         // 테스트용: 실제 우클릭 입력 확인
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
