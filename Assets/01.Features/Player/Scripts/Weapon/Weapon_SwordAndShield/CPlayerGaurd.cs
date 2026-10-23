@@ -220,23 +220,27 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         if (damage <= 0)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 1");
             return 0;
         }
 
         // 1. 방어 중이 아니거나 GuardBreak 상태
         if (!IsGuarding)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 2");
             return damage;
         }
 
         // 2. 방향 정보가 없는 공격
         if (!damageInfo.HasDirection)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 3");
             return damage;
         }
 
         if (_aim == null)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 4");
             return damage;
         }
 
@@ -245,6 +249,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         if (shieldDirection.sqrMagnitude < 0.0001f)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 5");
             return damage;
         }
 
@@ -256,12 +261,14 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 방패 기준 전방 -90도 ~ +90도
         if (dot < 0f)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 6");
             return damage;
         }
 
         // 4. 플레이어 데이터 확인
         if (_playerController == null || _playerController.PlayerData == null)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 7");
             return damage;
         }
 
@@ -283,6 +290,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             EnterGuardBreak();
 
             // 이번 공격은 방어 실패
+            CLog.Log($"{damage}만큼 데미지 입음");
             return damage;
         }
 
@@ -296,11 +304,13 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 8. 방어 성공
         if (isPerfect)
         {
+            CLog.Log($"Perpect Guard");
             _perfectGuardUsed = true;
             OnGuardSuccess?.Invoke(EGuardResult.PerfectGuard);
         }
         else
         {
+            CLog.Log("Guard");
             OnGuardSuccess?.Invoke(EGuardResult.Guard);
         }
 
