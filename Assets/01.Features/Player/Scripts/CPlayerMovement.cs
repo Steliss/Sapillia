@@ -29,6 +29,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     
     // 런타임 데이터
     private CPlayerGamingDataSO _playerData;
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
     // 이동 관련
     private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
@@ -75,24 +76,31 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             CLog.Error("[Movement] PlayerController 참조 누락");
         }
 
-        if (_inputHub == null)
-        {
-            CLog.Error("[Movement] InputHub 참조 누락");
-        }
+        CLog.Log($"[Movement] _inputHub 확인 : {_inputHub.name}");
     }
 
     private void OnEnable()
     {
-        if (_inputHub == null)
+        if(_inputHub != null)
         {
-            return;
-        }
+        _inputTask.Run(async token =>
+        {
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+            RegisterInput();
+            CLog.Log("CPlayerMovement OnEnable 작업 완료");
+        });
 
-        RegisterInput();
+        }
     }   
 
     private void FixedUpdate()
     {
+        // _inputHub 안잡혔을때 잡힐때까지 대기
+        if (_inputHub == null)
+        {
+            return;
+        }   
+
         if (_rb2D == null)
         {
             return;
@@ -110,6 +118,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     private void OnDisable()
     {
+        _inputTask.Cancel();
         UnRegisterInput();
 
         _moveDirection = Vector2.zero;

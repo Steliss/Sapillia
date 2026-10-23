@@ -64,7 +64,8 @@ public enum EKeyAction
     Ping,
     ChoosePotion,
     Before,
-    Next
+    Next,
+    ESC
 }
 
 public enum EKeySlot

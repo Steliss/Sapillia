@@ -56,6 +56,7 @@ public class CInputCommandHub : MonoBehaviour
         _inputManager.OnChoosePotion += ChoosePotion;
         _inputManager.OnBefore += Before;
         _inputManager.OnNext += Next;
+        _inputManager.OnESC += ESC;
 
         _subscribed = true;
     }
@@ -88,6 +89,7 @@ public class CInputCommandHub : MonoBehaviour
             _inputManager.OnChoosePotion -= ChoosePotion;
             _inputManager.OnBefore -= Before;
             _inputManager.OnNext -= Next;
+            _inputManager.OnESC -= ESC;
         }
 
         _subscribed = false;
@@ -188,6 +190,11 @@ public class CInputCommandHub : MonoBehaviour
     private void Next()
     {
         Execute(EKeyAction.Next);
+    }
+
+    private void ESC()
+    {
+        Execute(EKeyAction.ESC);
     }
     #endregion
 

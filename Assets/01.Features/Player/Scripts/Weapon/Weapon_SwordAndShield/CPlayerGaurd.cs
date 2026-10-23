@@ -43,6 +43,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     #endregion
 
     #region 내부변수
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
     private EPlayerGuardState _guardState = EPlayerGuardState.Idle;
 
@@ -80,14 +81,21 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     {
         CLog.Log("[Guard] OnEnable 작동 완료");
 
+        _inputTask.Run(async token =>
+        {
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
+            CLog.Log("CPlayerGuard OnEnable 작업 완료");
+        });
         if (_inputHub != null)
         {
-            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
         }
     }
 
     private void OnDisable()
     {
+        _inputTask.Cancel();
+
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
@@ -102,6 +110,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void Update()
     {
+        // _inputHub 안잡혔을때 잡힐때까지 대기
+        if (_inputHub == null)
+        {
+            return;
+        }
+
         // 테스트용: 실제 우클릭 입력 확인
         if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
         {
@@ -128,7 +142,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
-        CLog.Log($"Gaurd Execute 호출 : {value}");
+        
         bool pressed = value > 0.5f;
 
         // 우클릭 해제
@@ -176,11 +190,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         }
 
         _guardState = EPlayerGuardState.Guard;
-        CLog.Log("가드 중");
+        
 
         // 퍼펙트 가드 판정 시작
         _guardStartTime = Time.time;
         _perfectGuardUsed = false;
+
     }
 
     private void EndGuard()
@@ -205,23 +220,27 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         if (damage <= 0)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 1");
             return 0;
         }
 
         // 1. 방어 중이 아니거나 GuardBreak 상태
         if (!IsGuarding)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 2");
             return damage;
         }
 
         // 2. 방향 정보가 없는 공격
         if (!damageInfo.HasDirection)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 3");
             return damage;
         }
 
         if (_aim == null)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 4");
             return damage;
         }
 
@@ -230,6 +249,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         if (shieldDirection.sqrMagnitude < 0.0001f)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 5");
             return damage;
         }
 
@@ -241,12 +261,14 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 방패 기준 전방 -90도 ~ +90도
         if (dot < 0f)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 6");
             return damage;
         }
 
         // 4. 플레이어 데이터 확인
         if (_playerController == null || _playerController.PlayerData == null)
         {
+            CLog.Log($"[Guard]{damage}만큼 데미지 입음 7");
             return damage;
         }
 
@@ -268,6 +290,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             EnterGuardBreak();
 
             // 이번 공격은 방어 실패
+            CLog.Log($"{damage}만큼 데미지 입음");
             return damage;
         }
 
@@ -281,11 +304,13 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 8. 방어 성공
         if (isPerfect)
         {
+            CLog.Log($"Perpect Guard");
             _perfectGuardUsed = true;
             OnGuardSuccess?.Invoke(EGuardResult.PerfectGuard);
         }
         else
         {
+            CLog.Log("Guard");
             OnGuardSuccess?.Invoke(EGuardResult.Guard);
         }
 
