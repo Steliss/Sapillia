@@ -75,16 +75,22 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         {
             CLog.Error("[Movement] PlayerController 참조 누락");
         }
+
+        CLog.Log($"[Movement] _inputHub 확인 : {_inputHub.name}");
     }
 
     private void OnEnable()
     {
+        if(_inputHub != null)
+        {
         _inputTask.Run(async token =>
         {
             _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
             RegisterInput();
             CLog.Log("CPlayerMovement OnEnable 작업 완료");
         });
+
+        }
     }   
 
     private void FixedUpdate()

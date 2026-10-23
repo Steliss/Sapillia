@@ -7,6 +7,10 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
     [Header("참조")]
     [SerializeField] private CPlayerController _playerController;
 
+    // ※
+    [Header("테스트용도")]
+    [SerializeField] private CPlayerGuard _playerGuard;
+    [SerializeField] private bool _isShield = true;
     #endregion
 
     #region 내부변수
@@ -49,9 +53,11 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
 
         int finalDamage = damageInfo.Damage;
 
+        CLog.Warn($"[PlayerDamageReceiver] 방어기능 : {_currentDefense}");
+
         // 현재 방어 기능이 존재하는지 확인
         if (_currentDefense != null)
-        {
+        {            
             finalDamage = _currentDefense.ResolveDamage(damageInfo);
         }
 
@@ -68,8 +74,23 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
         CLog.Log($"HP : {_playerController.PlayerData.CurrentHP}");
     }
 
-    
+
 
 
     #endregion
+
+    // 테스트용도※
+    private void Start()
+    {
+        if (_isShield)
+        {
+            _playerGuard.enabled = true;
+            SetDefense(_playerGuard);
+        }
+        else
+        {
+            SetDefense(null);
+            _playerGuard.enabled =false;
+        }
+    }
 }

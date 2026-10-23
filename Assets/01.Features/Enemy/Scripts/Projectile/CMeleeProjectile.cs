@@ -46,21 +46,28 @@ public class CMeleeProjectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (((1 << collision.gameObject.layer) & _targetLayer) != 0)
+        if (((1 << collision.gameObject.layer) & _targetLayer) == 0)
         {
-            if ( TryGetComponent<IDamageInfoReceiver>(out IDamageInfoReceiver player))
-            {
-                SDamageInfo info = new SDamageInfo();
-                info.Damage = Mathf.RoundToInt(_damage);
-                info.IncomingDirection = _velocity;
-                info.HasDirection = true;
-
-                player.TakeDamage(info);
-                CLog.Log($"[EnemyAttack : {this}");
-                CLog.Log($"[EnemyAttack Damage : {info.Damage}");
-                CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
-            }
+            return;
         }
+
+        IDamageInfoReceiver player = collision.GetComponentInChildren<IDamageInfoReceiver>();
+
+        if(player == null)
+        {
+            CLog.Log("[MeleeProjectile] IDamageInfoReceiver를 찾지 못함");
+            return;
+        }
+
+        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _velocity);
+
+        player.TakeDamage(info);
+         
+        CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
+        CLog.Log($"[EnemyAttack Damage : {info.Damage}");
+        CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
+        
+        
     }
 
     public void AniEnd()
