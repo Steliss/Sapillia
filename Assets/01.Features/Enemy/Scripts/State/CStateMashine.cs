@@ -49,6 +49,8 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     #region 스테이트
     private IEnemyState _idleState;
     private IEnemyState _moveState;
+    private IEnemyState _airbornState;
+    private IEnemyState _deathState;
     private IEnemyState _state;
     #endregion
 
@@ -68,13 +70,17 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public SpriteRenderer Sprite => _sprite;
     public Rigidbody2D Rigidbody => _rb;
     public bool IsPatrol => _isPatrol;
-    public IEnemyState IdleState => _idleState;
-    public IEnemyState MoveState => _moveState;
-    public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
-    public IEnemyState State => _state;
     public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
     public float PatrolMoveRange => _patrolMoveRange;
+
+    // 상태
+    public IEnemyState State => _state;
+    public IEnemyState IdleState => _idleState;
+    public IEnemyState MoveState => _moveState;
+    public IEnemyState AirbornState => _airbornState;
+    public IEnemyState DeathState => _deathState;
+    public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
 
     // 스탯
     public float Hp => _hp;
@@ -126,11 +132,13 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         // 기본 상태 생성
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
+        _airbornState = new CEnemyState_Airborn(this);
+        _deathState = new CEnemyState_Death(this);
 
         // 애니메이터 해시 세팅 
         AnimatorSet();
 
-        // 네브메쉬에이전트, 스프라이트, 리지드바디 가져오기
+        // 네브메쉬에이전트, 리지드바디 가져오기
         _nav = GetComponent<NavMeshAgent>();
 
         if (Nav == null)
@@ -143,7 +151,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         Nav.updateUpAxis = false;
 
 
-        _sprite = GetComponent<SpriteRenderer>();
         if (Sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
@@ -203,10 +210,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
     }
 
-    // 애니메이터 해시 세팅
+    // 스프라이트, 애니메이터 캐싱 및 해시 세팅
     private void AnimatorSet()
     {
-        _ani = GetComponent<Animator>();
+        _ani = GetComponentInChildren<Animator>();
+        _sprite = GetComponentInChildren<SpriteRenderer>();
 
         if (Ani == null)
         {
@@ -250,7 +258,8 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             CLog.Warn($"{name} : 참조할 데이터 베이스 누락");
             return;
         }
-
+        _isPatrol = true;
+        _sprite.color = _startColor;
         _dataBase.TryGet(_id, out _data);
 
         if (_data != null)
@@ -283,14 +292,14 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
                     Vector3 scale = _startScale;
                     scale.y = t1510;
-                    transform.localScale = scale;
+                    _sprite.transform.localScale = scale;
 
                     await UniTask.Yield(PlayerLoopTiming.Update, ct);
                 }
             }
             finally
             {
-                transform.localScale = _startScale;
+                _sprite.transform.localScale = _startScale;
                 _sprite.color = _startColor;
             }
         });
@@ -329,12 +338,30 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
     public void TakeDamage(SDamageInfo damageInfo)
     {
+        if (_hp <= 0)
+        {
+            return;
+        }
+
+        // 넉백
+        if (damageInfo.HasDirection)
+        {
+            _rb.AddForce(damageInfo.IncomingDirection.normalized, ForceMode2D.Impulse);
+        }
+
+        // 데미지 계산
         float finalDamage = damageInfo.Damage;
 
         if (_superArmor > 0)
         {
+            // 슈퍼아머 데미지 감소
             _superArmor -= finalDamage;
             finalDamage *= 0.5f;
+            if (_superArmor <= 0)
+            {
+                _superArmor = 0f;
+                StateChanged(_airbornState);
+            }
         }
         float reduction = 1 - (1.025f * Mathf.Log10(1f + (0.025f * _defense)));
         
@@ -347,8 +374,9 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         if (_hp <= 0)
         {
-            // 임시 사망처리
-            gameObject.SetActive(false);
+            _hp = 0f;
+            StateChanged(_airbornState);
+            return;
         }
 
         HultFeedback();
