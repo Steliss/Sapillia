@@ -367,12 +367,12 @@ public class CWeaponMotion : MonoBehaviour
     // 공격 시도
     private void TryHit(Collider2D targetCollider)
     {
-        if (targetCollider == null)
+        if (targetCollider == null || _attacker == null)
         {
             return;
         }
 
-        // 플레이어 자신은 제외
+        // 본인 타격 방지
         if (targetCollider.transform.root == transform.root)
         {
             return;
@@ -385,20 +385,19 @@ public class CWeaponMotion : MonoBehaviour
             return;
         }
 
-        Vector2 incomingDircetion = (Vector2)targetCollider.bounds.center - (Vector2)_attacker.position;
-
-        SDamageInfo damageInfo = new SDamageInfo(_damage, incomingDircetion);
-
-        CDamageUtility.DealDamage(target, damageInfo);
-
-
         // 같은 공격 패턴 중 몬스터당 1회만 타격
         if (!_hitTargets.Add(target))
         {
             return;
         }
 
+        Vector2 incomingDircetion = (Vector2)targetCollider.bounds.center - (Vector2)_attacker.position;
+        SDamageInfo damageInfo = new SDamageInfo(_damage, incomingDircetion);
+
+        CDamageUtility.DealDamage(target, damageInfo);                       
+
         target.TakeDamage(_damage);
+        CLog.Log($"[PlayerAttack] 몬스터 적중\n Damage : {_damage}\n Direction : {damageInfo.IncomingDirection}");
     }
 
     #endregion

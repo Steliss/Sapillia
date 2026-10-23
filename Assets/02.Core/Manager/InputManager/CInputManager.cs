@@ -64,7 +64,7 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled += attackActionCanceled;
 
         _specialAttackAction.action.performed += specialAttackAction;
-        _specialAttackAction.action.performed += specialAttackActionCanceled;
+        _specialAttackAction.action.canceled += specialAttackActionCanceled;
 
         _rapidCasting1Action.action.performed += rapidCasting1Action;
         _rapidCasting2Action.action.performed += rapidCasting2Action;
@@ -117,7 +117,7 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled -= attackActionCanceled;
 
         _specialAttackAction.action.performed -= specialAttackAction;
-        _specialAttackAction.action.performed -= specialAttackActionCanceled;
+        _specialAttackAction.action.canceled -= specialAttackActionCanceled;
 
         _rapidCasting1Action.action.performed -= rapidCasting1Action;
         _rapidCasting2Action.action.performed -= rapidCasting2Action;

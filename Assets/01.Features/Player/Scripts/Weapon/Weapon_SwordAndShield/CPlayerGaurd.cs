@@ -128,7 +128,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
-        CLog.Log($"Gaurd Execute 호출 : {value}");
+        
         bool pressed = value > 0.5f;
 
         // 우클릭 해제
@@ -176,11 +176,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         }
 
         _guardState = EPlayerGuardState.Guard;
-        CLog.Log("가드 중");
+        
 
         // 퍼펙트 가드 판정 시작
         _guardStartTime = Time.time;
         _perfectGuardUsed = false;
+
     }
 
     private void EndGuard()
