@@ -28,11 +28,12 @@ public class CInputManager : MonoBehaviour
     [SerializeField] private InputActionReference _choosePotionAction;
     [SerializeField] private InputActionReference _beforeAction;
     [SerializeField] private InputActionReference _nextAction;
+    [SerializeField] private InputActionReference _ESCAction;
 
     public event Action<Vector2> OnMove;
     public event Action<float> OnDash;
     public event Action<float> OnAttack;
-    public event Action OnSpecialAttack;
+    public event Action <float> OnSpecialAttack;
     public event Action OnRapidCasting1;
     public event Action OnRapidCasting2;
     public event Action OnInteraction;
@@ -48,6 +49,7 @@ public class CInputManager : MonoBehaviour
     public event Action OnChoosePotion;
     public event Action OnBefore;
     public event Action OnNext;
+    public event Action OnESC;
 
 
     private void OnEnable()
@@ -62,6 +64,8 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled += attackActionCanceled;
 
         _specialAttackAction.action.performed += specialAttackAction;
+        _specialAttackAction.action.canceled += specialAttackActionCanceled;
+
         _rapidCasting1Action.action.performed += rapidCasting1Action;
         _rapidCasting2Action.action.performed += rapidCasting2Action;
         _interactionAction.action.performed += interactionAction;
@@ -77,6 +81,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.performed += choosePotionAction;
         _beforeAction.action.performed += beforeAction;
         _nextAction.action.performed += nextAction;
+        _ESCAction.action.performed += ESCAction;
 
         _moveAction.action.Enable();
         _dashAction.action.Enable();
@@ -97,6 +102,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.Enable();
         _beforeAction.action.Enable();
         _nextAction.action.Enable();
+        _ESCAction.action.Enable();
     }
 
     private void OnDisable()
@@ -111,6 +117,8 @@ public class CInputManager : MonoBehaviour
         _attackAction.action.canceled -= attackActionCanceled;
 
         _specialAttackAction.action.performed -= specialAttackAction;
+        _specialAttackAction.action.canceled -= specialAttackActionCanceled;
+
         _rapidCasting1Action.action.performed -= rapidCasting1Action;
         _rapidCasting2Action.action.performed -= rapidCasting2Action;
         _interactionAction.action.performed -= interactionAction;
@@ -126,6 +134,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.performed -= choosePotionAction;
         _beforeAction.action.performed -= beforeAction;
         _nextAction.action.performed -= nextAction;
+        _ESCAction.action.performed -= ESCAction;
 
         _moveAction.action.Disable();
         _dashAction.action.Disable();
@@ -146,6 +155,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.Disable();
         _beforeAction.action.Disable();
         _nextAction.action.Disable();
+        _ESCAction.action.Disable();
     }
 
     private void moveAction(InputAction.CallbackContext ctx)
@@ -180,11 +190,17 @@ public class CInputManager : MonoBehaviour
         OnAttack?.Invoke(0f);
     }
 
+    // 우클릭 누름
     private void specialAttackAction(InputAction.CallbackContext ctx)
     {
-        OnSpecialAttack?.Invoke();
+        OnSpecialAttack?.Invoke(1f);
     }
 
+    // 우클릭 땜
+    private void specialAttackActionCanceled(InputAction.CallbackContext ctx)
+    {
+        OnSpecialAttack?.Invoke(0f);
+    }
     private void rapidCasting1Action(InputAction.CallbackContext ctx)
     {
         OnRapidCasting1?.Invoke();
@@ -258,5 +274,10 @@ public class CInputManager : MonoBehaviour
     private void nextAction(InputAction.CallbackContext ctx)
     {
         OnNext?.Invoke();
+    }
+
+    private void ESCAction(InputAction.CallbackContext ctx)
+    {
+        OnESC?.Invoke();
     }
 }

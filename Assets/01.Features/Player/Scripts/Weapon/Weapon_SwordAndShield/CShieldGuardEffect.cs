@@ -55,7 +55,7 @@ public class CShieldGuardEffect : MonoBehaviour
         }
 
         bool isGuarding = _playerGuard.isActiveAndEnabled && _playerGuard.IsGuarding;
-
+        
         // 방패를 내리거나 GuardBreak 발생
         if (!isGuarding)
         {

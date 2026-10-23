@@ -225,8 +225,17 @@ public class CSettings
 public class CFlowGame
 {
     [SerializeField] private EScene _currentScene;
+    private string _name;
+    private int _playerprogress;
+    private int _playerretrycount;
+    private long _playerplaytime;
 
     public EScene CurrentScene => _currentScene;
+
+    public string PlayerName => _name;
+    public int PlayerProgress => _playerprogress;
+    public int PlayerRetrycount => _playerretrycount;
+    public long Playerplaytime => _playerplaytime;
 
     public void SetCurrentScene(EScene currentScene)
     {

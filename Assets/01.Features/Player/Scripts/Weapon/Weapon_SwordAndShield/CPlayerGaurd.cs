@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public enum EGuardResult
 {
@@ -42,6 +43,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     #endregion
 
     #region 내부변수
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
     private EPlayerGuardState _guardState = EPlayerGuardState.Idle;
 
@@ -77,14 +79,23 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void OnEnable()
     {
+        CLog.Log("[Guard] OnEnable 작동 완료");
+
+        _inputTask.Run(async token =>
+        {
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
+            CLog.Log("CPlayerGuard OnEnable 작업 완료");
+        });
         if (_inputHub != null)
         {
-            _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
         }
     }
 
     private void OnDisable()
     {
+        _inputTask.Cancel();
+
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
@@ -99,6 +110,18 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     private void Update()
     {
+        // _inputHub 안잡혔을때 잡힐때까지 대기
+        if (_inputHub == null)
+        {
+            return;
+        }
+
+        // 테스트용: 실제 우클릭 입력 확인
+        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        {
+            CLog.Log("[Guard] 실제 마우스 우클릭 감지");
+        }
+
         // GuardBreak 상태 처리
         if (IsGuardBroken)
         {
@@ -119,6 +142,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
+        
         bool pressed = value > 0.5f;
 
         // 우클릭 해제
@@ -127,6 +151,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             _buttonHeld = false;
 
             EndGuard();
+            CLog.Log("방어 해제");
             return;
         }
 
@@ -165,10 +190,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         }
 
         _guardState = EPlayerGuardState.Guard;
+        
 
         // 퍼펙트 가드 판정 시작
         _guardStartTime = Time.time;
         _perfectGuardUsed = false;
+
     }
 
     private void EndGuard()

@@ -38,7 +38,7 @@ public static class CSaveData
     {
         if (data == null)
         {
-            CLog.Warn("CSaveData: 불러올 데이터를 받을 대상이 없습니다.");
+            CLog.Warn("CSaveData: 데이터를 받을 대상이 없습니다.");
             return false;
         }
 
@@ -69,26 +69,86 @@ public static class CSaveData
 
 #endregion
 
-//
+// ※ TODO: Json 하나로 세이브 로드 관리 
 public class CDataManger : MonoBehaviour
 {
     [SerializeField] private CFlowData _flowData; // 진행 상황 및 옵션
 
+    public CSettings CurrentSetting => _flowData.CurrentSetting;
+    public CSettings DefaultSetting => _flowData.DefaultSetting;
+
+    public CFlowGame CurrentFlow => _flowData.CurrentFlow;
+    public CFlowGame DefaultFlow => _flowData.DefalutFlow;
+
+
+    // 데이터 로딩
+    private void Awake()
+    {
+        string path = Path.Combine(Application.persistentDataPath, "Setting.json");
+
+        AwakeSetting(path);
+
+        // 슬롯 세이브 관련 로딩은 CTitle
+    }
+
+    // 세팅값 
+    private void AwakeSetting(string path)
+    {
+        // 최초실행
+        if (!File.Exists(path))
+        {
+            ResetSettings();
+            SaveSettings();
+            return;
+        }
+
+        if(!LoadSettings())
+        {   
+            CLog.Warn("세팅 불러오기 실패");
+        }
+    }
+
+
+    /// <summary>
+    /// 설정 리셋 
+    /// </summary>
+    /// <returns></returns>
+    public bool ResetSettings()
+    {
+        return CSaveData.Save(_flowData.DefaultSetting, "Setting");
+    }
+
+    /// <summary>
+    /// 설정 저장
+    /// </summary>
+    /// <returns></returns>
     public bool SaveSettings()
     {
         return CSaveData.Save(_flowData.CurrentSetting, "Setting");
     }
 
+    /// <summary>
+    /// 설정 블러오기
+    /// </summary>
+    /// <returns></returns>
     public bool LoadSettings()
     {
         return CSaveData.Load(_flowData.CurrentSetting, "Setting");
     }
 
+    /// <summary>
+    /// 게임 진행 저장
+    /// </summary>
+    /// <returns></returns>
     public bool SaveGame(int slot)
     {
         return CSaveData.Save(_flowData.CurrentFlow, $"CurrentGame_{slot}");
     }
 
+    /// <summary>
+    /// 게임 진행 불러오기
+    /// </summary>
+    /// <returns></returns>
     public bool LoadGame(int slot)
     {
         return CSaveData.Load(_flowData.CurrentFlow, $"CurrentGame_{slot}");
