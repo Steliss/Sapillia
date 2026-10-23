@@ -28,6 +28,7 @@ public class CInputManager : MonoBehaviour
     [SerializeField] private InputActionReference _choosePotionAction;
     [SerializeField] private InputActionReference _beforeAction;
     [SerializeField] private InputActionReference _nextAction;
+    [SerializeField] private InputActionReference _ESCAction;
 
     public event Action<Vector2> OnMove;
     public event Action<float> OnDash;
@@ -48,6 +49,7 @@ public class CInputManager : MonoBehaviour
     public event Action OnChoosePotion;
     public event Action OnBefore;
     public event Action OnNext;
+    public event Action OnESC;
 
 
     private void OnEnable()
@@ -79,6 +81,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.performed += choosePotionAction;
         _beforeAction.action.performed += beforeAction;
         _nextAction.action.performed += nextAction;
+        _ESCAction.action.performed += ESCAction;
 
         _moveAction.action.Enable();
         _dashAction.action.Enable();
@@ -99,6 +102,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.Enable();
         _beforeAction.action.Enable();
         _nextAction.action.Enable();
+        _ESCAction.action.Enable();
     }
 
     private void OnDisable()
@@ -130,6 +134,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.performed -= choosePotionAction;
         _beforeAction.action.performed -= beforeAction;
         _nextAction.action.performed -= nextAction;
+        _ESCAction.action.performed -= ESCAction;
 
         _moveAction.action.Disable();
         _dashAction.action.Disable();
@@ -150,6 +155,7 @@ public class CInputManager : MonoBehaviour
         _choosePotionAction.action.Disable();
         _beforeAction.action.Disable();
         _nextAction.action.Disable();
+        _ESCAction.action.Disable();
     }
 
     private void moveAction(InputAction.CallbackContext ctx)
@@ -268,5 +274,10 @@ public class CInputManager : MonoBehaviour
     private void nextAction(InputAction.CallbackContext ctx)
     {
         OnNext?.Invoke();
+    }
+
+    private void ESCAction(InputAction.CallbackContext ctx)
+    {
+        OnESC?.Invoke();
     }
 }

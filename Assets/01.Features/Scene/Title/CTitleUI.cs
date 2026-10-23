@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.IO;
+using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -89,7 +90,7 @@ public class CSaveSlotUI
 #endregion
 
 
-public class CTitleUI : MonoBehaviour
+public class CTitleUI : MonoBehaviour, IInputCommand
 {
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
@@ -105,23 +106,72 @@ public class CTitleUI : MonoBehaviour
     [SerializeField] private GameObject _startGameUI;
     [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
+    [Header("설정 UI")]
+    [SerializeField] private GameObject _settingUI;
+
 
     private CSceneManager _cSceneManager;
+    private CInputCommandHub _input;
     private Button _startButton;
     private Button _settingButton;
     private Button _discordButton;
     private Button _creditButton;
     private Button _exitButton;
 
+    private CancellationTokenSource _cancleToken;
 
-    // GameObject의 버튼 생상 변경과 기입처리
+    private async void OnEnable()
+    {
+        _cancleToken = new CancellationTokenSource();
+        CancellationToken token = _cancleToken.Token;
+
+        _startButton.onClick.AddListener(OpenCharacterSlot);
+        _settingButton.onClick.AddListener(SettingGame);
+        _discordButton.onClick.AddListener(DiscordOpen);
+        _creditButton.onClick.AddListener(CreditOpen);
+        _exitButton.onClick.AddListener(GameExit);
+
+        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart);
+
+        try
+        {
+            _input = await CManagerDontDestroy.InputCommandHubAsync(token);
+            _input.Register(EKeyAction.ESC, this);
+
+            _cSceneManager = await CManagerDontDestroy.SceneManagerAsync(token);
+            CLog.Log("CTitleUI OnEnable 작업 완료");
+        }
+        catch (OperationCanceledException) when (token.IsCancellationRequested)
+        {
+            // 매니저를 기다리는 도중 UI가 비활성화되거나 파괴되면 사용
+        }
+
+    }
+
+    private void OnDisable()
+    {
+        _startButton.onClick.RemoveListener(OpenCharacterSlot);
+        _settingButton.onClick.RemoveListener(SettingGame);
+        _discordButton.onClick.RemoveListener(DiscordOpen);
+        _creditButton.onClick.RemoveListener(CreditOpen);
+        _exitButton.onClick.RemoveListener(GameExit);
+
+        // 구독해제
+        _cancleToken?.Cancel();
+        _cancleToken?.Dispose();
+        _cancleToken = null;
+        _input.Unregister(EKeyAction.ESC, this);
+    }
+
     private void Awake()
     {
+        // GameObject의 버튼 생상 변경과 기입처리
         _startButton = SetButton(_startButtonObject);
         _settingButton = SetButton(_settingButtonObject);
         _discordButton = SetButton(_discordButtonObject);
         _creditButton = SetButton(_creditButtonObject);
         _exitButton = SetButton(_exitButtonObject);
+
         _saveSlots[0].StartGameStartButton = SetButton2(_saveSlots[0].StartGameStartButton, _saveSlots[0].StartButtonBackImage);
         _saveSlots[1].StartGameStartButton = SetButton2(_saveSlots[1].StartGameStartButton, _saveSlots[1].StartButtonBackImage);
         _saveSlots[2].StartGameStartButton = SetButton2(_saveSlots[2].StartGameStartButton, _saveSlots[2].StartButtonBackImage);
@@ -129,13 +179,6 @@ public class CTitleUI : MonoBehaviour
 
     private void Start()
     {
-        _cSceneManager = CManagerDontDestroy.Instance.SceneManager;
-
-        if (_cSceneManager == null)
-        {
-            // ※ : TODO : 잡아주는 과정 추가 필요.
-            CLog.Warn("_cSceneManager : Null");
-        }
 
         string path = Path.Combine(Application.persistentDataPath, "CurrentGame_0.json");
         if (!File.Exists(path))
@@ -172,31 +215,26 @@ public class CTitleUI : MonoBehaviour
 
     private void Update()
     {
+        if(_cSceneManager == null || _input == null)
+        {
+            return;
+        }
+
         if(_cSceneManager.IsChanging)
         {
             gameObject.SetActive(false);
         }
+
+
     }
 
-    private void OnEnable()
+
+    public void Execute()
     {
-        _startButton.onClick.AddListener(OpenCharacterSlot);
-        _settingButton.onClick.AddListener(SettingGame);
-        _discordButton.onClick.AddListener(DiscordOpen);
-        _creditButton.onClick.AddListener(CreditOpen);
-        _exitButton.onClick.AddListener(GameExit);
-
-        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart);
+        _startGameUI.SetActive(false);
+        Debug.Log("CTitleUI ESC 실행");
     }
 
-    private void OnDisable()
-    {
-        _startButton.onClick.RemoveListener(OpenCharacterSlot);
-        _settingButton.onClick.RemoveListener(SettingGame);
-        _discordButton.onClick.RemoveListener(DiscordOpen);
-        _creditButton.onClick.RemoveListener(CreditOpen);
-        _exitButton.onClick.RemoveListener(GameExit);
-    }
 
     // 마우스 이동에 따른 글자색 변화
     private Button SetButton(GameObject buttonObject)
