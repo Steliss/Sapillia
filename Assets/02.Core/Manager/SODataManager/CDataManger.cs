@@ -70,19 +70,22 @@ public static class CSaveData
 #endregion
 
 // ※ TODO: Json 하나로 세이브 로드 관리 
+/// <summary>
+/// 새 프로필 들어갈때 신규 생성이라 매니저 클래스에서 _currentFlow값 보관해서 쓰면 안됨. 
+/// </summary>
 public class CDataManger : MonoBehaviour
 {
-    [SerializeField] private CFlowData _flowData; // 진행 상황 및 옵션
+    [SerializeField] private CSettings _defaultSetting = new CSettings();
+    [SerializeField] private CSettings _currentSetting = new CSettings();
+    [SerializeField] private CFlowGame _defalutFlow = new CFlowGame();
+    [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
+    [SerializeField] private CPlayerRunSession _playerData; // 플레이어 데이터
 
-    public CSettings CurrentSetting => _flowData.CurrentSetting;
-    public CSettings DefaultSetting => _flowData.DefaultSetting;
-
-    public CFlowGame CurrentFlow => _flowData.CurrentFlow;
-    public CFlowGame DefaultFlow => _flowData.DefalutFlow;
-
+    public CFlowGame CurrentFlow => _currentFlow;
+    public CSettings CurrentSetting => _currentSetting;
 
     // 데이터 로딩
-    private void Awake()
+    private void OnEnable()
     {
         string path = Path.Combine(Application.persistentDataPath, "Setting.json");
 
@@ -106,6 +109,8 @@ public class CDataManger : MonoBehaviour
         {   
             CLog.Warn("세팅 불러오기 실패");
         }
+
+        SaveSettings();
     }
 
 
@@ -113,9 +118,14 @@ public class CDataManger : MonoBehaviour
     /// 설정 리셋 
     /// </summary>
     /// <returns></returns>
-    public bool ResetSettings()
+     public bool ResetSettings()
     {
-        return CSaveData.Save(_flowData.DefaultSetting, "Setting");
+        if (!CSaveData.Save(_defaultSetting, "Setting"))
+        {
+            return false;
+        }
+
+        return LoadSettings();
     }
 
     /// <summary>
@@ -124,7 +134,7 @@ public class CDataManger : MonoBehaviour
     /// <returns></returns>
     public bool SaveSettings()
     {
-        return CSaveData.Save(_flowData.CurrentSetting, "Setting");
+        return CSaveData.Save(_currentSetting, "Setting");
     }
 
     /// <summary>
@@ -133,25 +143,64 @@ public class CDataManger : MonoBehaviour
     /// <returns></returns>
     public bool LoadSettings()
     {
-        return CSaveData.Load(_flowData.CurrentSetting, "Setting");
+        return CSaveData.Load(_currentSetting, "Setting");
     }
 
-    /// <summary>
-    /// 게임 진행 저장
-    /// </summary>
-    /// <returns></returns>
+    // 게임 진행 + 플레이어 저장
     public bool SaveGame(int slot)
     {
-        return CSaveData.Save(_flowData.CurrentFlow, $"CurrentGame_{slot}");
+        CPlayerGamingDataSO player = _playerData.GetPlayerData();
+
+        if (player == null || !player.IsInitialized)
+        {
+            CLog.Warn("저장할 플레이어 데이터가 없습니다.");
+            return false;
+        }
+
+        CGameSaveData data = new CGameSaveData
+        {
+            Flow = _currentFlow,
+            Player = player
+        };
+
+        return CSaveData.Save(data, $"Game_{slot}");
     }
 
-    /// <summary>
-    /// 게임 진행 불러오기
-    /// </summary>
-    /// <returns></returns>
+    // 게임 진행 + 플레이어 불러오기
     public bool LoadGame(int slot)
     {
-        return CSaveData.Load(_flowData.CurrentFlow, $"CurrentGame_{slot}");
-    }
+        string path = Path.Combine(Application.persistentDataPath, $"Game_{slot}" + ".json");
 
+        // 파일이 없으면 새 게임 생성
+        if (!File.Exists(path))
+        {
+            _playerData.SetPlayerData();
+            _currentFlow = new CFlowGame();
+            JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(_defalutFlow), _currentFlow);
+            SaveGame(slot);
+            return true;
+        }
+
+        CGameSaveData data = new CGameSaveData();
+
+        // 파일은 있지만 불러오기에 실패
+        if (!CSaveData.Load(data, $"Game_{slot}"))
+        {
+            return false;
+        }
+
+        // 필요한 정보가 누락된 경우
+        if (data.Flow == null || data.Player == null)
+        {
+            CLog.Warn("저장 파일에 진행 또는 플레이어 데이터가 없습니다.");
+            return false;
+        }
+
+        JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(data.Flow), _currentFlow);
+
+        // 플레이어 복원은 런 세션에서 처리
+        _playerData.SetPlayerData(data.Player);
+
+        return true;
+    }
 }

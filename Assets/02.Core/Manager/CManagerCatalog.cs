@@ -113,3 +113,12 @@ public class CLocalizationData
     public CLocalizationEntry[] talk;
     public CLocalizationEntry[] scene;
 }
+
+
+// 데이터 매니저 관련 필드
+[Serializable]
+public class CGameSaveData
+{
+    public CFlowGame Flow;
+    public CPlayerGamingDataSO Player;
+}

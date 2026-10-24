@@ -11,7 +11,7 @@ public class CSettings
     [SerializeField] private float _cameraShakeMultiplier = 1f;
 
     [SerializeField] private bool _displayEffect = true;
-    [SerializeField] private ELanguage _currentLanhuage;
+    [SerializeField] private ELanguage _currentLanhuage = ELanguage.Korean;
 
     [Header("Sound")]
     [Range(0f, 1f)]
@@ -224,11 +224,11 @@ public class CSettings
 [Serializable]
 public class CFlowGame
 {
-    [SerializeField] private EScene _currentScene;
-    private string _name;
-    private int _playerprogress;
-    private int _playerretrycount;
-    private long _playerplaytime;
+    [SerializeField] private EScene _currentScene = EScene.Menu;
+    [SerializeField] private string _name = string.Empty;
+    [SerializeField] private int _playerprogress = 0;
+    [SerializeField] private int _playerretrycount = 0;
+    [SerializeField] private long _playerplaytime = 0;
 
     public EScene CurrentScene => _currentScene;
 
@@ -240,5 +240,30 @@ public class CFlowGame
     public void SetCurrentScene(EScene currentScene)
     {
         _currentScene = currentScene;
+    }
+
+    public void SetName(string name)
+    {
+        _name = name;
+    }
+
+    public void SetProgress(int progress)
+    {
+        _playerprogress = progress;
+    }
+
+    public void SetRetryCount(int count)
+    {
+        _playerretrycount = count;
+    }
+
+    public void AddRetryCount(int count)
+    {
+        _playerretrycount += count;
+    }
+
+    public void SetPlaytime(long time)
+    {
+        _playerplaytime = time;
     }
 }

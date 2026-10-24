@@ -26,6 +26,11 @@ public class CManagerDontDestroy : MonoBehaviour
             CLog.Log("_sceneManager : Null");
         }
 
+        if (_inputCommandHub == null)
+        {
+            CLog.Log("_inputCommandHub : Null");
+        }
+
         Instance = this;
 
         // 씬이 변경되어도 유지
