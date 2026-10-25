@@ -10,7 +10,7 @@ public enum ELanguage
 
 public class CLocalizationManager : MonoBehaviour
 {
-    [SerializeField] private CFlowData _flowData;
+    [SerializeField] private CDataManger _flowData;
     [SerializeField] private TextAsset _koreanJson;
     [SerializeField] private TextAsset _englishJson;
 
