@@ -227,7 +227,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         }
         else 
         {
-            if (_dataManger.LoadGame(0))
+            if (_dataManger.LoadGame(slot))
             {
                 _saveSlots[slot].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
                 _saveSlots[slot].PlayerNameText.text = _localization.GetText("scene.playername.text");
