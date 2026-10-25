@@ -81,6 +81,16 @@ public class CDataManger : MonoBehaviour
     [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
     [SerializeField] private CPlayerRunSession _playerData; // 플레이어 데이터
 
+    // ※ Todo :  아이템 관련
+    /*
+        아이템 이름
+        아이템 위치 
+        아이템 종류 
+        아이템 인덱스 
+     */
+
+
+
     public CFlowGame CurrentFlow => _currentFlow;
     public CSettings CurrentSetting => _currentSetting;
 
