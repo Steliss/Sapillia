@@ -3,32 +3,33 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "SO/Enemy/State_Attack", fileName = "Enemy_Attack_")]
-public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
+[CreateAssetMenu(menuName = "SO/Enemy/AttackState", fileName = "Enemy_Attack_Melee_")]
+public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
 {
     #region 인스펙터
+
+    [Header("===== 공격 =====")]
+    [Header("프리팹")]
+    [SerializeField] private GameObject _projectile;
     [Header("선딜, 공격시간, 후딜")]
     [SerializeField] private float _beforeDelay = 2f;
     [SerializeField] private float _attackTime = 1f;
     [SerializeField] private float _afterDelay = 0.5f;
-    [Header("공격 이펙트, 전조 이펙트")]
-    [SerializeField] private GameObject _projectile;
-    [SerializeField] private GameObject _warningLine;
     [Header("공격시 돌진 거리")]
     [SerializeField] private float _rushDistanse = 5f;
+    [Space(10)]
+    [Header("===== 전조 =====")]
+    [Header("프리팹")]
+    [SerializeField] private GameObject _warningLine;
+    [Header("길이")]
+    [SerializeField] private float _lineLength = 3f;
+    [Header("간격")]
+    [SerializeField] private float _interbal = 1f;
     #endregion
 
-    #region 내부 변수
-    private CStateMashine _mashine;
-    private List<GameObject> _gameObjects = new List<GameObject>();
-    #endregion
 
-    public void Init(CStateMashine mashine)
-    {
-        _mashine = mashine;
-    }
 
-    public void StateEnter()
+    public override void StateEnter()
     {
         _mashine.AttackUni.Cancel();
         _mashine.AttackUni.Run(async ct =>
@@ -59,20 +60,21 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
 
             Vector2 linePos = myPos + (dir * _rushDistanse / 2f);
 
-            // 고정된 라인
+            // 고정된 라인 생성
             GameObject line1 = CreateAttackObject
-            (_warningLine, _beforeDelay, linePos + dir90 * 1f, angle);
+            (_warningLine, _beforeDelay + _attackTime, linePos + dir90 * _interbal, angle);
             GameObject line2 = CreateAttackObject
-            (_warningLine, _beforeDelay, linePos + -dir90 * 1f, angle);
+            (_warningLine, _beforeDelay + _attackTime, linePos + -dir90 * _interbal, angle);
 
-            // 움직이는 라인
+            // 움직이는 라인 생성
             GameObject line3 = CreateAttackObject
-            (_warningLine, _beforeDelay, linePos, angle);
+            (_warningLine, _beforeDelay + _attackTime, linePos, angle);
             GameObject line4 = CreateAttackObject
-            (_warningLine, _beforeDelay, linePos, angle);
+            (_warningLine, _beforeDelay + _attackTime, linePos, angle);
 
+            // 길이 조절
             Vector3 scale = line1.transform.localScale;
-            scale.y = _rushDistanse;
+            scale.y = _lineLength;
 
             line1.transform.localScale = scale;
             line2.transform.localScale = scale;
@@ -103,7 +105,7 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
             
 
             GameObject go = CreateAttackObject
-            (_projectile, _afterDelay + _afterDelay, myPos + dir.normalized, angle);
+            (_projectile, _attackTime + _afterDelay, myPos + dir.normalized, angle);
 
             if (go != null)
             {
@@ -128,19 +130,13 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
         });
     }
 
-    public void StateExit()
+    public override void StateExit()
     {
         _mashine.AttackUni.Cancel();
-
-        // 생성한 오브젝트들 모두 꺼주기
-        for (int i = 0; i < _gameObjects.Count; i++)
-        {
-            _gameObjects[i].SetActive(false);
-        }
-        _gameObjects.Clear();
+        _mashine.GameObjectsListClear();
     }
 
-    public void StateUpdate()
+    public override void StateUpdate()
     {
         
     }
@@ -154,7 +150,7 @@ public class CEnemyStateSO_Attack : ScriptableObject, IEnemyState
             go = CObjectPoolManager.Instance.TryGetObjectPool(prefeb, lifeTime);
             go.transform.rotation = angle;
             go.transform.position = pos;
-            _gameObjects.Add(go);
+            _mashine.GameObjectsListAdd(go);
         }
 
         return go;
