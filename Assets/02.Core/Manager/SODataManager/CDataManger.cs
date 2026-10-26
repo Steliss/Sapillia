@@ -97,7 +97,7 @@ public class CDataManger : MonoBehaviour
     public CPlayerRunSession PlayerData => _playerData;
     public CFlowGame CurrentFlow => _currentFlow;
     public CSettings CurrentSetting => _currentSetting;
-    public CPlayerRunSession PlayerData => _playerData;
+
 
     // 데이터 로딩
     private void OnEnable()
