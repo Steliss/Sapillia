@@ -210,7 +210,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _attackUni.Cancel();
         _hurtUni.Cancel();
         _searchUni.Cancel();
-        GameObjectsListClear();
     }
 
 
