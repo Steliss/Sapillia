@@ -79,22 +79,13 @@ public class CDataManger : MonoBehaviour
     [SerializeField] private CSettings _currentSetting = new CSettings();
     [SerializeField] private CFlowGame _defalutFlow = new CFlowGame();
     [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
-    [SerializeField] private CSettingUI cSettingUI;
     [SerializeField] private CPlayerRunSession _playerData; // 플레이어 데이터
-
-
-    // ※ Todo :  아이템 관련
-    /*
-        아이템 이름
-        아이템 위치 
-        아이템 종류 
-        아이템 인덱스 
-     */
-
+    [SerializeField] private CInventoryRunSession _inventoryData; // 인벤토리 데이터 
 
 
 
     public CPlayerRunSession PlayerData => _playerData;
+    public CInventoryRunSession InventoryData => _inventoryData;
     public CFlowGame CurrentFlow => _currentFlow;
     public CSettings CurrentSetting => _currentSetting;
 
@@ -161,10 +152,11 @@ public class CDataManger : MonoBehaviour
         return CSaveData.Load(_currentSetting, "Setting");
     }
 
-    // 게임 진행 + 플레이어 저장
+    // 게임 진행 + 플레이어 인벤토리 저장 
     public bool SaveGame(int slot)
     {
         CPlayerGamingDataSO player = _playerData.GetPlayerData();
+        CInventoryData inventory = _inventoryData.GetInventoryData();
 
         if (player == null || !player.IsInitialized)
         {
@@ -175,7 +167,8 @@ public class CDataManger : MonoBehaviour
         CGameSaveData data = new CGameSaveData
         {
             Flow = _currentFlow,
-            Player = player
+            Player = player,
+            Inventory = inventory
         };
 
         return CSaveData.Save(data, $"Game_{slot}");
@@ -190,10 +183,10 @@ public class CDataManger : MonoBehaviour
         if (!File.Exists(path))
         {
             _playerData.SetPlayerData();
+            _inventoryData.SetInventoryData();
             _currentFlow = new CFlowGame();
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(_defalutFlow), _currentFlow);
-            SaveGame(slot);
-            return true;
+            return SaveGame(slot);
         }
 
         CGameSaveData data = new CGameSaveData();
@@ -215,7 +208,7 @@ public class CDataManger : MonoBehaviour
 
         // 플레이어 복원은 런 세션에서 처리
         _playerData.SetPlayerData(data.Player);
-
+        _inventoryData.SetInventoryData(data.Inventory);
         return true;
     }
 }

@@ -214,6 +214,8 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void Start()
     {
+
+
         // ※ : TODO : 매니저 관련 잡아주는 과정 추가
 
         ReloadText();
