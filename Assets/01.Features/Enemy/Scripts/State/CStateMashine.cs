@@ -86,7 +86,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public IEnemyState State => _state;
     public IEnemyState IdleState => _idleState;
     public IEnemyState MoveState => _moveState;
-    public IEnemyState AirbornState => _airbornState;
     public IEnemyState DeathState => _deathState;
     public IReadOnlyList<CEnemyAttackStateSO> AttackState => _attackState;
 
@@ -218,10 +217,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
     private void Update()
     {
-        if (State != null)
-        {
-            State.StateUpdate();
-        }
+        State?.StateUpdate();
     }
 
     // 스프라이트, 애니메이터 캐싱 및 해시 세팅
@@ -244,6 +240,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         HashDown = Animator.StringToHash(_stateDown);
     }
 
+    // 주변 플레이어 검색
     public void PatrolSearch()
     {
         if (!_isPatrol)
@@ -432,6 +429,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         if (_hp <= 0)
         {
             _hp = 0f;
+            _sprite.color = Color.gray;
             StateChanged(_airbornState);
             return;
         }
