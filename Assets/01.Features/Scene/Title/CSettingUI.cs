@@ -1,6 +1,5 @@
 using System;
 using TMPro;
-using UnityEditor.Localization.Editor;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -49,10 +48,13 @@ public class CSettingUI : MonoBehaviour
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
 
+    [SerializeField] private GameObject _UICanvas;
+
     [Header("변경 이미지")]
     [SerializeField] private Sprite _changeSprite;
 
     [Header("옵션 슬롯")]
+    [SerializeField] private GameObject _gamePlaySlotButton;
     [SerializeField] private CSettingButtonSlot _language;
     [SerializeField] private CSettingButtonSlot _bossSkip;
     [SerializeField] private CSettingButtonSlot _cameraShake;
@@ -62,6 +64,8 @@ public class CSettingUI : MonoBehaviour
 
     private void OnEnable()
     {
+        _localization.OnLanguageChanged += ReloadText;
+
         _language.ButtonUp.onClick.AddListener(LanguageUp);
         _language.ButtonDown.onClick.AddListener(LanguageDown);
 
@@ -77,6 +81,8 @@ public class CSettingUI : MonoBehaviour
 
     private void OnDisable()
     {
+        _localization.OnLanguageChanged -= ReloadText;
+
         _language.ButtonUp.onClick.RemoveListener(LanguageUp);
         _language.ButtonDown.onClick.RemoveListener(LanguageDown);
 
@@ -92,14 +98,27 @@ public class CSettingUI : MonoBehaviour
 
     private void Awake()
     {
+        if(_localization ==  null)
+        {
+            CLog.Log("_localization : Null");
+        }
+
+        if (_dataManger == null)
+        {
+            CLog.Log("_dataManger : Null");
+        }
+
         SetSlotButton(_language.Slot);
         SetSlotButton(_bossSkip.Slot);
         SetSlotButton(_cameraShake.Slot);
         SetSlotButton(_effect.Slot);
 
-        // 각 텍스트 초기값 넣어야함
     }
 
+    private void Start()
+    {
+        ReloadText();
+    }
 
     // 슬롯이미지 교체
     private void SetSlotButton(GameObject slot)
@@ -126,7 +145,33 @@ public class CSettingUI : MonoBehaviour
         button.navigation = navigation;
     }
 
+    /// <summary>
+    ///  설정 UI 캔버스 열기
+    /// </summary>
+    /// <param name="con"></param>
+    public void ActiveUI(bool con = true)
+    {
+        _UICanvas.SetActive(con);
+    }
+
+
+
     #region 게임 플레이 옵션 관련
+
+    //언어 변환 및 초기 언어 세팅 관련
+    private void ReloadText()
+    {
+        TextMeshProUGUI text = _gamePlaySlotButton.GetComponent<TextMeshProUGUI>();
+        text.text = _localization.GetText("scene.gameplayslotbutton.text");
+        _bossSkip.ContentsText.text = _localization.GetText(
+         _dataManger.CurrentSetting.SkipBoss
+        ? "scene.optionset.text"
+        : "scene.optionoff.text"
+        );
+        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
+    }
+
+
 
     private void LanguageUp()
     {
@@ -141,8 +186,8 @@ public class CSettingUI : MonoBehaviour
         }
 
         _localization.ChangeLanguage((ELanguage)index);
-        // 텍스트 전부 재 로딩 해야하는데.. 
-        CLog.Log($"{_dataManger.CurrentSetting.CurrentLanhuage}");
+        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
+        ReloadText();
     }
 
     private void LanguageDown()
@@ -158,7 +203,8 @@ public class CSettingUI : MonoBehaviour
         }
 
         _localization.ChangeLanguage((ELanguage)index);
-        CLog.Log($"{_dataManger.CurrentSetting.CurrentLanhuage}");
+        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
+        ReloadText();
     }
 
     // 보스 연출 스킾 여부 
