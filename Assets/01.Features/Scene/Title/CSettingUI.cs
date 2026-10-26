@@ -55,6 +55,7 @@ public class CSettingUI : MonoBehaviour
 
     [Header("옵션 슬롯")]
     [SerializeField] private GameObject _gamePlaySlotButton;
+    [SerializeField] private TextMeshProUGUI _gamePlaySlotButtonText;
     [SerializeField] private CSettingButtonSlot _language;
     [SerializeField] private CSettingButtonSlot _bossSkip;
     [SerializeField] private CSettingButtonSlot _cameraShake;
@@ -161,8 +162,7 @@ public class CSettingUI : MonoBehaviour
     //언어 변환 및 초기 언어 세팅 관련
     private void ReloadText()
     {
-        TextMeshProUGUI text = _gamePlaySlotButton.GetComponent<TextMeshProUGUI>();
-        text.text = _localization.GetText("scene.gameplayslotbutton.text");
+        _gamePlaySlotButtonText.text = _localization.GetText("scene.gameplayslotbutton.text");
         _bossSkip.ContentsText.text = _localization.GetText(
          _dataManger.CurrentSetting.SkipBoss
         ? "scene.optionset.text"
