@@ -481,7 +481,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _sceneList: {fileID: 11400000, guid: 7848ac87b8f8ac24cb848573060c1b04, type: 2}
-  _flowData: {fileID: 2059771909}
+  _dataManger: {fileID: 0}
   _localization: {fileID: 1096709122}
   _fadeCanvas: {fileID: 992931034}
   _fadeImage: {fileID: 807476856}
@@ -551,7 +551,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6eff50aa45ef017468d930ac6448d73d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flowData: {fileID: 2059771909}
+  _flowData: {fileID: 1566947519}
   _inputActions: {fileID: -944628639613478452, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
   _keyAction: 0
   _actionName: 
@@ -631,6 +631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _sceneManager: {fileID: 291624952}
   _inputCommandHub: {fileID: 590170025}
+  _dataManger: {fileID: 0}
 --- !u!4 &598338579
 Transform:
   m_ObjectHideFlags: 0
@@ -1115,7 +1116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15e60ea4d55bfe1418216ba357b7a1e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flowData: {fileID: 2059771909}
+  _flowData: {fileID: 1566947519}
   _koreanJson: {fileID: 4900000, guid: b6bd5489dd50e0149a6b67ed886f36b0, type: 3}
   _englishJson: {fileID: 4900000, guid: e3a6402499ab71743b677dc4fdfe2244, type: 3}
 --- !u!4 &1096709123
@@ -1133,6 +1134,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 598338579}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1183209759 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3587210212756013651, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+  m_PrefabInstance: {fileID: 2129063958}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a3cee90b575bbb045bf6a187ef0e5b97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1272880024
 GameObject:
   m_ObjectHideFlags: 0
@@ -1256,8 +1268,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b44ade1b2c2e53d4db72b8f34b6cf524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _autoStartForTest: 1
-  _testCostume: {fileID: 11400000, guid: 48c293f7f7e16054b945e338383da1b9, type: 2}
 --- !u!4 &1300565265
 Transform:
   m_ObjectHideFlags: 0
@@ -1337,6 +1347,34 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7433140e1a2a65845a408b24047f3124, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1333742494
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333742461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df86f2b711aec9b46ab0c4d6423626a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerController: {fileID: 1333742501}
+  _playerGuard: {fileID: 1333742491}
+  _weaponMotion: {fileID: 1183209759}
+  _specialAttackData: {fileID: 11400000, guid: befbd30da14576247b10369fcc1300cc, type: 2}
+  _specialManaCost: 15
+--- !u!114 &1333742501 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5101481884265823507, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+  m_PrefabInstance: {fileID: 2129063958}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333742461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bad56455d3d8cce42a2423c26f6f4454, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1396653961 stripped
@@ -1568,7 +1606,308 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c53a0ec2aa66b7428ec6d3f094cfbad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _flowData: {fileID: 2059771909}
+  _defaultSetting:
+    _skipBoss: 0
+    _cameraShakeMultiplier: 1
+    _displayEffect: 1
+    _currentLanhuage: 0
+    _masterSound: 1
+    _BGMSound: 1
+    _effectSound: 1
+    _enviromentSound: 1
+    _width: 1920
+    _height: 1080
+    _screenMode: 3
+    _moveUp:
+      _actionName: Move
+      _primary: <Keyboard>/w
+      _secondary: 
+      _primaryIndex: 1
+      _secondaryIndex: 6
+    _moveDown:
+      _actionName: Move
+      _primary: <Keyboard>/s
+      _secondary: 
+      _primaryIndex: 2
+      _secondaryIndex: 7
+    _moveLeft:
+      _actionName: Move
+      _primary: <Keyboard>/a
+      _secondary: 
+      _primaryIndex: 3
+      _secondaryIndex: 8
+    _moveRight:
+      _actionName: Move
+      _primary: <Keyboard>/d
+      _secondary: 
+      _primaryIndex: 4
+      _secondaryIndex: 9
+    _attack:
+      _actionName: Attack
+      _primary: <Mouse>/leftButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _specialAttack:
+      _actionName: SpecialAttack
+      _primary: <Mouse>/rightButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _dash:
+      _actionName: Dash
+      _primary: <Keyboard>/space
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _rapidCasting1:
+      _actionName: RapidCasting1
+      _primary: <Keyboard>/1
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _rapidCasting2:
+      _actionName: RapidCasting2
+      _primary: <Keyboard>/2
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _interaction:
+      _actionName: Interaction
+      _primary: <Keyboard>/f
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _usePotion:
+      _actionName: UsePotion
+      _primary: <Keyboard>/r
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _openMap:
+      _actionName: OpenMap
+      _primary: <Keyboard>/tab
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _inventory:
+      _actionName: Inventory
+      _primary: <Keyboard>/v
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _playerStats:
+      _actionName: Stats
+      _primary: <Keyboard>/c
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _talent:
+      _actionName: Talent
+      _primary: <Keyboard>/p
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _presetSetting:
+      _actionName: PresetSetting
+      _primary: <Keyboard>/b
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _chatting:
+      _actionName: Chatting
+      _primary: <Keyboard>/enter
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _reloading:
+      _actionName: Reloading
+      _primary: <Keyboard>/g
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _ping:
+      _actionName: Ping
+      _primary: <Mouse>/middleButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _choosePotion:
+      _actionName: ChoosePotion
+      _primary: <Keyboard>/backquote
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _before:
+      _actionName: Before
+      _primary: <Keyboard>/q
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _next:
+      _actionName: Next
+      _primary: <Keyboard>/e
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+  _currentSetting:
+    _skipBoss: 0
+    _cameraShakeMultiplier: 1
+    _displayEffect: 1
+    _currentLanhuage: 0
+    _masterSound: 1
+    _BGMSound: 1
+    _effectSound: 1
+    _enviromentSound: 1
+    _width: 1920
+    _height: 1080
+    _screenMode: 3
+    _moveUp:
+      _actionName: Move
+      _primary: <Keyboard>/w
+      _secondary: 
+      _primaryIndex: 1
+      _secondaryIndex: 6
+    _moveDown:
+      _actionName: Move
+      _primary: <Keyboard>/s
+      _secondary: 
+      _primaryIndex: 2
+      _secondaryIndex: 7
+    _moveLeft:
+      _actionName: Move
+      _primary: <Keyboard>/a
+      _secondary: 
+      _primaryIndex: 3
+      _secondaryIndex: 8
+    _moveRight:
+      _actionName: Move
+      _primary: <Keyboard>/d
+      _secondary: 
+      _primaryIndex: 4
+      _secondaryIndex: 9
+    _attack:
+      _actionName: Attack
+      _primary: <Mouse>/leftButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _specialAttack:
+      _actionName: SpecialAttack
+      _primary: <Mouse>/rightButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _dash:
+      _actionName: Dash
+      _primary: <Keyboard>/space
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _rapidCasting1:
+      _actionName: RapidCasting1
+      _primary: <Keyboard>/1
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _rapidCasting2:
+      _actionName: RapidCasting2
+      _primary: <Keyboard>/2
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _interaction:
+      _actionName: Interaction
+      _primary: <Keyboard>/f
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _usePotion:
+      _actionName: UsePotion
+      _primary: <Keyboard>/r
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _openMap:
+      _actionName: OpenMap
+      _primary: <Keyboard>/tab
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _inventory:
+      _actionName: Inventory
+      _primary: <Keyboard>/v
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _playerStats:
+      _actionName: Stats
+      _primary: <Keyboard>/c
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _talent:
+      _actionName: Talent
+      _primary: <Keyboard>/p
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _presetSetting:
+      _actionName: PresetSetting
+      _primary: <Keyboard>/b
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _chatting:
+      _actionName: Chatting
+      _primary: <Keyboard>/enter
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _reloading:
+      _actionName: Reloading
+      _primary: <Keyboard>/g
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _ping:
+      _actionName: Ping
+      _primary: <Mouse>/middleButton
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _choosePotion:
+      _actionName: ChoosePotion
+      _primary: <Keyboard>/backquote
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _before:
+      _actionName: Before
+      _primary: <Keyboard>/q
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+    _next:
+      _actionName: Next
+      _primary: <Keyboard>/e
+      _secondary: 
+      _primaryIndex: 0
+      _secondaryIndex: 1
+  _defalutFlow:
+    _currentScene: 0
+    _name: 
+    _playerprogress: 0
+    _playerretrycount: 0
+    _playerplaytime: 0
+  _currentFlow:
+    _currentScene: 0
+    _name: 
+    _playerprogress: 0
+    _playerretrycount: 0
+    _playerplaytime: 0
+  cSettingUI: {fileID: 0}
+  _playerData: {fileID: 1300565264}
 --- !u!1 &1684262187
 GameObject:
   m_ObjectHideFlags: 0
@@ -2338,7 +2677,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.033333335
   m_BuildHeightMesh: 0
   m_MinRegionArea: 0
   m_HideEditorLogs: 0
@@ -2384,301 +2723,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2059771908}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3eaa946019c389c4f8bb9f8a68dd56c7, type: 3}
+  m_Script: {fileID: 11500000, guid: d3a4fe42bcdc4ae4c80221f6638621cd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _defaultSetting:
-    _skipBoss: 0
-    _cameraShakeMultiplier: 1
-    _displayEffect: 1
-    _currentLanhuage: 0
-    _masterSound: 1
-    _BGMSound: 1
-    _effectSound: 1
-    _enviromentSound: 1
-    _width: 1920
-    _height: 1080
-    _screenMode: 3
-    _moveUp:
-      _actionName: Move
-      _primary: <Keyboard>/w
-      _secondary: 
-      _primaryIndex: 1
-      _secondaryIndex: 6
-    _moveDown:
-      _actionName: Move
-      _primary: <Keyboard>/s
-      _secondary: 
-      _primaryIndex: 2
-      _secondaryIndex: 7
-    _moveLeft:
-      _actionName: Move
-      _primary: <Keyboard>/a
-      _secondary: 
-      _primaryIndex: 3
-      _secondaryIndex: 8
-    _moveRight:
-      _actionName: Move
-      _primary: <Keyboard>/d
-      _secondary: 
-      _primaryIndex: 4
-      _secondaryIndex: 9
-    _attack:
-      _actionName: Attack
-      _primary: <Mouse>/leftButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _specialAttack:
-      _actionName: SpecialAttack
-      _primary: <Mouse>/rightButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _dash:
-      _actionName: Dash
-      _primary: <Keyboard>/space
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _rapidCasting1:
-      _actionName: RapidCasting1
-      _primary: <Keyboard>/1
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _rapidCasting2:
-      _actionName: RapidCasting2
-      _primary: <Keyboard>/2
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _interaction:
-      _actionName: Interaction
-      _primary: <Keyboard>/f
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _usePotion:
-      _actionName: UsePotion
-      _primary: <Keyboard>/r
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _openMap:
-      _actionName: OpenMap
-      _primary: <Keyboard>/tab
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _inventory:
-      _actionName: Inventory
-      _primary: <Keyboard>/v
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _playerStats:
-      _actionName: Stats
-      _primary: <Keyboard>/c
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _talent:
-      _actionName: Talent
-      _primary: <Keyboard>/p
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _presetSetting:
-      _actionName: PresetSetting
-      _primary: <Keyboard>/b
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _chatting:
-      _actionName: Chatting
-      _primary: <Keyboard>/enter
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _reloading:
-      _actionName: Reloading
-      _primary: <Keyboard>/g
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _ping:
-      _actionName: Ping
-      _primary: <Mouse>/middleButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _choosePotion:
-      _actionName: ChoosePotion
-      _primary: <Keyboard>/backquote
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _before:
-      _actionName: Before
-      _primary: <Keyboard>/q
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _next:
-      _actionName: Next
-      _primary: <Keyboard>/e
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-  _currentSetting:
-    _skipBoss: 0
-    _cameraShakeMultiplier: 1
-    _displayEffect: 1
-    _currentLanhuage: 0
-    _masterSound: 1
-    _BGMSound: 1
-    _effectSound: 1
-    _enviromentSound: 1
-    _width: 1920
-    _height: 1080
-    _screenMode: 3
-    _moveUp:
-      _actionName: Move
-      _primary: <Keyboard>/w
-      _secondary: 
-      _primaryIndex: 1
-      _secondaryIndex: 6
-    _moveDown:
-      _actionName: Move
-      _primary: <Keyboard>/s
-      _secondary: 
-      _primaryIndex: 2
-      _secondaryIndex: 7
-    _moveLeft:
-      _actionName: Move
-      _primary: <Keyboard>/a
-      _secondary: 
-      _primaryIndex: 3
-      _secondaryIndex: 8
-    _moveRight:
-      _actionName: Move
-      _primary: <Keyboard>/d
-      _secondary: 
-      _primaryIndex: 4
-      _secondaryIndex: 9
-    _attack:
-      _actionName: Attack
-      _primary: <Mouse>/leftButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _specialAttack:
-      _actionName: SpecialAttack
-      _primary: <Mouse>/rightButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _dash:
-      _actionName: Dash
-      _primary: <Keyboard>/space
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _rapidCasting1:
-      _actionName: RapidCasting1
-      _primary: <Keyboard>/1
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _rapidCasting2:
-      _actionName: RapidCasting2
-      _primary: <Keyboard>/2
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _interaction:
-      _actionName: Interaction
-      _primary: <Keyboard>/f
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _usePotion:
-      _actionName: UsePotion
-      _primary: <Keyboard>/r
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _openMap:
-      _actionName: OpenMap
-      _primary: <Keyboard>/tab
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _inventory:
-      _actionName: Inventory
-      _primary: <Keyboard>/v
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _playerStats:
-      _actionName: Stats
-      _primary: <Keyboard>/c
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _talent:
-      _actionName: Talent
-      _primary: <Keyboard>/p
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _presetSetting:
-      _actionName: PresetSetting
-      _primary: <Keyboard>/b
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _chatting:
-      _actionName: Chatting
-      _primary: <Keyboard>/enter
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _reloading:
-      _actionName: Reloading
-      _primary: <Keyboard>/g
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _ping:
-      _actionName: Ping
-      _primary: <Mouse>/middleButton
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _choosePotion:
-      _actionName: ChoosePotion
-      _primary: <Keyboard>/backquote
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _before:
-      _actionName: Before
-      _primary: <Keyboard>/q
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-    _next:
-      _actionName: Next
-      _primary: <Keyboard>/e
-      _secondary: 
-      _primaryIndex: 0
-      _secondaryIndex: 1
-  _defalutFlow:
-    _currentScene: 0
-  _currentFlow:
-    _currentScene: 0
 --- !u!4 &2059771910
 Transform:
   m_ObjectHideFlags: 0
@@ -3081,6 +3128,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1333742475}
+    - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1333742494}
   m_SourcePrefab: {fileID: 100100000, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

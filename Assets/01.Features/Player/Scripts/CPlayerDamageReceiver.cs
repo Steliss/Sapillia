@@ -82,6 +82,11 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
     // 테스트용도※
     private void Start()
     {
+        if(_playerGuard == null)
+        {
+            CLog.Warn($"[CPlayerDamageReceiver] 비어있음 : {_playerGuard}");
+        }
+
         if (_isShield)
         {
             _playerGuard.enabled = true;

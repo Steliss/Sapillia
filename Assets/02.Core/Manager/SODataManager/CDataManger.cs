@@ -79,7 +79,9 @@ public class CDataManger : MonoBehaviour
     [SerializeField] private CSettings _currentSetting = new CSettings();
     [SerializeField] private CFlowGame _defalutFlow = new CFlowGame();
     [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
+    [SerializeField] private CSettingUI cSettingUI;
     [SerializeField] private CPlayerRunSession _playerData; // 플레이어 데이터
+
 
     // ※ Todo :  아이템 관련
     /*
@@ -91,8 +93,11 @@ public class CDataManger : MonoBehaviour
 
 
 
+
+    public CPlayerRunSession PlayerData => _playerData;
     public CFlowGame CurrentFlow => _currentFlow;
     public CSettings CurrentSetting => _currentSetting;
+
 
     // 데이터 로딩
     private void OnEnable()

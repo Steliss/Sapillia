@@ -95,6 +95,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
 
+
     [Header("메뉴버튼")]
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
@@ -104,10 +105,19 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     [Header("게임 시작 UI")]
     [SerializeField] private GameObject _startGameUI;
+
+    [SerializeField] private GameObject _nameInput;
+    [SerializeField] private TMP_InputField _inputField;
+    [SerializeField] private Button _nameInputYes;
+    [SerializeField] private Button _nameInputNo;
+    [SerializeField] private TextMeshProUGUI _createPlayerTitle;
+    [SerializeField] private TextMeshProUGUI _nameInputYesText;
+    [SerializeField] private TextMeshProUGUI _nameInputNoText;
+
     [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
     [Header("설정 UI")]
-    [SerializeField] private GameObject _settingUI;
+    [SerializeField] private CSettingUI _settingUI;
 
 
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
@@ -120,16 +130,26 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     private Button _creditButton;
     private Button _exitButton;
 
+    private int _createSlot = -1;
+
 
     private void OnEnable()
     {
+        _localization.OnLanguageChanged += ReloadText;
+
         _startButton.onClick.AddListener(OpenCharacterSlot);
         _settingButton.onClick.AddListener(SettingGame);
         _discordButton.onClick.AddListener(DiscordOpen);
         _creditButton.onClick.AddListener(CreditOpen);
         _exitButton.onClick.AddListener(GameExit);
 
-        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart);
+        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart0);
+        _saveSlots[1].StartGameStartButton.onClick.AddListener(GameStart1);
+        _saveSlots[2].StartGameStartButton.onClick.AddListener(GameStart2);
+
+        _nameInputYes.onClick.AddListener(CreateSave);
+        _nameInputNo.onClick.AddListener(CancelCreateSave);
+
 
         _inputTask.Run(async token =>
         {
@@ -147,11 +167,20 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void OnDisable()
     {
+        _localization.OnLanguageChanged -= ReloadText;
+
         _startButton.onClick.RemoveListener(OpenCharacterSlot);
         _settingButton.onClick.RemoveListener(SettingGame);
         _discordButton.onClick.RemoveListener(DiscordOpen);
         _creditButton.onClick.RemoveListener(CreditOpen);
         _exitButton.onClick.RemoveListener(GameExit);
+
+        _saveSlots[0].StartGameStartButton.onClick.RemoveListener(GameStart0);
+        _saveSlots[1].StartGameStartButton.onClick.RemoveListener(GameStart1);
+        _saveSlots[2].StartGameStartButton.onClick.RemoveListener(GameStart2);
+
+        _nameInputYes.onClick.RemoveListener(CreateSave);
+        _nameInputNo.onClick.RemoveListener(CancelCreateSave);
 
         _inputTask.Cancel();
         _sceneTask.Cancel();
@@ -161,6 +190,16 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void Awake()
     {
+        if (_localization == null)
+        {
+            CLog.Log("_localization : Null");
+        }
+
+        if (_dataManger == null)
+        {
+            CLog.Log("_dataManger : Null");
+        }
+
         // GameObject의 버튼 생상 변경과 기입처리
         _startButton = SetButton(_startButtonObject);
         _settingButton = SetButton(_settingButtonObject);
@@ -175,12 +214,9 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void Start()
     {
-        string path = Path.Combine(Application.persistentDataPath, "Game_0.json");
-        LoadGame(0, path);
-        path = Path.Combine(Application.persistentDataPath, "Game_1.json");
-        LoadGame(1, path);
-        path = Path.Combine(Application.persistentDataPath, "Game_2.json");
-        LoadGame(2, path);
+        // ※ : TODO : 매니저 관련 잡아주는 과정 추가
+
+        ReloadText();
     }
 
     private void Update()
@@ -208,12 +244,30 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     public void Execute()
     {
         _startGameUI.SetActive(false);
+        _settingUI.ActiveUI(false);
+
         //CLog.Log("CTitleUI ESC 실행");
     }
 
-    public void LoadGame(int slot, string path)
+
+    //언어 변환 및 초기 언어 세팅 관련
+    private void ReloadText()
     {
-        if (!File.Exists(path))
+        for (int i = 0; i < _saveSlots.Length; i++)
+        {
+            LoadGame(i);
+        }
+
+        _inputField.text = _localization.GetText("scene.defaultplayer.text");
+        _nameInputYesText.text = _localization.GetText("scene.yes.text");
+        _nameInputNoText.text = _localization.GetText("scene.no.text");
+        _createPlayerTitle.text = _localization.GetText("scene.createplayertitle.text");
+    }
+
+
+    public void LoadGame(int slot)
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, $"Game_{slot}.json")))
         {
             _saveSlots[slot].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
             _saveSlots[slot].PlayerNameText.text = _localization.GetText("scene.enmpty.text");
@@ -303,22 +357,96 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         _startGameUI.SetActive(true);
     }
 
-
-
-    private void GameStart()
+    // 람다식 구독 문제로 인한 함수 생성
+    private void GameStart0()
     {
+        // 슬롯이 비었으면 새 캐릭터 생성, 있으면 해당 케릭터로 로딩
+
+        if(!File.Exists(Path.Combine(Application.persistentDataPath, "Game_0.json")))
+        {
+            OpenCreateSave(0);
+            return;
+        }
+
+        _dataManger.LoadGame(0);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+    private void GameStart1()
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_1.json")))
+        {
+            OpenCreateSave(1);
+            return;
+        }
+
+        _dataManger.LoadGame(1);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+    private void GameStart2()
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_2.json")))
+        {
+            OpenCreateSave(2);
+            return;
+        }
+
+        _dataManger.LoadGame(2);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+
+    // 케릭터 이름 기입
+    private void OpenCreateSave(int slot)
+    {
+        _createSlot = slot;
+
+        _nameInput.SetActive(true);
+        _inputField.textComponent.color = Color.yellow;
+        _inputField.ActivateInputField();
+    }
 
 
+    private void CreateSave()
+    {
+        if (_createSlot < 0)
+        {
+            return;
+        }
 
 
+        if (string.IsNullOrWhiteSpace(_inputField.text.Trim()))
+        {
+            CLog.Log("이름을 입력해주세요.");
+            _inputField.ActivateInputField();
+            return;
+        }
+
+        // 빈 슬롯 초기화: 기존 LoadGame의 신규 생성 기능 사용
+        if (!_dataManger.LoadGame(_createSlot))
+        {
+            return;
+        }
+
+        _dataManger.CurrentFlow.SetName(_inputField.text.Trim());
+        _dataManger.SaveGame(_createSlot);
+
+        _createSlot = -1;
+        _nameInput.SetActive(false);
 
         _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
-        //SceneManager.LoadScene("Town");
     }
+
+
+    private void CancelCreateSave()
+    {
+        _createSlot = -1;
+        _nameInput.SetActive(false);
+    }
+
+
 
     private void SettingGame()
     {
-
+        _settingUI.ActiveUI(true);
     }
 
     private void DiscordOpen()
