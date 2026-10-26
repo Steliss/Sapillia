@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_WhiteOutLine
-  m_Shader: {fileID: 4800000, guid: fec2533b98d40914c98a1d4acc1e0f76, type: 3}
+  m_Name: Custom_SpriteOutline
+  m_Shader: {fileID: 4800000, guid: 2f0d3b36c57418a429c26491a80c6f9a, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
   m_InvalidKeywords:
-  - _OUTLINE_ON
+  - _OUTLINEON_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -30,10 +30,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - PixelSnap: 0
-    - _AlphaThreshold: 0.14
-    - _Outline: 1
-    - _OutlineThick: 1
+    - _OutlineOn: 1
+    - _OutlineSize: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}

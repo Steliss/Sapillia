@@ -24,12 +24,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
 
     [Header("애니메이터 스테이트")]
-    [SerializeField] private string _stateIdle = "Idle";
-    [SerializeField] private string _stateMove = "Move";
-    [SerializeField] private string _stateAttack = "Attack";
-    [SerializeField] private string _stateAttReady = "AttReady";
-    [SerializeField] private string _stateAir = "Air";
-    [SerializeField] private string _stateDown = "Down";
+    [SerializeField] private readonly string _stateIdle = "Idle";
+    [SerializeField] private readonly string _stateMove = "Move";
+    [SerializeField] private readonly string _stateAttack = "Attack";
+    [SerializeField] private readonly string _stateAttReady = "AttReady";
+    [SerializeField] private readonly string _stateAir = "Air";
+    [SerializeField] private readonly string _stateDown = "Down";
     #endregion
 
     #region 내부 변수
@@ -44,6 +44,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private Transform _target;
     private Vector3 _startScale;
     private Color _startColor;
+    private readonly int _outLineId = Shader.PropertyToID("_OutlineOn");
     #endregion
 
     #region 스테이트
@@ -272,6 +273,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
             Nav.speed = _speed;
         }
+
+        // 슈퍼아머 테두리 On / Off
+        bool superOn = _superArmor > 0f;
+
+        _sprite.material.SetFloat(_outLineId, superOn ? 1f : 0f);
     }
 
     // 피격 피드백
@@ -336,6 +342,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
     }
 
+
     public void TakeDamage(SDamageInfo damageInfo)
     {
         if (_hp <= 0)
@@ -361,6 +368,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             {
                 _superArmor = 0f;
                 StateChanged(_airbornState);
+                _sprite.material.SetFloat(_outLineId, 0f);
             }
         }
         float reduction = 1 - (1.025f * Mathf.Log10(1f + (0.025f * _defense)));
