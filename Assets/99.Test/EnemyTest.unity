@@ -159,6 +159,14 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4797694903285798742, guid: 1f598dba9a977734580ab8693729ba9e, type: 3}
+      propertyPath: _spawnState
+      value: 
+      objectReference: {fileID: 11400000, guid: 55917165c6f3c714a93e5130a4da705b, type: 2}
+    - target: {fileID: 4797694903285798742, guid: 1f598dba9a977734580ab8693729ba9e, type: 3}
+      propertyPath: _attackState.Array.data[0]
+      value: 
+      objectReference: {fileID: 11400000, guid: 329d4cc6c03c66a428b11f45e0226964, type: 2}
     - target: {fileID: 5455703880211383429, guid: 1f598dba9a977734580ab8693729ba9e, type: 3}
       propertyPath: m_Name
       value: HP
@@ -638,7 +646,7 @@ PrefabInstance:
     - target: {fileID: 6383193272954772056, guid: 1f598dba9a977734580ab8693729ba9e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+      objectReference: {fileID: 2100000, guid: 58e5e336a790d514d94103cd18139685, type: 2}
     - target: {fileID: 8804159032853785476, guid: 1f598dba9a977734580ab8693729ba9e, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.681

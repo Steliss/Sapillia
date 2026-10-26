@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -15,8 +16,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [SerializeField] private float _patrolMoveRange = 3f;
     [SerializeField] private LayerMask _playerMask;
 
+
+    [Header("스폰 SO")]
+    [SerializeField] private CEnemySpawnStateSO _spawnState;
+
     [Header("공격 패턴 SO")]
-    [SerializeField] private List<CEnemyStateSO_Attack> _attackState;
+    [SerializeField] private List<CEnemyAttackStateSO> _attackState;
 
     [Header("체력 바")]
     [SerializeField] private Slider _hpBar;
@@ -45,6 +50,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private Vector3 _startScale;
     private Color _startColor;
     private readonly int _outLineId = Shader.PropertyToID("_OutlineOn");
+    private List<GameObject> _gameObjects = new List<GameObject>();
     #endregion
 
     #region 스테이트
@@ -53,6 +59,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private IEnemyState _airbornState;
     private IEnemyState _deathState;
     private IEnemyState _state;
+
     #endregion
 
     #region 스탯
@@ -81,7 +88,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public IEnemyState MoveState => _moveState;
     public IEnemyState AirbornState => _airbornState;
     public IEnemyState DeathState => _deathState;
-    public IReadOnlyList<CEnemyStateSO_Attack> AttackState => _attackState;
+    public IReadOnlyList<CEnemyAttackStateSO> AttackState => _attackState;
 
     // 스탯
     public float Hp => _hp;
@@ -108,6 +115,8 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             return;
         }
 
+        
+
         if (_state != null)
         {
             State.StateExit();
@@ -131,6 +140,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
         // 기본 상태 생성
+        _spawnState?.Init(this);
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
         _airbornState = new CEnemyState_Airborn(this);
@@ -177,15 +187,10 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             for (int i = 0; i < _attackState.Count; i++)
             {
-                CEnemyStateSO_Attack instance = Instantiate(_attackState[i]);
-                instance.Init(this);
-                _attackState[i] = instance;
-                
+                _attackState[i].Init(this);
             }
         }
 
-        // idle 상태로 시작
-        StateChanged(IdleState);
     }
 
     private void OnEnable()
@@ -200,6 +205,14 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
         });
+    }
+
+    private void OnDisable()
+    {
+        _attackUni.Cancel();
+        _hurtUni.Cancel();
+        _searchUni.Cancel();
+        GameObjectsListClear();
     }
 
 
@@ -234,6 +247,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public void PatrolSearch()
     {
         if (!_isPatrol)
+        {
+            _searchUni.Cancel();
+            return;
+        }
+
+        if (_state == (IEnemyState)_spawnState)
         {
             return;
         }
@@ -278,6 +297,9 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         bool superOn = _superArmor > 0f;
 
         _sprite.material.SetFloat(_outLineId, superOn ? 1f : 0f);
+
+        // spawn 상태로 시작
+        StateChanged(_spawnState);
     }
 
     // 피격 피드백
@@ -339,6 +361,33 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _hpBar.gameObject.SetActive(true);
             _hpBar.maxValue = _data.Hp;
             _hpBar.value = _hp;
+        }
+    }
+
+    // 꺼야할 오브젝트 등록
+    public void GameObjectsListAdd(GameObject go)
+    {
+        if (go == null)
+        {
+            return;
+        }
+
+        _gameObjects.Add(go);
+    }
+
+    // 생성한 오브젝트 꺼서 오브젝트 풀로 반납
+    public void GameObjectsListClear()
+    {
+        if (_gameObjects.Count > 0)
+        {
+            for (int i = 0; i < _gameObjects.Count; i++)
+            {
+                if (_gameObjects[i].activeSelf)
+                {
+                    _gameObjects[i].SetActive(false);
+                }
+            }
+            _gameObjects.Clear();
         }
     }
 

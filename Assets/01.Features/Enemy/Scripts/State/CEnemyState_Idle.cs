@@ -19,6 +19,7 @@ public class CEnemyState_Idle : IEnemyState
     public void StateEnter()
     {
         _time = 0f;
+        _idleTime = _mashine.IsPatrol ? 3f : 1.5f;
         _mashine.Ani.Play(_mashine.HashIdle);
     }
 
