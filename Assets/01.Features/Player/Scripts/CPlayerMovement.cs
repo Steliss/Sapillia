@@ -18,7 +18,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // Test에서는 사용 ※
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
-    [SerializeField] private CPlayerController _playerController;
+    //[SerializeField] private CPlayerController _playerController;
 
     [Header("Test")]
     [SerializeField] private bool _isInCombat;
@@ -26,10 +26,12 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #endregion
 
     #region 내부변수
-    
+
     // 런타임 데이터
+    private CPlayerController _playerController;
     private CPlayerGamingDataSO _playerData;
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
+    private CPlayerRunSession _session;
 
     // 이동 관련
     private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
@@ -73,24 +75,22 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         if (_playerController == null)
         {
-            CLog.Error("[Movement] PlayerController 참조 누락");
+            CLog.Log("[CPlayerMovement] session 연결 완료");
+            _playerController = FindFirstObjectByType<CPlayerController>();
+            _session = FindFirstObjectByType<CPlayerRunSession>();
         }
-
-        CLog.Log($"[Movement] _inputHub 확인 : {_inputHub.name}");
+                
     }
 
     private void OnEnable()
-    {
-        if(_inputHub != null)
-        {
+    {       
         _inputTask.Run(async token =>
         {
             _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
             RegisterInput();
-            CLog.Log("CPlayerMovement OnEnable 작업 완료");
+            CLog.Log("[CPlayerMovement] OnEnable 작업 완료");
         });
-
-        }
+        
     }   
 
     private void FixedUpdate()
@@ -141,7 +141,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     private bool TryBindPlayerData()
     {
-        CPlayerGamingDataSO currentData = _playerController != null ? _playerController.PlayerData : null;
+        CPlayerGamingDataSO currentData = _session.PlayerData;
 
         if(currentData == null || !currentData.IsInitialized)
         {
@@ -159,7 +159,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         // Controller가 관리하는 현재 런타임 SO 참조
-        _playerData = _playerController.PlayerData;
+        _playerData = _session.PlayerData;
 
         if (_playerData == null)
         {

@@ -91,6 +91,8 @@ public class CDataManger : MonoBehaviour
 
 
 
+
+    public CPlayerRunSession PlayerData => _playerData;
     public CFlowGame CurrentFlow => _currentFlow;
     public CSettings CurrentSetting => _currentSetting;
 
