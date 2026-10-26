@@ -18,7 +18,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // Test에서는 사용 ※
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
-    //[SerializeField] private CPlayerController _playerController;
+    [SerializeField] private CPlayerController _playerController;
 
     [Header("Test")]
     [SerializeField] private bool _isInCombat;
@@ -28,7 +28,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #region 내부변수
 
     // 런타임 데이터
-    private CPlayerController _playerController;
     private CPlayerGamingDataSO _playerData;
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CPlayerRunSession _session;
@@ -77,9 +76,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         {
             CLog.Log("[CPlayerMovement] session 연결 완료");
             _playerController = FindFirstObjectByType<CPlayerController>();
-            _session = FindFirstObjectByType<CPlayerRunSession>();
+            
         }
-                
+
+        _session = FindFirstObjectByType<CPlayerRunSession>();
+
     }
 
     private void OnEnable()
