@@ -5,7 +5,7 @@ public class CKeyBind : MonoBehaviour
 {
 
     [Header("참조")]
-    [SerializeField] private CFlowData _flowData;
+    [SerializeField] private CDataManger _flowData;
     [SerializeField] private InputActionAsset _inputActions;
 
     [Header("변경할 동작")]

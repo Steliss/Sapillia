@@ -37,7 +37,7 @@ public class CPlayerController : MonoBehaviour
             return;
         }
 
-        session.BindPlayer(this);
+        //session.BindPlayer(this);
 
         if(PlayerData == null)
         {

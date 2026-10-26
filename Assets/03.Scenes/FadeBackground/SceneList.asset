@@ -9,15 +9,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
-  m_Name: CSceneListSO
-  m_EditorClassIdentifier: Assembly-CSharp::CSceneListSO
+  m_Script: {fileID: 11500000, guid: 5cfdd4911b2b9514293a7a3fbad66287, type: 3}
+  m_Name: SceneList
+  m_EditorClassIdentifier: 
   _scenes:
+  - _sceneID: 0
+    _sceneName: 
+    _useFade: 0
+    _fadeOutDuration: 0
+    _fadeInDuration: 0
+    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
+    _backGroundPrefab: {fileID: 0}
   - _sceneID: 0
     _sceneName: Menu
     _useFade: 1
-    _fadeOutDuration: 4
-    _fadeInDuration: 4
+    _fadeOutDuration: 2
+    _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 1023989879270422919, guid: 9ae5ee0f642700d44b89a3a5ef46fc86, type: 3}
   - _sceneID: 1
@@ -26,25 +33,25 @@ MonoBehaviour:
     _fadeOutDuration: 2
     _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 3619708469065384050, guid: 87fd27d061fc38345a2083be5d587273, type: 3}
+    _backGroundPrefab: {fileID: 1023989879270422919, guid: 9ae5ee0f642700d44b89a3a5ef46fc86, type: 3}
   - _sceneID: 2
     _sceneName: Stage1
     _useFade: 1
-    _fadeOutDuration: 3
-    _fadeInDuration: 3
+    _fadeOutDuration: 2
+    _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 3619708469065384050, guid: 87fd27d061fc38345a2083be5d587273, type: 3}
   - _sceneID: 3
     _sceneName: Stage2
-    _useFade: 1
-    _fadeOutDuration: 4
-    _fadeInDuration: 4
+    _useFade: 0
+    _fadeOutDuration: 2
+    _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 7456792324361176558, guid: 9c64ce45d5086b749a7806a5b92287c2, type: 3}
   - _sceneID: 4
     _sceneName: Stage3
-    _useFade: 1
-    _fadeOutDuration: 4
-    _fadeInDuration: 4
+    _useFade: 0
+    _fadeOutDuration: 2
+    _fadeInDuration: 2
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 4696838907827715837, guid: 53c7eadd91b1307488a3f82f0a6eb308, type: 3}

@@ -6,10 +6,12 @@ public class CManagerDontDestroy : MonoBehaviour
 {
     [SerializeField] private CSceneManager _sceneManager;
     [SerializeField] private CInputCommandHub _inputCommandHub;
+    [SerializeField] private CDataManger _dataManger;
 
 
     public CSceneManager SceneManager => _sceneManager;
     public CInputCommandHub InputCommandHub => _inputCommandHub;
+    public CDataManger DataManger => _dataManger;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()
@@ -24,6 +26,16 @@ public class CManagerDontDestroy : MonoBehaviour
         if (_sceneManager == null)
         {
             CLog.Log("_sceneManager : Null");
+        }
+
+        if (_dataManger == null)
+        {
+            CLog.Log("_dataManger : Null");
+        }
+
+        if (_inputCommandHub == null)
+        {
+            CLog.Log("_inputCommandHub : Null");
         }
 
         Instance = this;
