@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "SO/Enemy/SpwanState", fileName = "Enemy_Spwan_Drop_")]
+[CreateAssetMenu(menuName = "SO/Enemy/SpawnState", fileName = "Enemy_Spawn_Drop_")]
 public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 {
     [Header("이펙트 프리팹")]
@@ -39,10 +39,13 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
                 tr.localPosition = Vector3.zero;
 
                 // 이펙트 생성
-                GameObject go = CObjectPoolManager.Instance.TryGetObjectPool(_stamp, 2f);
-                Vector2 goPos = tr.position;
-                goPos.y -= 0.4f;
-                go.transform.position = goPos;
+                if (_stamp != null && CObjectPoolManager.Instance != null)
+                {
+                    GameObject go = CObjectPoolManager.Instance.TryGetObjectPool(_stamp, 2f);
+                    Vector2 goPos = tr.position;
+                    goPos.y -= 0.4f;
+                    go.transform.position = goPos;
+                }
 
                 // 1초 대기 후 진행
                 await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);

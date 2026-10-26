@@ -59,7 +59,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private IEnemyState _airbornState;
     private IEnemyState _deathState;
     private IEnemyState _state;
-
     #endregion
 
     #region 스탯
