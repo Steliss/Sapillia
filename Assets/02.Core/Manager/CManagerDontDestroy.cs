@@ -7,11 +7,13 @@ public class CManagerDontDestroy : MonoBehaviour
     [SerializeField] private CSceneManager _sceneManager;
     [SerializeField] private CInputCommandHub _inputCommandHub;
     [SerializeField] private CDataManger _dataManger;
+    [SerializeField] private CLocalizationManager _localizationData;
 
 
     public CSceneManager SceneManager => _sceneManager;
     public CInputCommandHub InputCommandHub => _inputCommandHub;
     public CDataManger DataManger => _dataManger;
+    public CLocalizationManager LocalizationData => _localizationData;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()
@@ -38,6 +40,10 @@ public class CManagerDontDestroy : MonoBehaviour
             CLog.Log("_inputCommandHub : Null");
         }
 
+        if(_localizationData == null)
+        {
+            CLog.Log("_localizationData : Null");
+        }
         Instance = this;
 
         // 씬이 변경되어도 유지
@@ -84,5 +90,34 @@ public class CManagerDontDestroy : MonoBehaviour
         return Instance.InputCommandHub;
     }
 
+    /// <summary>
+    /// 데이터매니저 동기 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async UniTask<CDataManger> DataMangerAsync(CancellationToken token)
+    {
+        await UniTask.WaitUntil(() => Instance != null && Instance.DataManger != null, cancellationToken: token);
+
+        token.ThrowIfCancellationRequested();
+
+        CLog.Log("DataManger 생성완료");
+        return Instance.DataManger;
+    }
+
+    /// <summary>
+    /// 번역 매니저 동기 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async UniTask<CLocalizationManager> LocalizationDataAsync(CancellationToken token)
+    {
+        await UniTask.WaitUntil(() => Instance != null && Instance.LocalizationData != null, cancellationToken: token);
+
+        token.ThrowIfCancellationRequested();
+
+        CLog.Log("DataManger 생성완료");
+        return Instance.LocalizationData;
+    }
 
 }

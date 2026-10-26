@@ -121,4 +121,5 @@ public class CGameSaveData
 {
     public CFlowGame Flow;
     public CPlayerGamingDataSO Player;
+    public CInventoryData Inventory;
 }
