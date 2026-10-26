@@ -542,7 +542,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &33411823
 RectTransform:
   m_ObjectHideFlags: 0
@@ -657,7 +657,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _flowData: {fileID: 1566022588}
   _koreanJson: {fileID: 4900000, guid: b6bd5489dd50e0149a6b67ed886f36b0, type: 3}
-  _englishJson: {fileID: 4900000, guid: c4f5fa26bfff42b4991e21448cae240a, type: 3}
+  _englishJson: {fileID: 4900000, guid: b6bd5489dd50e0149a6b67ed886f36b0, type: 3}
 --- !u!4 &65533641
 Transform:
   m_ObjectHideFlags: 0
@@ -2171,7 +2171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &430023896
 Transform:
   m_ObjectHideFlags: 0
@@ -2205,6 +2205,7 @@ MonoBehaviour:
   _UICanvas: {fileID: 33411822}
   _changeSprite: {fileID: 21300000, guid: 53e56b7e6470b3641b5f3ad8ae65e646, type: 2}
   _gamePlaySlotButton: {fileID: 1527356049}
+  _gamePlaySlotButtonText: {fileID: 1709941388}
   _language:
     _slot: {fileID: 1473206921}
     _titleText: {fileID: 240035447}
@@ -2361,7 +2362,7 @@ MonoBehaviour:
   _inputField: {fileID: 226880529}
   _nameInputYes: {fileID: 125971848}
   _nameInputNo: {fileID: 621552577}
-  _createPlayerTitle: {fileID: 0}
+  _createPlayerTitle: {fileID: 1610744767}
   _nameInputYesText: {fileID: 1240978617}
   _nameInputNoText: {fileID: 1502528985}
   _saveSlots:
@@ -9447,6 +9448,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 443384858}
+  - {fileID: 1990623624}
   m_Father: {fileID: 2086670989}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1566022588
@@ -9761,8 +9763,8 @@ MonoBehaviour:
     _playerprogress: 0
     _playerretrycount: 0
     _playerplaytime: 0
-  cSettingUI: {fileID: 0}
   _playerData: {fileID: 443384859}
+  _inventoryData: {fileID: 1990623623}
 --- !u!1 &1610744765
 GameObject:
   m_ObjectHideFlags: 0
@@ -12225,6 +12227,50 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907115286}
   m_CullTransparentMesh: 1
+--- !u!1 &1990623622
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1990623624}
+  - component: {fileID: 1990623623}
+  m_Layer: 0
+  m_Name: InventoryData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1990623623
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990623622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9170afaeacdcba449aeda301df60ba7a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1990623624
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1990623622}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566022587}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2002976182
 GameObject:
   m_ObjectHideFlags: 0
@@ -12679,6 +12725,7 @@ MonoBehaviour:
   _sceneManager: {fileID: 1159534783}
   _inputCommandHub: {fileID: 683087254}
   _dataManger: {fileID: 1566022588}
+  _localizationData: {fileID: 65533640}
 --- !u!1 &2090276728
 GameObject:
   m_ObjectHideFlags: 0
