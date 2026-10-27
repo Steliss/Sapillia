@@ -138,7 +138,9 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
         // 기본 상태 생성
-        _spawnState?.Init(this);
+        CEnemySpawnStateSO spawnSO = Instantiate(_spawnState);
+        spawnSO.Init(this);
+        _spawnState = spawnSO;
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
         _airbornState = new CEnemyState_Airborn(this);
@@ -150,17 +152,17 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         // 네브메쉬에이전트, 리지드바디 가져오기
         _nav = GetComponent<NavMeshAgent>();
 
-        if (Nav == null)
+        if (_nav == null)
         {
             CLog.Warn($"{name} : 네브메쉬 에이전트 컴포넌트 누락");
             gameObject.AddComponent<NavMeshAgent>();
             _nav = GetComponent<NavMeshAgent>();
         }
-        Nav.updateRotation = false;
-        Nav.updateUpAxis = false;
+        _nav.updateRotation = false;
+        _nav.updateUpAxis = false;
 
 
-        if (Sprite == null)
+        if (_sprite == null)
         {
             CLog.Warn($"{name} : 스프라이트 컴포넌트 누락");
             gameObject.AddComponent<SpriteRenderer>();
@@ -185,7 +187,9 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             for (int i = 0; i < _attackState.Count; i++)
             {
-                _attackState[i].Init(this);
+                CEnemyAttackStateSO attSO = Instantiate(_attackState[i]);
+                attSO.Init(this);
+                _attackState[i] = attSO;
             }
         }
 
@@ -210,7 +214,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _attackUni.Cancel();
         _hurtUni.Cancel();
         _searchUni.Cancel();
-        GameObjectsListClear();
     }
 
 

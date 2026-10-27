@@ -11,12 +11,10 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
     [SerializeField] private GameObject _stamp;
 
     private float _startHigh = 15f;
-    private CUniTaskOnes _uni = new CUniTaskOnes();
 
     public override void StateEnter()
     {
-        _uni.Cancel();
-        _uni.Run(async ct =>
+        _mashine.AttackUni.Run(async ct =>
         {
             Transform tr = _mashine.Sprite.transform;
             Vector2 high = Vector3.up * _startHigh;
@@ -41,7 +39,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
                 // 이펙트 생성
                 if (_stamp != null && CObjectPoolManager.Instance != null)
                 {
-                    GameObject go = CObjectPoolManager.Instance.TryGetObjectPool(_stamp, 2f);
+                    GameObject go = CObjectPoolManager.Instance.GetPoolObject(_stamp, 2f);
                     Vector2 goPos = tr.position;
                     goPos.y -= 0.4f;
                     go.transform.position = goPos;
@@ -62,7 +60,6 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
     public override void StateExit()
     {
-        _uni.Cancel();
     }
 
     public override void StateUpdate()
