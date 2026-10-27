@@ -50,7 +50,7 @@ public class CPlayerGamingDataSO
     public int RequiredEXP => _requiredEXP;
     public int Level => _level;
     public int Money => _money;
-    public bool IsInitialized { get; private set; }
+    public bool IsInitialized { get;  set; }
     #endregion
 
     #region 이벤트

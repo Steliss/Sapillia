@@ -30,7 +30,9 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // 런타임 데이터
     private CPlayerGamingDataSO _playerData;
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
+    private CUniTaskOnes _inputTask2 = new CUniTaskOnes();
     private CPlayerRunSession _session;
+    private CDataManger _dataManager;
 
     // 이동 관련
     private EPlayerMoveState _moveState = EPlayerMoveState.Idle;
@@ -72,26 +74,105 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             CLog.Error("[Movement] Rigidbody2D 참조 누락");
         }
 
-        if (_playerController == null)
+        
+    }
+
+    private void Start()
+    {
+       
+
+        if (_session == null)
         {
-            CLog.Log("[CPlayerMovement] session 연결 완료");
-            _playerController = FindFirstObjectByType<CPlayerController>();
-            
+            _session = FindAnyObjectByType<CPlayerRunSession>();
         }
 
-        _session = FindFirstObjectByType<CPlayerRunSession>();
-
+        
     }
 
     private void OnEnable()
-    {       
+    {
+        /*
+        _inputTask2.Run(async token =>
+        {
+            _dataManager = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("[CPlayerMovement] _dataManager 작업 완료");
+        }
+        );
+
+
+
+        _session = _dataManager.PlayerData;
+
+
         _inputTask.Run(async token =>
         {
             _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
             RegisterInput();
-            CLog.Log("[CPlayerMovement] OnEnable 작업 완료");
+            CLog.Log("[CPlayerMovement] _inputHub 작업 완료");
         });
+
         
+
+
+        
+        CLog.Log("[CPlayerMovement] OnEnable 작업 완료");
+        */
+        _inputTask.Run(async token =>
+        {
+            // DataManager 참조
+            _dataManager =  await CManagerDontDestroy.DataMangerAsync(token);
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            if (_dataManager == null)
+            {
+                CLog.Error("[CPlayerMovement] DataManager 참조 실패");
+                return;
+            }
+
+            CLog.Log("[CPlayerMovement] DataManager 연결 완료");
+
+            // RunSession 참조
+            _session = _dataManager.PlayerData;
+
+            if (_session == null)
+            {
+                _session = FindAnyObjectByType<CPlayerRunSession>();
+            }
+
+            if (_session == null)
+            {
+                CLog.Error("[CPlayerMovement] RunSession 참조 실패");
+                return;
+            }
+
+            CLog.Log("[CPlayerMovement] RunSession 연결 완료");
+
+            // InputCommandHub 참조
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            if (_inputHub == null)
+            {
+                CLog.Error("[CPlayerMovement] InputHub 참조 실패");
+                return;
+            }
+
+            // 참조 준비가 끝났을 때 입력 등록
+            RegisterInput();
+
+            CLog.Log("[CPlayerMovement] 모든 초기화 완료");
+        });
+
+
+
     }   
 
     private void FixedUpdate()
@@ -109,6 +190,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         if (!TryBindPlayerData())
         {
+            
             return;
         }
 

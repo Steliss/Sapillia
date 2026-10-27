@@ -20,16 +20,20 @@ public class CPlayerRunSession : MonoBehaviour
     /// <param name="playerData"></param>
     public void SetPlayerData(CPlayerGamingDataSO playerData = null)
     {
+        
+
         // 플레이어 정보가 없을시 새 플레이어 생성
         if (playerData == null)
         {
             PlayerData = new CPlayerGamingDataSO();
+            
             PlayerData.Initalize();
             return;
         }
 
 
         PlayerData = playerData;
+        PlayerData.IsInitialized = true;
     }
     
 
