@@ -9,7 +9,8 @@ public enum EScene
     Town,
     stage1,
     stage2,
-    stage3
+    stage3,
+    Test
 }
 
 
