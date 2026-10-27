@@ -15,6 +15,10 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [SerializeField] private CWeaponDataSO _weaponData;
     [SerializeField] private CWeaponMotion _weaponMotion;
 
+    [Header("특수공격")]
+    [SerializeField] private CPlayerGuard _playerGuard;
+    [SerializeField] private CPlayerSpecialAttack _specialAttack;
+
     [Header("연속공격")]
     [Min(0f)]
     [SerializeField] private float _comboResetTime = 1.0f;
@@ -34,6 +38,8 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     private bool _isAttackHeld;
     // 다음 공격 예약
     private bool _attackQueued;
+    // 일반공격 / 특수공격 공통 입력 중복 방지
+    private bool _leftButtonHeld;
     #endregion
 
     private void OnEnable()
@@ -55,11 +61,19 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             _inputHub.Unregister(EKeyAction.Attack, (IInputCommand<float>)this);
         }
 
+        _leftButtonHeld = false;
         _isAttackHeld = false;
         _attackQueued = false;
 
-        _comboExpireTime = float.NegativeInfinity;
-        _nextComboIndex = 0;
+        ResetCombo();
+
+        if (_specialAttack != null)
+        {
+            _specialAttack.NotifyLeftReleased();
+        }
+
+       // _comboExpireTime = float.NegativeInfinity;
+        //_nextComboIndex = 0;
     }
     private void Update()
     {
@@ -75,9 +89,36 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
 
-        // 현재 공격 끝까지 수행
+       
+
+        // 1. 특수공격 진행 중에는
+        // 일반공격과 예약된 콤보 실행 차단
+        if (_specialAttack != null && _specialAttack.BlockNormalAttack)
+        {
+            CLog.Log($"[CPlayerAttacks] 특수 공격 진행중이라 일반 공격 예약 해제");
+            return;
+        }
+        
+        // 2. 우클릭 유지 중에는 일반공격 시작 금지
+        // 기존 예약 공격도 취소
+        if (_playerGuard != null && _playerGuard.IsGuardRequested)
+        {
+            CLog.Log($"[CPlayerAttacks] 특수 공격 진행중이라 일반 공격 해제");
+            _isAttackHeld = false;
+            _attackQueued = false;
+            return;
+        }
+
+         // 현재 공격 끝까지 수행
         if (!_weaponMotion.CanStart)
         {
+            return;
+        }
+        
+        // 3. 현재 공격 종료 대기
+        if (!_weaponMotion.CanStart)
+        {
+            CLog.Log($"[CPlayerAttacks] 일반 공격 진행 중");
             return;
         }
 
@@ -88,6 +129,8 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             {
                 _attackQueued = false;
             }
+
+            CLog.Log($"[CPlayerAttacks] 좌클릭 유지중");
 
             return;
         }
@@ -103,27 +146,57 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     public void Execute(float value)
     {
         bool pressed = value > 0.5f;
-                
-        if (_weaponMotion == null)
-        {
-            CLog.Warn($"{this}.Excute 무기 비어있음");
-            return;
-        }
+
 
         // 좌클릭 땜
         if (!pressed)
         {
+            _leftButtonHeld = false;
             _isAttackHeld = false;
+
+            if (_specialAttack != null)
+            {
+                _specialAttack.NotifyLeftReleased();
+            }
+
             return;
         }
 
-        if (_isAttackHeld)
+        // 2. 같은 좌클릭의 중복 입력 방지
+        if (_leftButtonHeld)
         {
             return;
         }
 
-        _isAttackHeld = true;        
+        _leftButtonHeld = true;
 
+
+        // 3. 이미 특수공격 중이라면
+        // 일반공격 입력으로 전달하지 않음
+        if (_specialAttack != null && _specialAttack.BlockNormalAttack)
+        {
+            _isAttackHeld = false;
+            _attackQueued = false;
+            return;
+        }
+
+        // 4. 우클릭 중이라면 특수공격 우선
+        if (_playerGuard != null && _playerGuard.IsGuardRequested)
+        {
+            TrySpecialAttack();
+            return;
+        }
+
+        // 5. 우클릭이 없으면 기존 일반공격
+        if (_weaponMotion == null)
+        {
+            CLog.Warn("[PlayerAttack] WeaponMotion 누락");
+            return;
+        }
+
+        _isAttackHeld = true;
+
+        // 즉시 일반공격 가능
         if (_weaponMotion.CanStart)
         {
             if (StartNextAttack())
@@ -140,9 +213,75 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         }
     }
 
+    #region Special Attack
+
+    private void TrySpecialAttack()
+    {
+        CLog.Log("[PlayerAttack] TrySpecialAttack 진입 성공");
+
+        // 기존 일반공격 입력과 예약 제거
+        _isAttackHeld = false;
+        _attackQueued = false;
+
+        // 1. 특수공격 참조 확인
+        if (_specialAttack == null)
+        {
+            CLog.Warn("[PlayerAttack] SpecialAttack 참조 누락");
+            return;
+        }
+
+        if (_playerController == null || _playerController.PlayerData == null)
+        {
+            CLog.Warn("[PlayerAttack] PlayerData 누락");
+            return;
+        }
+
+        if (_weaponData == null)
+        {
+            CLog.Warn("[PlayerAttack] WeaponData 누락");
+            return;
+        }
+
+        CLog.Log("[PlayerAttack] TryStart 호출 직전");
+
+        // 2. 런타임 플레이어 데이터
+        CPlayerGamingDataSO playerData = _playerController.PlayerData;
+
+        // 3. 특수공격 실행 요청
+        bool started = _specialAttack.TryStart(_weaponData.BaseDamage, playerData.Stats);
+
+        if (!started)
+        {
+            CLog.Log("[PlayerAttack] 특수공격 발동 실패");
+            return;
+        }
+
+        // 4. 특수공격 성공 시 기존 콤보 초기화
+        ResetCombo();
+
+        CLog.Log("[PlayerAttack] 특수공격 발동 성공");
+    }
+
+    #endregion
+
+    #region Normal Attack
+
     private bool StartNextAttack()
     {
-       
+
+        // 특수공격 진행 중 일반공격 불가능
+        if (_specialAttack != null && _specialAttack.BlockNormalAttack)
+        {
+            return false;
+        }
+
+        // 우클릭을 유지 중이면 일반공격 불가능
+        if (_playerGuard != null && _playerGuard.IsGuardRequested)
+        {
+            return false;
+        }
+
+
         // ※ 테스트용도
         if (_weaponData == null)
         {
@@ -165,6 +304,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         if (_playerController.PlayerData == null)
         {
             CLog.Warn($"[PlayerAttack.PlayerData] PlayerController 누락");
+            return false;
         }
 
         if (_weaponData.AttackCount <= 0)
@@ -189,6 +329,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
         SPlayerStats stats = _playerController.PlayerData.Stats;
 
+        // 일반 공격 시작
         if (!_weaponMotion.TryPlay(attack, _weaponData.BaseDamage, stats))
         {
             return false;
@@ -213,8 +354,18 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
         return true;
     }
+    #endregion
 
+    #region Combo
 
+    private void ResetCombo()
+    {
+        _nextComboIndex = 0;
+        _comboExpireTime = float.NegativeInfinity;
+        _attackQueued = false;
+    }
+
+    #endregion
 
 
 }
