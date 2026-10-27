@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "SO/Enemy/AttackState", fileName = "Enemy_Attack_Melee_")]
+[CreateAssetMenu(menuName = "SO/Enemy/AttackState/Melee", fileName = "Enemy_Attack_Melee_")]
 public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
 {
     #region 인스펙터
@@ -82,18 +82,6 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             line4.transform.localScale = scale;
 
 
-            // 색상 조절
-            SpriteRenderer sp1 = line1.GetComponent<SpriteRenderer>();
-            SpriteRenderer sp2 = line2.GetComponent<SpriteRenderer>();
-            SpriteRenderer sp3 = line3.GetComponent<SpriteRenderer>();
-            SpriteRenderer sp4 = line4.GetComponent<SpriteRenderer>();
-
-            sp1.color = Color.red;
-            sp2.color = Color.red;
-            sp3.color = Color.red;
-            sp4.color = Color.red;
-
-
             // 라인 점점 벌리기
             float delayTime = 0f;
             while (delayTime < _beforeDelay)
@@ -131,6 +119,10 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
 
                 // 공격시간동안 라인들 투명해지며 사라지기
                 float time = 0f;
+                SpriteRenderer sp1 = line1.GetComponent<SpriteRenderer>();
+                SpriteRenderer sp2 = line2.GetComponent<SpriteRenderer>();
+                SpriteRenderer sp3 = line3.GetComponent<SpriteRenderer>();
+                SpriteRenderer sp4 = line4.GetComponent<SpriteRenderer>();
                 while (time < _attackTime)
                 {
                     time += Time.deltaTime;
@@ -166,20 +158,6 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
         
     }
 
-    private GameObject CreateAttackObject(GameObject prefeb, float lifeTime, Vector2 pos, Quaternion angle)
-    {
-        GameObject go = null;
-
-        if (prefeb != null && CObjectPoolManager.Instance != null)
-        {
-            go = CObjectPoolManager.Instance.GetPoolObject(prefeb, lifeTime);
-            go.transform.rotation = angle;
-            go.transform.position = pos;
-            _mashine.GameObjectsListAdd(go);
-        }
-
-        return go;
-    }
 
 
 }

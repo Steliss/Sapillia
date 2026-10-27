@@ -11,12 +11,10 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
     [SerializeField] private GameObject _stamp;
 
     private float _startHigh = 15f;
-    private CUniTaskOnes _uni = new CUniTaskOnes();
 
     public override void StateEnter()
     {
-        _uni.Cancel();
-        _uni.Run(async ct =>
+        _mashine.AttackUni.Run(async ct =>
         {
             Transform tr = _mashine.Sprite.transform;
             Vector2 high = Vector3.up * _startHigh;
@@ -62,7 +60,6 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
     public override void StateExit()
     {
-        _uni.Cancel();
     }
 
     public override void StateUpdate()

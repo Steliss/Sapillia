@@ -115,6 +115,13 @@ public class CObjectPoolManager : MonoBehaviour
         }
         go.transform.localScale = prefeb.transform.localScale;
         go.transform.rotation = prefeb.transform.rotation;
+
+        SpriteRenderer goSp = go.GetComponent<SpriteRenderer>();
+        SpriteRenderer preSp = prefeb.GetComponent<SpriteRenderer>();
+        if (goSp != null && preSp != null)
+        {
+            goSp.color = preSp.color;
+        }
         return go;
     }
 
