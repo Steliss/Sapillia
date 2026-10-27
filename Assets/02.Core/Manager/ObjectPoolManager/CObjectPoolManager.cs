@@ -54,9 +54,9 @@ public class CObjectPoolManager : MonoBehaviour
     /// </summary>
     /// <param name="prefeb"></param>
     /// <returns></returns>
-    public GameObject TryGetObjectPool(GameObject prefeb)
+    public GameObject GetPoolObject(GameObject prefeb)
     {
-        return TryObjectPool(prefeb);
+        return ObjectPooling(prefeb);
     }
 
     /// <summary>
@@ -66,15 +66,15 @@ public class CObjectPoolManager : MonoBehaviour
     /// <param name="prefeb">생성할 프리팹</param>
     /// <param name="life">수명(초)</param>
     /// <returns></returns>
-    public GameObject TryGetObjectPool(GameObject prefeb, float lifeTime)
+    public GameObject GetPoolObject(GameObject prefeb, float lifeTime)
     {
-        GameObject go = TryObjectPool(prefeb);
+        GameObject go = ObjectPooling(prefeb);
         _lifeMap[go] = lifeTime;
         return go;
     }
 
     
-    private GameObject TryObjectPool(GameObject prefeb)
+    private GameObject ObjectPooling(GameObject prefeb)
     {
         if (prefeb == null)
         {

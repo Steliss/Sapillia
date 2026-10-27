@@ -41,7 +41,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
                 // 이펙트 생성
                 if (_stamp != null && CObjectPoolManager.Instance != null)
                 {
-                    GameObject go = CObjectPoolManager.Instance.TryGetObjectPool(_stamp, 2f);
+                    GameObject go = CObjectPoolManager.Instance.GetPoolObject(_stamp, 2f);
                     Vector2 goPos = tr.position;
                     goPos.y -= 0.4f;
                     go.transform.position = goPos;

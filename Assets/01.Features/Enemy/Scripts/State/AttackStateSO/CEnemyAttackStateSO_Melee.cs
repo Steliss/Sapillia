@@ -80,7 +80,20 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             line2.transform.localScale = scale;
             line3.transform.localScale = scale;
             line4.transform.localScale = scale;
-            
+
+
+            // 색상 조절
+            SpriteRenderer sp1 = line1.GetComponent<SpriteRenderer>();
+            SpriteRenderer sp2 = line2.GetComponent<SpriteRenderer>();
+            SpriteRenderer sp3 = line3.GetComponent<SpriteRenderer>();
+            SpriteRenderer sp4 = line4.GetComponent<SpriteRenderer>();
+
+            sp1.color = Color.red;
+            sp2.color = Color.red;
+            sp3.color = Color.red;
+            sp4.color = Color.red;
+
+
             // 라인 점점 벌리기
             float delayTime = 0f;
             while (delayTime < _beforeDelay)
@@ -116,9 +129,21 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
                     goPro.DamageSet(_mashine.Attack, dir);
                 }
 
+                // 공격시간동안 라인들 투명해지며 사라지기
+                float time = 0f;
+                while (time < _attackTime)
+                {
+                    time += Time.deltaTime;
+                    float t = 1 - (time / _attackTime);
+                    Color alpha = sp1.color;
+                    alpha.a = t;
+                    sp1.color = alpha;
+                    sp2.color = alpha;
+                    sp3.color = alpha;
+                    sp4.color = alpha;
+                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                }
 
-                // 공격시간
-                await UniTask.Delay(TimeSpan.FromSeconds(_attackTime), false, PlayerLoopTiming.Update, ct);
                 goPro.AniEnd();
             }
 
@@ -147,7 +172,7 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
 
         if (prefeb != null && CObjectPoolManager.Instance != null)
         {
-            go = CObjectPoolManager.Instance.TryGetObjectPool(prefeb, lifeTime);
+            go = CObjectPoolManager.Instance.GetPoolObject(prefeb, lifeTime);
             go.transform.rotation = angle;
             go.transform.position = pos;
             _mashine.GameObjectsListAdd(go);
@@ -155,5 +180,6 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
 
         return go;
     }
+
 
 }
