@@ -113,6 +113,7 @@ public class CLocalizationData
     public CLocalizationEntry[] items;
     public CLocalizationEntry[] talk;
     public CLocalizationEntry[] scene;
+    public CLocalizationEntry[] player;
 }
 
 
