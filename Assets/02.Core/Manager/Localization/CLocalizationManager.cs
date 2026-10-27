@@ -81,6 +81,7 @@ public class CLocalizationManager : MonoBehaviour
         AddEntries(data.items);
         AddEntries(data.talk);
         AddEntries(data.scene);
+        AddEntries(data.player);
 
         _flowData.CurrentSetting.SetCurrentLanhuage(language);
 

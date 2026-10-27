@@ -97,6 +97,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
 
     [Header("메뉴버튼")]
+    // ※ : TODO : 버튼 텍스트 나눠서 다시 만들기
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
     [SerializeField] private GameObject _discordButtonObject;
