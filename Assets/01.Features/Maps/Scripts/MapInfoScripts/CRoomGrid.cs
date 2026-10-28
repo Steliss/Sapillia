@@ -1,6 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
 
 public class CRoomGrid
 {
@@ -16,12 +16,13 @@ public class CRoomGrid
     {
         for (int x = 0; x < room.RoomSize.x; x++)
         {
-            for(int y = 0; y < room.RoomSize.y; y++)
+            for (int y = 0; y < room.RoomSize.y; y++)
             {
                 Vector2Int checkPos = position + new Vector2Int(x, y);
 
-                if(_rooms.ContainsKey(checkPos))
+                if (_rooms.ContainsKey(checkPos))
                 {
+                    Debug.Log("방 겹침");
                     return false;
                 }
             }
@@ -29,5 +30,23 @@ public class CRoomGrid
 
         return true;
     }
+
+
+
+    public void RegisterRoom(Vector2Int position, CRoomData room)
+    {
+        for(int x = 0; x < room.RoomSize.x; x++)
+        {
+            for(int y = 0; y < room.RoomSize.y; y++)
+            {
+                Vector2Int registerPos = position + new Vector2Int(x, y);
+
+                _rooms.Add(registerPos, room);
+            }
+        }
+
+
+    }
+
 
 }
