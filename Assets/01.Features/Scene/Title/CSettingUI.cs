@@ -168,7 +168,13 @@ public class CSettingUI : MonoBehaviour
         ? "scene.optionset.text"
         : "scene.optionoff.text"
         );
+        _bossSkip.TitleText.text = _localization.GetText("scene.optionbossskip.text");
         _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
+        _language.TitleText.text = _localization.GetText("scene.optionlanguagetitle.text");
+
+
+        _cameraShake.TitleText.text = _localization.GetText("scene.optioncamerashake.text");
+        _effect.TitleText.text = _localization.GetText("scene.optioneffecttitle.text");
     }
 
 

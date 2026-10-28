@@ -56,6 +56,7 @@ public class CInputCommandHub : MonoBehaviour
         _inputManager.OnChoosePotion += ChoosePotion;
         _inputManager.OnBefore += Before;
         _inputManager.OnNext += Next;
+
         _inputManager.OnESC += ESC;
 
         _subscribed = true;
@@ -89,6 +90,7 @@ public class CInputCommandHub : MonoBehaviour
             _inputManager.OnChoosePotion -= ChoosePotion;
             _inputManager.OnBefore -= Before;
             _inputManager.OnNext -= Next;
+
             _inputManager.OnESC -= ESC;
         }
 
@@ -194,7 +196,7 @@ public class CInputCommandHub : MonoBehaviour
 
     private void ESC()
     {
-        Execute(EKeyAction.ESC);
+        ExecuteESC(EKeyAction.ESC);
     }
     #endregion
 
@@ -274,6 +276,17 @@ public class CInputCommandHub : MonoBehaviour
 
 
     #region 커맨드 실행
+    public void ExecuteESC(EKeyAction key)
+    {
+        if (_commands.TryGetValue(EKeyAction.ESC, out var command))
+        {
+            if (command is IESCCommand ESCCommand)
+            {
+                ESCCommand.ExecuteESC();
+            }
+        }
+    }
+    
     public void Execute(EKeyAction key)
     {
         if (_commands.TryGetValue(key, out var command))
