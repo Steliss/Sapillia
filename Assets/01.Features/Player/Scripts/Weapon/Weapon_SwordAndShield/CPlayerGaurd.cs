@@ -159,6 +159,15 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         
         bool pressed = value > 0.5f;
 
+        // 테스트 용 ※
+        CLog.Log
+            (
+                $"[Guard Input] Value: {value} / " +
+                $"Frame: {Time.frameCount} / " +
+                $"Broken: {IsGuardBroken} / " +
+                $"Locked: {_specialAttackLocked}"
+            );
+
         // 우클릭 해제
         if (!pressed)
         {
@@ -180,6 +189,12 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         _buttonHeld = true;
 
+        // 가드 허용 여부
+        _guardInputArmed = !IsGuardBroken;
+
+        // 테스트 용 ※
+        CLog.Log($"[Guard] Held: {_buttonHeld} / " + $"Armed: {_guardInputArmed}");
+
         if (_guardInputArmed)
         {
             TryStartGuard();
@@ -195,23 +210,27 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 특수 공격 도중 가드 금지
         if (_specialAttackLocked)
         {
+            CLog.Warn("[Guard] 특수공격 잠금 상태");
             return;
         }
 
         // 가드 허용 여부
         if (!_guardInputArmed)
         {
+            CLog.Warn("[Guard] 가드 입력 권한 없음");
             return;
         }
 
         if (IsGuarding || IsGuardBroken)
         {
+            CLog.Warn("[Guard] GuardBreak or 이미 가드중 상태");
             return;
         }
 
         // 검 공격 중에는 방어 시작 대기
         if (_weaponMotion != null && _weaponMotion.IsAttacking)
         {
+            CLog.Warn("[Guard] 무기 공격 진행 중");
             return;
         }
 

@@ -77,21 +77,32 @@ public class CPlayerSpecialAttack : MonoBehaviour
     // 우클릭 유지 + 좌클릭 입력으로 호출
     public bool TryStart(int baseDamage, SPlayerStats stats)
     {
+
         // 특수공격 상태 확인
         if (!isActiveAndEnabled)
         {
+            CLog.Warn("[SpecialAttack] 컴포넌트 비활성화");
             return false;
         }
 
+        // 중복 공격인지 확인
         if (BlockNormalAttack)
         {
+            CLog.Warn("[SpecialAttack] 이미 특수공격 중");
             return false;
         }
 
         // 우클릭 유지 여부 확인
         // GuardBreak 여부는 검사하지 않음
-        if (_playerGuard == null || !_playerGuard.CanStartSpecialAttack)
+        if (_playerGuard == null)
         {
+            CLog.Warn("[SpecialAttack] PlayerGuard 누락");
+            return false;
+        }
+
+        if (!_playerGuard.CanStartSpecialAttack)
+        {
+            CLog.Warn("[SpecialAttack] 우클릭 조건 불충족");
             return false;
         }
 
@@ -111,7 +122,7 @@ public class CPlayerSpecialAttack : MonoBehaviour
             return false;
         }
 
-        // 5. MP 확인
+        // MP 확인
         if (playerData.CurrentMP < _specialManaCost)
         {
             CLog.Warn
@@ -139,7 +150,7 @@ public class CPlayerSpecialAttack : MonoBehaviour
             return false;
         }
 
-        // 8. 기존 CWeaponMotion을 통해 특수공격 실행
+        // 기존 CWeaponMotion을 통해 특수공격 실행
         bool started = _weaponMotion.TryPlay(_specialAttackData, baseDamage, stats);
 
         // 공격 실행 실패 시 MP 반환

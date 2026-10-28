@@ -8,7 +8,7 @@ public class CManagerDontDestroy : MonoBehaviour
     [SerializeField] private CInputCommandHub _inputCommandHub;
     [SerializeField] private CDataManger _dataManger;
     [SerializeField] private CLocalizationManager _localizationData;
-
+    [SerializeField] private bool _isLog = true;
 
     public CSceneManager SceneManager => _sceneManager;
     public CInputCommandHub InputCommandHub => _inputCommandHub;
@@ -40,7 +40,7 @@ public class CManagerDontDestroy : MonoBehaviour
             CLog.Log("_inputCommandHub : Null");
         }
 
-        if(_localizationData == null)
+        if (_localizationData == null)
         {
             CLog.Log("_localizationData : Null");
         }
@@ -49,6 +49,16 @@ public class CManagerDontDestroy : MonoBehaviour
         // 씬이 변경되어도 유지
         DontDestroyOnLoad(gameObject);
 
+    }
+
+    // Inspector에서 값을 바꾸면 반영
+    private void OnValidate()
+    {
+        ApplyLogSetting();
+    }
+    private void ApplyLogSetting()
+    {
+        CLog._isEnable = _isLog;
     }
 
     private void OnDestroy()

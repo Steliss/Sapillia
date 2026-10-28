@@ -9,7 +9,8 @@ public enum EScene
     Town,
     stage1,
     stage2,
-    stage3
+    stage3,
+    Test
 }
 
 
@@ -112,6 +113,7 @@ public class CLocalizationData
     public CLocalizationEntry[] items;
     public CLocalizationEntry[] talk;
     public CLocalizationEntry[] scene;
+    public CLocalizationEntry[] player;
 }
 
 

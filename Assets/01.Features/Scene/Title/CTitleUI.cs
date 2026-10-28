@@ -97,6 +97,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
 
     [Header("메뉴버튼")]
+    // ※ : TODO : 버튼 텍스트 나눠서 다시 만들기
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
     [SerializeField] private GameObject _discordButtonObject;
@@ -287,9 +288,9 @@ public class CTitleUI : MonoBehaviour, IInputCommand
             {
                 _saveSlots[slot].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
                 _saveSlots[slot].PlayerNameText.text = _localization.GetText("scene.playername.text");
-                _saveSlots[slot].PlayerNameSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerName}");
+                _saveSlots[slot].PlayerNameSOText.text = $"{_dataManger.CurrentFlow.PlayerName}";
                 _saveSlots[slot].PlayerProgressText.text = _localization.GetText("scene.playerprogress.text");
-                _saveSlots[slot].PlayerProgressSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerProgress}");
+                _saveSlots[slot].PlayerProgressSOText.text = $"{_dataManger.CurrentFlow.PlayerProgress}";
                 _saveSlots[slot].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
                 _saveSlots[slot].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
                 _saveSlots[slot].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
@@ -458,7 +459,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void CreditOpen()
     {
-        // 크레딧 UI 열기
+        _cSceneManager.ChangeScreenAsync(EScene.Test).Forget();
     }
 
     private void GameExit()

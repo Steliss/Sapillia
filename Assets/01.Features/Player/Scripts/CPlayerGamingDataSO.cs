@@ -30,6 +30,7 @@ public class CPlayerGamingDataSO
 
     [SerializeField] private int _currentEXP;
     [SerializeField] private int _requiredEXP;
+    [SerializeField] private int _requiredMoney;
     [SerializeField] private int _level;
     [SerializeField] private int _money;
 
@@ -48,6 +49,7 @@ public class CPlayerGamingDataSO
     public float CurrentDashCount => _currentDashCount;
     public int CurrentEXP => _currentEXP;
     public int RequiredEXP => _requiredEXP;
+    public int RequiredMoney => _requiredMoney;
     public int Level => _level;
     public int Money => _money;
     public bool IsInitialized { get;  set; }
