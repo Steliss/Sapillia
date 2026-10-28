@@ -9,6 +9,9 @@ public class CDungeonGenerator : MonoBehaviour
     [Header("방 정보")]
     [SerializeField] private CRoomData _firstRoom;
 
+    [Header("층 데이터")]
+    [SerializeField] private CFloorDataSO[] _floorDatas;
+
     [Header("방 디폴트 사이즈")]
     [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
 
@@ -39,6 +42,8 @@ public class CDungeonGenerator : MonoBehaviour
     private Transform _generatedDungeonRoot;
 
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
+
+    private int _currentFloor = 1;
     #endregion
 
 
@@ -67,6 +72,30 @@ public class CDungeonGenerator : MonoBehaviour
         }
     }
 
+    private CFloorDataSO GetCurrentFloorData()
+    {
+        if (_floorDatas == null)
+        {
+            return null;
+        }
+
+        foreach (CFloorDataSO floorData in _floorDatas)
+        {
+            if (floorData == null)
+            {
+                continue;
+            }
+
+            if (floorData.FloorNumber == _currentFloor)
+            {
+                return floorData;
+            }
+        }
+
+        return null;
+    }
+
+
 
     private void GenerateNewDungeon()
     {
@@ -76,9 +105,21 @@ public class CDungeonGenerator : MonoBehaviour
             return;
         }
 
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        if (floorData == null)
+        {
+            Debug.LogError($"현재 층({_currentFloor})의 데이터가 없습니다.");
+            return;
+        }
+
+        int targetRoomCount = Random.Range(
+            floorData.MinRoomCount,
+            floorData.MaxRoomCount + 1
+        );
+
         ClearGeneratedDungeon();
 
-        int targetRoomCount = Random.Range(5, 10);
         int maxAttempts = 50;
 
         for (int attempt = 0; attempt < maxAttempts; attempt++)
