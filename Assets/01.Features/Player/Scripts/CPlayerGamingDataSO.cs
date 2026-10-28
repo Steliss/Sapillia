@@ -22,7 +22,10 @@ public class CPlayerGamingDataSO
     [SerializeField] private SPlayerStats _baseData;
     [SerializeField] private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
     [SerializeField] private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
+    [SerializeField] private SWeaponStatBonus _weaponBonus; // 무기 추가 능력치
     [SerializeField] private SPlayerStats _stats; // 최종 능력치
+
+    [SerializeField] private int _equippedWeaponTier = 1; // 현재 장착 무기 티어
 
     [SerializeField] private int _currentHP;
     [SerializeField] private int _currentMP;
@@ -53,6 +56,9 @@ public class CPlayerGamingDataSO
     public int Level => _level;
     public int Money => _money;
     public bool IsInitialized { get;  set; }
+    public int EquippedWeaponTier => _equippedWeaponTier;
+
+
     #endregion
 
     #region 이벤트
@@ -79,7 +85,12 @@ public class CPlayerGamingDataSO
         _coreStats = _baseData;
         _coreStats.Validate();
 
+        // 장비 및 무기 효과 보너스 초기화
+        _weaponBonus = default;
         _costumeBonus = default;
+
+        // 기본 장착 무기
+        _equippedWeaponTier = 1;
 
         _stats = _coreStats;
 
@@ -154,7 +165,22 @@ public class CPlayerGamingDataSO
         RecalculateStats();
     }
 
-    // 코스튬 효과 적용하기
+    // 무기 능력치 변경
+    public void SetWeaponStatBonus(SWeaponStatBonus bonus)
+    {
+        if (!IsInitialized)
+        {
+            return;
+        }
+
+        // 기존 무기 보너스 교체
+        // 중복 누적되지 않음
+        _weaponBonus = bonus;
+
+        RecalculateStats();     
+    }
+
+    // 코스튬 및 무기 효과 적용하기
     private void RecalculateStats()
     {
         if (!IsInitialized)
@@ -164,6 +190,7 @@ public class CPlayerGamingDataSO
 
         SPlayerStats result = _coreStats;
 
+        // 코스튬        
         // 방어
         result.Def += _costumeBonus.def;
 
@@ -176,6 +203,9 @@ public class CPlayerGamingDataSO
         result.Attribute_Fire += _costumeBonus.Fire;
         result.Attribute_Ice += _costumeBonus.Ice;
         result.Attribute_Lightning += _costumeBonus.Lightning;
+
+        // 무기
+        _weaponBonus.Apply(ref result);
 
         result.Validate();
 
@@ -409,5 +439,20 @@ public class CPlayerGamingDataSO
         OnDashCountChanged?.Invoke(_currentDashCount, _stats.DashCount);
     }
 
+    public void SetEquippedWeaponTier(int weaponTier)
+    {
+        _equippedWeaponTier = weaponTier;
+    }
 
+   
+    public void PrintBonusStats()
+    {
+        CLog.Log
+            (
+                $"[PlayerData] 무기 보너스 적용 / " +
+                $"Str:{_stats.Str} / " +
+                $"Def:{_stats.Def} / " +
+                $"DamageWeapon:{_stats.Damage_Weapon}"
+            );
+    }
 }

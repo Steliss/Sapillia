@@ -108,13 +108,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             _attackQueued = false;
             return;
         }
-
-         // 현재 공격 끝까지 수행
-        if (!_weaponMotion.CanStart)
-        {
-            return;
-        }
-        
+                       
         // 3. 현재 공격 종료 대기
         if (!_weaponMotion.CanStart)
         {
@@ -137,7 +131,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
 
         // 오랫동안 공격하지 않았다면 콤보 초기화
-        if (!_attackQueued && Time.time > _comboExpireTime)
+        if (Time.time > _comboExpireTime)
         {
             _nextComboIndex = 0;
         }
@@ -247,8 +241,15 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         // 2. 런타임 플레이어 데이터
         CPlayerGamingDataSO playerData = _playerController.PlayerData;
 
+        // 현재 장착 무기의 기본 데미지
+        int baseDamage = _weaponData.BaseDamage;
+
+        // 플레이어 최종 스탯
+        SPlayerStats stats = playerData.Stats;
+
+
         // 3. 특수공격 실행 요청
-        bool started = _specialAttack.TryStart(_weaponData.BaseDamage, playerData.Stats);
+        bool started = _specialAttack.TryStart(baseDamage, stats);
 
         if (!started)
         {
@@ -364,6 +365,31 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         _comboExpireTime = float.NegativeInfinity;
         _attackQueued = false;
     }
+
+    #endregion
+
+
+    #region 무기 스왑
+    public void SetWeaponData(CWeaponDataSO weaponData)
+    {
+        if (weaponData == null)
+        {
+            return;
+        }
+
+        // 새로운 무기 데이터
+        _weaponData = weaponData;
+
+        // 이전 일반공격 유지 및 예약 취소
+        _isAttackHeld = false;
+        _attackQueued = false;
+
+        // 새 무기는 1타부터 시작
+        ResetCombo();
+
+        CLog.Log("[PlayerAttack] WeaponData 교체 완료");
+    }
+
 
     #endregion
 

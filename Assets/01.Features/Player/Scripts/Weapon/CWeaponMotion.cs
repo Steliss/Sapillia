@@ -9,6 +9,7 @@ public class CWeaponMotion : MonoBehaviour
     [SerializeField] private Transform _weaponSwing;
     [SerializeField] private Transform _hitPoint;
 
+    // ※
     [Header("무기 조준")]
     [SerializeField] private CSwordAndShieldAim _aim;
 
@@ -69,7 +70,7 @@ public class CWeaponMotion : MonoBehaviour
     {
         if (_weaponSwing == null || _hitPoint == null)
         {
-            CLog.Error("Weapon 참조 누락");
+            CLog.Error("[WeaponMotion] Weapon 참조 누락");
             enabled = false;
             return;
         }
@@ -140,7 +141,7 @@ public class CWeaponMotion : MonoBehaviour
 
         // 검의 실제 위치와 회전 갱신
         ApplyPose(current);
-        // 타격 가능한 구간 검사
+        // SO에 설정된 범위로 타격 가능한 구간 검사
         DetectHits(previous, current);
         // 베기 이펙트
         UpdateSlashEffect(current);
@@ -153,7 +154,7 @@ public class CWeaponMotion : MonoBehaviour
     }
 
     #region 공격
-    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats)
+    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial = false)
     {
         if (!CanStart || attack == null)
         {
@@ -167,7 +168,7 @@ public class CWeaponMotion : MonoBehaviour
         _duration = Mathf.Max(0.01f, attack.Duration / speed);
         _holdDuration = Mathf.Max(0f, attack.Recovery / speed);
         
-        _nextAttackTime = Time.time + _duration + attack.Recovery / speed;
+        _nextAttackTime = Time.time + _duration + _holdDuration;
 
         _elapsedTime = 0f;
         _holdTimer = 0f;
@@ -175,17 +176,15 @@ public class CWeaponMotion : MonoBehaviour
         _isAttacking = true;
         _isHolding = false;
 
+        _hitTargets.Clear();
+
         // 무기 잠금
-        if(_aim != null)
+        if (_aim != null)
         {
             _aim.LockAim();
         }
 
-        // 데미지 계산
-        float damage = baseDamage * attack.DamageMultiplier * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Normal;
-        _damage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
-
-        _hitTargets.Clear();
+        _damage = CalculateDamage(attack, baseDamage, stats, isSpecial);       
         
         // 검 끝 판정 위치 설정
         _hitPoint.localPosition = Vector3.right * attack.HitDistance;
@@ -198,8 +197,32 @@ public class CWeaponMotion : MonoBehaviour
 
         ApplyPose(0f);
 
+        // 공격 확인용 테스트 ※
+        CLog.Log
+           (
+                $"[WeaponMotion] " +
+                $"Type:{(isSpecial ? "Special" : "Normal")} / " +
+                $"Damage:{_damage} / " +
+                $"Radius:{attack.HitRadius} / " +
+                $"Distance:{attack.HitDistance}"
+           );
+
         return true;
     }
+
+    // 최종 데미지 계산
+    private int CalculateDamage(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial)
+    {
+        // 일반공격은 공격 패턴 배율을 적용
+        // 특수공격은 플레이어의 Damage_Special 사용
+        float attackMultiplier = isSpecial ? stats.Damage_Special : attack.DamageMultiplier * stats.Damage_Normal;
+        float damage = baseDamage * stats.Damage_All * stats.Damage_Weapon * attackMultiplier;
+
+        return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
+    }
+
+
+
 
 
     private void EndAttack()
@@ -269,7 +292,7 @@ public class CWeaponMotion : MonoBehaviour
         // Recovery만큼 마지막 자세 유지
         _holdTimer = _holdDuration;
 
-        _hitTargets.Clear();
+        //_hitTargets.Clear();
 
         if(_slashRenderer != null)
         {
