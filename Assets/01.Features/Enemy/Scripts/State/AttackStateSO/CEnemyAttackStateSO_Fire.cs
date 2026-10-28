@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/Fire", fileName = "Enemy_Attack_Fire_")]
 public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
@@ -19,10 +18,10 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
     [SerializeField] private float _trackingSpeed = 1f;
     [Header("투사체 속성")]
     [SerializeField] private int _multiFire = 1;
-
     [SerializeField] private float _firePower = 3f;
-    [SerializeField] private float _fireAngle = 0f;
     [SerializeField] private float _bulletLifeTime = 3f;
+    [SerializeField] private float _randomPowerRange = 0.5f;
+    [SerializeField] private float _randomAngleRange = 5f;
 
     [Space(10)]
     [Header("===== 전조 =====")]
@@ -40,17 +39,27 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         _mashine.AttackUni.Cancel();
         _mashine.AttackUni.Run(async ct =>
         {
-
-
-
             // 선딜
             await BeforeDelay(ct);
 
             // 조준
             float aim = await TrackingAim(ct);
-            
+
             // 발사
-            BulletFire(aim);
+            GameObject effect = CreateAttackObject
+                (_fireEffect, _bulletLifeTime, _mashine.Sprite.transform.position, Quaternion.identity);
+
+            for (int i = 0; i < _multiFire; i++)
+            {
+                float ranPow = 0f;
+                float ranAngle = 0f;
+                if (i != 0)
+                {
+                    ranPow = UnityEngine.Random.Range(-_randomPowerRange, _randomPowerRange);
+                    ranAngle = UnityEngine.Random.Range(-_randomAngleRange, _randomAngleRange);
+                }
+                BulletFire(aim + ranAngle, _firePower + ranPow);
+            }
 
 
             _mashine.StateChanged(_mashine.IdleState);
@@ -64,7 +73,9 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
 
     public override void StateUpdate()
     {
-        
+        // 좌우 반전
+        bool isLeft = _mashine.Target.position.x < _mashine.transform.position.x;
+        _mashine.SpriteFlipX(isLeft);
     }
 
     private async UniTask BeforeDelay(CancellationToken ct)
@@ -106,15 +117,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
             targetPos = _mashine.Target.position;
             Vector2 dir = targetPos - myPos;
 
-            // 좌우 반전
-            if (dir.x < 0)
-            {
-                _mashine.Sprite.flipX = true;
-            }
-            else
-            {
-                _mashine.Sprite.flipX = false;
-            }
+            
             // 타겟 각도 갱신
             targetAngle = DirToAngle(dir.normalized);
 
@@ -138,24 +141,23 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         return aimAngle;
     }
 
-    private void BulletFire(float aim)
+    private void BulletFire(float aim, float power)
     {
         Vector2 aimDir = AngleToDir(aim);
         Vector2 myPos = _mashine.transform.position;
-        Vector2 firePoint = myPos;
-        firePoint.x += (aimDir.x > 0f) ? 1f : -1f;
-
-        GameObject effect = CreateAttackObject
-            (_fireEffect, _bulletLifeTime, firePoint, Quaternion.identity);
 
         GameObject bullet = CreateAttackObject
-        (_projectile, _bulletLifeTime, firePoint, Quaternion.identity);
+        (_projectile, _bulletLifeTime + 1f, myPos + aimDir.normalized * 0.5f, Quaternion.identity);
 
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.AddForce(aimDir * _firePower, ForceMode2D.Impulse);
-            CLog.Log($"{aimDir * _firePower}로 발사");
+            rb.AddForce(aimDir * power, ForceMode2D.Impulse);
+        }
+        CEnemyProjectile pro = bullet.GetComponent<CEnemyProjectile>();
+        if (pro != null)
+        {
+            pro.DamageSet(_mashine.Attack, aimDir.normalized, _bulletLifeTime);
         }
     }
 

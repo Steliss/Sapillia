@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class CMeleeProjectile : MonoBehaviour
+public class CEnemyProjectile : MonoBehaviour
 {
     #region 인스펙터
     [Header("충돌 데이터")]
@@ -19,6 +19,7 @@ public class CMeleeProjectile : MonoBehaviour
     private Rigidbody2D _rb;
     private int _hashIng;
     private int _hashEnd;
+    protected float _attackTime = 0f;
     #endregion
 
     private void Awake()
@@ -32,60 +33,36 @@ public class CMeleeProjectile : MonoBehaviour
         if (_ani == null || _sp == null || _rb == null)
         {
             CLog.Warn($"{name} : 애니메이터, 스프라이트, 리지드바디 누락 확인필요");
+            enabled = false;
         }
     }
 
-    private void OnEnable()
+
+    // 시간이 지나면 충돌off, 애니메이션 재생
+    private void Update()
     {
-        if (_ani != null)
+        if (!_rb.simulated)
         {
-            _ani.Play(_hashIng);
+            return;
         }
-    }
+        _attackTime -= Time.deltaTime;
 
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (((1 << collision.gameObject.layer) & _targetLayer) == 0)
+        if (_attackTime > 0f)
         {
             return;
         }
 
-        IDamageInfoReceiver player = collision.GetComponentInChildren<IDamageInfoReceiver>();
-
-        if(player == null)
-        {
-            CLog.Log("[MeleeProjectile] IDamageInfoReceiver를 찾지 못함");
-            return;
-        }
-
-        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _velocity);
-
-        player.TakeDamage(info);
-         
-        CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
-        CLog.Log($"[EnemyAttack Damage : {info.Damage}");
-        CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
-        
-        
+        _rb.simulated = false;
+        _rb.velocity = Vector2.zero;
+        _ani.Play(_hashEnd);
     }
 
-    public void AniEnd()
-    {
-        if (_ani != null)
-        {
-            _ani.Play(_hashEnd);
-        }
-        if (_rb != null)
-        {
-            _rb.simulated = false;
-        }
-    }
-
-    public void DamageSet(float damage, Vector2 velocity)
+    public void DamageSet(float damage, Vector2 velocity, float attackTime)
     {
         _damage = damage;
         _velocity = velocity;
+        _ani.Play(_hashIng);
+        _attackTime = attackTime;
         if (_sp != null)
         {
             if (velocity.x < 0)
@@ -98,10 +75,38 @@ public class CMeleeProjectile : MonoBehaviour
             }
         }
 
-        if (_rb != null)
-        {
-            _rb.simulated = true;
-        }
+        _rb.simulated = true;
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (((1 << collision.gameObject.layer) & _targetLayer) == 0)
+        {
+            return;
+        }
+
+        IDamageInfoReceiver player = collision.GetComponentInChildren<IDamageInfoReceiver>();
+
+        if (player == null)
+        {
+            CLog.Log("[MeleeProjectile] IDamageInfoReceiver를 찾지 못함");
+            return;
+        }
+
+        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _velocity);
+
+        player.TakeDamage(info);
+
+        CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
+        CLog.Log($"[EnemyAttack Damage : {info.Damage}");
+        CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
+
+        HitEnd();
+    }
+
+    // 데미지를 준 후 처리가 필요하면 상속받은 후 HitEnd 함수를 오버라이드
+    protected virtual void HitEnd()
+    {
+
+    }
 }

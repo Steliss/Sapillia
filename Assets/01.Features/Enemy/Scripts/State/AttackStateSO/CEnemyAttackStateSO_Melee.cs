@@ -1,9 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/Melee", fileName = "Enemy_Attack_Melee_")]
 public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
@@ -54,11 +52,11 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             // 좌우 반전
             if (dir.x < 0)
             {
-                _mashine.Sprite.flipX = true;
+                _mashine.SpriteFlipX(true);
             }
             else
             {
-                _mashine.Sprite.flipX = false;
+                _mashine.SpriteFlipX(false);
             }
 
             // 선딜레이
@@ -169,15 +167,13 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
         {
             go.transform.parent = _mashine.gameObject.transform;
             // 공격 객체 데미지, 방향 설정
-            CMeleeProjectile goPro = go.GetComponent<CMeleeProjectile>();
+            CEnemyProjectile goPro = go.GetComponent<CEnemyProjectile>();
             if (goPro != null)
             {
-                goPro.DamageSet(_mashine.Attack, dir);
+                goPro.DamageSet(_mashine.Attack, dir, _attackTime);
             }
 
             await UniTask.Delay(TimeSpan.FromSeconds(_attackTime), cancellationToken: ct);
-
-            goPro.AniEnd();
         }
     }
 }

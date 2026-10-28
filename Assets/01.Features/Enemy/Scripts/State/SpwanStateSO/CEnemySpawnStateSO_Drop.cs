@@ -1,7 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SO/Enemy/SpawnState", fileName = "Enemy_Spawn_Drop_")]
@@ -35,7 +33,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
                 }
                 tr.localPosition = Vector3.zero;
-
+                
                 // 이펙트 생성
                 if (_stamp != null && CObjectPoolManager.Instance != null)
                 {
