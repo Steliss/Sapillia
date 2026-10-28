@@ -10,7 +10,7 @@ public enum ELanguage
 
 public class CLocalizationManager : MonoBehaviour
 {
-    [SerializeField] private CFlowData _flowData;
+    [SerializeField] private CDataManger _flowData;
     [SerializeField] private TextAsset _koreanJson;
     [SerializeField] private TextAsset _englishJson;
 
@@ -81,6 +81,7 @@ public class CLocalizationManager : MonoBehaviour
         AddEntries(data.items);
         AddEntries(data.talk);
         AddEntries(data.scene);
+        AddEntries(data.player);
 
         _flowData.CurrentSetting.SetCurrentLanhuage(language);
 

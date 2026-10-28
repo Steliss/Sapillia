@@ -7,6 +7,10 @@ using UnityEngine;
 
 */
 
+
+
+
+[Serializable]
 public class CPlayerGamingDataSO
 {
     #region 인스펙터
@@ -15,25 +19,26 @@ public class CPlayerGamingDataSO
     #endregion
 
     #region 내부 변수
-    private SPlayerStats _baseData;
-    private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
-    private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
-    private SPlayerStats _stats; // 최종 능력치
+    [SerializeField] private SPlayerStats _baseData;
+    [SerializeField] private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
+    [SerializeField] private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
+    [SerializeField] private SPlayerStats _stats; // 최종 능력치
 
-    private int _currentHP;
-    private int _currentMP;
-    private int _currentDashCount;
+    [SerializeField] private int _currentHP;
+    [SerializeField] private int _currentMP;
+    [SerializeField] private int _currentDashCount;
 
-    private int _currentEXP;
-    private int _requiredEXP;
-    private int _level;
-    private int _money;
+    [SerializeField] private int _currentEXP;
+    [SerializeField] private int _requiredEXP;
+    [SerializeField] private int _requiredMoney;
+    [SerializeField] private int _level;
+    [SerializeField] private int _money;
 
-    private float _mpRegenProgress;
-    private float _dashRegenProgress;
+    [SerializeField] private float _mpRegenProgress;
+    [SerializeField] private float _dashRegenProgress;
 
-    private int _startMoney = 500;
-    private float _expGrowthMultiplier = 1.2f;
+    [SerializeField] private int _startMoney = 500;
+    [SerializeField] private float _expGrowthMultiplier = 1.2f;
     #endregion
 
     #region 프로퍼티
@@ -44,9 +49,10 @@ public class CPlayerGamingDataSO
     public float CurrentDashCount => _currentDashCount;
     public int CurrentEXP => _currentEXP;
     public int RequiredEXP => _requiredEXP;
+    public int RequiredMoney => _requiredMoney;
     public int Level => _level;
     public int Money => _money;
-    public bool IsInitialized { get; private set; }
+    public bool IsInitialized { get;  set; }
     #endregion
 
     #region 이벤트

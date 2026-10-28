@@ -9,7 +9,8 @@ public enum EScene
     Town,
     stage1,
     stage2,
-    stage3
+    stage3,
+    Test
 }
 
 
@@ -112,4 +113,15 @@ public class CLocalizationData
     public CLocalizationEntry[] items;
     public CLocalizationEntry[] talk;
     public CLocalizationEntry[] scene;
+    public CLocalizationEntry[] player;
+}
+
+
+// 데이터 매니저 관련 필드
+[Serializable]
+public class CGameSaveData
+{
+    public CFlowGame Flow;
+    public CPlayerGamingDataSO Player;
+    public CInventoryData Inventory;
 }

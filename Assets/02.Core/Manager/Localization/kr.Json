@@ -9,6 +9,7 @@
             "value": "검이다."
         }
     ],
+
     "talk": [
         {
             "key": "talk.mayer.idle",
@@ -19,6 +20,7 @@
             "value": "임시 출력 땜방2"
         }
     ],
+
     "scene": [
         {
             "key": "scene.enmpty.text",
@@ -44,6 +46,38 @@
         {
             "key": "scene.menustart.text",
             "value": "게임 시작"
+        },
+        {
+            "key": "scene.optionset.text",
+            "value": "켜기"
+        },
+        {
+            "key": "scene.optionoff.text",
+            "value": "끄기"
+        },
+        {
+            "key": "scene.yes.text",
+            "value": "예"
+        },
+        {
+            "key": "scene.no.text",
+            "value": "아니요"
+        },
+        {
+            "key": "scene.defaultplayer.text",
+            "value": "토리"
+        },
+        {
+            "key": "scene.createplayertitle.text",
+            "value": "플레이어 이름을 정해주세요"
+        },
+        {
+            "key": "scene.optionlanguage.text",
+            "value": "한국어"
+        },
+        {
+            "key": "scene.gameplayslotbutton.text",
+            "value": "게임 플레이"
         },
 
         {
@@ -93,6 +127,73 @@
         {
             "key": "scene.stage3.desc2",
             "value": "비록 오랜 시간이 지났지만. 유적의 경비는 삼엄합니다."
+        }
+    ],
+
+    "player": [
+        {
+            "key": "player.commonstats.Text",
+            "value": "공통 능력치"
+        },
+        {
+            "key": "player.specialstats.Text",
+            "value": "전문 능력치"
+        },
+        {
+            "key": "player.mpregintext.Text",
+            "value": "MP 재생"
+        },
+        {
+            "key": "player.deftext.Text",
+            "value": "방어력"
+        },
+        {
+            "key": "player.strtext.Text",
+            "value": "강인함"
+        },
+        {
+            "key": "player.evasiontext.Text",
+            "value": "회피"
+        },
+        {
+            "key": "player.criticalratetext.Text",
+            "value": "치명타 확률"
+        },
+        {
+            "key": "player.criticaldamagetext.Text",
+            "value": "치명타 피해"
+        },
+        {
+            "key": "player.attackspeedtext.Text",
+            "value": "공격 속도"
+        },
+        {
+            "key": "player.movementspeedtext.Text",
+            "value": "이동 속도"
+        },
+        {
+            "key": "player.runspeedmulitpliertext.Text",
+            "value": "대쉬 회복 속도"
+        },
+        {
+            "key": "player.bargaintext.Text",
+            "value": "협상력"
+        },
+        {
+            "key": "player.lucktext.Text",
+            "value": "행운"
+        },
+        {
+            "key": "player.requiredexptext.Text",
+            "value": "경험치 드롭"
+        },
+        {
+            "key": "player.requiredmoneytext.Text",
+            "value": "잎 드롭"
+        },
+        {
+            "key": "player.leveluphealtext.Text",
+            "value": "레벨업 시 HP 회복"
         }
     ]
 }

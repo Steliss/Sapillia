@@ -95,7 +95,9 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
 
+
     [Header("메뉴버튼")]
+    // ※ : TODO : 버튼 텍스트 나눠서 다시 만들기
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
     [SerializeField] private GameObject _discordButtonObject;
@@ -104,12 +106,23 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     [Header("게임 시작 UI")]
     [SerializeField] private GameObject _startGameUI;
+
+    [SerializeField] private GameObject _nameInput;
+    [SerializeField] private TMP_InputField _inputField;
+    [SerializeField] private Button _nameInputYes;
+    [SerializeField] private Button _nameInputNo;
+    [SerializeField] private TextMeshProUGUI _createPlayerTitle;
+    [SerializeField] private TextMeshProUGUI _nameInputYesText;
+    [SerializeField] private TextMeshProUGUI _nameInputNoText;
+
     [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
     [Header("설정 UI")]
-    [SerializeField] private GameObject _settingUI;
+    [SerializeField] private CSettingUI _settingUI;
 
 
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
+    private CUniTaskOnes _sceneTask = new CUniTaskOnes();
     private CSceneManager _cSceneManager;
     private CInputCommandHub _input;
     private Button _startButton;
@@ -118,12 +131,12 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     private Button _creditButton;
     private Button _exitButton;
 
-    private CancellationTokenSource _cancleToken;
+    private int _createSlot = -1;
 
-    private async void OnEnable()
+
+    private void OnEnable()
     {
-        _cancleToken = new CancellationTokenSource();
-        CancellationToken token = _cancleToken.Token;
+        _localization.OnLanguageChanged += ReloadText;
 
         _startButton.onClick.AddListener(OpenCharacterSlot);
         _settingButton.onClick.AddListener(SettingGame);
@@ -131,40 +144,63 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         _creditButton.onClick.AddListener(CreditOpen);
         _exitButton.onClick.AddListener(GameExit);
 
-        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart);
+        _saveSlots[0].StartGameStartButton.onClick.AddListener(GameStart0);
+        _saveSlots[1].StartGameStartButton.onClick.AddListener(GameStart1);
+        _saveSlots[2].StartGameStartButton.onClick.AddListener(GameStart2);
 
-        try
+        _nameInputYes.onClick.AddListener(CreateSave);
+        _nameInputNo.onClick.AddListener(CancelCreateSave);
+
+
+        _inputTask.Run(async token =>
         {
             _input = await CManagerDontDestroy.InputCommandHubAsync(token);
             _input.Register(EKeyAction.ESC, this);
-
-            _cSceneManager = await CManagerDontDestroy.SceneManagerAsync(token);
-            CLog.Log("CTitleUI OnEnable 작업 완료");
-        }
-        catch (OperationCanceledException) when (token.IsCancellationRequested)
+            CLog.Log("_inputTask OnEnable 작업 완료");
+        });
+        _sceneTask.Run(async token =>
         {
-            // 매니저를 기다리는 도중 UI가 비활성화되거나 파괴되면 사용
-        }
+            _cSceneManager = await CManagerDontDestroy.SceneManagerAsync(token);
+            CLog.Log("_sceneTask OnEnable 작업 완료");
+        });
 
     }
 
     private void OnDisable()
     {
+        _localization.OnLanguageChanged -= ReloadText;
+
         _startButton.onClick.RemoveListener(OpenCharacterSlot);
         _settingButton.onClick.RemoveListener(SettingGame);
         _discordButton.onClick.RemoveListener(DiscordOpen);
         _creditButton.onClick.RemoveListener(CreditOpen);
         _exitButton.onClick.RemoveListener(GameExit);
 
-        // 구독해제
-        _cancleToken?.Cancel();
-        _cancleToken?.Dispose();
-        _cancleToken = null;
+        _saveSlots[0].StartGameStartButton.onClick.RemoveListener(GameStart0);
+        _saveSlots[1].StartGameStartButton.onClick.RemoveListener(GameStart1);
+        _saveSlots[2].StartGameStartButton.onClick.RemoveListener(GameStart2);
+
+        _nameInputYes.onClick.RemoveListener(CreateSave);
+        _nameInputNo.onClick.RemoveListener(CancelCreateSave);
+
+        _inputTask.Cancel();
+        _sceneTask.Cancel();
+
         _input.Unregister(EKeyAction.ESC, this);
     }
 
     private void Awake()
     {
+        if (_localization == null)
+        {
+            CLog.Log("_localization : Null");
+        }
+
+        if (_dataManger == null)
+        {
+            CLog.Log("_dataManger : Null");
+        }
+
         // GameObject의 버튼 생상 변경과 기입처리
         _startButton = SetButton(_startButtonObject);
         _settingButton = SetButton(_settingButtonObject);
@@ -180,37 +216,10 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     private void Start()
     {
 
-        string path = Path.Combine(Application.persistentDataPath, "CurrentGame_0.json");
-        if (!File.Exists(path))
-        {
-            _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
-            _saveSlots[0].PlayerNameText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerNameSOText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerProgressText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerProgressSOText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerRetryCountText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerRetryCountSOText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerPlayTimeText.text = _localization.GetText("scene.enmpty.text");
-            _saveSlots[0].PlayerPlayTimeSOText.text = _localization.GetText("scene.enmpty.text");
-        }
 
-        if (_dataManger.LoadGame(0))
-        {
-            _saveSlots[0].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
-            _saveSlots[0].PlayerNameText.text = _localization.GetText("scene.playername.text");
-            _saveSlots[0].PlayerNameSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerName}");
-            _saveSlots[0].PlayerProgressText.text = _localization.GetText("scene.playerprogress.text");
-            _saveSlots[0].PlayerProgressSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerProgress}");
-            _saveSlots[0].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
-            _saveSlots[0].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
-            _saveSlots[0].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
-            _saveSlots[0].PlayerPlayTimeSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.Playerplaytime}");
-        }
+        // ※ : TODO : 매니저 관련 잡아주는 과정 추가
 
-        // ※ : TODO : 1,2번 데이터 확정되고 마무리 
-
-
-
+        ReloadText();
     }
 
     private void Update()
@@ -225,6 +234,12 @@ public class CTitleUI : MonoBehaviour, IInputCommand
             gameObject.SetActive(false);
         }
 
+        // ※ test
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            CLog.Log("Test");
+            _dataManger.LoadGame(0);
+        }
 
     }
 
@@ -232,8 +247,62 @@ public class CTitleUI : MonoBehaviour, IInputCommand
     public void Execute()
     {
         _startGameUI.SetActive(false);
-        Debug.Log("CTitleUI ESC 실행");
+        _settingUI.ActiveUI(false);
+
+        //CLog.Log("CTitleUI ESC 실행");
     }
+
+
+    //언어 변환 및 초기 언어 세팅 관련
+    private void ReloadText()
+    {
+        for (int i = 0; i < _saveSlots.Length; i++)
+        {
+            LoadGame(i);
+        }
+
+        _inputField.text = _localization.GetText("scene.defaultplayer.text");
+        _nameInputYesText.text = _localization.GetText("scene.yes.text");
+        _nameInputNoText.text = _localization.GetText("scene.no.text");
+        _createPlayerTitle.text = _localization.GetText("scene.createplayertitle.text");
+    }
+
+
+    public void LoadGame(int slot)
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, $"Game_{slot}.json")))
+        {
+            _saveSlots[slot].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
+            _saveSlots[slot].PlayerNameText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerNameSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerProgressText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerProgressSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerRetryCountText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerRetryCountSOText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerPlayTimeText.text = _localization.GetText("scene.enmpty.text");
+            _saveSlots[slot].PlayerPlayTimeSOText.text = _localization.GetText("scene.enmpty.text");
+        }
+        else 
+        {
+            if (_dataManger.LoadGame(slot))
+            {
+                _saveSlots[slot].StartGameStartButtonText.text = _localization.GetText("scene.menustart.text");
+                _saveSlots[slot].PlayerNameText.text = _localization.GetText("scene.playername.text");
+                _saveSlots[slot].PlayerNameSOText.text = $"{_dataManger.CurrentFlow.PlayerName}";
+                _saveSlots[slot].PlayerProgressText.text = _localization.GetText("scene.playerprogress.text");
+                _saveSlots[slot].PlayerProgressSOText.text = $"{_dataManger.CurrentFlow.PlayerProgress}";
+                _saveSlots[slot].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
+                _saveSlots[slot].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
+                _saveSlots[slot].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
+                _saveSlots[slot].PlayerPlayTimeSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.Playerplaytime}");
+            }
+            else
+            {
+                CLog.Error("CTitleUI : 파일 불러오기 에러");
+            }
+        }
+    }
+
 
 
     // 마우스 이동에 따른 글자색 변화
@@ -291,21 +360,96 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         _startGameUI.SetActive(true);
     }
 
-
-
-    private void GameStart()
+    // 람다식 구독 문제로 인한 함수 생성
+    private void GameStart0()
     {
+        // 슬롯이 비었으면 새 캐릭터 생성, 있으면 해당 케릭터로 로딩
+
+        if(!File.Exists(Path.Combine(Application.persistentDataPath, "Game_0.json")))
+        {
+            OpenCreateSave(0);
+            return;
+        }
+
+        _dataManger.LoadGame(0);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+    private void GameStart1()
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_1.json")))
+        {
+            OpenCreateSave(1);
+            return;
+        }
+
+        _dataManger.LoadGame(1);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+    private void GameStart2()
+    {
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_2.json")))
+        {
+            OpenCreateSave(2);
+            return;
+        }
+
+        _dataManger.LoadGame(2);
+        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+    }
+
+    // 케릭터 이름 기입
+    private void OpenCreateSave(int slot)
+    {
+        _createSlot = slot;
+
+        _nameInput.SetActive(true);
+        _inputField.textComponent.color = Color.yellow;
+        _inputField.ActivateInputField();
+    }
 
 
+    private void CreateSave()
+    {
+        if (_createSlot < 0)
+        {
+            return;
+        }
 
 
+        if (string.IsNullOrWhiteSpace(_inputField.text.Trim()))
+        {
+            CLog.Log("이름을 입력해주세요.");
+            _inputField.ActivateInputField();
+            return;
+        }
+
+        // 빈 슬롯 초기화: 기존 LoadGame의 신규 생성 기능 사용
+        if (!_dataManger.LoadGame(_createSlot))
+        {
+            return;
+        }
+
+        _dataManger.CurrentFlow.SetName(_inputField.text.Trim());
+        _dataManger.SaveGame(_createSlot);
+
+        _createSlot = -1;
+        _nameInput.SetActive(false);
 
         _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
     }
 
+
+    private void CancelCreateSave()
+    {
+        _createSlot = -1;
+        _nameInput.SetActive(false);
+    }
+
+
+
     private void SettingGame()
     {
-        // 저장 데이터 불러오기
+        _settingUI.ActiveUI(true);
     }
 
     private void DiscordOpen()
@@ -315,7 +459,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void CreditOpen()
     {
-        // 크레딧 UI 열기
+        _cSceneManager.ChangeScreenAsync(EScene.Test).Forget();
     }
 
     private void GameExit()
