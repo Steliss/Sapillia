@@ -10,17 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1adab767a0ef5574b9e680a131d95a36, type: 3}
-  m_Name: Enemy_Attack_Fire_
+  m_Name: Enemy_Attack_Fire_BoomMole
   m_EditorClassIdentifier: 
-  _projectile: {fileID: 0}
-  _fireEffect: {fileID: 0}
+  _projectile: {fileID: 2182515107303193145, guid: 19787abbe9296e94f98293a4b668b929, type: 3}
+  _fireEffect: {fileID: 6972623845968668855, guid: 05963e78bbe01f340a8e876481120791, type: 3}
   _beforeDelay: 2
   _trackingTime: 1
-  _trackingSpeed: 1
-  _multiFire: 1
+  _trackingSpeed: 50
+  _multiFire: 5
   _firePower: 3
-  _fireAngle: 0
   _bulletLifeTime: 3
-  _warningLine: {fileID: 0}
+  _randomPowerRange: 0.5
+  _randomAngleRange: 5
+  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
   _lineLength: 3
-  _interbal: 1
+  _interbal: 0.5

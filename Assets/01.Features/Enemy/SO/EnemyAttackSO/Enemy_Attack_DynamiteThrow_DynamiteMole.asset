@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e490c85ee910694aa470cdec3b9cf1e, type: 3}
+  m_Name: Enemy_Attack_DynamiteThrow_DynamiteMole
+  m_EditorClassIdentifier: 
+  _projectile: {fileID: 493104598849414757, guid: e50e7cb9c81142048b2c17daf08b7a08, type: 3}
+  _beforeDelay: 1
+  _afterDelay: 1
+  _trackingSpeed: 5
+  _multiFire: 1
+  _throwPower: 3
+  _dynamiteLifeTime: 1.5
+  _randomPosRange: {x: 1, y: 0.5}
+  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+  _lineLength: 3
+  _interbal: 0.5
