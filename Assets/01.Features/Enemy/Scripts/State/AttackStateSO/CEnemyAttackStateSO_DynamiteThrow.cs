@@ -44,7 +44,10 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
             // 선딜 + 조준
             Vector2 aimPos = await TrackingAim(ct);
             // 던지기
-            Throw(aimPos);
+            for (int i = 0; i < _multiFire; i++)
+            {
+                Throw(aimPos);
+            }
 
             // 후딜
             await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
@@ -120,8 +123,16 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
 
     private void Throw(Vector2 toPos)
     {
+        _mashine.Ani.Play(_mashine.HashAttack);
+
         GameObject dynamite = CreateAttackObject
         (_projectile, _dynamiteLifeTime + 1f, _mashine.transform.position, Quaternion.identity);
+
+        // 목표 근처 랜덤범위 적용
+        float ranX = UnityEngine.Random.Range(-_randomPosRange.x, _randomPosRange.x);
+        float ranY = UnityEngine.Random.Range(-_randomPosRange.y, _randomPosRange.y);
+        toPos.x += ranX;
+        toPos.y += ranY;
 
         // 데미지 설정
         CEnemyProjectile_Dynamite pro = dynamite.GetComponent<CEnemyProjectile_Dynamite>();
