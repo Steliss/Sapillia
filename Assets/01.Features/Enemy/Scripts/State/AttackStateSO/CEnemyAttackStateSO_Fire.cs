@@ -40,6 +40,9 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         _mashine.AttackUni.Cancel();
         _mashine.AttackUni.Run(async ct =>
         {
+
+
+
             // 선딜
             await BeforeDelay(ct);
 
@@ -79,7 +82,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         Vector2 myPos = _mashine.transform.position;
         Vector2 targetPos = _mashine.Target.position;
 
-        // 라인 초기 세팅
+        // 라인 생성
         GameObject[] lines = new GameObject[2];
         float[] sides = { -1f, 1f };
         for (int i = 0; i < lines.Length; i++)
@@ -97,16 +100,23 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         float aimAngle = targetAngle;
 
         // 조준 트래킹
-        float time = 0f;
-        while (time < _trackingTime)
+        for (float time = 0f; time < _trackingTime; time += Time.deltaTime)
         {
-            time += Time.deltaTime;
-            float t01 = time / _trackingTime;
             myPos = _mashine.transform.position;
             targetPos = _mashine.Target.position;
+            Vector2 dir = targetPos - myPos;
 
+            // 좌우 반전
+            if (dir.x < 0)
+            {
+                _mashine.Sprite.flipX = true;
+            }
+            else
+            {
+                _mashine.Sprite.flipX = false;
+            }
             // 타겟 각도 갱신
-            targetAngle = DirToAngle((targetPos - myPos).normalized);
+            targetAngle = DirToAngle(dir.normalized);
 
             // 에임 따라가기
             aimAngle = Mathf.MoveTowardsAngle(aimAngle, targetAngle, Time.deltaTime * _trackingSpeed);
@@ -117,7 +127,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
             Quaternion qua = Quaternion.Euler(0, 0, aimAngle);
             float gap = Mathf.Lerp(_interbal, 0f, time / _trackingTime);
 
-
+            // 선 따라가기
             for (int i = 0; i < lines.Length; i++)
             {
                 lines[i].transform.SetPositionAndRotation(linePos + (aimDir90 * gap * sides[i]), qua);
@@ -132,12 +142,14 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
     {
         Vector2 aimDir = AngleToDir(aim);
         Vector2 myPos = _mashine.transform.position;
+        Vector2 firePoint = myPos;
+        firePoint.x += (aimDir.x > 0f) ? 1f : -1f;
 
         GameObject effect = CreateAttackObject
-            (_fireEffect, _bulletLifeTime, myPos + aimDir, Quaternion.identity);
+            (_fireEffect, _bulletLifeTime, firePoint, Quaternion.identity);
 
         GameObject bullet = CreateAttackObject
-        (_projectile, _bulletLifeTime, myPos + aimDir, Quaternion.identity);
+        (_projectile, _bulletLifeTime, firePoint, Quaternion.identity);
 
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
@@ -147,14 +159,6 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         }
     }
 
-    private float DirToAngle(Vector2 dir)
-    {
-        return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-    }
-
-    private Vector2 AngleToDir(float angle)
-    {
-        return Quaternion.Euler(0, 0, angle) * Vector2.up;
-    }
+    
 
 }

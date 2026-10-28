@@ -27,4 +27,14 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
 
         return go;
     }
+
+    protected float DirToAngle(Vector2 dir)
+    {
+        return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
+    }
+
+    protected Vector2 AngleToDir(float angle)
+    {
+        return Quaternion.Euler(0, 0, angle) * Vector2.up;
+    }
 }
