@@ -4,27 +4,27 @@ public class CEnemyProjectile : MonoBehaviour
 {
     #region 인스펙터
     [Header("충돌 데이터")]
-    [SerializeField] private float _damage;
-    [SerializeField] private Vector2 _velocity;
-    [SerializeField] private LayerMask _targetLayer;
+    [SerializeField] protected float _damage;
+    [SerializeField] protected Vector2 _velocity;
+    [SerializeField] protected LayerMask _targetLayer;
 
     [Header("애니메이터 스테이트")]
-    [SerializeField] private string _stateIng = "Ing";
-    [SerializeField] private string _stateEnd = "End";
+    [SerializeField] protected string _stateIng = "Ing";
+    [SerializeField] protected string _stateEnd = "End";
     #endregion
 
     #region 내부 변수
-    private Animator _ani;
-    private SpriteRenderer _sp;
-    private Rigidbody2D _rb;
-    private int _hashIng;
-    private int _hashEnd;
+    protected Animator _ani;
+    protected SpriteRenderer _sp;
+    protected Rigidbody2D _rb;
+    protected int _hashIng;
+    protected int _hashEnd;
     protected float _attackTime = 0f;
     #endregion
 
     private void Awake()
     {
-        _ani = GetComponent<Animator>();
+        _ani = GetComponentInChildren<Animator>();
         _sp = GetComponent<SpriteRenderer>();
         _rb = GetComponent<Rigidbody2D>();
         _hashIng = Animator.StringToHash(_stateIng);
@@ -39,7 +39,7 @@ public class CEnemyProjectile : MonoBehaviour
 
 
     // 시간이 지나면 충돌off, 애니메이션 재생
-    private void Update()
+    protected virtual void Update()
     {
         if (!_rb.simulated)
         {
@@ -78,7 +78,7 @@ public class CEnemyProjectile : MonoBehaviour
         _rb.simulated = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (((1 << collision.gameObject.layer) & _targetLayer) == 0)
         {
@@ -103,6 +103,7 @@ public class CEnemyProjectile : MonoBehaviour
 
         HitEnd();
     }
+
 
     // 데미지를 준 후 처리가 필요하면 상속받은 후 HitEnd 함수를 오버라이드
     protected virtual void HitEnd()

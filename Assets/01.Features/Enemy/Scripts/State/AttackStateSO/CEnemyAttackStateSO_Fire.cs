@@ -15,7 +15,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
     [Header("선딜시간, 조준 추적")]
     [SerializeField] private float _beforeDelay = 2f;
     [SerializeField] private float _trackingTime = 1f;
-    [SerializeField] private float _trackingSpeed = 1f;
+    [SerializeField] private float _trackingSpeed = 50f;
     [Header("투사체 속성")]
     [SerializeField] private int _multiFire = 1;
     [SerializeField] private float _firePower = 3f;
@@ -86,7 +86,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
     }
 
-    private async UniTask<float> TrackingAim(CancellationToken ct, float lookAngle = 0f)
+    private async UniTask<float> TrackingAim(CancellationToken ct)
     {
         _mashine.Ani.Play(_mashine.HashAttack);
 
