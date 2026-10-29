@@ -44,10 +44,9 @@ public class CDashSlotUI
 }
 
 
-public class CPlayerDashUI : MonoBehaviour
+public class CPlayerDashBar : MonoBehaviour
 {
     private const int SlotCount = 5;
-    private const int StageCount = 3;
 
     [Header("1번부터 연결")]
     [SerializeField] private CDashSlotUI[] _slots = new CDashSlotUI[SlotCount];
@@ -77,9 +76,7 @@ public class CPlayerDashUI : MonoBehaviour
             // UI가 켜지는 순간의 데이터 반영
             _currentDash = _playerData.CurrentDashCount;
             _maxDash = _playerData.Stats.DashCount;
-
-            // 실제 회복 진행률 프로퍼티 이름에 맞춰 변경
-            _recoveryProgress = _playerData.DashProgress;
+            _recoveryProgress = 0;
 
             SetValue(_currentDash, _maxDash, _recoveryProgress);
 

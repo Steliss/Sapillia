@@ -40012,22 +40012,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6e6a6f15dc942304c98056c10aa8071c, type: 3}
---- !u!212 &316471341 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3465307751653442521, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
-  m_PrefabInstance: {fileID: 317980709}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &316471342 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2440906712324983776, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
-  m_PrefabInstance: {fileID: 317980709}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 317980713}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f368610f035014743a1eecd083df6cb9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &316471343 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 493454824208757423, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
@@ -40142,9 +40126,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 317980716}
-    - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 317980717}
   m_SourcePrefab: {fileID: 100100000, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
 --- !u!4 &317980710 stripped
 Transform:
@@ -56301,6 +56282,7 @@ GameObject:
   - component: {fileID: 1120851297}
   - component: {fileID: 1120851296}
   - component: {fileID: 1120851295}
+  - component: {fileID: 1120851298}
   m_Layer: 0
   m_Name: PlayerStatusBar
   m_TagString: Untagged
@@ -56373,6 +56355,39 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _fillImage: {fileID: 1792814443}
   _text: {fileID: 966653543}
+--- !u!114 &1120851298
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1120851293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0ddb21fba6a76445af72b17da389f0b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _slots:
+  - _emptyImage: {fileID: 1511619385}
+    _blueImage: {fileID: 693573419}
+    _orangeImage: {fileID: 257805399}
+    _purpleImage: {fileID: 1664826948}
+  - _emptyImage: {fileID: 2103148259}
+    _blueImage: {fileID: 984269846}
+    _orangeImage: {fileID: 1032846750}
+    _purpleImage: {fileID: 895301652}
+  - _emptyImage: {fileID: 436446263}
+    _blueImage: {fileID: 328427822}
+    _orangeImage: {fileID: 2119091868}
+    _purpleImage: {fileID: 884107043}
+  - _emptyImage: {fileID: 1383590129}
+    _blueImage: {fileID: 893382974}
+    _orangeImage: {fileID: 1515211477}
+    _purpleImage: {fileID: 1756021223}
+  - _emptyImage: {fileID: 1262786711}
+    _blueImage: {fileID: 1275016959}
+    _orangeImage: {fileID: 1992699990}
+    _purpleImage: {fileID: 612892707}
 --- !u!1001 &1124364845
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -58368,11 +58383,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4789686050683968306, guid: db83abeec6e05554fab17190e3afe60e, type: 3}
   m_PrefabInstance: {fileID: 1231473502}
-  m_PrefabAsset: {fileID: 0}
---- !u!212 &1234054455 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 3285768606940630998, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
-  m_PrefabInstance: {fileID: 317980709}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1234976172
 PrefabInstance:
@@ -72694,8 +72704,7 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 333236378}
+  m_Children: []
   m_Father: {fileID: 316471343}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
@@ -72747,7 +72756,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 317980717}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CWeaponManager, Assembly-CSharp
         m_MethodName: TestSwapNextTier
         m_Mode: 1
