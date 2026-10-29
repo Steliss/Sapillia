@@ -97,4 +97,6 @@ public class CPlayerController : MonoBehaviour
             _playerCostume.ApplyCostume(costume);
         }
     }
+
+    
 }
