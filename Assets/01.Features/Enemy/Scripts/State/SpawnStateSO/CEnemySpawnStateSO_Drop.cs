@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "SO/Enemy/SpawnState", fileName = "Enemy_Spawn_Drop_")]
+[CreateAssetMenu(menuName = "SO/Enemy/SpawnState/Drop", fileName = "Enemy_Spawn_Drop_")]
 public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 {
     [Header("이펙트 프리팹")]

@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9d2f164b23a65447ad99dfc94a68c09, type: 3}
+  m_Name: Enemy_Spawn_Summon_MagicCircle
+  m_EditorClassIdentifier: 
+  _magicCircle: {fileID: 2142830480701506324, guid: e355a02068275ff41936b51da1aaa299, type: 3}
+  _summonEffect: {fileID: 7963936490699227545, guid: 6b52d4ca39a4e3c47b9b55f2b2939fdd, type: 3}
+  _spawnTime: 2
+  _afterDelay: 1

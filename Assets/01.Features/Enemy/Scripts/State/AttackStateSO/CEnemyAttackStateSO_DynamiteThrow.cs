@@ -20,7 +20,6 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
     [SerializeField] private float _trackingSpeed = 5f;
     [Header("투사체 속성")]
     [SerializeField] private int _multiFire = 1;
-    [SerializeField] private float _throwPower = 3f;
     [SerializeField] private float _dynamiteLifeTime = 1.5f;
     [SerializeField] private Vector2 _randomPosRange = new Vector2(1f, 0.5f);
 

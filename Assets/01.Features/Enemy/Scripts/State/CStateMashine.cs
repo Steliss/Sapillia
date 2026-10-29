@@ -19,7 +19,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [SerializeField] private CEnemySpawnStateSO _spawnState;
 
     [Header("공격 패턴 SO")]
-    [SerializeField] private List<CEnemyAttackStateSO> _attackState;
+    [SerializeField] private CEnemyAttackStateSO _attackState;
 
     [Header("체력 바")]
     [SerializeField] private Slider _hpBar;
@@ -59,7 +59,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private IEnemyState _state;
     #endregion
 
-    #region 스탯
+    #region 스탯 데이터
     private CDataEnemySO _data;
     private float _hp;
     private float _superArmor;
@@ -84,7 +84,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public IEnemyState IdleState => _idleState;
     public IEnemyState MoveState => _moveState;
     public IEnemyState DeathState => _deathState;
-    public IReadOnlyList<CEnemyAttackStateSO> AttackState => _attackState;
+    public IEnemyState AttackState => _attackState;
 
     // 스탯
     public float Hp => _hp;
@@ -135,14 +135,24 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _id = gameObject.name;
         }
 
-        // 기본 상태 생성
-        CEnemySpawnStateSO spawnSO = Instantiate(_spawnState);
-        spawnSO.Init(this);
-        _spawnState = spawnSO;
+        // 상태 생성
+        if (_spawnState != null)
+        {
+            CEnemySpawnStateSO spawnSO = Instantiate(_spawnState);
+            spawnSO.Init(this);
+            _spawnState = spawnSO;
+        }
+        if (_attackState != null)
+        {
+            CEnemyAttackStateSO attSO = Instantiate(_attackState);
+            attSO.Init(this);
+            _attackState = attSO;
+        }
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
         _airbornState = new CEnemyState_Airborn(this);
         _deathState = new CEnemyState_Death(this);
+
 
         // 애니메이터 해시 세팅 
         AnimatorSet();
@@ -180,16 +190,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _startColor = _sprite.color;
 
 
-        // 공격 패턴 생성
-        if (_attackState.Count > 0)
-        {
-            for (int i = 0; i < _attackState.Count; i++)
-            {
-                CEnemyAttackStateSO attSO = Instantiate(_attackState[i]);
-                attSO.Init(this);
-                _attackState[i] = attSO;
-            }
-        }
+        
 
     }
 
