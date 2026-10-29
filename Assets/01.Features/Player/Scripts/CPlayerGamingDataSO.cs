@@ -7,9 +7,6 @@ using UnityEngine;
 
 */
 
-
-
-
 [Serializable]
 public class CPlayerGamingDataSO
 {
@@ -67,6 +64,7 @@ public class CPlayerGamingDataSO
     public event Action<int, int> OnHPChanged;
     public event Action<int, int> OnMPChanged;
     public event Action<int, int> OnDashCountChanged;
+    public event Action<float> OnDashProgressChanged;
 
     public event Action<int, int> OnEXPChanged;
     public event Action<int> OnMoneyChanged;
@@ -125,6 +123,7 @@ public class CPlayerGamingDataSO
         OnEXPChanged?.Invoke(_currentEXP, _requiredEXP);
         OnMoneyChanged?.Invoke(_money);
         OnLevelChanged?.Invoke(_level);
+
     }
 
     // 스탯값 설정
@@ -340,6 +339,7 @@ public class CPlayerGamingDataSO
         }
 
         _dashRegenProgress += _stats.DashRegainSpeed * deltaTime;
+        OnDashProgressChanged?.Invoke(_dashRegenProgress);
 
         int recovered = Mathf.FloorToInt(_dashRegenProgress);
 
@@ -351,6 +351,7 @@ public class CPlayerGamingDataSO
         _dashRegenProgress -= recovered;
 
         _currentDashCount = Mathf.Min(_stats.DashCount, _currentDashCount + recovered);
+        OnDashCountChanged?.Invoke(_currentDashCount, _stats.DashCount);
     }
 
     // 경험치 획득
