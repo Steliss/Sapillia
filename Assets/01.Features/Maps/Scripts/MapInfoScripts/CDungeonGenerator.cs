@@ -9,6 +9,12 @@ public class CDungeonGenerator : MonoBehaviour
     [Header("방 정보")]
     [SerializeField] private CRoomData _firstRoom;
 
+    [Header("1층 고정 중간 방")]
+    [SerializeField] private CRoomData _firstFloorMiddleRoom;
+
+    [Header("층 데이터")]
+    [SerializeField] private CFloorDataSO[] _floorDatas;
+
     [Header("방 디폴트 사이즈")]
     [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
 
@@ -25,7 +31,8 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject _blockRight;
 
 
-
+    [SerializeField, Range(1, 4)]
+    private int _currentFloor = 1;
     #endregion
 
     #region 내부 변수
@@ -39,6 +46,7 @@ public class CDungeonGenerator : MonoBehaviour
     private Transform _generatedDungeonRoot;
 
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
+
     #endregion
 
 
@@ -76,16 +84,47 @@ public class CDungeonGenerator : MonoBehaviour
             return;
         }
 
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        if (floorData == null)
+        {
+            Debug.LogError($"현재 층({_currentFloor})의 데이터가 없습니다.");
+            return;
+        }
+
+        int targetRoomCount = Random.Range(
+            floorData.MinRoomCount,
+            floorData.MaxRoomCount + 1
+        );
+
         ClearGeneratedDungeon();
 
-        int targetRoomCount = Random.Range(5, 10);
         int maxAttempts = 50;
 
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
             ResetDungeonData();
 
-            if (GenerateDungeon(targetRoomCount))
+            bool success;
+
+            if (_currentFloor == 1)
+            {
+                success = GenerateFirstFloor(floorData);
+            }
+            else
+            {
+                CRoomData startRoom = GetRandomRoomFromPool(floorData.RoomPool?.StartRoomPrefabs);
+
+                if (startRoom == null)
+                {
+                    Debug.LogError("시작 방 프리팹이 없습니다.");
+                    return;
+                }
+
+                success = GenerateDungeon(targetRoomCount, startRoom);
+            }
+
+            if (success)
             {
                 Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
                 SpawnRooms();
@@ -95,6 +134,30 @@ public class CDungeonGenerator : MonoBehaviour
 
         Debug.LogError("던전 생성 실패: 최대 시도 횟수 초과");
     }
+
+    private CFloorDataSO GetCurrentFloorData()
+    {
+        if (_floorDatas == null)
+        {
+            return null;
+        }
+
+        foreach (CFloorDataSO floorData in _floorDatas)
+        {
+            if (floorData == null)
+            {
+                continue;
+            }
+
+            if (floorData.FloorNumber == _currentFloor)
+            {
+                return floorData;
+            }
+        }
+
+        return null;
+    }
+
 
     private void ClearGeneratedDungeon()
     {
@@ -353,15 +416,69 @@ public class CDungeonGenerator : MonoBehaviour
     }
 
 
+    private CRoomData GetRandomRoomFromPool(CRoomData[] roomPrefabs)
+    {
+        if (roomPrefabs == null || roomPrefabs.Length == 0)
+        {
+            return null;
+        }
+
+        int randomIndex = Random.Range(0, roomPrefabs.Length);
+
+        return roomPrefabs[randomIndex];
+    }
+
+    private bool GenerateFirstFloor(CFloorDataSO floorData)
+    {
+        if (floorData == null || floorData.RoomPool == null)
+        {
+            Debug.LogError("1층 방 프리팹 데이터가 없습니다.");
+            return false;
+        }
+
+        CRoomPoolSO roomPool = floorData.RoomPool;
+
+        CRoomData startRoom = roomPool.StartRoom;
+
+        CRoomData middleRoom =
+            GetRandomRoomFromPool(roomPool.MiddleRoomPrefabs);
+
+        CRoomData lastRoom =
+            GetRandomRoomFromPool(roomPool.LastRoomPrefabs);
+
+        if (startRoom == null || middleRoom == null || lastRoom == null)
+        {
+            Debug.LogError("1층 방 프리팹이 정상적으로 등록되지 않았습니다.");
+            return false;
+        }
+
+        CFixedDungeonLayout fixedLayout = new CFixedDungeonLayout(_roomPlacer);
+
+        if (!fixedLayout.GenerateLayout(startRoom, middleRoom, lastRoom))
+        {
+            Debug.LogWarning("1층 방 배치 실패");
+            return false;
+        }
+
+        _roomPlacements.Clear();
+        _roomPlacements.AddRange(fixedLayout.RoomPlacements);
+
+        return ValidateRoomConnections();
+    }
+
 
     private bool TryAddRandomRoom()
     {
-        if (_roomPrefabs == null || _roomPrefabs.Length == 0)
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        CRoomData[] roomPrefabs = floorData?.RoomPool?.CombatRoomPrefabs;
+
+        if (roomPrefabs == null || roomPrefabs.Length == 0)
         {
             return false;
         }
 
-        List<CRoomData> candidates = new List<CRoomData>(_roomPrefabs);
+        List<CRoomData> candidates = new List<CRoomData>(roomPrefabs);
 
         while (candidates.Count > 0)
         {
@@ -399,15 +516,57 @@ public class CDungeonGenerator : MonoBehaviour
         return false;
     }
 
+    private bool TryAddMiniBossRoom()
+    {
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        CRoomData[] miniBossPrefabs = floorData?.RoomPool?.MiniBossRoomPrefabs;
+
+        if (miniBossPrefabs == null || miniBossPrefabs.Length == 0)
+        {
+            Debug.LogWarning("중간보스 방 프리팹이 없습니다.");
+            return false;
+        }
+
+        List<CRoomData> candidates = new List<CRoomData>(miniBossPrefabs);
+
+        while (candidates.Count > 0)
+        {
+            int randomIndex = Random.Range(0, candidates.Count);
+
+            CRoomData miniBossRoom = candidates[randomIndex];
+            candidates.RemoveAt(randomIndex);
+
+            if (miniBossRoom == null || miniBossRoom.RoomType != ERoomType.Miniboss)
+            {
+                continue;
+            }
+
+            if (TryAddRoom(miniBossRoom))
+            {
+                Debug.Log($"중간보스 방 생성 성공: {miniBossRoom.name}");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
 
     private bool TryAddExitRoom()
     {
-        if (_exitRoomPrefabs == null || _exitRoomPrefabs.Length == 0)
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        CRoomData[] exitRoomPrefabs = floorData?.RoomPool?.ExitRoomPrefabs;
+
+        if (exitRoomPrefabs == null || exitRoomPrefabs.Length == 0)
         {
             return false;
         }
 
-        List<CRoomData> candidates = new List<CRoomData>(_exitRoomPrefabs);
+        List<CRoomData> candidates = new List<CRoomData>(exitRoomPrefabs);
 
         while (candidates.Count > 0)
         {
@@ -440,12 +599,16 @@ public class CDungeonGenerator : MonoBehaviour
 
     private bool CanPlaceExitRoom()
     {
-        if (_exitRoomPrefabs == null || _exitRoomPrefabs.Length == 0)
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        CRoomData[] exitRoomPrefabs = floorData?.RoomPool?.ExitRoomPrefabs;
+
+        if (exitRoomPrefabs == null || exitRoomPrefabs.Length == 0)
         {
             return false;
         }
 
-        foreach (CRoomData exitRoom in _exitRoomPrefabs)
+        foreach (CRoomData exitRoom in exitRoomPrefabs)
         {
             if (exitRoom == null || exitRoom.RoomType != ERoomType.Exit)
             {
@@ -515,21 +678,19 @@ public class CDungeonGenerator : MonoBehaviour
         _usedRoomPrefabs.Clear();
     }
 
-    private bool GenerateDungeon(int targetRoomCount)
+    private bool GenerateDungeon(int targetRoomCount, CRoomData startRoom)
     {
         Vector2Int firstGridPos = Vector2Int.zero;
 
-        if (!_roomGrid.RoomAvailable(firstGridPos, _firstRoom))
+        if (!_roomGrid.RoomAvailable(firstGridPos, startRoom))
         {
             return false;
         }
 
-        _roomPlacements.Add(
-            new SRoomPlacement(_firstRoom, firstGridPos, Vector3.zero, 0)
-        );
+        _roomPlacements.Add(new SRoomPlacement(startRoom, firstGridPos, Vector3.zero, 0));
 
-        _roomGrid.RegisterRoom(firstGridPos, _firstRoom);
-        AddRoomPassages(_firstRoom, Vector3.zero);
+        _roomGrid.RegisterRoom(firstGridPos, startRoom);
+        AddRoomPassages(startRoom, Vector3.zero);
         _roomDepths.Add(firstGridPos, 0);
 
         int combatTargetCount = targetRoomCount - 1;
@@ -557,6 +718,15 @@ public class CDungeonGenerator : MonoBehaviour
             }
         }
 
+        if (_currentFloor == 4)
+        {
+            if (!TryAddMiniBossRoom())
+            {
+                Debug.LogWarning("4층 중간보스 방 배치 실패");
+                return false;
+            }
+        }
+
         if (TryAddExitRoom())
         {
             Debug.Log("층 이동 방 배치 완료");
@@ -566,7 +736,9 @@ public class CDungeonGenerator : MonoBehaviour
             Debug.LogWarning("층 이동 방 배치 실패");
         }
 
-        return ValidateDungeon(targetRoomCount);
+        int finalRoomCount = targetRoomCount + (_currentFloor == 4 ? 1 : 0);
+
+        return ValidateDungeon(finalRoomCount);
     }
 
 

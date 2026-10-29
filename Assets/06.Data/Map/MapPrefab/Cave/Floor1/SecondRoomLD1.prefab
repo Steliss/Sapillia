@@ -295,6 +295,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8332297223592508852}
+  - component: {fileID: 409991042119313121}
   m_Layer: 0
   m_Name: SecondRoomLD1
   m_TagString: Untagged
@@ -318,6 +319,28 @@ Transform:
   - {fileID: 1819516133856063241}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &409991042119313121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3394829884205489710}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe1d8fa3da125342a480d4c76880627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomSize: {x: 1, y: 1}
+  _roomType: 1
+  _up1: 0
+  _up2: 0
+  _down1: 1
+  _down2: 0
+  _left1: 1
+  _left2: 0
+  _right1: 0
+  _right2: 0
 --- !u!1 &3663530356342979175
 GameObject:
   m_ObjectHideFlags: 0

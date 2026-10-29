@@ -152,6 +152,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _firstRoom: {fileID: 7165047511015700091, guid: 6d0dbb8b39bde814998e9faa800c33e4, type: 3}
+  _firstFloorMiddleRoom: {fileID: 0}
+  _floorDatas:
+  - {fileID: 11400000, guid: a949f83091801b5479d342aae4063901, type: 2}
+  - {fileID: 11400000, guid: 70183fe6595bf974c8b7cb47d3a6a619, type: 2}
+  - {fileID: 11400000, guid: 7b7bf2be405393b4c91204ab2f2ed942, type: 2}
+  - {fileID: 11400000, guid: b2f8638ff0c66e54bac74a699d9cb1cd, type: 2}
+  - {fileID: 11400000, guid: 8c63b84f30b96ad4a971011fa9176bce, type: 2}
   _defaultSize: {x: 26, y: 18}
   _roomPrefabs:
   - {fileID: -937449647283673558, guid: 2a5bfca50e618bd44a3aca11a2691fae, type: 3}
@@ -187,6 +194,7 @@ MonoBehaviour:
   _blockDown: {fileID: 1682460064841630886, guid: e4f5067dc594c8647b333431e462af93, type: 3}
   _blockLeft: {fileID: 8652627897763882003, guid: c6072bee82d80d84c8e83632fa17e1e6, type: 3}
   _blockRight: {fileID: 2742869070862323178, guid: 2e1aa1c8e022c8340b8fae7725fd065b, type: 3}
+  _currentFloor: 4
 --- !u!4 &604472900
 Transform:
   m_ObjectHideFlags: 0
