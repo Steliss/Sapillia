@@ -335,12 +335,12 @@ public class CPlayerGamingDataSO
         }
 
         _dashRegenProgress += _stats.DashRegainSpeed * deltaTime;
-        OnDashProgressChanged?.Invoke(_dashRegenProgress);
 
         int recovered = Mathf.FloorToInt(_dashRegenProgress);
 
         if (recovered <= 0)
         {
+            OnDashProgressChanged?.Invoke(_dashRegenProgress);
             return;
         }
 
