@@ -2,12 +2,20 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum TabletRotation
+public enum ETabletRotation
 {
     None = 0,     
     Rotation90, 
     Rotation180,
     Rotation270 
+}
+
+public enum EItemType
+{
+    None = 0,
+    Item,
+    Potion,
+    Tablet
 }
 
 [Serializable]
@@ -23,7 +31,8 @@ public class CInventorySlotData
     public int ItemID;
     public int Count;
     public int EnhanceLevel;
-    public TabletRotation Rotation;
+    public EItemType ItemType;
+    public ETabletRotation Rotation;
 }
 
 [Serializable]

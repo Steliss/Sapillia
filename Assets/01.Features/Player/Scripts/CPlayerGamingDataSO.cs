@@ -46,7 +46,7 @@ public class CPlayerGamingDataSO
     public SPlayerStats CoreStats => _coreStats;
     public int CurrentHP => _currentHP;
     public int CurrentMP => _currentMP;
-    public float CurrentDashCount => _currentDashCount;
+    public int CurrentDashCount => _currentDashCount;
     public int CurrentEXP => _currentEXP;
     public int RequiredEXP => _requiredEXP;
     public int RequiredMoney => _requiredMoney;

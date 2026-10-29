@@ -76,6 +76,22 @@
             "value": "한국어"
         },
         {
+            "key": "scene.optionlanguagetitle.text",
+            "value": "언어"
+        },
+        {
+            "key": "scene.optionbossskip.text",
+            "value": "보스 스킾 여부"
+        },
+        {
+            "key": "scene.optioncamerashake.text",
+            "value": "카메라 흔들림 강도"
+        },
+        {
+            "key": "scene.optioneffecttitle.text",
+            "value": "이펙트 효과"
+        },
+        {
             "key": "scene.gameplayslotbutton.text",
             "value": "게임 플레이"
         },
@@ -194,6 +210,238 @@
         {
             "key": "player.leveluphealtext.Text",
             "value": "레벨업 시 HP 회복"
+        },
+        {
+            "key": "player.damagetitletext.Text",
+            "value": "피해"
+        },
+        {
+            "key": "player.weapontitletext.Text",
+            "value": "무기"
+        },
+        {
+            "key": "player.damagealltext.Text",
+            "value": "모든 피해 증폭"
+        },
+        {
+            "key": "player.damagefixedtext.Text",
+            "value": "고정 피해"
+        },
+        {
+            "key": "player.damagebreaktext.Text",
+            "value": "방어 관통"
+        },
+        {
+            "key": "player.damagereflecttext.Text",
+            "value": "가시"
+        },
+        {
+            "key": "player.damageweapontext.Text",
+            "value": "무기 피해량"
+        },
+        {
+            "key": "player.damagenormaltext.Text",
+            "value": "일반 공격 피해"
+        },
+        {
+            "key": "player.damagedashtext.Text",
+            "value": "대시 공격 피해"
+        },
+        {
+            "key": "player.damagespecialtext.Text",
+            "value": "특수 공격 피해"
+        },
+        {
+            "key": "player.hp.mousetitle.Text",
+            "value": "<color=#FF0000>HP</color>"
+        },
+        {
+            "key": "player.hp.mousedescription.Text",
+            "value": "캐릭터의 체력 수치입니다. 0이 되면 죽습니다."
+        },
+        {
+            "key": "player.mp.mousetitle.Text",
+            "value": "<color=#0000FF>MP</color>"
+        },
+        {
+            "key": "player.mp.mousedescription.Text",
+            "value": "마법이나 특수 공격을 시전할 때 사용됩니다. 비전투 중 빠르게 회복됩니다."
+        },
+        {
+            "key": "player.mpregin.mousetitle.Text",
+            "value": "<color=#0000FF>MP 재생</color>"
+        },
+        {
+            "key": "player.mpregin.mousedescription.Text",
+            "value": "전투 중 10초당 회복되는 MP의 양입니다."
+        },
+        {
+            "key": "player.def.mousetitle.Text",
+            "value": "방어력"
+        },
+        {
+            "key": "player.def.mousedescription.Text",
+            "value": "적으로부터 받는 피해가 감소합니다."
+        },
+        {
+            "key": "player.str.mousetitle.Text",
+            "value": "강인함"
+        },
+        {
+            "key": "player.str.mousedescription.Text",
+            "value": "적으로부터 받는 피해가 고정으로 감소합니다."
+        },
+        {
+            "key": "player.evasion.mousetitle.Text",
+            "value": "회피"
+        },
+        {
+            "key": "player.evasion.mousedescription.Text",
+            "value": "적의 공격을 확률적으로 회피합니다."
+        },
+        {
+            "key": "player.criticalrate.mousetitle.Text",
+            "value": "치명타 확률"
+        },
+        {
+            "key": "player.criticalrate.mousedescription.Text",
+            "value": "적에게 피해를 줄 때 일정 확률로 피해량이 증가합니다."
+        },
+        {
+            "key": "player.criticaldamage.mousetitle.Text",
+            "value": "치명타 피해"
+        },
+        {
+            "key": "player.criticaldamage.mousedescription.Text",
+            "value": "적에게 치명타 피해를 줄 때 적용되는 피해량입니다. 모든 피해 증가에 곱해집니다."
+        },
+        {
+            "key": "player.attackspeed.mousetitle.Text",
+            "value": "공격 속도"
+        },
+        {
+            "key": "player.attackspeed.mousedescription.Text",
+            "value": "수치가 높을수록 더욱 빠른 공격을 할 수 있습니다. (마법 시전 동작에도 적용됨)"
+        },
+        {
+            "key": "player.movementspeed.mousetitle.Text",
+            "value": "이동속도"
+        },
+        {
+            "key": "player.movementspeed.mousedescription.Text",
+            "value": "수치가 높을수록 더욱 빠르게 이동할 수 있습니다"
+        },
+        {
+            "key": "player.runspeedmulitplier.mousetitle.Text",
+            "value": "대쉬 회복 속도"
+        },
+        {
+            "key": "player.runspeedmulitplier.mousedescription.Text",
+            "value": "수치가 높을수록 대시를 더욱 자주 사용할 수 있습니다"
+        },
+        {
+            "key": "player.bargain.mousetitle.Text",
+            "value": "협상력"
+        },
+        {
+            "key": "player.bargain.mousedescription.Text",
+            "value": "상인들과 더욱 합리적인 가격에 거래할 수 있는 능력입니다."
+        },
+        {
+            "key": "player.luck.mousetitle.Text",
+            "value": "행운"
+        },
+        {
+            "key": "player.luck.mousedescription.Text",
+            "value": "더 좋은 아티팩트가 나올 수 있는 확률이 늘어납니다."
+        },
+        {
+            "key": "player.requiredexp.mousetitle.Text",
+            "value": "경헙치 드롭"
+        },
+        {
+            "key": "player.requiredexp.mousedescription.Text",
+            "value": "적을 쓰러트릴 때 더 많은 경험치가 드롭됩니다."
+        },
+        {
+            "key": "player.requiredmoney.mousetitle.Text",
+            "value": "잎 드롭"
+        },
+        {
+            "key": "player.requiredmoney.mousedescription.Text",
+            "value": "탑 전역에서 이용되는 화폐입니다. 나무의 힘을 소량 머금고 있습니다."
+        },
+        {
+            "key": "player.levelupheal.mousetitle.Text",
+            "value": "레벨업 시 HP 회복"
+        },
+        {
+            "key": "player.levelupheal.mousedescription.Text",
+            "value": "탐험 중 레벨업할 때마다 HP를 일정량 회복합니다."
+        },
+        {
+            "key": "player.damageall.mousetitle.Text",
+            "value": "모든 피해 증폭"
+        },
+        {
+            "key": "player.damageall.mousedescription.Text",
+            "value": "모든 피해량이 증가합니다."
+        },
+        {
+            "key": "player.damagefixed.mousetitle.Text",
+            "value": "고정 피해"
+        },
+        {
+            "key": "player.damagefixed.mousedescription.Text",
+            "value": "대상을 공격할 때 수치만큼 추가 피해를 입힙니다."
+        },
+        {
+            "key": "player.damagebreak.mousetitle.Text",
+            "value": "방어 관통"
+        },
+        {
+            "key": "player.damagebreak.mousedescription.Text",
+            "value": "적의 피해 감소를 비율만큼 무시합니다."
+        },
+        {
+            "key": "player.damagereflect.mousetitle.Text",
+            "value": "가시"
+        },
+        {
+            "key": "player.damagereflect.mousedescription.Text",
+            "value": "피해를 입으면 공격자에게 방어력의 일정 비율만큼 피해를 줍니다."
+        },
+        {
+            "key": "player.damageweapon.mousetitle.Text",
+            "value": "무기 피해량"
+        },
+        {
+            "key": "player.damageweapon.mousedescription.Text",
+            "value": "무기의 피해량이 증가합니다."
+        },
+        {
+            "key": "player.damagenormal.mousetitle.Text",
+            "value": "일반 공격 피해"
+        },
+        {
+            "key": "player.damagenormal.mousedescription.Text",
+            "value": "좌클릭을 통한 일반 공격 피해량이 증가합니다. (대시 공격에는 적용되지 않음)"
+        },
+        {
+            "key": "player.damagedash.mousetitle.Text",
+            "value": "대시 공격 피해량"
+        },
+        {
+            "key": "player.damagedash.mousedescription.Text",
+            "value": "대시 공격 피해량이 증가합니다."
+        },
+        {
+            "key": "player.damagespecial.mousetitle.Text",
+            "value": "특수 공격 피해"
+        },
+        {
+            "key": "player.damagespecial.mousedescription.Text",
+            "value": "휩쓸기, 소용돌이 등 무기의 특수 행동으로 입히는 피해량이 증가합니다."
         }
     ]
 }

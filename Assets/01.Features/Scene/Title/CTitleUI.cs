@@ -1,10 +1,10 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.IO;
-using System.Threading;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 
 #region CSaveSlotUI 필드
 [Serializable]
@@ -90,14 +90,13 @@ public class CSaveSlotUI
 #endregion
 
 
-public class CTitleUI : MonoBehaviour, IInputCommand
+public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
 
 
     [Header("메뉴버튼")]
-    // ※ : TODO : 버튼 텍스트 나눠서 다시 만들기
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
     [SerializeField] private GameObject _discordButtonObject;
@@ -123,6 +122,8 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
+    private CUniTaskOnes _localizationTask = new CUniTaskOnes();
+    private CUniTaskOnes _dataTask = new CUniTaskOnes();
     private CSceneManager _cSceneManager;
     private CInputCommandHub _input;
     private Button _startButton;
@@ -156,13 +157,25 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         {
             _input = await CManagerDontDestroy.InputCommandHubAsync(token);
             _input.Register(EKeyAction.ESC, this);
-            CLog.Log("_inputTask OnEnable 작업 완료");
+            CLog.Log("CTitleUI _inputTask OnEnable 작업 완료");
         });
         _sceneTask.Run(async token =>
         {
             _cSceneManager = await CManagerDontDestroy.SceneManagerAsync(token);
-            CLog.Log("_sceneTask OnEnable 작업 완료");
+            CLog.Log("CTitleUI _sceneTask OnEnable 작업 완료");
         });
+        _localizationTask.Run(async token =>
+        {
+            _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
+            ReloadText();
+            CLog.Log("CTitleUI _localizationTask OnEnable 작업 완료");
+        });
+        _dataTask.Run(async token =>
+        {
+            _dataManger = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("CTitleUI _dataTask OnEnable 작업 완료");
+        });
+
 
     }
 
@@ -191,16 +204,6 @@ public class CTitleUI : MonoBehaviour, IInputCommand
 
     private void Awake()
     {
-        if (_localization == null)
-        {
-            CLog.Log("_localization : Null");
-        }
-
-        if (_dataManger == null)
-        {
-            CLog.Log("_dataManger : Null");
-        }
-
         // GameObject의 버튼 생상 변경과 기입처리
         _startButton = SetButton(_startButtonObject);
         _settingButton = SetButton(_settingButtonObject);
@@ -213,19 +216,11 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         _saveSlots[2].StartGameStartButton = SetButton2(_saveSlots[2].StartGameStartButton, _saveSlots[2].StartButtonBackImage);
     }
 
-    private void Start()
-    {
-
-
-        // ※ : TODO : 매니저 관련 잡아주는 과정 추가
-
-        ReloadText();
-    }
-
     private void Update()
     {
-        if(_cSceneManager == null || _input == null)
+        if (_cSceneManager == null || _input == null || _dataManger == null || _localization == null)
         {
+            CLog.Error("CTitleUI Manager : Null");
             return;
         }
 
@@ -233,18 +228,10 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         {
             gameObject.SetActive(false);
         }
-
-        // ※ test
-        if (Input.GetKeyDown(KeyCode.M))
-        {
-            CLog.Log("Test");
-            _dataManger.LoadGame(0);
-        }
-
     }
 
-
-    public void Execute()
+    // ESC키
+    public void ExecuteESC()
     {
         _startGameUI.SetActive(false);
         _settingUI.ActiveUI(false);
@@ -252,6 +239,10 @@ public class CTitleUI : MonoBehaviour, IInputCommand
         //CLog.Log("CTitleUI ESC 실행");
     }
 
+    public void Execute()
+    {
+
+    }
 
     //언어 변환 및 초기 언어 세팅 관련
     private void ReloadText()
