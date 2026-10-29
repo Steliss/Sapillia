@@ -15,31 +15,48 @@ public class CDashSlotUI
     // 해당 칸의 보유 단계와 회복 진행률 반영
     public void SetValue(int count, float recoveryProgress)
     {
-        count = Mathf.Clamp(count, 0, 3);
         recoveryProgress = Mathf.Clamp01(recoveryProgress);
 
         _emptyImage.enabled = true;
 
-        _blueImage.fillAmount = GetFillAmount(count, 1, recoveryProgress);
-        _orangeImage.fillAmount = GetFillAmount(count, 2, recoveryProgress);
-        _purpleImage.fillAmount = GetFillAmount(count, 3, recoveryProgress);
-    }
-
-    private float GetFillAmount(int count, int targetStage, float recoveryProgress)
-    {
-        // 이미 보유한 단계
-        if (count >= targetStage)
+        if (count == 0)
         {
-            return 1f;
-        }
+            _blueImage.fillAmount = recoveryProgress;
 
-        // 다음 단계 회복 중
-        if (count + 1 == targetStage)
+            _blueImage.enabled = recoveryProgress > 0.01f;
+            _orangeImage.enabled = false;
+            _purpleImage.enabled = false;
+
+        }
+        else if (count == 1)
         {
-            return recoveryProgress;
-        }
+            _blueImage.fillAmount = 1f;
+            _orangeImage.fillAmount = recoveryProgress;
 
-        return 0f;
+            _blueImage.enabled = true;
+            _orangeImage.enabled = recoveryProgress > 0.01f;
+            _purpleImage.enabled = false;
+
+        }
+        else if (count == 2)
+        {
+            _orangeImage.fillAmount = 1f;
+            _purpleImage.fillAmount = recoveryProgress;
+
+            _blueImage.enabled = false;
+            _orangeImage.enabled = true;
+            _purpleImage.enabled = recoveryProgress > 0.01f;
+
+        }
+        else if (count == 3)
+        {
+            _purpleImage.fillAmount = 1f;
+
+            _blueImage.enabled = false;
+            _orangeImage.enabled = false;
+            _purpleImage.enabled = true;
+
+        }
     }
 }
 
@@ -74,8 +91,6 @@ public class CPlayerDashBar : MonoBehaviour
             _playerData.OnDashProgressChanged += HandleDashProgressChanged;
 
             // UI가 켜지는 순간의 데이터 반영
-            _currentDash = _playerData.CurrentDashCount;
-            _maxDash = _playerData.Stats.DashCount;
             _recoveryProgress = 0;
 
             SetValue(_currentDash, _maxDash, _recoveryProgress);
@@ -90,14 +105,14 @@ public class CPlayerDashBar : MonoBehaviour
         _playerData.OnDashProgressChanged -= HandleDashProgressChanged;
     }
 
+    // 대쉬 값만 전달
     private void HandleDashCountChanged(int currentDash, int maxDash)
     {
         _currentDash = currentDash;
         _maxDash = maxDash;
-
-        SetValue(_currentDash, _maxDash, _recoveryProgress);
     }
 
+    // 대쉬 바 업데이트. 대쉬 게이지 관련 건들게 생기면 함수 이동 필요
     private void HandleDashProgressChanged(float recoveryProgress)
     {
         _recoveryProgress = recoveryProgress;
@@ -111,10 +126,12 @@ public class CPlayerDashBar : MonoBehaviour
         maxDash = _playerData.Stats.DashCount;
         currentDash = _playerData.CurrentDashCount;
         recoveryProgress = Mathf.Clamp01(recoveryProgress);
+        CLog.Log($"rr {recoveryProgress}");
 
         // 회복할 슬롯 구하기 
         int recoverySlot = currentDash % SlotCount;
 
+        // 회복할 슬롯에 값을 넣어줌
         for (int i = 0; i < SlotCount; i++)
         {
             int count = currentDash / SlotCount;
