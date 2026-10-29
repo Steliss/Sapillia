@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class CWeaponManager : MonoBehaviour
 {
+    public enum EWeaponType
+    {
+        SwordShield,
+        Crossbow
+    }
+
     #region 인스펙터
 
     [Header("무기 세트 목록")]
@@ -19,9 +25,18 @@ public class CWeaponManager : MonoBehaviour
     [SerializeField] private CPlayerGuard _playerGuard;
     [SerializeField] private CWeaponMotion _weaponMotion;
 
-    [Header("무기 외형")]
+    [Header("검과 방패 외형")]
     [SerializeField] private SpriteRenderer _swordRenderer;
     [SerializeField] private SpriteRenderer _shieldRenderer;
+
+    [Header("석궁 세트 목록")]
+    [SerializeField] private CCrossbowDataSO[] _crossbowSets;
+
+    [Header("석궁 공격")]
+    [SerializeField] private CPlayerCrossbowAttack _crossbowAttack;
+
+    [Header("석궁 외형")]
+    [SerializeField] private SpriteRenderer _crossbowRenderer;
 
     [Header("플레이어 데이터")]
     [SerializeField] private CPlayerController _player;
@@ -30,24 +45,30 @@ public class CWeaponManager : MonoBehaviour
     #region 내부변수
     private CPlayerGamingDataSO _playerData;
     private CSwordShieldSetSO _currentSet;
+    private CCrossbowDataSO _currentCrossbow;
 
-    // 공격 중 장비 변경 요청을 기억
-    private int _pendingTier = -1;
+    // 초기값 → 검방
+    private EWeaponType _currentWeaponType = EWeaponType.SwordShield;
+    private int _currentTier;
+
 
     #endregion
 
     #region 프로퍼티
-
+    public EWeaponType CurrentWeaponType => _currentWeaponType;
+    public int CurrentTier => _currentTier;
     public CSwordShieldSetSO CurrentSet => _currentSet;
-    public int CurrentTier => _currentSet != null ? _currentSet.Tier : 0;
-    public bool HasPendingSwap => _pendingTier > 0;
+    public CCrossbowDataSO CurrentCrossbow => _currentCrossbow;
 
     #endregion
 
     #region 이벤트
 
     public event Action<CSwordShieldSetSO> OnWeaponSwapped;
+    public event Action<CCrossbowDataSO> OnCrossbowSwapped;
 
+    // 무기 종류를 포함한 공통 이벤트
+    public event Action<EWeaponType, int> OnWeaponChanged;
     #endregion
 
     #region Unity
@@ -70,16 +91,13 @@ public class CWeaponManager : MonoBehaviour
     // UI 버튼이나 테스트 입력에서 호출
     public void EquipTier(int tier)
     {
-        TrySwapTier(tier);
+        //TrySwapTier(tier);
     }
 
     public bool TrySwapTier(int tier)
     {
-        if (!ValidateReferences())
-        {
-            return false;
-        }
-
+        return TrySwapWeapon(_currentWeaponType, tier);
+        /*
         CSwordShieldSetSO nextSet = FindSet(tier);
 
         if (nextSet == null)
@@ -102,9 +120,54 @@ public class CWeaponManager : MonoBehaviour
 
         _pendingTier = -1;
         ApplySet(nextSet);
+        */
 
-        return true;
-    }    
+        //return true;
+    }
+    // 신규 공통 무기 교체 API
+    public bool TrySwapWeapon(EWeaponType type, int tier)
+    {
+        if (!ValidateReferences())
+        {
+            return false;
+        }
+
+        // 이미 장착한 무기
+        if (_currentTier == tier &&  _currentWeaponType == type)
+        {
+            return true;
+        }
+
+
+        switch (type)
+        {
+            case EWeaponType.SwordShield:
+                {
+                    CSwordShieldSetSO set = FindSwordShield(tier);
+
+                    if (!ValidateSwordShield(set))
+                    {
+                        return false;
+                    }
+
+                    ApplySet(set);
+                    return true;
+                }
+
+            case EWeaponType.Crossbow:
+                {
+                    CCrossbowDataSO crossbow = FindCrossbow(tier);
+
+                    if (!ValidateCrossbow(crossbow))
+                        return false;
+
+                    ApplyCrossbow(crossbow);
+                    return true;
+                }
+        }
+
+        return false;
+    }
 
     private void ApplySet(CSwordShieldSetSO nextSet)
     {
@@ -209,12 +272,32 @@ public class CWeaponManager : MonoBehaviour
 
     #region Search
 
-    private CSwordShieldSetSO FindSet(int tier)
+    private CSwordShieldSetSO FindSwordShield(int tier)
     {
         if (_weaponSets == null)
+        {
             return null;
+        }
 
         foreach (CSwordShieldSetSO set in _weaponSets)
+        {
+            if (set != null && set.Tier == tier)
+            {
+                return set;
+            }
+        }
+
+        return null;
+    }
+
+    private CCrossbowDataSO FindCrossbow(int tier)
+    {
+        if(_crossbowSets == null)
+        {
+            return null;
+        }
+
+        foreach (CCrossbowDataSO set in _crossbowSets)
         {
             if (set != null && set.Tier == tier)
             {
@@ -231,16 +314,31 @@ public class CWeaponManager : MonoBehaviour
 
     private bool ValidateReferences()
     {
-        if (_playerAttack == null || _specialAttack == null || _playerGuard == null || _weaponMotion == null)
+        _playerData = _player.PlayerData;
+
+        if (_playerAttack == null || _specialAttack == null || _playerGuard == null || _weaponMotion == null || _crossbowAttack == null)
         {
             CLog.Warn("[WeaponSwap] 전투 컴포넌트 참조 누락");
             return false;
         }
 
+        if (_swordRenderer == null || _shieldRenderer == null || _crossbowRenderer == null)
+        {
+            CLog.Warn("[WeaponManager] SpriteRenderer 누락");
+            return false;
+        }
+
+        if (_swordRenderer == _shieldRenderer || _swordRenderer == _crossbowRenderer || _shieldRenderer == _crossbowRenderer)
+        {
+            CLog.Warn("[WeaponManager] Renderer 중복 참조");
+            return false;
+        }
+
+
         return true;
     }
 
-    private bool ValidateSet(CSwordShieldSetSO set)
+    private bool ValidateSwordShield(CSwordShieldSetSO set)
     {
         if (set.SwordData == null || set.SpecialAttackData == null)
         {
@@ -256,10 +354,28 @@ public class CWeaponManager : MonoBehaviour
             return false;
         }
 
-        if (_shieldRenderer != null &&
-            set.ShieldSprite == null)
+        if (_shieldRenderer != null && set.ShieldSprite == null)
         {
             CLog.Warn($"[WeaponSwap] Tier {set.Tier} " + "방패 스프라이트 누락");
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool ValidateCrossbow(CCrossbowDataSO data)
+    {
+        if (data == null || data.CrossbowSprite == null || data.ProjectilePrefab == null)
+        {
+            CLog.Warn("[WeaponManager] 석궁 데이터 누락");
+            return false;
+        }
+
+        // 프리팹 루트에 필수 컴포넌트가 있어야 함(없을 시에만 사용되므로 안정감 올릴 수 있고, 성능저하는 크게 없음)
+        if (!data.ProjectilePrefab.TryGetComponent(out CCrossbowProjectile projectile))
+        {
+            CLog.Warn("[WeaponManager] 투사체 프리팹에 " + "CCrossbowProjectile 누락");
 
             return false;
         }
@@ -271,7 +387,19 @@ public class CWeaponManager : MonoBehaviour
 
     #region Weapon Swap Test
 
-    // 테스트 버튼을 누를 때마다 다음 티어 장착
+    // Test : 1티어 석궁 장착 ※
+    public void TestEquipCrossbow()
+    {
+        TrySwapWeapon(EWeaponType.Crossbow, 1);
+    }
+
+    // Test : 1티어 검·방패 장착 ※
+    public void TestEquipSwordShield()
+    {
+        TrySwapWeapon(EWeaponType.SwordShield, 1);
+    }
+
+    // 테스트 버튼을 누를 때마다 다음 티어 장착 ※
     public void TestSwapNextTier()
     {
         const int maxTier = 2;

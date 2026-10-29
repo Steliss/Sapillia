@@ -67,14 +67,6 @@ public class CPlayerController : MonoBehaviour
 
     }
 
-    void Start()
-    {
-
-
-       
-    }
-
-
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)
     {
         if(player == null)
@@ -91,4 +83,6 @@ public class CPlayerController : MonoBehaviour
             _playerCostume.ApplyCostume(costume);
         }
     }
+
+    
 }

@@ -10,11 +10,7 @@ using UnityEngine;
 [Serializable]
 public class CPlayerGamingDataSO
 {
-    #region 인스펙터
-
-
-    #endregion
-
+    
     #region 내부 변수
     [SerializeField] private SPlayerStats _baseData;
     [SerializeField] private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
