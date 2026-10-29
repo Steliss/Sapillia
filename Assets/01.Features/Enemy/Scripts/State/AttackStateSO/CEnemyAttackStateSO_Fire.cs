@@ -2,7 +2,6 @@ using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/Fire", fileName = "Enemy_Attack_Fire_")]
 public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
@@ -16,13 +15,13 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
     [Header("선딜시간, 조준 추적")]
     [SerializeField] private float _beforeDelay = 2f;
     [SerializeField] private float _trackingTime = 1f;
-    [SerializeField] private float _trackingSpeed = 1f;
+    [SerializeField] private float _trackingSpeed = 50f;
     [Header("투사체 속성")]
     [SerializeField] private int _multiFire = 1;
-
     [SerializeField] private float _firePower = 3f;
-    [SerializeField] private float _fireAngle = 0f;
     [SerializeField] private float _bulletLifeTime = 3f;
+    [SerializeField] private float _randomPowerRange = 0.5f;
+    [SerializeField] private float _randomAngleRange = 5f;
 
     [Space(10)]
     [Header("===== 전조 =====")]
@@ -45,9 +44,22 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
 
             // 조준
             float aim = await TrackingAim(ct);
-            
+
             // 발사
-            BulletFire(aim);
+            GameObject effect = CreateAttackObject
+                (_fireEffect, _bulletLifeTime, _mashine.Sprite.transform.position, Quaternion.identity);
+
+            for (int i = 0; i < _multiFire; i++)
+            {
+                float ranPow = 0f;
+                float ranAngle = 0f;
+                if (i != 0)
+                {
+                    ranPow = UnityEngine.Random.Range(-_randomPowerRange, _randomPowerRange);
+                    ranAngle = UnityEngine.Random.Range(-_randomAngleRange, _randomAngleRange);
+                }
+                BulletFire(aim + ranAngle, _firePower + ranPow);
+            }
 
 
             _mashine.StateChanged(_mashine.IdleState);
@@ -61,7 +73,9 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
 
     public override void StateUpdate()
     {
-        
+        // 좌우 반전
+        bool isLeft = _mashine.Target.position.x < _mashine.transform.position.x;
+        _mashine.SpriteFlipX(isLeft);
     }
 
     private async UniTask BeforeDelay(CancellationToken ct)
@@ -72,14 +86,14 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
     }
 
-    private async UniTask<float> TrackingAim(CancellationToken ct, float lookAngle = 0f)
+    private async UniTask<float> TrackingAim(CancellationToken ct)
     {
         _mashine.Ani.Play(_mashine.HashAttack);
 
         Vector2 myPos = _mashine.transform.position;
         Vector2 targetPos = _mashine.Target.position;
 
-        // 라인 초기 세팅
+        // 라인 생성
         GameObject[] lines = new GameObject[2];
         float[] sides = { -1f, 1f };
         for (int i = 0; i < lines.Length; i++)
@@ -97,16 +111,15 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         float aimAngle = targetAngle;
 
         // 조준 트래킹
-        float time = 0f;
-        while (time < _trackingTime)
+        for (float time = 0f; time < _trackingTime; time += Time.deltaTime)
         {
-            time += Time.deltaTime;
-            float t01 = time / _trackingTime;
             myPos = _mashine.transform.position;
             targetPos = _mashine.Target.position;
+            Vector2 dir = targetPos - myPos;
 
+            
             // 타겟 각도 갱신
-            targetAngle = DirToAngle((targetPos - myPos).normalized);
+            targetAngle = DirToAngle(dir.normalized);
 
             // 에임 따라가기
             aimAngle = Mathf.MoveTowardsAngle(aimAngle, targetAngle, Time.deltaTime * _trackingSpeed);
@@ -117,7 +130,7 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
             Quaternion qua = Quaternion.Euler(0, 0, aimAngle);
             float gap = Mathf.Lerp(_interbal, 0f, time / _trackingTime);
 
-
+            // 선 따라가기
             for (int i = 0; i < lines.Length; i++)
             {
                 lines[i].transform.SetPositionAndRotation(linePos + (aimDir90 * gap * sides[i]), qua);
@@ -128,33 +141,26 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         return aimAngle;
     }
 
-    private void BulletFire(float aim)
+    private void BulletFire(float aim, float power)
     {
         Vector2 aimDir = AngleToDir(aim);
         Vector2 myPos = _mashine.transform.position;
 
-        GameObject effect = CreateAttackObject
-            (_fireEffect, _bulletLifeTime, myPos + aimDir, Quaternion.identity);
-
         GameObject bullet = CreateAttackObject
-        (_projectile, _bulletLifeTime, myPos + aimDir, Quaternion.identity);
+        (_projectile, _bulletLifeTime + 1f, myPos + aimDir.normalized * 0.5f, Quaternion.identity);
 
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
-            rb.AddForce(aimDir * _firePower, ForceMode2D.Impulse);
-            CLog.Log($"{aimDir * _firePower}로 발사");
+            rb.AddForce(aimDir * power, ForceMode2D.Impulse);
+        }
+        CEnemyProjectile pro = bullet.GetComponent<CEnemyProjectile>();
+        if (pro != null)
+        {
+            pro.DamageSet(_mashine.Attack, aimDir.normalized, _bulletLifeTime);
         }
     }
 
-    private float DirToAngle(Vector2 dir)
-    {
-        return Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg - 90f;
-    }
-
-    private Vector2 AngleToDir(float angle)
-    {
-        return Quaternion.Euler(0, 0, angle) * Vector2.up;
-    }
+    
 
 }

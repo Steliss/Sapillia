@@ -1,7 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
-using System.Linq;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
@@ -151,7 +149,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         // 네브메쉬에이전트, 리지드바디 가져오기
         _nav = GetComponent<NavMeshAgent>();
-
+        
         if (_nav == null)
         {
             CLog.Warn($"{name} : 네브메쉬 에이전트 컴포넌트 누락");
@@ -178,7 +176,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-        _startScale = transform.localScale;
+        _startScale = _sprite.transform.localScale;
         _startColor = _sprite.color;
 
 
@@ -297,8 +295,15 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         _sprite.material.SetFloat(_outLineId, superOn ? 1f : 0f);
 
-        // spawn 상태로 시작
-        StateChanged(_spawnState);
+        // 초기 상태 지정
+        if (_spawnState != null)
+        {
+            StateChanged(_spawnState);
+        }
+        else
+        {
+            StateChanged(_idleState);
+        }
     }
 
     // 피격 피드백
@@ -388,6 +393,20 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             }
             _gameObjects.Clear();
         }
+    }
+
+    public void SpriteFlipX(bool flip)
+    {
+        bool isLeft = _sprite.transform.localScale.x < 0f;
+        // 이미 같은곳을 바라보는중
+        if (isLeft == flip)
+        {
+            return;
+        }
+
+        Vector3 scale = _sprite.transform.localScale;
+        scale.x *= -1f;
+        _sprite.transform.localScale = scale;
     }
 
 

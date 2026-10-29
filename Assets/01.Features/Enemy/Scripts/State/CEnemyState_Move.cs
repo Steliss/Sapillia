@@ -43,11 +43,11 @@ public class CEnemyState_Move : IEnemyState
         // 왼쪽 오른쪽 전환
         if (_mashine.Nav.velocity.x > 0)
         {
-            _mashine.Sprite.flipX = false;
+            _mashine.SpriteFlipX(false);
         }
         else if (_mashine.Nav.velocity.x < 0)
         {
-            _mashine.Sprite.flipX = true;
+            _mashine.SpriteFlipX(true);
         }
 
         // 거리 계산중이면 리턴
