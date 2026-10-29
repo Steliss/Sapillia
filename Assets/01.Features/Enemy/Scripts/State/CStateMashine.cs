@@ -283,7 +283,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         if (_data != null)
         {
             _hp = _data.Hp;
-            _superArmor = _data.SuperArmor;
             _defense = _data.Defense;
             _attack = _data.Attack;
             _speed = _data.Speed;
@@ -292,9 +291,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
         // 슈퍼아머 테두리 On / Off
-        bool superOn = _superArmor > 0f;
-
-        _sprite.material.SetFloat(_outLineId, superOn ? 1f : 0f);
+        SuperArmorGet();
 
         // 초기 상태 지정
         if (_spawnState != null)
@@ -410,6 +407,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _sprite.transform.localScale = scale;
     }
 
+    public void SuperArmorGet()
+    {
+        _superArmor = _data.SuperArmor;
+        _sprite.material.SetFloat(_outLineId, 1f);
+    }
 
     public void TakeDamage(SDamageInfo damageInfo)
     {
