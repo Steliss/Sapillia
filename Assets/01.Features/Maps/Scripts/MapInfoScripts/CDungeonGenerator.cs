@@ -31,7 +31,7 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject _blockRight;
 
 
-    [SerializeField, Range(1, 4)]
+    [SerializeField, Range(1, 5)]
     private int _currentFloor = 1;
     #endregion
 
@@ -110,6 +110,10 @@ public class CDungeonGenerator : MonoBehaviour
             if (_currentFloor == 1)
             {
                 success = GenerateFirstFloor(floorData);
+            }
+            else if (_currentFloor == 5)
+            {
+                success = GenerateBossFloor(floorData);
             }
             else
             {
@@ -462,6 +466,76 @@ public class CDungeonGenerator : MonoBehaviour
 
         _roomPlacements.Clear();
         _roomPlacements.AddRange(fixedLayout.RoomPlacements);
+
+        return ValidateRoomConnections();
+    }
+
+    private bool GenerateBossFloor(CFloorDataSO floorData)
+    {
+        if (floorData == null || floorData.RoomPool == null)
+        {
+            Debug.LogError("5층 방 데이터가 없습니다.");
+            return false;
+        }
+
+        CRoomData bossRoom = floorData.RoomPool.BossRoom;
+        CRoomData extraRoom = floorData.RoomPool.BossExtraRoom;
+
+        if (bossRoom == null || extraRoom == null)
+        {
+            Debug.LogError("5층 보스 방 또는 추가 방이 없습니다.");
+            return false;
+        }
+
+        // 보스 방과 추가 방의 크기 검사
+        if (bossRoom.RoomSize != new Vector2Int(2, 2) ||
+            extraRoom.RoomSize != new Vector2Int(1, 1))
+        {
+            Debug.LogError("5층 방 크기가 올바르지 않습니다.");
+            return false;
+        }
+
+        // 출입구 검사
+        if (!bossRoom.Right2 || !extraRoom.Left1)
+        {
+            Debug.LogError("5층 방 출입구 설정이 올바르지 않습니다.");
+            return false;
+        }
+
+        // 1. 보스 방을 원점에 배치
+        Vector3 bossPosition = Vector3.zero;
+        Vector2Int bossGridPos = Vector2Int.zero;
+
+        if (!_roomGrid.RoomAvailable(bossGridPos, bossRoom))
+        {
+            return false;
+        }
+
+        _roomGrid.RegisterRoom(bossGridPos, bossRoom);
+
+        _roomPlacements.Add(
+            new SRoomPlacement(bossRoom, bossGridPos, bossPosition, 0)
+        );
+
+        Vector3 extraPosition = _roomPlacer.GetRightRoomPosition(
+            bossPosition,
+            bossRoom,
+            extraRoom,
+            2,
+            1
+        );
+
+        Vector2Int extraGridPos = _roomPlacer.WorldToGridPosition(extraPosition);
+
+        if (!_roomGrid.RoomAvailable(extraGridPos, extraRoom))
+        {
+            Debug.LogWarning("5층 추가 방 배치 실패");
+            return false;
+        }
+
+        _roomGrid.RegisterRoom(extraGridPos, extraRoom);
+
+        _roomPlacements.Add(new SRoomPlacement(extraRoom, extraGridPos, extraPosition, 1));
 
         return ValidateRoomConnections();
     }
