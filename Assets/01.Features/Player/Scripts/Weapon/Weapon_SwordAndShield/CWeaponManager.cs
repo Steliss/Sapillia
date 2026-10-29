@@ -53,26 +53,15 @@ public class CWeaponManager : MonoBehaviour
     #region Unity
     private void Awake()
     {
-        _playerData = _player.PlayerData;
+        
     }
 
     private void Start()
     {
-        EquipTier(_startingTier);
+       
     }
 
-    private void Update()
-    {
-        if (_pendingTier < 1)
-        {
-            return;
-        }        
-
-        int tier = _pendingTier;
-        _pendingTier = -1;
-
-        TrySwapTier(tier);
-    }
+ 
 
     #endregion
 
@@ -119,7 +108,17 @@ public class CWeaponManager : MonoBehaviour
 
     private void ApplySet(CSwordShieldSetSO nextSet)
     {
-        if(nextSet == null)
+        _playerData = _player.PlayerData;
+
+        if(_playerData == null)
+        {
+            CLog.Log("[CWeaponManager] PlayerData 비어있음");
+            
+        }
+
+        CLog.Log($"[CWeaponManager] {nextSet.StatBonus} 확인");
+
+        if (nextSet == null)
         {
             return;
         }               
@@ -158,6 +157,21 @@ public class CWeaponManager : MonoBehaviour
             return;
         }
 
+        #region ※테스트
+        if (_swordRenderer == null || _shieldRenderer == null)
+        {
+            CLog.Warn("[WeaponSwap] Renderer 참조 누락");
+            return;
+        }
+
+        if (_swordRenderer == _shieldRenderer)
+        {
+            CLog.Warn("[WeaponSwap] 검과 방패 Renderer가 동일함");
+            return;
+        }
+
+        #endregion
+
         // 검 스프라이트 변경
         if (_swordRenderer != null)
         {
@@ -171,6 +185,24 @@ public class CWeaponManager : MonoBehaviour
         }
 
         CLog.Log($"[WeaponSwap] Tier {weaponSet.Tier} 스프라이트 적용 완료");
+
+        #region ※테스트
+        CLog.Log(
+            $"[WeaponSwap] 방패 변경 후 : " +
+            $"{_shieldRenderer.sprite?.name}");
+
+        // 참조하고 있는 GameObject 확인
+        CLog.Log(
+            $"[WeaponSwap] 방패 Renderer 오브젝트 : " +
+            $"{_shieldRenderer.gameObject.name}");
+
+        // 현재 티어 데이터 확인
+        CLog.Log(
+            $"[WeaponSwap] Tier : {weaponSet.Tier} / " +
+            $"SO 방패 : {weaponSet.ShieldSprite?.name}");
+
+        #endregion
+        // 변경 후 확인
     }
 
     #endregion
@@ -233,6 +265,33 @@ public class CWeaponManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    #endregion
+
+    #region Weapon Swap Test
+
+    // 테스트 버튼을 누를 때마다 다음 티어 장착
+    public void TestSwapNextTier()
+    {
+        const int maxTier = 2;
+
+        int nextTier = CurrentTier + 1;
+
+        // 3티어 다음에는 1티어로 돌아감
+        if (nextTier > maxTier)
+        {
+            nextTier = 1;
+        }
+
+        // 기존 무기 교체 함수를 그대로 사용
+        if (!TrySwapTier(nextTier))
+        {
+            CLog.Warn($"[WeaponTest] Tier {nextTier} 변경 실패");
+            return;
+        }
+
+        CLog.Log($"[WeaponTest] Tier {nextTier} 변경 요청");
     }
 
     #endregion

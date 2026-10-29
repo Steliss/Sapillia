@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d18343739618fe4491bb8c1311480a3, type: 3}
+  m_Name: ProtectOfDownData
+  m_EditorClassIdentifier: 
+  _tier: 2
+  _setName: "\uC19C\uD138\uC758 \uBCF4\uD638"
+  _swordData: {fileID: 11400000, guid: af3cc18bb63c96b46bbc1c14e5417261, type: 2}
+  _specialAttackData: {fileID: 11400000, guid: befbd30da14576247b10369fcc1300cc, type: 2}
+  _specialManaCost: 15
+  _swordSprite: {fileID: 21300000, guid: 10eb79e14b361b64380d1e5b330ed141, type: 3}
+  _shieldSprite: {fileID: 21300000, guid: af5bea285b4c4f74c98b020f454cdb34, type: 3}
+  _statBonus:
+    Str: 0
+    Def: 0
+    Attribute_Physical: 0
+    Attribute_Fire: 0
+    Attribute_Ice: 0
+    Attribute_Lightning: 0
+    Damage_Weapon: 0
+    Attack_Speed: 0
+    Special_Range: 0
+    Damage_Special: 0
+  _guardManaCost: 5
+  _perfectGuardWindow: 0.15
+  _guardBreakDuration: 10
