@@ -28,6 +28,13 @@ public class CRoomPoolSO : ScriptableObject
     [Header("중간보스 방 목록")]
     [SerializeField] private CRoomData[] _miniBossRoomPrefabs;
 
+
+    [Header("보스 방")]
+    [SerializeField] private CRoomData _bossRoom;
+
+    [Header("보스 층 추가 방")]
+    [SerializeField] private CRoomData _bossExtraRoom;
+
     #endregion
 
     #region 프로퍼티
@@ -41,5 +48,8 @@ public class CRoomPoolSO : ScriptableObject
     public CRoomData[] ExitRoomPrefabs => _exitRoomPrefabs;
 
     public CRoomData[] MiniBossRoomPrefabs => _miniBossRoomPrefabs;
+
+    public CRoomData BossRoom => _bossRoom;
+    public CRoomData BossExtraRoom => _bossExtraRoom;
     #endregion
 }

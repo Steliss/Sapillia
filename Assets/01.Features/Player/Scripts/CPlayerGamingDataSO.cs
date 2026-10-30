@@ -17,6 +17,7 @@ public class CPlayerGamingDataSO
     [SerializeField] private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
     [SerializeField] private SWeaponStatBonus _weaponBonus; // 무기 추가 능력치
     [SerializeField] private SPlayerStats _stats; // 최종 능력치
+    [SerializeField] private EWeaponType _weaponType = EWeaponType.SwordShield; // 들고 있는 무기(초기값 : 검과 방패)
 
     [SerializeField] private int _equippedWeaponTier = 1; // 현재 장착 무기 티어
 
@@ -38,6 +39,7 @@ public class CPlayerGamingDataSO
     #endregion
 
     #region 프로퍼티
+    public EWeaponType WeaponType => _weaponType;
     public SPlayerStats Stats => _stats;
     public SPlayerStats CoreStats => _coreStats;
     public int CurrentHP => _currentHP;
@@ -436,10 +438,12 @@ public class CPlayerGamingDataSO
         OnDashCountChanged?.Invoke(_currentDashCount, _stats.DashCount);
     }
 
-    public void SetEquippedWeaponTier(int weaponTier)
+    public void SetEquippedWeapon(EWeaponType weaponType, int weaponTier)
     {
         _equippedWeaponTier = weaponTier;
+        _weaponType = weaponType;
     }
+
 
    
     public void PrintBonusStats()
