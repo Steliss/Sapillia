@@ -60,7 +60,7 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
             // 전조 별도 진행
             _uni.Run(async lines =>
             {
-                await WarningLine(lines, targetPos);
+                await WarningLine(ct, targetPos);
             });
 
 

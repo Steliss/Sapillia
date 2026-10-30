@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f43dde2735e79b840a8ddcbf88118905, type: 3}
+  m_Name: Enemy_Attack_RushAttack_MiniBoss01
+  m_EditorClassIdentifier: 
+  _beforeDelay: 1
+  _rushTime: 1.5
+  _afterDelay: 1
+  _rushSpeed: 6
+  _hitBox: {x: 2.5, y: 2}
+  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+  _lineLength: 6
+  _linePos: 5
+  _interbal: 1
+  _stateRushAttReady: RushAttReady
+  _stateRushAttack: RushAttack
