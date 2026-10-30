@@ -1,14 +1,14 @@
-
 using System;
 using UnityEngine;
 
-public class CWeaponManager : MonoBehaviour
+public enum EWeaponType
 {
-    public enum EWeaponType
-    {
-        SwordShield,
-        Crossbow
-    }
+    SwordShield,
+    Crossbow
+}
+
+public class CWeaponManager : MonoBehaviour
+{   
 
     #region 인스펙터
 
@@ -97,34 +97,9 @@ public class CWeaponManager : MonoBehaviour
     public bool TrySwapTier(int tier)
     {
         return TrySwapWeapon(_currentWeaponType, tier);
-        /*
-        CSwordShieldSetSO nextSet = FindSet(tier);
-
-        if (nextSet == null)
-        {
-            CLog.Warn($"[WeaponSwap] Tier {tier} 데이터 없음");
-            return false;
-        }
-
-        if (!ValidateSet(nextSet))
-        {
-            return false;
-        }
-
-        // 이미 같은 티어라면 예약만 취소
-        if (_currentSet == nextSet)
-        {
-            _pendingTier = -1;
-            return true;
-        }       
-
-        _pendingTier = -1;
-        ApplySet(nextSet);
-        */
-
-        //return true;
+   
     }
-    // 신규 공통 무기 교체 API
+    // 공통 무기 교체
     public bool TrySwapWeapon(EWeaponType type, int tier)
     {
         if (!ValidateReferences())
@@ -159,7 +134,9 @@ public class CWeaponManager : MonoBehaviour
                     CCrossbowDataSO crossbow = FindCrossbow(tier);
 
                     if (!ValidateCrossbow(crossbow))
+                    {
                         return false;
+                    }
 
                     ApplyCrossbow(crossbow);
                     return true;
@@ -179,38 +156,99 @@ public class CWeaponManager : MonoBehaviour
             
         }
 
-        CLog.Log($"[CWeaponManager] {nextSet.StatBonus} 확인");
-
         if (nextSet == null)
         {
             return;
-        }               
+        }
 
-        // 1. 일반공격 데이터 변경
+        // 기존 석궁 공격 입력 해제
+        _crossbowAttack.enabled = false;
+
+        // 일반공격 데이터 변경
         _playerAttack.SetWeaponData(nextSet.SwordData);
 
-        // 2. 특수공격 데이터 및 MP 비용 변경
+        // 특수공격 데이터 및 MP 비용 변경
         _specialAttack.SetSpecialAttackData(nextSet.SpecialAttackData, nextSet.SpecialManaCost);
 
-        // 3. 방패 설정 변경
-        _playerGuard.SetShieldSettings(
-            nextSet.GuardManaCost,
-            nextSet.PerfectGuardWindow,
-            nextSet.GuardBreakDuration);
+        // 방패 설정 변경
+        _playerGuard.SetShieldSettings
+            (
+                nextSet.GuardManaCost,
+                nextSet.PerfectGuardWindow,
+                nextSet.GuardBreakDuration
+            );               
 
-        // 4. 플레이어 스탯
-        _playerData.SetWeaponStatBonus(nextSet.StatBonus);
-
-        // 5. 스프라이트 변경
+        // 스프라이트 변경
         ApplyWeaponSprite(nextSet);
 
-        // 6. 현재 티어 저장
-        _playerData.SetEquippedWeaponTier(nextSet.Tier);
+        // 석궁 관련 비활성화 및 검과방패 활성화
+        _swordRenderer.enabled = true;
+        _shieldRenderer.enabled = true;
+        _crossbowRenderer.enabled = false;
 
+        // 장착 정보
         _currentSet = nextSet;
+        _currentCrossbow = null;
+
+        _currentWeaponType = EWeaponType.SwordShield;
+        _currentTier = nextSet.Tier;
+
+        // 플레이어 스탯
+        _playerData.SetEquippedWeapon(EWeaponType.SwordShield, nextSet.Tier);        
+        _playerData.SetWeaponStatBonus(nextSet.StatBonus);
+
+        // 검·방패 공격 입력 활성화
+        _playerAttack.enabled = true;
+        _playerGuard.enabled = true;
 
         // 장비 UI 등 외부 시스템에 변경 알림
         OnWeaponSwapped?.Invoke(nextSet);
+        OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
+
+        CLog.Log($"[WeaponManager] 검·방패 {nextSet.SetName} 장착");
+    }
+
+    // 석궁 변경 장착
+    private void ApplyCrossbow(CCrossbowDataSO crossbow)
+    {
+        if (crossbow == null)
+        {
+            return;
+        }
+
+        // 기존 검·방패 입력 해제
+        _playerAttack.enabled = false;
+        _playerGuard.enabled = false;
+
+        // 석궁 공격 데이터 설정
+        _crossbowAttack.SetCrossbowData(crossbow);
+
+        // 검·방패 외형 숨기기
+        _swordRenderer.enabled = false;
+        _shieldRenderer.enabled = false;
+
+        // 석궁 외형 적용
+        _crossbowRenderer.sprite = crossbow.CrossbowSprite;
+        _crossbowRenderer.enabled = true;
+
+        // 장착 정보
+        _currentSet = null;
+        _currentCrossbow = crossbow;
+
+        _currentWeaponType = EWeaponType.Crossbow;
+        _currentTier = crossbow.Tier;
+
+        // 플레이어 능력치 적용
+        _playerData.SetEquippedWeapon(EWeaponType.Crossbow, crossbow.Tier);
+        _playerData.SetWeaponStatBonus(crossbow.StatBonus);
+
+        // 석궁 입력 활성화
+        _crossbowAttack.enabled = true;
+
+        // 공통 변경 이벤트
+        OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
+
+        CLog.Log($"[WeaponManager] 석궁 {crossbow.Tier}티어 장착");
     }
 
     private void ApplyWeaponSprite(CSwordShieldSetSO weaponSet)
@@ -235,34 +273,20 @@ public class CWeaponManager : MonoBehaviour
 
         #endregion
 
-        // 검 스프라이트 변경
-        if (_swordRenderer != null)
-        {
-            _swordRenderer.sprite = weaponSet.SwordSprite;
-        }
-
-        // 방패 스프라이트 변경
-        if (_shieldRenderer != null)
-        {
-            _shieldRenderer.sprite = weaponSet.ShieldSprite;
-        }
+        // 검 방패 스프라이트 변경
+        _swordRenderer.sprite = weaponSet.SwordSprite;
+        _shieldRenderer.sprite = weaponSet.ShieldSprite;
 
         CLog.Log($"[WeaponSwap] Tier {weaponSet.Tier} 스프라이트 적용 완료");
 
         #region ※테스트
-        CLog.Log(
-            $"[WeaponSwap] 방패 변경 후 : " +
-            $"{_shieldRenderer.sprite?.name}");
+        CLog.Log($"[WeaponSwap] 방패 변경 후 : " + $"{_shieldRenderer.sprite?.name}");
 
         // 참조하고 있는 GameObject 확인
-        CLog.Log(
-            $"[WeaponSwap] 방패 Renderer 오브젝트 : " +
-            $"{_shieldRenderer.gameObject.name}");
+        CLog.Log($"[WeaponSwap] 방패 Renderer 오브젝트 : " + $"{_shieldRenderer.gameObject.name}");
 
         // 현재 티어 데이터 확인
-        CLog.Log(
-            $"[WeaponSwap] Tier : {weaponSet.Tier} / " +
-            $"SO 방패 : {weaponSet.ShieldSprite?.name}");
+        CLog.Log($"[WeaponSwap] Tier : {weaponSet.Tier} / " + $"SO 방패 : {weaponSet.ShieldSprite?.name}");
 
         #endregion
         // 변경 후 확인
