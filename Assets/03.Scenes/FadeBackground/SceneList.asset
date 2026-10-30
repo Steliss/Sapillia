@@ -14,13 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scenes:
   - _sceneID: 0
-    _sceneName: 
-    _useFade: 0
-    _fadeOutDuration: 0
-    _fadeInDuration: 0
-    _fadeColor: {r: 0, g: 0, b: 0, a: 0}
-    _backGroundPrefab: {fileID: 0}
-  - _sceneID: 0
     _sceneName: Menu
     _useFade: 1
     _fadeOutDuration: 2
@@ -35,10 +28,10 @@ MonoBehaviour:
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 1023989879270422919, guid: 9ae5ee0f642700d44b89a3a5ef46fc86, type: 3}
   - _sceneID: 2
-    _sceneName: Stage1
-    _useFade: 1
-    _fadeOutDuration: 2
-    _fadeInDuration: 2
+    _sceneName: Dungeon
+    _useFade: 0
+    _fadeOutDuration: 0
+    _fadeInDuration: 0
     _fadeColor: {r: 0, g: 0, b: 0, a: 0}
     _backGroundPrefab: {fileID: 3619708469065384050, guid: 87fd27d061fc38345a2083be5d587273, type: 3}
   - _sceneID: 3

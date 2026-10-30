@@ -126,7 +126,6 @@ public class CPlayerDashBar : MonoBehaviour
         maxDash = _playerData.Stats.DashCount;
         currentDash = _playerData.CurrentDashCount;
         recoveryProgress = Mathf.Clamp01(recoveryProgress);
-        CLog.Log($"rr {recoveryProgress}");
 
         // 회복할 슬롯 구하기 
         int recoverySlot = currentDash % SlotCount;

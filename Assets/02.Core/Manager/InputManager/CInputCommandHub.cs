@@ -10,7 +10,9 @@ public class CInputCommandHub : MonoBehaviour
     #endregion
 
     #region 내부변수
-    private readonly Dictionary<EKeyAction, IInputCommand> _commands = new Dictionary<EKeyAction, IInputCommand>();
+    // 중복 명령 처리를 위한 리스트
+    private readonly Dictionary<EKeyAction, List<IInputCommand>> _commands = new();
+
     private readonly Dictionary<EKeyAction, IInputCommand<Vector2>> _vectorCommands = new Dictionary<EKeyAction, IInputCommand<Vector2>>();
     private readonly Dictionary<EKeyAction, IInputCommand<float>> _floatCommands = new Dictionary<EKeyAction, IInputCommand<float>>();
 
@@ -209,8 +211,18 @@ public class CInputCommandHub : MonoBehaviour
             return;
         }
 
-        Unregister(key);
-        _commands[key] = command;
+        // 목록이 없다면 해당키 목록 생성 및 등록
+        if (!_commands.TryGetValue(key, out var commands))
+        {
+            commands = new List<IInputCommand>();
+            _commands.Add(key, commands);
+        }
+
+        // 같은 명령이 없다면 추가
+        if (!commands.Contains(command))
+        {
+            commands.Add(command);
+        }
     }
 
     public void Register(EKeyAction key, IInputCommand<Vector2> command)
@@ -240,7 +252,6 @@ public class CInputCommandHub : MonoBehaviour
     #region 커맨드 해제
     public void Unregister(EKeyAction key)
     {
-        _commands.Remove(key);
         _vectorCommands.Remove(key);
         _floatCommands.Remove(key);
     }
@@ -248,13 +259,18 @@ public class CInputCommandHub : MonoBehaviour
     // 자신이 등록한 커맨드와 같을 때만 해제
     public void Unregister(EKeyAction key, IInputCommand command)
     {
-        if (_commands.TryGetValue(key, out var registered)
-            && ReferenceEquals(registered, command))
+        if (!_commands.TryGetValue(key, out var commands))
+        {
+            return;
+        }
+
+        commands.Remove(command);
+
+        if (commands.Count == 0)
         {
             _commands.Remove(key);
         }
     }
-
     public void Unregister(EKeyAction key, IInputCommand<Vector2> command)
     {
         if (_vectorCommands.TryGetValue(key, out var registered)
@@ -278,18 +294,29 @@ public class CInputCommandHub : MonoBehaviour
     #region 커맨드 실행
     public void ExecuteESC(EKeyAction key)
     {
-        if (_commands.TryGetValue(EKeyAction.ESC, out var command))
+        if (!_commands.TryGetValue(key, out var commands))
         {
-            if (command is IESCCommand ESCCommand)
+            return;
+        }
+
+        foreach (var command in commands)
+        {
+            if (command is IESCCommand escCommand)
             {
-                ESCCommand.ExecuteESC();
+                escCommand.ExecuteESC();
             }
         }
     }
     
     public void Execute(EKeyAction key)
     {
-        if (_commands.TryGetValue(key, out var command))
+        if (!_commands.TryGetValue(key, out var commands))
+        {
+            return;
+        }
+
+        // 등록된 명령을 순차적 실행
+        foreach (var command in commands)
         {
             command.Execute();
         }

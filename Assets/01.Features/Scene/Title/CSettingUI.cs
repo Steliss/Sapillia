@@ -61,7 +61,9 @@ public class CSettingUI : MonoBehaviour
     [SerializeField] private CSettingButtonSlot _cameraShake;
     [SerializeField] private CSettingButtonSlot _effect;
 
+    private bool _isActive = false;
 
+    public bool IsActive => _isActive;
 
     private void OnEnable()
     {
@@ -152,6 +154,7 @@ public class CSettingUI : MonoBehaviour
     /// <param name="con"></param>
     public void ActiveUI(bool con = true)
     {
+        _isActive = con;
         _UICanvas.SetActive(con);
     }
 

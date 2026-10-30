@@ -134,7 +134,7 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private bool _isActive = false;
 
-    public bool isActive => _isActive;
+    public bool IsActive => _isActive;
 
     
 
@@ -169,9 +169,9 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void OnDisable()
     {
-        _inputTask.Cancel();
-        _dataTask.Cancel();
-        _localizationTask.Cancel();
+        _inputTask?.Cancel();
+        _dataTask?.Cancel();
+        _localizationTask?.Cancel();
 
         _input.Unregister(EKeyAction.PlayerStats, this);
         _input.Unregister(EKeyAction.ESC, this);
@@ -259,11 +259,18 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
     // 플레이어 스텟창 오픈
     public void Execute()
     {
-        ReloadData();
-        ReloadText();
-        _isActive = true;
-        _UICanvas.SetActive(true);
+        _isActive = !_isActive;
+
+        // 창을 열 때만 정보 갱신
+        if (_isActive)
+        {
+            ReloadData();
+            ReloadText();
+        }
+
+        _UICanvas.SetActive(_isActive);
     }
+
 
     // 플레이어 스텟창 닫기
     public void ExecuteESC()

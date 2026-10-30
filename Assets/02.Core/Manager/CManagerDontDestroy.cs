@@ -8,12 +8,14 @@ public class CManagerDontDestroy : MonoBehaviour
     [SerializeField] private CInputCommandHub _inputCommandHub;
     [SerializeField] private CDataManger _dataManger;
     [SerializeField] private CLocalizationManager _localizationData;
+    [SerializeField] private CSettingUI _setting;
     [SerializeField] private bool _isLog = true;
 
     public CSceneManager SceneManager => _sceneManager;
     public CInputCommandHub InputCommandHub => _inputCommandHub;
     public CDataManger DataManger => _dataManger;
     public CLocalizationManager LocalizationData => _localizationData;
+    public CSettingUI Settings => _setting;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()
@@ -27,22 +29,27 @@ public class CManagerDontDestroy : MonoBehaviour
 
         if (_sceneManager == null)
         {
-            CLog.Log("_sceneManager : Null");
+            CLog.Log("CManagerDontDestroy _sceneManager : Null");
         }
 
         if (_dataManger == null)
         {
-            CLog.Log("_dataManger : Null");
+            CLog.Log("CManagerDontDestroy _dataManger : Null");
         }
 
         if (_inputCommandHub == null)
         {
-            CLog.Log("_inputCommandHub : Null");
+            CLog.Log("CManagerDontDestroy _inputCommandHub : Null");
         }
 
         if (_localizationData == null)
         {
-            CLog.Log("_localizationData : Null");
+            CLog.Log("CManagerDontDestroy _localizationData : Null");
+        }
+
+        if (_setting == null)
+        {
+            CLog.Log("CManagerDontDestroy _setting : Null");
         }
         Instance = this;
 
@@ -130,4 +137,18 @@ public class CManagerDontDestroy : MonoBehaviour
         return Instance.LocalizationData;
     }
 
+    /// <summary>
+    /// 설정 UI 동기 함수
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async UniTask<CSettingUI> SettingsAsync(CancellationToken token)
+    {
+        await UniTask.WaitUntil(() => Instance != null && Instance.Settings != null, cancellationToken: token);
+
+        token.ThrowIfCancellationRequested();
+
+        CLog.Log("Settings 생성완료");
+        return Instance.Settings;
+    }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 //SceneListSO 관련 필드
 public enum EScene
 {
+    Start,
     Menu,
     Town,
     stage1,
@@ -124,4 +125,18 @@ public class CGameSaveData
     public CFlowGame Flow;
     public CPlayerGamingDataSO Player;
     public CInventoryData Inventory;
+}
+
+// 로딩관련 상태 플래그
+[Flags]
+public enum EReady
+{
+    None = 0,
+    Input = 1,
+    Scene = 2,
+    Localization = 4,
+    Data = 8,
+    Setting = 16,
+
+    All = Input | Scene | Localization | Data | Setting
 }

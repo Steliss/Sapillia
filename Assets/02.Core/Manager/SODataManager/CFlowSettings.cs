@@ -229,6 +229,7 @@ public class CFlowGame
     [SerializeField] private int _playerprogress = 0; // 스테이지 진행도 애로 쓸까?
     [SerializeField] private int _playerretrycount = 0;
     [SerializeField] private long _playerplaytime = 0;
+    [SerializeField] private byte _saveSlot = 0;
 
     public EScene CurrentScene => _currentScene;
 
@@ -236,7 +237,7 @@ public class CFlowGame
     public int PlayerProgress => _playerprogress;
     public int PlayerRetrycount => _playerretrycount;
     public long Playerplaytime => _playerplaytime;
-
+    public byte SaveSlot => _saveSlot;
     public void SetCurrentScene(EScene currentScene)
     {
         _currentScene = currentScene;
@@ -265,5 +266,10 @@ public class CFlowGame
     public void SetPlaytime(long time)
     {
         _playerplaytime = time;
+    }
+
+    public void SetSaveSlot(byte slot)
+    {
+        _saveSlot = slot;   
     }
 }

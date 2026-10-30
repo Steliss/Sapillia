@@ -92,10 +92,6 @@ public class CSaveSlotUI
 
 public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 {
-    [SerializeField] private CLocalizationManager _localization;
-    [SerializeField] private CDataManger _dataManger;
-
-
     [Header("메뉴버튼")]
     [SerializeField] private GameObject _startButtonObject;
     [SerializeField] private GameObject _settingButtonObject;
@@ -116,16 +112,18 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
-    [Header("설정 UI")]
-    [SerializeField] private CSettingUI _settingUI;
-
-
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
+    private CUniTaskOnes _settingTask = new CUniTaskOnes();
+
     private CSceneManager _cSceneManager;
     private CInputCommandHub _input;
+    private CSettingUI _settingUI;
+    private CLocalizationManager _localization;
+    private CDataManger _dataManger;
+
     private Button _startButton;
     private Button _settingButton;
     private Button _discordButton;
@@ -134,10 +132,12 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private int _createSlot = -1;
 
+    //private EReady _ready = EReady.None;
+    //private EReady _requiredReady = EReady.Input | EReady.Scene | EReady.Input | EReady.Data | EReady.Data;
+    //private bool _isReady;
 
     private void OnEnable()
     {
-        _localization.OnLanguageChanged += ReloadText;
 
         _startButton.onClick.AddListener(OpenCharacterSlot);
         _settingButton.onClick.AddListener(SettingGame);
@@ -167,6 +167,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _localizationTask.Run(async token =>
         {
             _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
+            _localization.OnLanguageChanged += ReloadText;
             ReloadText();
             CLog.Log("CTitleUI _localizationTask OnEnable 작업 완료");
         });
@@ -174,6 +175,11 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             _dataManger = await CManagerDontDestroy.DataMangerAsync(token);
             CLog.Log("CTitleUI _dataTask OnEnable 작업 완료");
+        });
+        _settingTask.Run(async token =>
+        {
+            _settingUI = await CManagerDontDestroy.SettingsAsync(token);
+            CLog.Log("CTitleUI _settingTask OnEnable 작업 완료");
         });
 
 
@@ -196,8 +202,10 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _nameInputYes.onClick.RemoveListener(CreateSave);
         _nameInputNo.onClick.RemoveListener(CancelCreateSave);
 
-        _inputTask.Cancel();
-        _sceneTask.Cancel();
+        _inputTask?.Cancel();
+        _sceneTask?.Cancel();
+        _localizationTask?.Cancel(); 
+        _settingTask?.Cancel();
 
         _input.Unregister(EKeyAction.ESC, this);
     }
@@ -216,23 +224,12 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _saveSlots[2].StartGameStartButton = SetButton2(_saveSlots[2].StartGameStartButton, _saveSlots[2].StartButtonBackImage);
     }
 
-    private void Update()
-    {
-        if (_cSceneManager == null || _input == null || _dataManger == null || _localization == null)
-        {
-            CLog.Error("CTitleUI Manager : Null");
-            return;
-        }
 
-        if(_cSceneManager.IsChanging)
-        {
-            gameObject.SetActive(false);
-        }
-    }
 
     // ESC키
     public void ExecuteESC()
     {
+
         _startGameUI.SetActive(false);
         _settingUI.ActiveUI(false);
 
@@ -386,6 +383,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
         _dataManger.LoadGame(2);
         _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+        gameObject.SetActive(false);
     }
 
     // 케릭터 이름 기입
@@ -420,6 +418,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
             return;
         }
 
+        _dataManger.CurrentFlow.SetSaveSlot((byte)_createSlot);
         _dataManger.CurrentFlow.SetName(_inputField.text.Trim());
         _dataManger.SaveGame(_createSlot);
 
@@ -445,7 +444,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void DiscordOpen()
     {
-        // 옵션 UI 열기
+        _cSceneManager.ChangeScreenAsync(EScene.stage1).Forget();
     }
 
     private void CreditOpen()
