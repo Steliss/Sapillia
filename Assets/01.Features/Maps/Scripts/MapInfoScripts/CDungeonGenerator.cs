@@ -1,4 +1,3 @@
-        using System.Collections;
         using System.Collections.Generic;
         using UnityEngine;
 
@@ -6,23 +5,11 @@ public class CDungeonGenerator : MonoBehaviour
 {
     #region 인스펙터
 
-    [Header("방 정보")]
-    [SerializeField] private CRoomData _firstRoom;
-
-    [Header("1층 고정 중간 방")]
-    [SerializeField] private CRoomData _firstFloorMiddleRoom;
-
     [Header("층 데이터")]
     [SerializeField] private CFloorDataSO[] _floorDatas;
 
     [Header("방 디폴트 사이즈")]
     [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
-
-    [Header("랜덤 생성 방 목록")]
-    [SerializeField] private CRoomData[] _roomPrefabs;
-
-    [Header("다음층 가는 방 몽록")]
-    [SerializeField] private CRoomData[] _exitRoomPrefabs;
 
     [Header("출입구 막기")]
     [SerializeField] private GameObject _blockUp;
@@ -30,9 +17,10 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject _blockLeft;
     [SerializeField] private GameObject _blockRight;
 
-
+    [Header("현재 층")]
     [SerializeField, Range(1, 5)]
     private int _currentFloor = 1;
+
     #endregion
 
     #region 내부 변수
@@ -77,13 +65,7 @@ public class CDungeonGenerator : MonoBehaviour
 
 
     private void GenerateNewDungeon()
-    {
-        if (_firstRoom == null)
-        {
-            Debug.LogWarning("시작방을 지정하지 않음");
-            return;
-        }
-
+    {        
         CFloorDataSO floorData = GetCurrentFloorData();
 
         if (floorData == null)
@@ -220,14 +202,6 @@ public class CDungeonGenerator : MonoBehaviour
         }
     }
 
-
-
-    private CRoomPassage GetRandomPassage()
-    {
-        int randomIndex = Random.Range(0, _availablePassages.Count);
-
-        return _availablePassages[randomIndex];
-    }
 
 
     private Vector3 GetNextRoomPosition(CRoomPassage passage, CRoomData nextRoom, int nextNumber)
@@ -404,20 +378,6 @@ public class CDungeonGenerator : MonoBehaviour
         return true;
     }
 
-
-
-    private CRoomData GetRandomRoom()
-    {
-        if (_roomPrefabs == null || _roomPrefabs.Length == 0)
-        {
-            Debug.LogWarning("등록된 방 프리팹이 없습니다.");
-            return null;
-        }
-
-        int randomIndex = Random.Range(0, _roomPrefabs.Length);
-
-        return _roomPrefabs[randomIndex];
-    }
 
 
     private CRoomData GetRandomRoomFromPool(CRoomData[] roomPrefabs)
@@ -947,75 +907,6 @@ public class CDungeonGenerator : MonoBehaviour
         return pos;
     }
 
-
-    private bool HasMatchingRightPassage(SRoomPlacement a, SRoomPlacement b)
-    {
-        for (int aNumber = 1; aNumber <= 2; aNumber++)
-        {
-            if (!HasPassage(a.RoomPrefab, ERoomDirection.Right, aNumber))
-            {
-                continue;
-            }
-
-            Vector2Int aDoor = GetPassageGridPosition(
-                a, ERoomDirection.Right, aNumber
-            );
-
-            for (int bNumber = 1; bNumber <= 2; bNumber++)
-            {
-                if (!HasPassage(b.RoomPrefab, ERoomDirection.Left, bNumber))
-                {
-                    continue;
-                }
-
-                Vector2Int bDoor = GetPassageGridPosition(
-                    b, ERoomDirection.Left, bNumber
-                );
-
-                if (aDoor + Vector2Int.right == bDoor)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    private bool HasMatchingUpPassage(SRoomPlacement a, SRoomPlacement b)
-    {
-        for (int aNumber = 1; aNumber <= 2; aNumber++)
-        {
-            if (!HasPassage(a.RoomPrefab, ERoomDirection.Up, aNumber))
-            {
-                continue;
-            }
-
-            Vector2Int aDoor = GetPassageGridPosition(
-                a, ERoomDirection.Up, aNumber
-            );
-
-            for (int bNumber = 1; bNumber <= 2; bNumber++)
-            {
-                if (!HasPassage(b.RoomPrefab, ERoomDirection.Down, bNumber))
-                {
-                    continue;
-                }
-
-                Vector2Int bDoor = GetPassageGridPosition(
-                    b, ERoomDirection.Down, bNumber
-                );
-
-                if (aDoor + Vector2Int.up == bDoor)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
 
 
     private bool HasPassageAtGrid(SRoomPlacement placement, ERoomDirection direction, Vector2Int gridPosition)
