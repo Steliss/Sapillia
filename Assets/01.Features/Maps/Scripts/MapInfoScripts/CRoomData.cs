@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class CRoomData : MonoBehaviour
 {
-	#region ÀÎ½ºÆåÅÍ
-	[Header("¹æ Å©±â")]
+	#region ì¸ìŠ¤íŽ™í„°
+	[Header("ë°© í¬ê¸°")]
 	[SerializeField] private Vector2Int _roomSize = new Vector2Int (1,1);
 
-	[Header("¹® À§Ä¡")]
+	[Header("ë°© ì¢…ë¥˜")]
+	[SerializeField] private ERoomType _roomType = ERoomType.Combat;
+
+	[Header("ë¬¸ ìœ„ì¹˜")]
 	[SerializeField] private bool _up1;
     [SerializeField] private bool _up2;
     [SerializeField] private bool _down1;
@@ -21,7 +24,7 @@ public class CRoomData : MonoBehaviour
 	#endregion
 
 
-	#region ÇÁ·ÎÆÛÆ¼
+	#region í”„ë¡œí¼í‹°
 
 	public Vector2Int RoomSize => _roomSize;
 
@@ -34,6 +37,7 @@ public class CRoomData : MonoBehaviour
 	public bool Right1 => _right1;
 	public bool Right2 => _right2;
 
+	public ERoomType RoomType => _roomType;
 	#endregion
 
 

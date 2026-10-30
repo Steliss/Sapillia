@@ -11374,6 +11374,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2840929448836247269}
+  - component: {fileID: -5980197462953280388}
   m_Layer: 0
   m_Name: ThirdRoomD2
   m_TagString: Untagged
@@ -11397,6 +11398,28 @@ Transform:
   - {fileID: 1391379229520431875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-5980197462953280388
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5731294748231663725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fe1d8fa3da125342a480d4c76880627, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roomSize: {x: 1, y: 2}
+  _roomType: 2
+  _up1: 0
+  _up2: 0
+  _down1: 1
+  _down2: 0
+  _left1: 0
+  _left2: 0
+  _right1: 0
+  _right2: 0
 --- !u!1 &5855408360413521675
 GameObject:
   m_ObjectHideFlags: 0

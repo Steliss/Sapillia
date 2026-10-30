@@ -266,7 +266,8 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     #endregion
 
-    #region 검과 방패 특수 공격
+    #region SpecialAttack
+
     public void BeginSpecialAttack()
     {
         _specialAttackLocked = true;
@@ -428,8 +429,6 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     #endregion
 
-
-
     #region Guard Break
 
     private void EnterGuardBreak()
@@ -499,6 +498,24 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
         // -90도 ~ +90도
         return dot >= 0f;
+    }
+
+    #endregion
+
+    #region Guard Swap
+    public void SetShieldSettings(int manaCost, float perfectWindow, float breakDuration)
+    {
+        _guardManaCost = Mathf.Max(1, manaCost);
+        _perfectGuardWindow = Mathf.Max(0f, perfectWindow);
+        _guardBreakDuration = Mathf.Max(0f, breakDuration);
+
+        CLog.Log
+            (
+                $"[PlayerGuard] 방패 설정 변경 / " +
+                $"MP Cost:{_guardManaCost} / " +
+                $"Perfect 판정 시간:{_perfectGuardWindow} / " +
+                $"Break:{_guardBreakDuration}"
+            );
     }
 
     #endregion

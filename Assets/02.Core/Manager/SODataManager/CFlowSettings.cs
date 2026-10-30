@@ -226,7 +226,7 @@ public class CFlowGame
 {
     [SerializeField] private EScene _currentScene = EScene.Menu;
     [SerializeField] private string _name = string.Empty;
-    [SerializeField] private int _playerprogress = 0;
+    [SerializeField] private int _playerprogress = 0; // 스테이지 진행도 애로 쓸까?
     [SerializeField] private int _playerretrycount = 0;
     [SerializeField] private long _playerplaytime = 0;
 

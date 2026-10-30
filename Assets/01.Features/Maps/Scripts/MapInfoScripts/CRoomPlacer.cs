@@ -95,4 +95,13 @@ public class CRoomPlacer
     }
 
 
+    // 월드 좌표를 26과 18기준 1로 변경
+    public Vector2Int WorldToGridPosition(Vector3 worldPos)
+    {
+        int x = Mathf.RoundToInt(worldPos.x / _defaultSize.x);
+        int y = Mathf.RoundToInt(worldPos.y / _defaultSize.y);
+
+        return new Vector2Int(x, y);
+    }
+
 }

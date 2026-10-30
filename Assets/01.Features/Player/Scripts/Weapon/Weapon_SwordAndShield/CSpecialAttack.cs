@@ -151,7 +151,7 @@ public class CPlayerSpecialAttack : MonoBehaviour
         }
 
         // 기존 CWeaponMotion을 통해 특수공격 실행
-        bool started = _weaponMotion.TryPlay(_specialAttackData, baseDamage, stats);
+        bool started = _weaponMotion.TryPlay(_specialAttackData, baseDamage, stats, true);
 
         // 공격 실행 실패 시 MP 반환
         if (!started)
@@ -204,6 +204,25 @@ public class CPlayerSpecialAttack : MonoBehaviour
     {
         _waitForLeftRelease = false;
     }
+
+
+    #region 무기 스왑
+    // 무기 스왑 시 새로운 특수공격 데이터 적용
+    public void SetSpecialAttackData(CWeaponAttackDataSO attackData, int manaCost)
+    {
+        if (attackData == null)
+        {
+            CLog.Warn("[SpecialAttack] AttackData 누락");
+            return;
+        }
+
+        _specialAttackData = attackData;
+        _specialManaCost = Mathf.Max(1, manaCost);
+
+        CLog.Log("[SpecialAttack] 무기 데이터 교체 완료");
+    }
+
+    #endregion
 
     #endregion
 }
