@@ -1,4 +1,3 @@
-        using System.Collections;
         using System.Collections.Generic;
         using UnityEngine;
 
@@ -6,23 +5,11 @@ public class CDungeonGenerator : MonoBehaviour
 {
     #region 인스펙터
 
-    [Header("방 정보")]
-    [SerializeField] private CRoomData _firstRoom;
-
-    [Header("1층 고정 중간 방")]
-    [SerializeField] private CRoomData _firstFloorMiddleRoom;
-
     [Header("층 데이터")]
     [SerializeField] private CFloorDataSO[] _floorDatas;
 
     [Header("방 디폴트 사이즈")]
     [SerializeField] private Vector2Int _defaultSize = new Vector2Int(26, 18);
-
-    [Header("랜덤 생성 방 목록")]
-    [SerializeField] private CRoomData[] _roomPrefabs;
-
-    [Header("다음층 가는 방 몽록")]
-    [SerializeField] private CRoomData[] _exitRoomPrefabs;
 
     [Header("출입구 막기")]
     [SerializeField] private GameObject _blockUp;
@@ -30,14 +17,20 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject _blockLeft;
     [SerializeField] private GameObject _blockRight;
 
-
+    [Header("현재 층")]
     [SerializeField, Range(1, 5)]
     private int _currentFloor = 1;
+
     #endregion
 
     #region 내부 변수
     private CRoomPlacer _roomPlacer;
     private CRoomGrid _roomGrid;
+
+    private CRoomConnectionValidator _roomConnectionValidator;
+
+    private CRoomBlockSpawner _roomBlockSpawner;
+
     private List<CRoomPassage> _availablePassages = new List<CRoomPassage>();
     private Dictionary<Vector2Int, int> _roomDepths = new Dictionary<Vector2Int, int>();
 
@@ -54,6 +47,8 @@ public class CDungeonGenerator : MonoBehaviour
     {
         _roomPlacer = new CRoomPlacer(_defaultSize);
         _roomGrid = new CRoomGrid();
+        _roomBlockSpawner = new CRoomBlockSpawner();
+        _roomConnectionValidator = new CRoomConnectionValidator();
 
         GameObject generatedDungeon = new GameObject("GeneratedDungeon");
         _generatedDungeonRoot = generatedDungeon.transform;
@@ -77,13 +72,7 @@ public class CDungeonGenerator : MonoBehaviour
 
 
     private void GenerateNewDungeon()
-    {
-        if (_firstRoom == null)
-        {
-            Debug.LogWarning("시작방을 지정하지 않음");
-            return;
-        }
-
+    {        
         CFloorDataSO floorData = GetCurrentFloorData();
 
         if (floorData == null)
@@ -220,14 +209,6 @@ public class CDungeonGenerator : MonoBehaviour
         }
     }
 
-
-
-    private CRoomPassage GetRandomPassage()
-    {
-        int randomIndex = Random.Range(0, _availablePassages.Count);
-
-        return _availablePassages[randomIndex];
-    }
 
 
     private Vector3 GetNextRoomPosition(CRoomPassage passage, CRoomData nextRoom, int nextNumber)
@@ -404,20 +385,6 @@ public class CDungeonGenerator : MonoBehaviour
         return true;
     }
 
-
-
-    private CRoomData GetRandomRoom()
-    {
-        if (_roomPrefabs == null || _roomPrefabs.Length == 0)
-        {
-            Debug.LogWarning("등록된 방 프리팹이 없습니다.");
-            return null;
-        }
-
-        int randomIndex = Random.Range(0, _roomPrefabs.Length);
-
-        return _roomPrefabs[randomIndex];
-    }
 
 
     private CRoomData GetRandomRoomFromPool(CRoomData[] roomPrefabs)
@@ -818,409 +785,24 @@ public class CDungeonGenerator : MonoBehaviour
 
     private bool ValidateRoomConnections()
     {
-        for (int i = 0; i < _roomPlacements.Count; i++)
-        {
-            SRoomPlacement a = _roomPlacements[i];
-
-            for (int j = i + 1; j < _roomPlacements.Count; j++)
-            {
-                SRoomPlacement b = _roomPlacements[j];
-
-                if (IsRightAdjacent(a, b))
-                {
-                    if (ValidateRightBoundary(a, b))
-                    {
-                        Debug.Log($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 오른쪽 경계 정상");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 오른쪽 경계 출입구 불일치");
-                        return false;
-                    }
-                }
-
-                if (IsRightAdjacent(b, a))
-                {
-                    if (ValidateRightBoundary(b, a))
-                    {
-                        Debug.Log($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 왼쪽 경계 정상");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 왼쪽 경계 출입구 불일치");
-                        return false;
-                    }
-                }
-
-                if (IsUpAdjacent(a, b))
-                {
-                    if (ValidateUpBoundary(a, b))
-                    {
-                        Debug.Log($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 위쪽 경계 정상");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 위쪽 경계 출입구 불일치");
-                        return false;
-                    }
-                }
-
-                if (IsUpAdjacent(b, a))
-                {
-                    if (ValidateUpBoundary(b, a))
-                    {
-                        Debug.Log($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 아래쪽 경계 정상");
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"{a.RoomPrefab.name} ↔ {b.RoomPrefab.name} 아래쪽 경계 출입구 불일치");
-                        return false;
-                    }
-                }
-            }
-        }
-
-        return true;
-
+        return _roomConnectionValidator.ValidateRoomConnections(_roomPlacements);
     }
 
 
-
-    private bool IsRightAdjacent(SRoomPlacement a, SRoomPlacement b)
-    {
-        Vector2Int aPos = a.GridPosition;
-        Vector2Int bPos = b.GridPosition;
-
-        Vector2Int aSize = a.RoomPrefab.RoomSize;
-        Vector2Int bSize = b.RoomPrefab.RoomSize;
-
-        bool touching = aPos.x + aSize.x == bPos.x;
-
-        bool overlappingY =
-            aPos.y < bPos.y + bSize.y &&
-            bPos.y < aPos.y + aSize.y;
-
-        return touching && overlappingY;
-    }
-
-    private bool IsUpAdjacent(SRoomPlacement a, SRoomPlacement b)
-    {
-        Vector2Int aPos = a.GridPosition;
-        Vector2Int bPos = b.GridPosition;
-
-        Vector2Int aSize = a.RoomPrefab.RoomSize;
-        Vector2Int bSize = b.RoomPrefab.RoomSize;
-
-        bool touching = aPos.y + aSize.y == bPos.y;
-
-        bool overlappingX =
-            aPos.x < bPos.x + bSize.x &&
-            bPos.x < aPos.x + aSize.x;
-
-        return touching && overlappingX;
-    }
-
-
-    private Vector2Int GetPassageGridPosition(
-    SRoomPlacement placement,
-    ERoomDirection direction,
-    int number)
-    {
-        Vector2Int pos = placement.GridPosition;
-        Vector2Int size = placement.RoomPrefab.RoomSize;
-
-        switch (direction)
-        {
-            case ERoomDirection.Up:
-                return pos + new Vector2Int(number - 1, size.y - 1);
-
-            case ERoomDirection.Down:
-                return pos + new Vector2Int(number - 1, 0);
-
-            case ERoomDirection.Left:
-                return pos + new Vector2Int(0, size.y - number);
-
-            case ERoomDirection.Right:
-                return pos + new Vector2Int(size.x - 1, size.y - number);
-        }
-
-        return pos;
-    }
-
-
-    private bool HasMatchingRightPassage(SRoomPlacement a, SRoomPlacement b)
-    {
-        for (int aNumber = 1; aNumber <= 2; aNumber++)
-        {
-            if (!HasPassage(a.RoomPrefab, ERoomDirection.Right, aNumber))
-            {
-                continue;
-            }
-
-            Vector2Int aDoor = GetPassageGridPosition(
-                a, ERoomDirection.Right, aNumber
-            );
-
-            for (int bNumber = 1; bNumber <= 2; bNumber++)
-            {
-                if (!HasPassage(b.RoomPrefab, ERoomDirection.Left, bNumber))
-                {
-                    continue;
-                }
-
-                Vector2Int bDoor = GetPassageGridPosition(
-                    b, ERoomDirection.Left, bNumber
-                );
-
-                if (aDoor + Vector2Int.right == bDoor)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    private bool HasMatchingUpPassage(SRoomPlacement a, SRoomPlacement b)
-    {
-        for (int aNumber = 1; aNumber <= 2; aNumber++)
-        {
-            if (!HasPassage(a.RoomPrefab, ERoomDirection.Up, aNumber))
-            {
-                continue;
-            }
-
-            Vector2Int aDoor = GetPassageGridPosition(
-                a, ERoomDirection.Up, aNumber
-            );
-
-            for (int bNumber = 1; bNumber <= 2; bNumber++)
-            {
-                if (!HasPassage(b.RoomPrefab, ERoomDirection.Down, bNumber))
-                {
-                    continue;
-                }
-
-                Vector2Int bDoor = GetPassageGridPosition(
-                    b, ERoomDirection.Down, bNumber
-                );
-
-                if (aDoor + Vector2Int.up == bDoor)
-                {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-
-    private bool HasPassageAtGrid(SRoomPlacement placement, ERoomDirection direction, Vector2Int gridPosition)
-    {
-        for (int number = 1; number <= 2; number++)
-        {
-            if (!HasPassage(placement.RoomPrefab, direction, number))
-            {
-                continue;
-            }
-
-            Vector2Int doorPosition =
-                GetPassageGridPosition(placement, direction, number);
-
-            if (doorPosition == gridPosition)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private bool ValidateRightBoundary(SRoomPlacement a, SRoomPlacement b)
-    {
-        int startY = Mathf.Max(
-            a.GridPosition.y,
-            b.GridPosition.y
-        );
-
-        int endY = Mathf.Min(
-            a.GridPosition.y + a.RoomPrefab.RoomSize.y,
-            b.GridPosition.y + b.RoomPrefab.RoomSize.y
-        );
-
-        for (int y = startY; y < endY; y++)
-        {
-            Vector2Int aGrid = new Vector2Int(
-                a.GridPosition.x + a.RoomPrefab.RoomSize.x - 1,
-                y
-            );
-
-            Vector2Int bGrid = aGrid + Vector2Int.right;
-
-            bool aHasDoor = HasPassageAtGrid(a, ERoomDirection.Right, aGrid);
-            bool bHasDoor = HasPassageAtGrid(b, ERoomDirection.Left, bGrid);
-
-            if (aHasDoor != bHasDoor)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    private bool ValidateUpBoundary(SRoomPlacement a, SRoomPlacement b)
-    {
-        int startX = Mathf.Max(
-            a.GridPosition.x,
-            b.GridPosition.x
-        );
-
-        int endX = Mathf.Min(
-            a.GridPosition.x + a.RoomPrefab.RoomSize.x,
-            b.GridPosition.x + b.RoomPrefab.RoomSize.x
-        );
-
-        for (int x = startX; x < endX; x++)
-        {
-            Vector2Int aGrid = new Vector2Int(
-                x,
-                a.GridPosition.y + a.RoomPrefab.RoomSize.y - 1
-            );
-
-            Vector2Int bGrid = aGrid + Vector2Int.up;
-
-            bool aHasDoor = HasPassageAtGrid(a, ERoomDirection.Up, aGrid);
-            bool bHasDoor = HasPassageAtGrid(b, ERoomDirection.Down, bGrid);
-
-            if (aHasDoor != bHasDoor)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private bool IsPassageConnected(
-    SRoomPlacement placement,
-    ERoomDirection direction,
-    int number)
-    {
-        Vector2Int doorGrid =
-            GetPassageGridPosition(placement, direction, number);
-
-        Vector2Int offset = Vector2Int.zero;
-
-        switch (direction)
-        {
-            case ERoomDirection.Up:
-                offset = Vector2Int.up;
-                break;
-
-            case ERoomDirection.Down:
-                offset = Vector2Int.down;
-                break;
-
-            case ERoomDirection.Left:
-                offset = Vector2Int.left;
-                break;
-
-            case ERoomDirection.Right:
-                offset = Vector2Int.right;
-                break;
-        }
-
-        Vector2Int nextGrid = doorGrid + offset;
-
-        ERoomDirection oppositeDirection =
-            GetOppositeDirection(direction);
-
-        foreach (SRoomPlacement other in _roomPlacements)
-        {
-            if (other.GridPosition == placement.GridPosition)
-            {
-                continue;
-            }
-
-            Vector2Int otherMin = other.GridPosition;
-            Vector2Int otherMax = otherMin + other.RoomPrefab.RoomSize;
-
-            if (nextGrid.x < otherMin.x || nextGrid.x >= otherMax.x ||
-                nextGrid.y < otherMin.y || nextGrid.y >= otherMax.y)
-            {
-                continue;
-            }
-
-            return HasPassageAtGrid(other, oppositeDirection, nextGrid);
-        }
-
-        return false;
-    }
-
-
-    private GameObject GetBlockPrefab(ERoomDirection direction)
-    {
-        switch (direction)
-        {
-            case ERoomDirection.Up:
-                return _blockUp;
-
-            case ERoomDirection.Down:
-                return _blockDown;
-
-            case ERoomDirection.Left:
-                return _blockLeft;
-
-            case ERoomDirection.Right:
-                return _blockRight;
-
-            default:
-                return null;
-        }
-    }
-
-    private Vector3 GetBlockWorldPosition(SRoomPlacement placement, ERoomDirection direction, int number)
-    {
-        Vector2Int gridPos = GetPassageGridPosition(placement, direction, number);
-
-        return new Vector3(
-            gridPos.x * _defaultSize.x,
-            gridPos.y * _defaultSize.y,
-            placement.WorldPosition.z
-        );
-    }
 
     private void SpawnBlock(SRoomPlacement placement, ERoomDirection direction, int number)
     {
-        // 존재하지 않는 출입구는 검사하지 않음
-        if (!HasPassage(placement.RoomPrefab, direction, number))
-        {
-            return;
-        }
-
-        // 다른 방과 연결되어 있으면 막지 않음
-        if (IsPassageConnected(placement, direction, number))
-        {
-            return;
-        }
-
-        // 방향에 맞는 벽 프리팹 선택
-        GameObject blockPrefab = GetBlockPrefab(direction);
-
-        if (blockPrefab == null)
-        {
-            return;
-        }
-
-        // 출입구가 속한 26×18 칸의 월드 좌표
-        Vector3 blockPosition = GetBlockWorldPosition(placement, direction, number);
-
-        // 벽 프리팹 생성
-        Instantiate(blockPrefab, blockPosition, Quaternion.identity, _generatedDungeonRoot);
+        _roomBlockSpawner.SpawnBlock(
+            placement,
+            direction,
+            number,
+            _roomPlacements,
+            _defaultSize,
+            _blockUp,
+            _blockDown,
+            _blockLeft,
+            _blockRight,
+            _generatedDungeonRoot
+        );
     }
 }
