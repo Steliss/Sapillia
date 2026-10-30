@@ -12,14 +12,14 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
     [SerializeField] private float _patrolRadius = 3f;
     [SerializeField] private float _patrolMoveRange = 3f;
-    [SerializeField] private LayerMask _playerMask;
+    [SerializeField] private LayerMask _targetMask;
 
 
     [Header("스폰 SO")]
     [SerializeField] private CEnemySpawnStateSO _spawnState;
 
     [Header("공격 패턴 SO")]
-    [SerializeField] private List<CEnemyAttackStateSO> _attackState;
+    [SerializeField] private CEnemyAttackStateSO _attackState;
 
     [Header("체력 바")]
     [SerializeField] private Slider _hpBar;
@@ -59,7 +59,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private IEnemyState _state;
     #endregion
 
-    #region 스탯
+    #region 스탯 데이터
     private CDataEnemySO _data;
     private float _hp;
     private float _superArmor;
@@ -78,13 +78,14 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
     public float PatrolMoveRange => _patrolMoveRange;
+    public LayerMask TargetLayer => _targetMask;
 
     // 상태
     public IEnemyState State => _state;
     public IEnemyState IdleState => _idleState;
     public IEnemyState MoveState => _moveState;
     public IEnemyState DeathState => _deathState;
-    public IReadOnlyList<CEnemyAttackStateSO> AttackState => _attackState;
+    public IEnemyState AttackState => _attackState;
 
     // 스탯
     public float Hp => _hp;
@@ -135,14 +136,24 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _id = gameObject.name;
         }
 
-        // 기본 상태 생성
-        CEnemySpawnStateSO spawnSO = Instantiate(_spawnState);
-        spawnSO.Init(this);
-        _spawnState = spawnSO;
+        // 상태 생성
+        if (_spawnState != null)
+        {
+            CEnemySpawnStateSO spawnSO = Instantiate(_spawnState);
+            spawnSO.Init(this);
+            _spawnState = spawnSO;
+        }
+        if (_attackState != null)
+        {
+            CEnemyAttackStateSO attSO = Instantiate(_attackState);
+            attSO.Init(this);
+            _attackState = attSO;
+        }
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
         _airbornState = new CEnemyState_Airborn(this);
         _deathState = new CEnemyState_Death(this);
+
 
         // 애니메이터 해시 세팅 
         AnimatorSet();
@@ -180,16 +191,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _startColor = _sprite.color;
 
 
-        // 공격 패턴 생성
-        if (_attackState.Count > 0)
-        {
-            for (int i = 0; i < _attackState.Count; i++)
-            {
-                CEnemyAttackStateSO attSO = Instantiate(_attackState[i]);
-                attSO.Init(this);
-                _attackState[i] = attSO;
-            }
-        }
+        
 
     }
 
@@ -255,7 +257,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _playerMask);
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _targetMask);
 
         if (hit != null)
         {
@@ -282,7 +284,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         if (_data != null)
         {
             _hp = _data.Hp;
-            _superArmor = _data.SuperArmor;
             _defense = _data.Defense;
             _attack = _data.Attack;
             _speed = _data.Speed;
@@ -291,9 +292,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
         // 슈퍼아머 테두리 On / Off
-        bool superOn = _superArmor > 0f;
-
-        _sprite.material.SetFloat(_outLineId, superOn ? 1f : 0f);
+        SuperArmorGet();
 
         // 초기 상태 지정
         if (_spawnState != null)
@@ -409,6 +408,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _sprite.transform.localScale = scale;
     }
 
+    public void SuperArmorGet()
+    {
+        _superArmor = _data.SuperArmor;
+        _sprite.material.SetFloat(_outLineId, 1f);
+    }
 
     public void TakeDamage(SDamageInfo damageInfo)
     {

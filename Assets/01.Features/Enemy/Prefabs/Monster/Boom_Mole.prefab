@@ -334,7 +334,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.7}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!223 &200646050015306908
@@ -419,7 +419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8404854163087793039
 Transform:
   m_ObjectHideFlags: 0
@@ -453,12 +453,11 @@ MonoBehaviour:
   _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
   _patrolRadius: 3
   _patrolMoveRange: 3
-  _playerMask:
+  _targetMask:
     serializedVersion: 2
     m_Bits: 8256
   _spawnState: {fileID: 11400000, guid: 55917165c6f3c714a93e5130a4da705b, type: 2}
-  _attackState:
-  - {fileID: 11400000, guid: baedea7d1d569d94d91aa775de0cbcb0, type: 2}
+  _attackState: {fileID: 11400000, guid: baedea7d1d569d94d91aa775de0cbcb0, type: 2}
   _hpBar: {fileID: 5618147182873305241}
   _superArmorBar: {fileID: 3585964382311288921}
 --- !u!195 &641496240700145166

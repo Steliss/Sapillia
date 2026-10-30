@@ -71,7 +71,7 @@ public class CEnemyState_Move : IEnemyState
             }
             else
             {
-                _mashine.StateChanged(_mashine.AttackState[0]);
+                _mashine.StateChanged(_mashine.AttackState);
             }
         }
 

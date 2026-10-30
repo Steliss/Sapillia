@@ -5,7 +5,7 @@ public class CEnemyProjectile : MonoBehaviour
     #region 인스펙터
     [Header("충돌 데이터")]
     [SerializeField] protected float _damage;
-    [SerializeField] protected Vector2 _velocity;
+    [SerializeField] protected Vector2 _dir;
     [SerializeField] protected LayerMask _targetLayer;
 
     [Header("애니메이터 스테이트")]
@@ -57,15 +57,15 @@ public class CEnemyProjectile : MonoBehaviour
         _ani.Play(_hashEnd);
     }
 
-    public void DamageSet(float damage, Vector2 velocity, float attackTime)
+    public virtual void DamageSet(float damage, Vector2 dir, float attackTime)
     {
         _damage = damage;
-        _velocity = velocity;
+        _dir = dir;
         _ani.Play(_hashIng);
         _attackTime = attackTime;
         if (_sp != null)
         {
-            if (velocity.x < 0)
+            if (dir.x < 0)
             {
                 _sp.flipX = true;
             }
@@ -93,7 +93,7 @@ public class CEnemyProjectile : MonoBehaviour
             return;
         }
 
-        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _velocity);
+        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _dir);
 
         player.TakeDamage(info);
 

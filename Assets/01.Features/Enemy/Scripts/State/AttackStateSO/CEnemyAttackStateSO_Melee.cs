@@ -11,6 +11,8 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
     [Header("===== 공격 =====")]
     [Header("프리팹")]
     [SerializeField] private GameObject _projectile;
+    [SerializeField] private bool _hasAngle = true;
+    [SerializeField] private float _attackDistans = 1f;
     [Header("선딜, 공격시간, 후딜")]
     [SerializeField] private float _beforeDelay = 2f;
     [SerializeField] private float _attackTime = 1f;
@@ -28,6 +30,8 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
     [SerializeField] private float _lineLength = 3f;
     [Header("간격")]
     [SerializeField] private float _interbal = 1f;
+    [Header("위치")]
+    [SerializeField] private float _distanse = 2.5f;
     #endregion
 
     #region 내부 변수
@@ -47,7 +51,7 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             Vector2 dir90 = new Vector2(-dir.y, dir.x);             // 법선
             float angle = DirToAngle(dir);                          // 각도
             Quaternion qua = Quaternion.Euler(0, 0, angle);         // 쿼터니언
-            Vector2 linePos = myPos + (dir * _rushDistanse / 2f);
+            Vector2 linePos = myPos + (dir * _distanse);
 
             // 좌우 반전
             if (dir.x < 0)
@@ -161,7 +165,12 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
         Vector2 myPos = _mashine.transform.position;
         // 공격 객체 생성
         GameObject go = CreateAttackObject
-        (_projectile, _attackTime + _afterDelay, myPos + dir.normalized, qua);
+        (
+            _projectile, 
+            _attackTime + _afterDelay, 
+            myPos + (dir.normalized * _attackDistans), 
+            _hasAngle ? qua : Quaternion.identity
+        );
 
         if (go != null)
         {

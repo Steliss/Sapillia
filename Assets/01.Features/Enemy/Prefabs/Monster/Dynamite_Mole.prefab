@@ -470,12 +470,11 @@ MonoBehaviour:
   _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
   _patrolRadius: 3
   _patrolMoveRange: 3
-  _playerMask:
+  _targetMask:
     serializedVersion: 2
     m_Bits: 8256
   _spawnState: {fileID: 11400000, guid: 55917165c6f3c714a93e5130a4da705b, type: 2}
-  _attackState:
-  - {fileID: 11400000, guid: a37f27d507ee315439bee9b296f4a767, type: 2}
+  _attackState: {fileID: 11400000, guid: a37f27d507ee315439bee9b296f4a767, type: 2}
   _hpBar: {fileID: 5882834794677064331}
   _superArmorBar: {fileID: 2204283608765914495}
 --- !u!195 &1548689163837691245

@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9341fd31e9c1fb043909fd24a6db04ab, type: 3}
+  m_Name: Enemy_Attack_JumpAttack_MiniBoss01
+  m_EditorClassIdentifier: 
+  _projectile: {fileID: 2150341848041466784, guid: 08add252b96320c4f9a8147d8635c3bc, type: 3}
+  _stamp: {fileID: 2741068594627437749, guid: 3238962a14d21a44690889757a36ca5a, type: 3}
+  _projectileSpeed: 3
+  _projectileTurnSpeed: 50
+  _projectileLifeTime: 3
+  _range: {x: 4, y: 3}
+  _beforeDelay: 1
+  _jumpTime: 1
+  _afterDelay: 1
+  _jumpHigh: 4
+  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+  _xLineLength: 1
+  _yLineLength: 1.5
+  _stateJumpAttReady: JumpAttReady
+  _stateJump: Jump
+  _stateJumpAttack: JumpAttack
