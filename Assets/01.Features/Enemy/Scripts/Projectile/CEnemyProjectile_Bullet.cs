@@ -9,4 +9,5 @@ public class CEnemyProjectile_Bullet : CEnemyProjectile
     {
         _attackTime = 0f;
     }
+
 }

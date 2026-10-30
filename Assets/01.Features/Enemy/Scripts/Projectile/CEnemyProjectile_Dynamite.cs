@@ -61,7 +61,7 @@ public class CEnemyProjectile_Dynamite : CEnemyProjectile
         // 위로 올라갔다가 떨어지기
 
         // 목표 위치로 이동
-        transform.position = Vector2.Lerp(transform.position, _velocity, Time.deltaTime * 2f);
+        transform.position = Vector2.Lerp(transform.position, _dir, Time.deltaTime * 2f);
 
         if (_jumpTime > _jumpTimeMax)
         {

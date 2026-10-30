@@ -7,6 +7,9 @@ using UnityEngine;
 public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
 {
     #region 인스펙터
+    [Header("이펙트 프리팹")]
+    [SerializeField] private GameObject _shoutWave;
+
     [Header("전/후 딜레이")]
     [SerializeField] private float _beforeDelay = 1.5f;
     [SerializeField] private float _afterDelay = 2f;
@@ -31,14 +34,27 @@ public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
     {
         _mashine.AttackUni.Run(async ct =>
         {
+            // 선 딜레이
             _mashine.Ani.Play(_hashShoutReady);
             await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
 
+            // 후 딜레이
             _mashine.SuperArmorGet();
             _mashine.Ani.Play(_hashShout);
 
-
-            await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
+            GameObject shoutWave = CreateAttackObject
+            (
+                _shoutWave, 
+                _afterDelay, 
+                _mashine.transform.position, 
+                Quaternion.identity
+            );
+            shoutWave.transform.localScale = _shoutWave.transform.localScale;
+            for (float time = 0f; time < _afterDelay; time += Time.deltaTime)
+            {
+                shoutWave.transform.localScale = Vector3.one * (time * 10f);
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+            }
 
             _mashine.StateChanged(_mashine.IdleState);
         });
@@ -46,6 +62,7 @@ public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
 
     public override void StateExit()
     {
+        _mashine.AttackUni.Cancel();
     }
 
     public override void StateUpdate()

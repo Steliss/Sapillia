@@ -854,7 +854,7 @@ MonoBehaviour:
   _dataBase: {fileID: 0}
   _patrolRadius: 3
   _patrolMoveRange: 3
-  _playerMask:
+  _targetMask:
     serializedVersion: 2
     m_Bits: 0
   _spawnState: {fileID: 0}
@@ -997,7 +997,7 @@ MonoBehaviour:
   _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
   _patrolRadius: 20
   _patrolMoveRange: 3
-  _playerMask:
+  _targetMask:
     serializedVersion: 2
     m_Bits: 8256
   _spawnState: {fileID: 11400000, guid: eebcc65ebbeda71468fe70ee51557f29, type: 2}

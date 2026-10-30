@@ -24,12 +24,10 @@ public class CEnemyState_Airborn : IEnemyState
             // 위로 올라갔다가 떨어지기
             _mashine.Ani.Play(_mashine.HashAir);
 
-            float airbornTime = 0f;
-            while (airbornTime < _airbornTimeMax)
+            for (float time = 0f; time < _airbornTimeMax; time += Time.deltaTime)
             {
-                airbornTime += Time.deltaTime;
 
-                float t = airbornTime / _airbornTimeMax;
+                float t = time / _airbornTimeMax;
 
                 float y = Mathf.Sin(t * Mathf.PI);
 

@@ -12,7 +12,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [SerializeField] private CDataBaseEnemySO _dataBase = null;
     [SerializeField] private float _patrolRadius = 3f;
     [SerializeField] private float _patrolMoveRange = 3f;
-    [SerializeField] private LayerMask _playerMask;
+    [SerializeField] private LayerMask _targetMask;
 
 
     [Header("스폰 SO")]
@@ -78,6 +78,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
     public float PatrolMoveRange => _patrolMoveRange;
+    public LayerMask TargetLayer => _targetMask;
 
     // 상태
     public IEnemyState State => _state;
@@ -256,7 +257,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _playerMask);
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _targetMask);
 
         if (hit != null)
         {

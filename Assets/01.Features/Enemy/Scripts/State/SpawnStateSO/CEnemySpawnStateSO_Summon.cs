@@ -55,12 +55,13 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
             _mashine.Sprite.transform.localScale = startScale;
 
             await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
-            _mashine.StateChanged(_mashine.AttackState);
+            _mashine.StateChanged(_mashine.IdleState);
         });
     }
 
     public override void StateExit()
     {
+        _mashine.AttackUni.Cancel();
     }
 
     public override void StateUpdate()
