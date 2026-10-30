@@ -20,7 +20,7 @@ public class CCrossbowDataSO : ScriptableObject
 
     [Header("Ammo")]
     [SerializeField] private GameObject _projectilePrefab;
-    [SerializeField] private float _projectileLifeTime = 1.5f;
+    [SerializeField] private float _projectileRange = 5.0f;
 
     [Min(0.1f)]
     [SerializeField] private float _projectileSpeed = 12f;
@@ -43,7 +43,7 @@ public class CCrossbowDataSO : ScriptableObject
 
     public GameObject ProjectilePrefab => _projectilePrefab;
     public float ProjectileSpeed => _projectileSpeed;
-    public float ProjectileLifetime => _projectileLifeTime;
+    public float ProjectileRange => _projectileRange;
     public Sprite CrossbowSprite => _crossbowSprite;
     public SWeaponStatBonus StatBonus => _statBonus;
 
