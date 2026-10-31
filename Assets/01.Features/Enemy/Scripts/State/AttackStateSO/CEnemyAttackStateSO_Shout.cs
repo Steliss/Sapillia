@@ -40,6 +40,7 @@ public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
 
             // 후 딜레이
             _mashine.SuperArmorGet();
+            _mashine.HpBarUpdate();
             _mashine.Ani.Play(_hashShout);
 
             GameObject shoutWave = CreateAttackObject

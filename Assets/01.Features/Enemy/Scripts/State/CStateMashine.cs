@@ -289,10 +289,21 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _speed = _data.Speed;
 
             Nav.speed = _speed;
+
+            // 슈퍼아머 확률 획득
+            if (_data.SuperArmorRate > 0f)
+            {
+                float ran = Random.Range(0f, 100f);
+                if (ran <= _data.SuperArmorRate)
+                {
+                    SuperArmorGet();
+                }
+            }
+            float hasSuperArmor = _superArmor > 0f ? 1f : 0f;
+            _sprite.material.SetFloat(_outLineId, hasSuperArmor);
         }
 
-        // 슈퍼아머 테두리 On / Off
-        SuperArmorGet();
+
 
         // 초기 상태 지정
         if (_spawnState != null)
@@ -306,7 +317,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     }
 
     // 피격 피드백
-    public void HultFeedback()
+    private void HultFeedback()
     {
         _hurtUni.Cancel();
         _hurtUni.Run(async ct =>
@@ -336,7 +347,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         });
     }
 
-    private void HpBarUpdate()
+    public void HpBarUpdate()
     {
         if (_hpBar == null || _superArmorBar == null)
         {
