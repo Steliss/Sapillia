@@ -131,7 +131,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 42463877}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: FirePoint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -622,6 +622,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1238659378632282312, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1410755200437527308, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 2394511509984990985, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 2394511509984990985, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -638,13 +650,21 @@ PrefabInstance:
       propertyPath: m_text
       value: Cotume
       objectReference: {fileID: 0}
+    - target: {fileID: 2883442081876063473, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 3587210212756013651, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: _attacker
       value: 
       objectReference: {fileID: 217877276}
     - target: {fileID: 3587210212756013651, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: _targetLayers.m_Bits
-      value: 4096
+      value: 4224
+      objectReference: {fileID: 0}
+    - target: {fileID: 3602327091253543458, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4538590160829018077, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -656,7 +676,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4538590160829018077, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.55488914
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4538590160829018077, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_LocalRotation.w
@@ -702,13 +722,41 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestPlayer
       objectReference: {fileID: 0}
+    - target: {fileID: 6078353216063919162, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6078353216063919162, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 6479922347250043959, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_Name
       value: SwordGrip
       objectReference: {fileID: 0}
     - target: {fileID: 6479922347250043959, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6479922347250043959, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7233907239197658053, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_TagString
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8514119197088988837, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_Layer
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 8612286696225650349, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_LocalScale.x
@@ -725,6 +773,10 @@ PrefabInstance:
     - target: {fileID: 8612286696225650349, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: m_LocalPosition.y
       value: -2.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 8612286696225650349, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8661755123785067547, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       propertyPath: _playerGuard
@@ -758,6 +810,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 217877288}
+    - targetCorrespondingSourceObject: {fileID: 7384281915629978730, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 217877289}
   m_SourcePrefab: {fileID: 100100000, guid: e58cbc5eb9dea5647b0b2eef270be3cd, type: 3}
 --- !u!4 &217877276 stripped
 Transform:
@@ -895,6 +950,41 @@ MonoBehaviour:
   _player: {fileID: 217877283}
   _firePoint: {fileID: 42463877}
   _crossbowData: {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
+--- !u!70 &217877289
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 217877277}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1.5, y: 1.5}
+  m_Direction: 0
 --- !u!1 &291624951
 GameObject:
   m_ObjectHideFlags: 0
@@ -959,7 +1049,7 @@ GameObject:
   m_Component:
   - component: {fileID: 472390872}
   - component: {fileID: 472390873}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CrossBowGrip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1812,7 +1902,7 @@ GameObject:
   - component: {fileID: 1195545913}
   - component: {fileID: 1195545915}
   - component: {fileID: 1195545914}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -2224,7 +2314,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1442473733}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: CrossBowGrip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
