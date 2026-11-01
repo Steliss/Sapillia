@@ -54,9 +54,9 @@ public class CObjectPoolManager : MonoBehaviour
     /// </summary>
     /// <param name="prefeb"></param>
     /// <returns></returns>
-    public GameObject GetPoolObject(GameObject prefeb)
+    public GameObject GetPoolObject(GameObject prefeb, Transform spawnPoint = null)
     {
-        return ObjectPooling(prefeb);
+        return ObjectPooling(prefeb, spawnPoint);
     }
 
     /// <summary>
@@ -74,7 +74,7 @@ public class CObjectPoolManager : MonoBehaviour
     }
 
     
-    private GameObject ObjectPooling(GameObject prefeb)
+    private GameObject ObjectPooling(GameObject prefeb, Transform spawnPoint = null)
     {
         if (prefeb == null)
         {
@@ -85,8 +85,13 @@ public class CObjectPoolManager : MonoBehaviour
 
         Queue<GameObject> pool = TryPoolGet(id, prefeb.name);
 
+        Vector3 position = spawnPoint != null ? spawnPoint.position : prefeb.transform.position;
+
+        Quaternion rotation = spawnPoint != null ? spawnPoint.rotation : prefeb.transform.rotation;
+
         // 풀에서 오브젝트 꺼내기. 부족하면 생성
-        GameObject go;
+        GameObject go = null;
+
         if (pool.Count == 0)
         {
             go = Instantiate(prefeb);
@@ -96,9 +101,35 @@ public class CObjectPoolManager : MonoBehaviour
         else
         {
             go = pool.Dequeue();
+        }              
+
+        // 초기 세팅 보장
+        go.transform.parent = null;
+        go.transform.SetLocalPositionAndRotation(position, rotation);
+        go.transform.localScale = prefeb.transform.localScale;
+
+        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
+
+        #region 수정본
+        if (rb != null)
+        {
+            rb.velocity = Vector2.zero;
+            rb.angularVelocity = 0f;
+
+            rb.position = position;
+            rb.rotation = rotation.eulerAngles.z;
+        }
+        #endregion
+
+        SpriteRenderer goSp = go.GetComponent<SpriteRenderer>();
+        SpriteRenderer preSp = prefeb.GetComponent<SpriteRenderer>();
+
+        if (goSp != null && preSp != null)
+        {
+            goSp.color = preSp.color;
         }
 
-
+        #region 활성화 작업을 맨 마지막으로 옮김
         // 장부 등록
         if (!_alives.Contains(go))
         {
@@ -106,22 +137,13 @@ public class CObjectPoolManager : MonoBehaviour
         }
         go.SetActive(true);
 
-        // 초기 세팅 보장
-        go.transform.parent = null;
-        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.WakeUp();
         }
-        go.transform.localScale = prefeb.transform.localScale;
-        go.transform.rotation = prefeb.transform.rotation;
 
-        SpriteRenderer goSp = go.GetComponent<SpriteRenderer>();
-        SpriteRenderer preSp = prefeb.GetComponent<SpriteRenderer>();
-        if (goSp != null && preSp != null)
-        {
-            goSp.color = preSp.color;
-        }
+        #endregion
+
         return go;
     }
 
@@ -282,6 +304,7 @@ public class CObjectPoolManager : MonoBehaviour
             // 새로운 풀, 아래로 정리할 오브젝트 생성
             _poolMap.Add(id, new Queue<GameObject>());
             _lootMap.Add(id, new GameObject($"Loot_{name}").transform);
+            _lootMap[id].transform.parent = transform;
             CLog.Log($"새로운 풀 생성 : {name}");
             return _poolMap[id];
         }

@@ -120,10 +120,11 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
         // 기존 공용 오브젝트 풀 이용
-        GameObject projectileObject = CObjectPoolManager.Instance.GetPoolObject(_crossbowData.ProjectilePrefab, _crossbowData.ProjectileLifetime);
+        GameObject projectileObject = CObjectPoolManager.Instance.GetPoolObject(_crossbowData.ProjectilePrefab, _firePoint);
 
         if (projectileObject == null)
         {
+            CLog.Log("[CCrossbowAttack] 화살 프리팹 비어있음");
             return;
         }
 
@@ -139,9 +140,9 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
         // 석궁이 바라보는 방향으로 발사
         projectile.Launch
             (
-                _firePoint.position,
                 _firePoint.right,
                 _crossbowData.ProjectileSpeed,
+                _crossbowData.ProjectileRange,
                 finalDamage,
                 _player.transform
             );
