@@ -33,26 +33,45 @@ public class CInventorySlotData
     public int EnhanceLevel;
     public EItemType ItemType;
     public ETabletRotation Rotation;
+
+    // 실행 중 사용하며 JSON에는 저장하지 않음
+    [NonSerialized] public CItemSO ItemSO;
+
+    public bool IsEmpty => ItemID == 0; // 인덱스 확인용 불값
+
+    /// <summary>
+    /// 해당 슬롯의 아이템 비우기
+    /// </summary>
+    public void Clear()
+    {
+        ItemID = 0;
+        Count = 0;
+        EnhanceLevel = 0;
+        ItemType = EItemType.None;
+        Rotation = ETabletRotation.None;
+
+        ItemSO = null;
+    }
 }
 
 [Serializable]
 public class CInventoryData
 {
     // 인벤토리 크기
-    [SerializeField] private int _inventorySize = 30; // 기본 인벤토리 크기
+    [SerializeField] private int _inventorySize = 30; // 인벤토리 크기
 
-    [SerializeField] private List<CInventorySlotData> inventorySlots; // 인벤토리
-    [SerializeField] private List<CInventorySlotData> potionSlots;    // 포션
-    [SerializeField] private List<CInventorySlotData> extraInventorySlots; // 벨트
+    [SerializeField] private List<CInventorySlotData> inventorySlots = new List<CInventorySlotData>(); // 인벤토리
+    [SerializeField] private List<CInventorySlotData> potionSlots = new List<CInventorySlotData>();    // 포션
+    [SerializeField] private List<CInventorySlotData> extraInventorySlots = new List<CInventorySlotData>(); // 벨트
 
     public List<CInventorySlotData> InventorySlots => inventorySlots;
     public List<CInventorySlotData> PotionSlots => potionSlots;
     public List<CInventorySlotData> ExtraInventorySlots => extraInventorySlots;
 
 
-    // SO를 통해 전해줄 인벤토리 내 아이템 위치 정보
-    private int _width;
-    private int _height;
+    public const int _width = 6; // 인벤토리의 가로 칸 수
+
+    public int InventorySize => _inventorySize; 
 
 
     /// <summary>
@@ -78,6 +97,8 @@ public class CInventoryData
         {
             extraInventorySlots.Add(new CInventorySlotData());
         }
+
+        _inventorySize = inventorySlots.Count;
     }
 
     /// <summary>
@@ -96,7 +117,6 @@ public class CInventoryData
         }
 
         _inventorySize = inventorySlots.Count;
+
     }
-
-
 }
