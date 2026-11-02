@@ -33,7 +33,7 @@ public class CInputManager : MonoBehaviour
     public event Action<Vector2> OnMove;
     public event Action<float> OnDash;
     public event Action<float> OnAttack;
-    public event Action <float> OnSpecialAttack;
+    public event Action<float> OnSpecialAttack;
     public event Action OnRapidCasting1;
     public event Action OnRapidCasting2;
     public event Action OnInteraction;
