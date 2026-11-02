@@ -3831,6 +3831,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8018591034239183426}
   - component: {fileID: -5115315896824277349}
+  - component: {fileID: -7173033368882529625}
   m_Layer: 0
   m_Name: CaveRewardRoomL1
   m_TagString: Untagged
@@ -3876,6 +3877,18 @@ MonoBehaviour:
   _left2: 0
   _right1: 0
   _right2: 0
+--- !u!114 &-7173033368882529625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2987980816427840393}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83a4d27213b69d24bac13db8f64df2a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3638879115640691959
 GameObject:
   m_ObjectHideFlags: 0

@@ -8,5 +8,6 @@ public enum ERoomType
     Combat,
     Exit,
     Reward,
-    Miniboss
+    Miniboss,
+    Anvil
 }
