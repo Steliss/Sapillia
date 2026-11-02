@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +20,7 @@ public class CEnemySpawner : MonoBehaviour
     #endregion
 
     #region 내부 변수
-    private List<GameObject> _aliveEnemys;
+    private List<GameObject> _aliveEnemys = new List<GameObject>();
     private bool _isBattle = false; 
 
     private CDataManger _data;
@@ -50,6 +49,7 @@ public class CEnemySpawner : MonoBehaviour
         {
             return;
         }
+        CLog.Log("전투 시작!");
 
         // 트리거 끄기
         GetComponent<Collider2D>().enabled = false;
@@ -61,6 +61,7 @@ public class CEnemySpawner : MonoBehaviour
         }
 
         // 몬스터 스폰
+        _aliveEnemys.Clear();
         for (int i = 0; i < _enemys.Count; i++)
         {
             for (int j = 0; j < _enemys[i].Count; j++)
@@ -84,6 +85,7 @@ public class CEnemySpawner : MonoBehaviour
         }
 
         _isBattle = true;
+        _playerData?.SetIsBattle(true);
     }
 
     private void Update()
@@ -97,6 +99,9 @@ public class CEnemySpawner : MonoBehaviour
         if (_aliveEnemys.Count <= 0)
         {
             _isBattle = false;
+            _playerData?.SetIsBattle(false);
+            gameObject.SetActive(false);
+            CLog.Log("전투 종료!");
             return;
         }
 
@@ -106,13 +111,9 @@ public class CEnemySpawner : MonoBehaviour
             if (!_aliveEnemys[i].activeSelf)
             {
                 _aliveEnemys.RemoveAt(i);
+                CLog.Log($"남은 적 : {_aliveEnemys.Count}마리");
             }
         }
 
     }
-
-    
-
-
-    
 }

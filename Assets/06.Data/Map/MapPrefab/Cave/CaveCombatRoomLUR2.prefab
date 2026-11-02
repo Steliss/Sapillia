@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7475491784862039268}
   - component: {fileID: 169289118791795422}
   - component: {fileID: 7495786763749808608}
+  - component: {fileID: 1952724389056041310}
   m_Layer: 0
   m_Name: CaveCombat1Floor
   m_TagString: Untagged
@@ -3106,6 +3107,22 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &1952724389056041310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 57596354359711660}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 0
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &363503621792000597
 GameObject:
   m_ObjectHideFlags: 0
@@ -3256,6 +3273,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 6370688245563276701}
   - {fileID: 3364880025171700243}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3292,6 +3310,8 @@ GameObject:
   - component: {fileID: 7101232964707013594}
   - component: {fileID: 773990467673794256}
   - component: {fileID: 4762892075454038913}
+  - component: {fileID: 6105764624903228089}
+  - component: {fileID: 1021820125628092279}
   m_Layer: 0
   m_Name: CaveCombat1Roof
   m_TagString: Untagged
@@ -5129,6 +5149,58 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &6105764624903228089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2659588915251784976}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!19719996 &1021820125628092279
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2659588915251784976}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &2876615118007107959
 GameObject:
   m_ObjectHideFlags: 0
@@ -5192,6 +5264,8 @@ GameObject:
   - component: {fileID: 7971866906756163674}
   - component: {fileID: 5103788029595308004}
   - component: {fileID: 6971432811756077825}
+  - component: {fileID: 2499523459482131825}
+  - component: {fileID: 1633103976117750479}
   m_Layer: 0
   m_Name: CaveCombat1Wall
   m_TagString: Untagged
@@ -5573,6 +5647,58 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &2499523459482131825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3174474640071222000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!19719996 &1633103976117750479
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3174474640071222000}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &4175118483415268081
 GameObject:
   m_ObjectHideFlags: 0
@@ -5584,6 +5710,8 @@ GameObject:
   - component: {fileID: 5012067938027872831}
   - component: {fileID: 4433595427093367615}
   - component: {fileID: 5441406238743975473}
+  - component: {fileID: 4587053598647854560}
+  - component: {fileID: 6162005284300324837}
   m_Layer: 0
   m_Name: CaveCombat1Obstacle
   m_TagString: Untagged
@@ -5791,6 +5919,58 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &4587053598647854560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4175118483415268081}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!19719996 &6162005284300324837
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4175118483415268081}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
 --- !u!1 &7046212710313945990
 GameObject:
   m_ObjectHideFlags: 0
@@ -6564,6 +6744,8 @@ GameObject:
   - component: {fileID: 5760699248072070880}
   - component: {fileID: 3438950410714004045}
   - component: {fileID: 4687162475199250087}
+  - component: {fileID: 7879424414118808785}
+  - component: {fileID: 8485569578496108202}
   m_Layer: 0
   m_Name: CaveCombat1Pit
   m_TagString: Untagged
@@ -6933,3 +7115,223 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!114 &7879424414118808785
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444593223421492961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
+--- !u!19719996 &8485569578496108202
+TilemapCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8444593223421492961}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_MaximumTileChangeCount: 1000
+  m_ExtrusionFactor: 0
+  m_UseDelaunayMesh: 0
+--- !u!1001 &6158278999248017004
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 6370688245563276701}
+    m_Modifications:
+    - target: {fileID: 1441504132470165807, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_Name
+      value: CloseDoorY (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+--- !u!1 &4717479110887688003 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1441504132470165807, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+  m_PrefabInstance: {fileID: 6158278999248017004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5555185243099753869 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1756792622055095265, guid: fd326cd2f0f369843a211b1ce656b6d7, type: 3}
+  m_PrefabInstance: {fileID: 6158278999248017004}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1001 &6768081476030430655
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3633432625092229538}
+    m_Modifications:
+    - target: {fileID: 283288330752060311, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: _doors.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 283288330752060311, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: _doors.Array.data[2]
+      value: 
+      objectReference: {fileID: 4717479110887688003}
+    - target: {fileID: 283288330752060311, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: _doors.Array.data[3]
+      value: 
+      objectReference: {fileID: 4717479110887688003}
+    - target: {fileID: 283288330752060311, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: _enemys.Array.data[1].Count
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 283288330752060311, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: _enemys.Array.data[2].Count
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 305912582646637178, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 305912582646637178, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.062364213
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2487700420847206263, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_Name
+      value: EnemySpawner
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028310597397190085, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13
+      objectReference: {fileID: 0}
+    - target: {fileID: 8028310597397190085, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5555185243099753869}
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+--- !u!4 &6370688245563276701 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 397500988044328994, guid: cf772f38813e97d44a040c332534ac42, type: 3}
+  m_PrefabInstance: {fileID: 6768081476030430655}
+  m_PrefabAsset: {fileID: 0}
