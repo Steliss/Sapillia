@@ -52,11 +52,11 @@ public class CObjectPoolManager : MonoBehaviour
     /// 오브젝트 풀이 없으면 생성하고 풀이 있으면 풀에서 꺼내서 반환한다.
     /// 수명이 없는 오브젝트 풀. 오브젝트가 꺼지면 자동으로 반납된다.
     /// </summary>
-    /// <param name="prefeb"></param>
+    /// <param name="prefeb">생성할 프리팹</param>
     /// <returns></returns>
-    public GameObject GetPoolObject(GameObject prefeb, Transform spawnPoint = null)
+    public GameObject GetPoolObject(GameObject prefeb)
     {
-        return ObjectPooling(prefeb, spawnPoint);
+        return ObjectPooling(prefeb);
     }
 
     /// <summary>
@@ -73,8 +73,22 @@ public class CObjectPoolManager : MonoBehaviour
         return go;
     }
 
-    
-    private GameObject ObjectPooling(GameObject prefeb, Transform spawnPoint = null)
+    /// <summary>
+    /// 오브젝트 풀이 없으면 생성하고 풀이 있으면 풀에서 꺼내서 반환한다.
+    /// 수명이 없고 지정한 트랜스폼에서 위치와 각도로 설정
+    /// </summary>
+    /// <param name="prefeb">생성할 프리팹</param>
+    /// <param name="spawnPoint">위치와 각도</param>
+    /// <returns></returns>
+    public GameObject GetPoolObject(GameObject prefeb, Transform spawnPoint)
+    {
+        GameObject go = ObjectPooling(prefeb);
+        go.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
+        return go;
+    }
+
+
+    private GameObject ObjectPooling(GameObject prefeb)
     {
         if (prefeb == null)
         {
@@ -84,10 +98,6 @@ public class CObjectPoolManager : MonoBehaviour
         int id = prefeb.GetInstanceID();
 
         Queue<GameObject> pool = TryPoolGet(id, prefeb.name);
-
-        Vector3 position = spawnPoint != null ? spawnPoint.position : prefeb.transform.position;
-
-        Quaternion rotation = spawnPoint != null ? spawnPoint.rotation : prefeb.transform.rotation;
 
         // 풀에서 오브젝트 꺼내기. 부족하면 생성
         GameObject go = null;
@@ -105,21 +115,8 @@ public class CObjectPoolManager : MonoBehaviour
 
         // 초기 세팅 보장
         go.transform.parent = null;
-        go.transform.SetLocalPositionAndRotation(position, rotation);
         go.transform.localScale = prefeb.transform.localScale;
-
-        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
-
-        #region 수정본
-        if (rb != null)
-        {
-            rb.velocity = Vector2.zero;
-            rb.angularVelocity = 0f;
-
-            rb.position = position;
-            rb.rotation = rotation.eulerAngles.z;
-        }
-        #endregion
+        go.transform.rotation = prefeb.transform.rotation;
 
         SpriteRenderer goSp = go.GetComponent<SpriteRenderer>();
         SpriteRenderer preSp = prefeb.GetComponent<SpriteRenderer>();
@@ -129,7 +126,6 @@ public class CObjectPoolManager : MonoBehaviour
             goSp.color = preSp.color;
         }
 
-        #region 활성화 작업을 맨 마지막으로 옮김
         // 장부 등록
         if (!_alives.Contains(go))
         {
@@ -137,12 +133,11 @@ public class CObjectPoolManager : MonoBehaviour
         }
         go.SetActive(true);
 
+        Rigidbody2D rb = go.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.WakeUp();
         }
-
-        #endregion
 
         return go;
     }
