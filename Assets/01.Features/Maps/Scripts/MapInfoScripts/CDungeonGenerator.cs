@@ -557,6 +557,45 @@ public class CDungeonGenerator : MonoBehaviour
         return false;
     }
 
+    private bool TryAddRewardRoom()
+    {
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        CRoomData[] rewardRoomPrefabs =
+            floorData?.RoomPool?.RewardRoomPrefabs;
+
+        if (rewardRoomPrefabs == null || rewardRoomPrefabs.Length == 0)
+        {
+            Debug.LogWarning("보상 방 프리팹이 없습니다.");
+            return false;
+        }
+
+        List<CRoomData> candidates = new List<CRoomData>(rewardRoomPrefabs);
+
+        while (candidates.Count > 0)
+        {
+            int randomIndex = Random.Range(0, candidates.Count);
+
+            CRoomData rewardRoom = candidates[randomIndex];
+            candidates.RemoveAt(randomIndex);
+
+            if (rewardRoom == null || rewardRoom.RoomType != ERoomType.Reward)
+            {
+                continue;
+            }
+
+            if (TryAddRoom(rewardRoom))
+            {
+                Debug.Log($"보상 방 생성 성공: {rewardRoom.name}");
+                return true;
+            }
+        }
+
+        Debug.LogWarning("보상 방을 배치할 수 없습니다.");
+        return false;
+    }
+
+
     private bool TryAddMiniBossRoom()
     {
         CFloorDataSO floorData = GetCurrentFloorData();
@@ -734,7 +773,7 @@ public class CDungeonGenerator : MonoBehaviour
         AddRoomPassages(startRoom, Vector3.zero);
         _roomDepths.Add(firstGridPos, 0);
 
-        int combatTargetCount = targetRoomCount - 1;
+        int combatTargetCount = targetRoomCount - 2;
         int currentRoomCount = 1;
 
         Debug.Log($"목표 방 개수{targetRoomCount}");
@@ -766,6 +805,12 @@ public class CDungeonGenerator : MonoBehaviour
                 Debug.LogWarning("4층 중간보스 방 배치 실패");
                 return false;
             }
+        }
+
+        if (!TryAddRewardRoom())
+        {
+            Debug.LogWarning("보상 방 배치 실패");
+            return false;
         }
 
         if (TryAddExitRoom())
