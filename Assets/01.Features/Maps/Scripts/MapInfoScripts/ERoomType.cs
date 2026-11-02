@@ -7,6 +7,6 @@ public enum ERoomType
     Start,
     Combat,
     Exit,
-    Event,
+    Reward,
     Miniboss
 }
