@@ -8,9 +8,13 @@ public enum EWeaponType
 }
 
 public class CWeaponManager : MonoBehaviour
-{   
+{
 
     #region 인스펙터
+    [Header("참조")]
+    [SerializeField] private CCrossbowAim _crossbowAim;
+    [SerializeField] private CSwordAndShieldAim _swordAim;
+
 
     [Header("무기 세트 목록")]
     [SerializeField] private CSwordShieldSetSO[] _weaponSets;
@@ -198,6 +202,9 @@ public class CWeaponManager : MonoBehaviour
         _playerData.SetWeaponStatBonus(nextSet.StatBonus);
 
         // 검·방패 공격 입력 활성화
+        _swordAim.enabled = true;
+        _crossbowAim.enabled = false;
+
         _playerAttack.enabled = true;
         _playerGuard.enabled = true;
 
@@ -244,6 +251,9 @@ public class CWeaponManager : MonoBehaviour
 
         // 석궁 입력 활성화
         _crossbowAttack.enabled = true;
+
+        _swordAim.enabled = false;
+        _crossbowAim.enabled = true;
 
         // 공통 변경 이벤트
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
