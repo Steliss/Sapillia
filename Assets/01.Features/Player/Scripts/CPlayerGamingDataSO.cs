@@ -34,6 +34,9 @@ public class CPlayerGamingDataSO
     [SerializeField] private float _mpRegenProgress;
     [SerializeField] private float _dashRegenProgress;
 
+    // 실행 중 사용하며 JSON에는 저장하지 않음 < 전투 확인 용 >
+    [NonSerialized] private bool _isBattle;
+
     [SerializeField] private int _startMoney = 500;
     [SerializeField] private float _expGrowthMultiplier = 1.2f;
     #endregion
@@ -52,6 +55,15 @@ public class CPlayerGamingDataSO
     public int Money => _money;
     public bool IsInitialized { get;  set; }
     public int EquippedWeaponTier => _equippedWeaponTier;
+
+    #region 전투중인가?
+    public bool GetIsBattle => _isBattle;
+   
+    public void SetIsBattle(bool b)
+    {
+        _isBattle = b;    }
+
+    #endregion
 
 
     #endregion

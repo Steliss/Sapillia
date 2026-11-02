@@ -35,6 +35,9 @@ public class CRoomPoolSO : ScriptableObject
     [Header("보스 층 추가 방")]
     [SerializeField] private CRoomData _bossExtraRoom;
 
+    [Header("보상 방 목록")]
+    [SerializeField] private CRoomData[] _rewardRoomPrefabs;
+
     #endregion
 
     #region 프로퍼티
@@ -51,5 +54,7 @@ public class CRoomPoolSO : ScriptableObject
 
     public CRoomData BossRoom => _bossRoom;
     public CRoomData BossExtraRoom => _bossExtraRoom;
+
+    public CRoomData[] RewardRoomPrefabs => _rewardRoomPrefabs;
     #endregion
 }
