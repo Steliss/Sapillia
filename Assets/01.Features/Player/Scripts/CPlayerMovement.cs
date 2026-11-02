@@ -51,6 +51,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // 데이터 확인
     private bool _warnedMissingData;
 
+    // 특수공격 등의 외부 반동
+    private Vector2 _recoilVelocity;
+    private float _recoilDeceleration;
+
     #endregion
 
     #region 프로퍼티
@@ -90,33 +94,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     }
 
     private void OnEnable()
-    {
-        /*
-        _inputTask2.Run(async token =>
-        {
-            _dataManager = await CManagerDontDestroy.DataMangerAsync(token);
-            CLog.Log("[CPlayerMovement] _dataManager 작업 완료");
-        }
-        );
-
-
-
-        _session = _dataManager.PlayerData;
-
-
-        _inputTask.Run(async token =>
-        {
-            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
-            RegisterInput();
-            CLog.Log("[CPlayerMovement] _inputHub 작업 완료");
-        });
-
-        
-
-
-        
-        CLog.Log("[CPlayerMovement] OnEnable 작업 완료");
-        */
+    {     
         _inputTask.Run(async token =>
         {
             // DataManager 참조
@@ -216,6 +194,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         // 참조 해제
         _playerData = null;
         _warnedMissingData = false;
+
+        // 반동 상태 초기화
+        _recoilVelocity = Vector2.zero;
+        _recoilDeceleration = 0f;
     }
 
     #endregion
@@ -415,12 +397,13 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         // Rigidbody 이동
-        _rb2D.MovePosition(_rb2D.position + velocity * Time.fixedDeltaTime);
+        Vector2 finalVelocity = velocity + ConsumeRecoilVelocity();
+        _rb2D.MovePosition(_rb2D.position + finalVelocity * Time.fixedDeltaTime);
     }
 
     #endregion
 
-    #region Combat
+    #region 전투모드
 
     public void SetCombatState(bool isCombat)
     {
@@ -440,7 +423,30 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     #endregion
 
+    #region 반동
+    // 외부 공격 시스템에서 반동 요청
+    public void ApplyRecoil(Vector2 direction, float speed, float decleration)
+    {
+        if(direction.sqrMagnitude < 0.0001f || speed <= 0f)
+        {
+            return;
+        }
 
+        _recoilVelocity = direction.normalized * speed;
+        _recoilDeceleration = Mathf.Max(0.01f, decleration);
+    }
+
+    // 물리 이동 계산에서 반동 속도 가져오기
+    private Vector2 ConsumeRecoilVelocity()
+    {
+        Vector2 velocity = _recoilVelocity;
+
+        // 반동 속도가 서서히 감소
+        _recoilVelocity = Vector2.MoveTowards(_recoilVelocity, Vector2.zero, _recoilDeceleration * Time.fixedDeltaTime);
+
+        return velocity;
+    }
+    #endregion
 }
 
 

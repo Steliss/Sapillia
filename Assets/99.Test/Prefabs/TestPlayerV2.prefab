@@ -158,12 +158,11 @@ Transform:
   m_GameObject: {fileID: 100341020975119554}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.3000002, y: 0.20000005, z: 0}
+  m_LocalPosition: {x: 0.099999905, y: 0.049999952, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 6619822943740714004}
-  m_Father: {fileID: 7967845501206908253}
+  m_Children: []
+  m_Father: {fileID: 9078832984541690882}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
 --- !u!212 &3672981014365757300
 SpriteRenderer:
@@ -399,12 +398,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2864202001791318578}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.019999923, y: 0.59999996, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.6999998, y: 0.029999971, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 734987428538010642}
+  m_Father: {fileID: 9078832984541690882}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3869749444539949708
 GameObject:
@@ -435,7 +434,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 734987428538010642}
+  - {fileID: 9078832984541690882}
   m_Father: {fileID: 618181652746645036}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4509952775614901516
@@ -563,6 +562,39 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4733212389007256762}
   m_Enabled: 1
+--- !u!1 &6003126855193790528
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9078832984541690882}
+  m_Layer: 6
+  m_Name: CrossbowAngle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9078832984541690882
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6003126855193790528}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.20000029, y: 0.1500001, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 734987428538010642}
+  - {fileID: 6619822943740714004}
+  m_Father: {fileID: 7967845501206908253}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7881637704210689328
 GameObject:
   m_ObjectHideFlags: 0
@@ -1126,6 +1158,7 @@ MonoBehaviour:
   _crossbowSets:
   - {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
   _crossbowAttack: {fileID: 8413832022648138484}
+  _crossbowSpecialAttack: {fileID: 0}
   _crossbowRenderer: {fileID: 3672981014365757300}
   _player: {fileID: 6827065113874076417}
 --- !u!114 &8413832022648138484

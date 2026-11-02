@@ -11,7 +11,7 @@ public class CWeaponManager : MonoBehaviour
 {
 
     #region 인스펙터
-    [Header("참조")]
+    [Header("무기 조준")]
     [SerializeField] private CCrossbowAim _crossbowAim;
     [SerializeField] private CSwordAndShieldAim _swordAim;
 
@@ -38,6 +38,7 @@ public class CWeaponManager : MonoBehaviour
 
     [Header("석궁 공격")]
     [SerializeField] private CPlayerCrossbowAttack _crossbowAttack;
+    [SerializeField] private CCrossbowSpecialAttack _crossbowSpecialAttack;
 
     [Header("석궁 외형")]
     [SerializeField] private SpriteRenderer _crossbowRenderer;
@@ -83,7 +84,7 @@ public class CWeaponManager : MonoBehaviour
 
     private void Start()
     {
-       
+        ApplySet(CurrentSet);
     }
 
  
@@ -205,6 +206,8 @@ public class CWeaponManager : MonoBehaviour
         _swordAim.enabled = true;
         _crossbowAim.enabled = false;
 
+        _crossbowSpecialAttack.enabled = false;
+
         _playerAttack.enabled = true;
         _playerGuard.enabled = true;
 
@@ -229,6 +232,7 @@ public class CWeaponManager : MonoBehaviour
 
         // 석궁 공격 데이터 설정
         _crossbowAttack.SetCrossbowData(crossbow);
+        _crossbowSpecialAttack.SetCrossbowData(crossbow);
 
         // 검·방패 외형 숨기기
         _swordRenderer.enabled = false;
@@ -251,6 +255,7 @@ public class CWeaponManager : MonoBehaviour
 
         // 석궁 입력 활성화
         _crossbowAttack.enabled = true;
+        _crossbowSpecialAttack.enabled = true;
 
         _swordAim.enabled = false;
         _crossbowAim.enabled = true;

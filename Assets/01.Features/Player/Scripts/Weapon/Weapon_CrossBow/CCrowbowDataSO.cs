@@ -31,6 +31,28 @@ public class CCrossbowDataSO : ScriptableObject
     [Header("무기 추가 능력치")]
     [SerializeField] private SWeaponStatBonus _statBonus;
 
+    [Header("석궁 특수공격")]
+    [SerializeField] private GameObject _specialProjectilePrefab;
+
+    [Min(0)]
+    [SerializeField] private int _specialManaCost = 10;
+
+    [Min(0.1f)]
+    [SerializeField] private float _specialProjectileSpeed = 15f;
+
+    [Min(0.1f)]
+    [SerializeField] private float _specialProjectileRange = 10f;
+
+    [Min(0f)]
+    [SerializeField] private float _specialCooldown = 0.5f;
+
+    [Header("특수공격 반동")]
+    [Min(0f)]
+    [SerializeField] private float _specialRecoilSpeed = 8f;
+
+    [Min(0.01f)]
+    [SerializeField] private float _specialRecoilDeceleration = 30f;
+
     #endregion
 
     #region 프로퍼티
@@ -46,6 +68,12 @@ public class CCrossbowDataSO : ScriptableObject
     public float ProjectileRange => _projectileRange;
     public Sprite CrossbowSprite => _crossbowSprite;
     public SWeaponStatBonus StatBonus => _statBonus;
-
+    public GameObject SpecialProjectilePrefab => _specialProjectilePrefab;
+    public int SpecialManaCost => _specialManaCost;
+    public float SpecialProjectileSpeed => _specialProjectileSpeed;
+    public float SpecialProjectileRange => _specialProjectileRange;
+    public float SpecialCooldown => _specialCooldown;
+    public float SpecialRecoilSpeed => _specialRecoilSpeed;
+    public float SpecialRecoilDeceleration => _specialRecoilDeceleration;
     #endregion
 }
