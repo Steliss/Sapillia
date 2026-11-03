@@ -18,9 +18,11 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private GameObject _blockRight;
 
     [Header("현재 층")]
-    [SerializeField, Range(1, 5)]
-    private int _currentFloor = 1;
+    [SerializeField, Range(1, 5)] private int _currentFloor = 1;
 
+    [Header("보상 생성 테스트")]
+    [SerializeField] private ERewardType _selectedRewardType = ERewardType.Artifact;
+    [SerializeField] private bool _spawnWanderingMerchant = false;
     #endregion
 
     #region 내부 변수
@@ -96,6 +98,7 @@ public class CDungeonGenerator : MonoBehaviour
 
             bool success;
 
+
             if (_currentFloor == 1)
             {
                 success = GenerateFirstFloor(floorData);
@@ -104,9 +107,16 @@ public class CDungeonGenerator : MonoBehaviour
             {
                 success = GenerateBossFloor(floorData);
             }
+            else if ((_currentFloor == 2 || _currentFloor == 3) &&
+                     _selectedRewardType == ERewardType.Anvil)
+            {
+                success = GenerateAnvilDungeon(floorData);
+            }
             else
             {
-                CRoomData startRoom = GetRandomRoomFromPool(floorData.RoomPool?.StartRoomPrefabs);
+                CRoomData startRoom = GetRandomRoomFromPool(
+                    floorData.RoomPool?.StartRoomPrefabs
+                );
 
                 if (startRoom == null)
                 {
@@ -116,6 +126,7 @@ public class CDungeonGenerator : MonoBehaviour
 
                 success = GenerateDungeon(targetRoomCount, startRoom);
             }
+
 
             if (success)
             {
@@ -507,6 +518,44 @@ public class CDungeonGenerator : MonoBehaviour
         return ValidateRoomConnections();
     }
 
+    private bool GenerateAnvilDungeon(CFloorDataSO floorData)
+    {
+        if (floorData == null || floorData.RoomPool == null)
+        {
+            Debug.LogError("모루 방 데이터가 없습니다.");
+            return false;
+        }
+
+        CRoomData anvilRoom = floorData.RoomPool.AnvilRoomPrefab;
+
+        if (anvilRoom == null)
+        {
+            Debug.LogError("모루 전용 방 프리팹이 등록되지 않았습니다.");
+            return false;
+        }
+
+        if (anvilRoom.RoomType != ERoomType.Anvil)
+        {
+            Debug.LogError("모루 방의 RoomType이 Anvil이 아닙니다.");
+            return false;
+        }
+
+        Vector2Int gridPos = Vector2Int.zero;
+        Vector3 worldPos = Vector3.zero;
+
+        if (!_roomGrid.RoomAvailable(gridPos, anvilRoom))
+        {
+            return false;
+        }
+
+        _roomGrid.RegisterRoom(gridPos, anvilRoom);
+
+        _roomPlacements.Add(
+            new SRoomPlacement(anvilRoom, gridPos, worldPos, 0)
+        );
+
+        return true;
+    }
 
     private bool TryAddRandomRoom()
     {
@@ -710,12 +759,27 @@ public class CDungeonGenerator : MonoBehaviour
     {
         foreach (SRoomPlacement placement in _roomPlacements)
         {
-            Instantiate(
+            CRoomData spawnedRoom = Instantiate(
                 placement.RoomPrefab,
                 placement.WorldPosition,
                 Quaternion.identity,
                 _generatedDungeonRoot
             );
+
+            // 보상 방인 경우 선택된 보상 정보 전달
+            if (spawnedRoom.RoomType == ERoomType.Reward)
+            {
+                CRewardRoom rewardRoom = spawnedRoom.GetComponent<CRewardRoom>();
+
+                if (rewardRoom != null)
+                {
+                    rewardRoom.Initialize(_selectedRewardType);
+                }
+                else
+                {
+                    Debug.LogWarning("보상 방에 CRewardRoom 컴포넌트가 없습니다.");
+                }
+            }
 
             for (int number = 1; number <= 2; number++)
             {

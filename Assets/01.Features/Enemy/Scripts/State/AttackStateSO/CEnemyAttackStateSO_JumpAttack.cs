@@ -66,6 +66,8 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
 
             // ===== 선딜레이 ===== 
             _mashine.Ani.Play(_hashJumpAttReady);
+            bool isLeft = targetPos.x < _mashine.transform.position.x;
+            _mashine.SpriteFlipX(isLeft);
             await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
 
             //  ===== 점프 ===== 

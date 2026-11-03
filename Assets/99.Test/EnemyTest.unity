@@ -575,7 +575,7 @@ Transform:
   m_GameObject: {fileID: 737106379}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 11.9, y: 5.9, z: 0}
+  m_LocalPosition: {x: 11.91, y: -17.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -728,6 +728,63 @@ MonoBehaviour:
   _attackState: {fileID: 0}
   _hpBar: {fileID: 0}
   _superArmorBar: {fileID: 0}
+--- !u!1001 &780566693
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -36
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.17976803
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3484876815752089860, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5580361823913993112, guid: d683227c813b95e49810099d5c9416be, type: 3}
+      propertyPath: m_Name
+      value: CaveCombatRoomLUR1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: d683227c813b95e49810099d5c9416be, type: 3}
 --- !u!114 &805398659 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3098646167983071563, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
@@ -1270,3 +1327,4 @@ SceneRoots:
   - {fileID: 6035348339553081022}
   - {fileID: 1770561186}
   - {fileID: 631753649}
+  - {fileID: 780566693}
