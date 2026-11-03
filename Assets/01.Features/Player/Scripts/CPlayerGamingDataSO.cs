@@ -34,6 +34,10 @@ public class CPlayerGamingDataSO
     [SerializeField] private float _mpRegenProgress;
     [SerializeField] private float _dashRegenProgress;
 
+    // 탄약 수 / 탄창 수
+    [SerializeField] private int _currentAmmo;
+    [SerializeField] private int _currentMagazineCount;
+
     // 실행 중 사용하며 JSON에는 저장하지 않음 < 전투 확인 용 >
     [NonSerialized] private bool _isBattle;
 
@@ -55,6 +59,12 @@ public class CPlayerGamingDataSO
     public int Money => _money;
     public bool IsInitialized { get;  set; }
     public int EquippedWeaponTier => _equippedWeaponTier;
+    public int CurrentAmmo => _currentAmmo;
+    public int MaxAmmo => _stats.Ammo_Cap;
+    // 예비 탄창 수
+    public int  ReserveMagazineCount => Mathf.Max(0, _currentMagazineCount -1);
+    // 재장전 가능 여부
+    public bool CanReloadMagazine => IsInitialized && _currentMagazineCount > 1;
 
     #region 전투중인가?
     public bool GetIsBattle => _isBattle;
@@ -79,6 +89,7 @@ public class CPlayerGamingDataSO
     public event Action<int, int> OnEXPChanged;
     public event Action<int> OnMoneyChanged;
     public event Action<int> OnLevelChanged;
+    public event Action<int, int, int> OnAmmoChanged;
     #endregion
 
 
@@ -116,6 +127,12 @@ public class CPlayerGamingDataSO
         _mpRegenProgress = 0f;
         _dashRegenProgress = 0f;
 
+        // 현재 탄창을 가득 채운 상태로 시작
+        _currentAmmo = _stats.Ammo_Cap;
+
+        // 현재 장전된 탄창까지 포함한 전체 탄창 수
+        _currentMagazineCount = _stats.Ammo_Count;
+
         IsInitialized = true;
 
         NotifyAll();
@@ -133,6 +150,7 @@ public class CPlayerGamingDataSO
         OnEXPChanged?.Invoke(_currentEXP, _requiredEXP);
         OnMoneyChanged?.Invoke(_money);
         OnLevelChanged?.Invoke(_level);
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
 
     }
 
@@ -219,6 +237,9 @@ public class CPlayerGamingDataSO
         result.Validate();
 
         _stats = result;
+
+        // 탄창 보정
+        _currentAmmo = Mathf.Clamp(_currentAmmo, 0, _stats.Ammo_Cap);
 
         // 현재 자원 최대치 보정
         _currentHP = Mathf.Clamp(_currentHP, 0, _stats.MaxHP);
@@ -456,8 +477,57 @@ public class CPlayerGamingDataSO
         _weaponType = weaponType;
     }
 
+    #region 탄창시스템
+    // 일반공격 시 탄약 1발 소비
+    public bool TryConsumeAmmo(int amount = 1)
+    {
+        if (!IsInitialized || amount <= 0 || _currentAmmo < amount)
+        {
+            return false;
+        }
 
-   
+        _currentAmmo -= amount;
+
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+
+        return true;
+    }
+
+    // 재장전 완료 시 탄창 1개 교체
+    public bool TryReloadMagazine()
+    {
+        if (!CanReloadMagazine)
+        {
+            return false;
+        }
+
+        // 사용 중인 탄창을 버리고 예비 탄창 장착
+        _currentMagazineCount--;
+
+        // 새로운 탄창은 최대 탄약으로 채움
+        _currentAmmo = MaxAmmo;
+
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+
+        return true;
+    }
+
+    // 탄창 아이템 획득 등에 사용
+    public void AddMagazines(int amount)
+    {
+        if (!IsInitialized || amount <= 0)
+        {
+            return;
+        }
+
+        _currentMagazineCount += amount;
+
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+    }   
+    #endregion
+
+
+
     public void PrintBonusStats()
     {
         CLog.Log

@@ -1,7 +1,8 @@
-
+using System;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
-public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
+public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInputCommand
 {
     #region 인스펙터
     [Header("입력")]
@@ -18,7 +19,11 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
 
     #region 내부변수
 
+    // 입력 시스템 / 탄창 시스템
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
+    private CUniTaskOnes _reloadTask = new CUniTaskOnes();    
+
+    private bool _isReloading;
 
     private bool _isFireHeld;
     private float _nextFireTime;
@@ -28,7 +33,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
     #region 프로퍼티
 
     public bool IsFiring => _isFireHeld;
-
+    public bool IsReloading => _isReloading;
     #endregion
 
     #region Unity
@@ -45,8 +50,11 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
             }
 
             _inputHub = hub;
-
+            
+            // 좌클릭 공격
             _inputHub.Register(EKeyAction.Attack, (IInputCommand<float>)this);
+            // G키 재장전
+            _inputHub.Register(EKeyAction.Reloading, (IInputCommand)this);
             CLog.Log("[Crossbow] 입력 등록 완료");
         });
     }
@@ -54,19 +62,22 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
     private void OnDisable()
     {
         _inputTask.Cancel();
+        _reloadTask.Cancel();
 
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.Attack, (IInputCommand<float>)this);
+            _inputHub.Unregister(EKeyAction.Reloading, (IInputCommand)this);
         }
 
         _isFireHeld = false;
+        _isReloading = false;
         _nextFireTime = 0f;
     }
 
     private void Update()
     {
-        if (!_isFireHeld)
+        if (!_isFireHeld || _isReloading)
         {
             return;
         }
@@ -86,6 +97,11 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
     public void Execute(float value) // 공격은 CWeaponMotion에서 관리
     {
         _isFireHeld = value > 0.5f;
+    }
+
+    public void Execute() // G키 : 재장전
+    {
+        TryReload();
     }
 
     #endregion
@@ -170,6 +186,70 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>
         _nextFireTime = 0f;
 
         CLog.Log($"[Crossbow] {data.WeaponName} 데이터 적용");
+    }
+
+    #endregion
+
+    #region Reload
+
+    private void TryReload()
+    {
+        if (_isReloading || _crossbowData == null || _player == null || _player.PlayerData == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData = _player.PlayerData;
+
+        // 예비 탄창이 없으면 재장전 불가
+        // 현재 탄약이 가득 찼는지는 검사하지 않음
+        if (!playerData.CanReloadMagazine)
+        {
+            CLog.Log("[Crossbow] 예비 탄창 없음");
+            return;
+        }
+
+        SPlayerStats stats = playerData.Stats;
+
+        // 재장전 속도 계산
+        float reloadSpeed = Mathf.Max(0.01f, stats.Ammo_ReloadSpeed);
+
+        float reloadTime = Mathf.Max(0.01f, _crossbowData.ReloadDuration / reloadSpeed);
+
+        _isReloading = true;
+
+        CLog.Log($"[Crossbow] 재장전 시작 : {reloadTime:F2}초");
+
+        _reloadTask.Run(async token =>
+        {
+            try
+            {
+                // 재장전 시간 대기
+                await UniTask.Delay(TimeSpan.FromSeconds(reloadTime), cancellationToken: token);
+
+                token.ThrowIfCancellationRequested();
+
+                if (!isActiveAndEnabled || !_isReloading)
+                {
+                    return;
+                }
+
+                // 완료 시 탄창 교체
+                if (playerData.TryReloadMagazine())
+                {
+                    CLog.Log(
+                        $"[Crossbow] 재장전 완료 / " +
+                        $"Ammo : {playerData.CurrentAmmo}/" +
+                        $"{playerData.MaxAmmo} / " +
+                        $"Magazine : {playerData.CurrentMagazineCount}");
+                }
+
+                _isReloading = false;
+            }
+            catch (OperationCanceledException)
+            {                
+            }
+        });
     }
 
     #endregion
