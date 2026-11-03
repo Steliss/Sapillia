@@ -57,7 +57,6 @@ public class CInventorySlotData
 [Serializable]
 public class CInventoryData
 {
-    // 인벤토리 크기
     [SerializeField] private int _inventorySize = 30; // 인벤토리 크기
 
     [SerializeField] private List<CInventorySlotData> inventorySlots = new List<CInventorySlotData>(); // 인벤토리

@@ -67,8 +67,10 @@ public class CPlayerStatsUI
 }
 
 // ※ : TODO : 이미지랑 UI 쪽 이미지 넣으려면 계층구조랑 싹 수정할 필요가 있음
-public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
+public class CPlayerStatusUI : MonoBehaviour, IInputCommand
 {
+    [SerializeField] private CESCUI _esc;
+
     [Header("플레이어 캔버스")]
     [SerializeField] private GameObject _UICanvas;
     [SerializeField] private GameObject _specialStats;
@@ -144,7 +146,6 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             _input = await CManagerDontDestroy.InputCommandHubAsync(token);
             _input.Register(EKeyAction.PlayerStats, this);
-            _input.Register(EKeyAction.ESC, this);
             CLog.Log("CPlayerUI _inputTask OnEnable 작업 완료");
         });
         _dataTask.Run(async token =>
@@ -174,7 +175,6 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
         _localizationTask?.Cancel();
 
         _input.Unregister(EKeyAction.PlayerStats, this);
-        _input.Unregister(EKeyAction.ESC, this);
 
         _localization.OnLanguageChanged -= ReloadText;
 
@@ -259,6 +259,11 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
     // 플레이어 스텟창 오픈
     public void Execute()
     {
+        if(_esc.IsActive)
+        {
+            return;
+        }
+
         _isActive = !_isActive;
 
         // 창을 열 때만 정보 갱신
@@ -273,10 +278,10 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 
 
     // 플레이어 스텟창 닫기
-    public void ExecuteESC()
+    public void ActiveUI(bool active)
     {
-        _UICanvas.SetActive(false);
-        _isActive = false;
+        _isActive = active;
+        _UICanvas.SetActive(active);
     }
 
     // SetButton 이벤트에 따른 이벤트 해제

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CPlayerStatusUI playerStatsUI;
-    // [SerializeField] private 인벤토리 UI
+    [SerializeField] private CInventoryUI inventoryUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
@@ -91,17 +91,21 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     public void ExecuteESC()
     {
-        CLog.Warn("test");
-
-        if (playerStatsUI.IsActive)
-        {
-            CLog.Warn("test1");
-            return;
-        }
-
         if (_settingUI.IsActive)
         {
             _settingUI.ActiveUI(false);
+            return;
+        }
+
+        if (inventoryUI.IsActive)
+        {
+            inventoryUI.ActiveUI(false);
+            return;
+        }
+
+        if (playerStatsUI.IsActive)
+        {
+            playerStatsUI.ActiveUI(false);
             return;
         }
 
