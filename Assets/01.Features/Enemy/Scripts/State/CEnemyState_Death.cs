@@ -15,6 +15,8 @@ public class CEnemyState_Death : IEnemyState
     public void StateEnter()
     {
         _fadeTime = 0f;
+        _mashine.Rigidbody.simulated = false;
+        _mashine.Nav.enabled = false;
     }
 
     public void StateExit()

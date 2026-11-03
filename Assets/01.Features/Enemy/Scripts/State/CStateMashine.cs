@@ -203,7 +203,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             while (_isPatrol)
             {
-                PatrolSearch();
+                PatrolSearch(_patrolRadius);
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
         });
@@ -243,7 +243,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     }
 
     // 주변 플레이어 검색
-    public void PatrolSearch()
+    private void PatrolSearch(float radius)
     {
         if (!_isPatrol)
         {
@@ -257,7 +257,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _targetMask);
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, radius, _targetMask);
 
         if (hit != null)
         {
@@ -280,6 +280,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _isPatrol = true;
         _sprite.color = _startColor;
         _dataBase.TryGet(_id, out _data);
+        _rb.simulated = true;
 
         if (_data != null)
         {
@@ -470,6 +471,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
         HultFeedback();
+
+        // 순찰중에 맞은 경우 플레이어를 강제로 찾기
+        if (_isPatrol)
+        {
+            PatrolSearch(_patrolRadius * 10f);
+        }
     }
 
     public void TakeDamage(int damage)
