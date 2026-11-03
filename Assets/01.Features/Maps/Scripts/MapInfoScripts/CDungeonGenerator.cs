@@ -42,7 +42,14 @@ public class CDungeonGenerator : MonoBehaviour
 
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
 
+    private bool _isReady = false;
     #endregion
+
+    #region 프로퍼티
+    public bool IsReady => _isReady;
+
+    #endregion
+
 
 
     private void Awake()
@@ -76,6 +83,7 @@ public class CDungeonGenerator : MonoBehaviour
     private void GenerateNewDungeon()
     {        
         CFloorDataSO floorData = GetCurrentFloorData();
+        _isReady = false;
 
         if (floorData == null)
         {
@@ -132,6 +140,7 @@ public class CDungeonGenerator : MonoBehaviour
             {
                 Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
                 SpawnRooms();
+                _isReady = true;
                 return;
             }
         }
