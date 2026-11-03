@@ -17,10 +17,6 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
 
     public override void StateEnter()
     {
-        if (_magicCircle == null)
-        {
-            _mashine.StateChanged(_mashine.IdleState);
-        }
         _mashine.AttackUni.Run(async ct =>
         {
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
@@ -53,6 +49,7 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
             }
 
             _mashine.Sprite.transform.localScale = startScale;
+            _mashine.Nav.enabled = true;
 
             await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
             _mashine.StateChanged(_mashine.IdleState);

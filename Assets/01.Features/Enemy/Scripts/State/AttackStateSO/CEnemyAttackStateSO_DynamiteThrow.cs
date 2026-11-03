@@ -1,10 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.PlayerSettings;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/DynamiteThrow", fileName = "Enemy_Attack_DynamiteThrow_")]
 public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
