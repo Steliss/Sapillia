@@ -23,6 +23,9 @@ public class CDungeonGenerator : MonoBehaviour
     [Header("보상 생성 테스트")]
     [SerializeField] private ERewardType _selectedRewardType = ERewardType.Artifact;
     [SerializeField] private bool _spawnWanderingMerchant = false;
+
+    [Header("플레이어")]
+    [SerializeField] private GameObject _player;
     #endregion
 
     #region 내부 변수
@@ -775,6 +778,12 @@ public class CDungeonGenerator : MonoBehaviour
                 _generatedDungeonRoot
             );
 
+            // 플레이어 위치지정
+            if ((spawnedRoom.RoomType == ERoomType.Start) || (spawnedRoom.RoomType == ERoomType.Anvil))
+            {
+                MovePlayerToStartRoom(spawnedRoom);
+            }
+
             // 보상 방인 경우 선택된 보상 정보 전달
             if (spawnedRoom.RoomType == ERoomType.Reward)
             {
@@ -905,6 +914,24 @@ public class CDungeonGenerator : MonoBehaviour
     {
         return _roomConnectionValidator.ValidateRoomConnections(_roomPlacements);
     }
+
+    private void MovePlayerToStartRoom(CRoomData startRoom)
+    {
+        if (_player == null)
+        {
+            Debug.LogWarning("플레이어 인스펙터 확인");
+            return;
+        }
+
+        if (startRoom.PlayerSpawnPoint == null)
+        {
+            Debug.LogWarning("시작 방 스폰포인트가 없음");
+            return;
+        }
+
+        _player.transform.position = startRoom.PlayerSpawnPoint.position;
+    }
+
 
 
 
