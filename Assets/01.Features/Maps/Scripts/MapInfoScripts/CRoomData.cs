@@ -21,12 +21,16 @@ public class CRoomData : MonoBehaviour
 	[SerializeField] private bool _right1;
 	[SerializeField] private bool _right2;
 
-	#endregion
+
+    [Header("플레이어 시작 위치")]
+    [SerializeField] private Transform _playerSpawnPoint;
+
+    #endregion
 
 
-	#region 프로퍼티
+    #region 프로퍼티
 
-	public Vector2Int RoomSize => _roomSize;
+    public Vector2Int RoomSize => _roomSize;
 
 	public bool Up1 => _up1;
 	public bool Up2 => _up2;
@@ -38,6 +42,7 @@ public class CRoomData : MonoBehaviour
 	public bool Right2 => _right2;
 
 	public ERoomType RoomType => _roomType;
+    public Transform PlayerSpawnPoint => _playerSpawnPoint;
 	#endregion
 
 
