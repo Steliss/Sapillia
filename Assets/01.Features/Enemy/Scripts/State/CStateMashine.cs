@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -294,7 +295,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             // 슈퍼아머 확률 획득
             if (_data.SuperArmorRate > 0f)
             {
-                float ran = Random.Range(0f, 100f);
+                float ran = UnityEngine.Random.Range(0f, 100f);
                 if (ran <= _data.SuperArmorRate)
                 {
                     SuperArmorGet();
@@ -466,6 +467,13 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             _hp = 0f;
             _sprite.color = Color.gray;
+            // 7초뒤 비활성화 예약
+            _searchUni.Run(async ct =>
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(7), cancellationToken: ct);
+                CLog.Warn("예외 발생! 강제 비활성화");
+                gameObject.SetActive(false);
+            });
             StateChanged(_airbornState);
             return;
         }

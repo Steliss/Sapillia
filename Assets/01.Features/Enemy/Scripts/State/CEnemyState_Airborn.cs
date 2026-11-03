@@ -20,6 +20,7 @@ public class CEnemyState_Airborn : IEnemyState
         _tr = _mashine.Sprite.transform;
         _mashine.AttackUni.Cancel();
         _mashine.GameObjectsListClear();
+        _uni.Cancel();
         _uni.Run(async ct =>
         {
             // 위로 올라갔다가 떨어지기

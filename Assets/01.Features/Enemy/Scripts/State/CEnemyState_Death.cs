@@ -3,7 +3,7 @@ using UnityEngine;
 public class CEnemyState_Death : IEnemyState
 {
     private CStateMashine _mashine;
-    private float _fadeTimeMax = 3f;
+    private float _fadeTimeMax = 2f;
     private float _fadeTime;
 
     public CEnemyState_Death(CStateMashine mashine)
