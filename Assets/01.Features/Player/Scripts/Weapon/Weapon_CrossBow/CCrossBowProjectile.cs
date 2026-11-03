@@ -210,6 +210,7 @@ public class CCrossbowProjectile : MonoBehaviour
 
         if(_travelledDistance >= _maxRange)
         {
+            CLog.Log($"[CCrossbowProjectile] {_travelledDistance} 끝 사거리 도달");
             ReturnToPool();
         }
     }

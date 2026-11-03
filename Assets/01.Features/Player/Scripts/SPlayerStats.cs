@@ -187,6 +187,7 @@ public struct SPlayerStats
         Drain_MP = Mathf.Max(0, Drain_MP);
 
         Ammo_Cap = Mathf.Max(0, Ammo_Cap);
+        Ammo_Count = Mathf.Max(0, Ammo_Count);
         Ammo_Speed = Mathf.Max(0f, Ammo_Speed);
         Ammo_ReloadSpeed = Mathf.Max(0f, Ammo_ReloadSpeed);
     }
@@ -242,9 +243,10 @@ public struct SPlayerStats
             Drain_HP = 0,
             Drain_MP = 0,
 
-            Ammo_Cap = 0,
-            Ammo_Speed = 0f,
-            Ammo_ReloadSpeed = 0f
+            Ammo_Cap = 10,
+            Ammo_Count = 1,
+            Ammo_Speed = 3f,
+            Ammo_ReloadSpeed = 1f
         };
     }
 

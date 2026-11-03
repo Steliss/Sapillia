@@ -1,5 +1,8 @@
 using System;
 using UnityEngine;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 
 public enum EWeaponType
 {
@@ -20,6 +23,8 @@ public class CWeaponManager : MonoBehaviour
     [SerializeField] private CSwordShieldSetSO[] _weaponSets;
 
     [Header("시작 장비")]
+    [SerializeField] private EWeaponType _startingWeaponType = EWeaponType.SwordShield;
+
     [Min(1)]
     [SerializeField] private int _startingTier = 1;
 
@@ -56,7 +61,6 @@ public class CWeaponManager : MonoBehaviour
     private EWeaponType _currentWeaponType = EWeaponType.SwordShield;
     private int _currentTier;
 
-
     #endregion
 
     #region 프로퍼티
@@ -64,6 +68,14 @@ public class CWeaponManager : MonoBehaviour
     public int CurrentTier => _currentTier;
     public CSwordShieldSetSO CurrentSet => _currentSet;
     public CCrossbowDataSO CurrentCrossbow => _currentCrossbow;
+
+    #endregion
+
+    // 초기 무기 장착 작업
+    #region 유니테스크
+
+    private CUniTaskOnes _weaponInitTask = new CUniTaskOnes();
+    private bool _isStartingWeaponEquipped;
 
     #endregion
 
@@ -79,15 +91,98 @@ public class CWeaponManager : MonoBehaviour
     #region Unity
     private void Awake()
     {
-        
-    }
+        // 무기 외형 초기 비활성화
+        if (_swordRenderer != null)
+        {
+            _swordRenderer.enabled = false;
+        }
 
-    private void Start()
+        if (_shieldRenderer != null)
+        {
+            _shieldRenderer.enabled = false;
+        }
+
+        if (_crossbowRenderer != null)
+        {
+            _crossbowRenderer.enabled = false;
+        }
+
+        // 검·방패 전투 비활성화
+        if (_playerAttack != null)
+        {
+            _playerAttack.enabled = false;
+        }
+
+        if (_playerGuard != null)
+        {
+            _playerGuard.enabled = false;
+        }
+
+        // 석궁 전투 비활성화
+        if (_crossbowAttack != null)
+        {
+            _crossbowAttack.enabled = false;
+        }
+
+        if (_crossbowSpecialAttack != null)
+        {
+            _crossbowSpecialAttack.enabled = false;
+        }
+
+        // 조준 스크립트 비활성화
+        if (_swordAim != null)
+        {
+            _swordAim.enabled = false;
+        }
+
+        if (_crossbowAim != null)
+        {
+            _crossbowAim.enabled = false;
+        }
+    }  
+
+    private void OnEnable()
     {
-        ApplySet(CurrentSet);
+        _weaponInitTask.Run(async token =>
+        {
+            // 데이터 매니저 생성 대기
+            await CManagerDontDestroy.DataMangerAsync(token);
+
+            // 플레이어 데이터 연결 및 초기화 완료 대기
+            await UniTask.WaitUntil(
+            () =>
+                _player != null && _player.PlayerData != null && _player.PlayerData.IsInitialized,
+                cancellationToken: token
+            );
+            
+            token.ThrowIfCancellationRequested();
+
+            // 중복 실행 방지
+            if (!isActiveAndEnabled || _isStartingWeaponEquipped)
+            {
+                return;
+            }
+
+            InitializeStartingWeapon();
+        }
+        );
     }
 
- 
+    private void OnDisable()
+    {
+        _weaponInitTask.Cancel();
+    }
+
+    #endregion
+
+    #region StartWeapon Equip
+    public void InitializeStartingWeapon()
+    {
+        if (!TrySwapWeapon(_startingWeaponType, _startingTier))
+        {
+            CLog.Warn($"[WeaponManager] 시작 무기 장착 실패 : " + $"{_startingWeaponType} / Tier {_startingTier}");
+        }
+    }
 
     #endregion
 
@@ -353,6 +448,13 @@ public class CWeaponManager : MonoBehaviour
 
     private bool ValidateReferences()
     {
+
+        if(_player == null || _player.PlayerData == null)
+        {
+            CLog.Warn($"[WeaponManager] PlayerData 연결 X");
+            return false;
+        }
+
         _playerData = _player.PlayerData;
 
         if (_playerAttack == null || _specialAttack == null || _playerGuard == null || _weaponMotion == null || _crossbowAttack == null)
@@ -379,6 +481,12 @@ public class CWeaponManager : MonoBehaviour
 
     private bool ValidateSwordShield(CSwordShieldSetSO set)
     {
+        if(set== null)
+        {
+            CLog.Warn("[WeaponManager] 검과 방패 데이터가 없음");
+            return false;
+        }
+
         if (set.SwordData == null || set.SpecialAttackData == null)
         {
             CLog.Warn($"[WeaponSwap] Tier {set.Tier} " + "공격 데이터 누락");
