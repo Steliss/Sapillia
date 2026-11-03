@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using NavMeshPlus.Components;
 using UnityEngine;
 using UnityEngine.AI;
@@ -5,10 +6,33 @@ using UnityEngine.AI;
 public class CNavmeshControler : MonoBehaviour
 {
     private NavMeshSurface _surface;
+    private CUniTaskOnes _uni = new CUniTaskOnes();
 
     private void Awake()
     {
         _surface = GetComponent<NavMeshSurface>();
+        _uni.Run(async ct =>
+        {
+            CDungeonGenerator dungeon = GetComponentInParent<CDungeonGenerator>();
+            
+            if (dungeon == null)
+            {
+                CLog.Log("제너레이터 찾지 못함. 네브메시 베이크 예약 취소");
+                _uni.Cancel();
+            }
+
+            
+            // 찾았으면 준비 완료될때까지 대기
+            while(!dungeon.IsReady)
+            {
+                await UniTask.Yield(ct);
+            }
+
+            await UniTask.Yield(ct);
+            // 네브메시 굽기
+            Bake();
+            
+        });
     }
 
     public void Bake()
