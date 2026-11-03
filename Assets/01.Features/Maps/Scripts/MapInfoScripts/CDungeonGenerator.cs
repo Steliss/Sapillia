@@ -24,6 +24,9 @@ public class CDungeonGenerator : MonoBehaviour
     [SerializeField] private ERewardType _selectedRewardType = ERewardType.Artifact;
     [SerializeField] private bool _spawnWanderingMerchant = false;
 
+    [Header("보상 프리팹 데이터")]
+    [SerializeField] private CRewardPrefabSO _rewardPrefabData;
+
     [Header("플레이어")]
     [SerializeField] private GameObject _player;
     #endregion
@@ -791,7 +794,13 @@ public class CDungeonGenerator : MonoBehaviour
 
                 if (rewardRoom != null)
                 {
-                    rewardRoom.Initialize(_selectedRewardType);
+                    if (_rewardPrefabData == null)
+                    {
+                        Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
+                    }
+
+                    GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
+                    rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
                 }
                 else
                 {
