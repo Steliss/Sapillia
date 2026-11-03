@@ -238,13 +238,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1538da89f7b6a0c469c628148e18ae6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _id: 
-  _dataBase: {fileID: 0}
+  _id: Boss01
+  _dataBase: {fileID: 11400000, guid: 33c68c27650b1084580a5506888d1cca, type: 2}
   _patrolRadius: 3
   _patrolMoveRange: 3
   _targetMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 8256
   _spawnState: {fileID: 0}
   _attackState: {fileID: 0}
   _hpBar: {fileID: 0}

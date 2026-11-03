@@ -237,7 +237,7 @@ public class CObjectPoolManager : MonoBehaviour
         }
     }
 
-    public void ReturnPool(GameObject go)
+    private void ReturnPool(GameObject go)
     {
         if (go == null)
         {
