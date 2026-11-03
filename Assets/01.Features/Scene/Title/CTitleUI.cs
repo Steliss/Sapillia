@@ -444,11 +444,13 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void DiscordOpen()
     {
+        GameStart0();
         _cSceneManager.ChangeScreenAsync(EScene.stage1).Forget();
     }
 
     private void CreditOpen()
     {
+        GameStart0();
         _cSceneManager.ChangeScreenAsync(EScene.Test).Forget();
     }
 
