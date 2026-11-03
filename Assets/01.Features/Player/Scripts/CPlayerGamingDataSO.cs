@@ -61,8 +61,12 @@ public class CPlayerGamingDataSO
     public int EquippedWeaponTier => _equippedWeaponTier;
     public int CurrentAmmo => _currentAmmo;
     public int MaxAmmo => _stats.Ammo_Cap;
+
+    // 장전된 탄창을 포함한 전체 보유 개수
+    public int CurrentMagazineCount => _currentMagazineCount;
     // 예비 탄창 수
-    public int  ReserveMagazineCount => Mathf.Max(0, _currentMagazineCount -1);
+    public int ReserveMagazineCount => Mathf.Max(0, _currentMagazineCount -1);
+
     // 재장전 가능 여부
     public bool CanReloadMagazine => IsInitialized && _currentMagazineCount > 1;
 
