@@ -304,7 +304,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-
         // 초기 상태 지정
         if (_spawnState != null)
         {

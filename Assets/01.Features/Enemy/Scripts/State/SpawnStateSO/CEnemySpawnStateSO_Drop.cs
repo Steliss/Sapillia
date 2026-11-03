@@ -8,20 +8,22 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
     [Header("이펙트 프리팹")]
     [SerializeField] private GameObject _stamp;
 
-    private float _startHigh = 15f;
+    private float _startHigh = 20f;
+    private float _ranHighRange = 10f;
 
     public override void StateEnter()
     {
         _mashine.AttackUni.Run(async ct =>
         {
             Transform tr = _mashine.Sprite.transform;
-            Vector2 high = Vector3.up * _startHigh;
+            float ranHigh = _startHigh + UnityEngine.Random.Range
+                (-_ranHighRange * 0.5f, _ranHighRange * 0.5f);
+            Vector2 high = Vector3.up * ranHigh;
             tr.localPosition = high;
             float speed = 0f;
 
             try
             {
-
                 while (tr.localPosition.y > 0)
                 {
                     speed += 9.81f * Time.deltaTime;
@@ -33,7 +35,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
                 }
                 tr.localPosition = Vector3.zero;
-                
+                _mashine.Nav.enabled = true;
                 // 이펙트 생성
                 if (_stamp != null && CObjectPoolManager.Instance != null)
                 {
@@ -58,6 +60,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
     public override void StateExit()
     {
+        _mashine.Nav.enabled = true;
     }
 
     public override void StateUpdate()
