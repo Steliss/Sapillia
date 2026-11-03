@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -203,7 +204,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             while (_isPatrol)
             {
-                PatrolSearch();
+                PatrolSearch(_patrolRadius);
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
         });
@@ -243,7 +244,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     }
 
     // 주변 플레이어 검색
-    public void PatrolSearch()
+    private void PatrolSearch(float radius)
     {
         if (!_isPatrol)
         {
@@ -257,7 +258,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         }
 
 
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, _patrolRadius, _targetMask);
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, radius, _targetMask);
 
         if (hit != null)
         {
@@ -280,6 +281,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _isPatrol = true;
         _sprite.color = _startColor;
         _dataBase.TryGet(_id, out _data);
+        _rb.simulated = true;
 
         if (_data != null)
         {
@@ -293,7 +295,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             // 슈퍼아머 확률 획득
             if (_data.SuperArmorRate > 0f)
             {
-                float ran = Random.Range(0f, 100f);
+                float ran = UnityEngine.Random.Range(0f, 100f);
                 if (ran <= _data.SuperArmorRate)
                 {
                     SuperArmorGet();
@@ -465,11 +467,24 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             _hp = 0f;
             _sprite.color = Color.gray;
+            // 7초뒤 비활성화 예약
+            _searchUni.Run(async ct =>
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(7), cancellationToken: ct);
+                CLog.Warn("예외 발생! 강제 비활성화");
+                gameObject.SetActive(false);
+            });
             StateChanged(_airbornState);
             return;
         }
 
         HultFeedback();
+
+        // 순찰중에 맞은 경우 플레이어를 강제로 찾기
+        if (_isPatrol)
+        {
+            PatrolSearch(_patrolRadius * 10f);
+        }
     }
 
     public void TakeDamage(int damage)

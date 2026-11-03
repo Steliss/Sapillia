@@ -18,6 +18,8 @@ public class CEnemyState_Airborn : IEnemyState
     public void StateEnter()
     {
         _tr = _mashine.Sprite.transform;
+        _mashine.AttackUni.Cancel();
+        _mashine.GameObjectsListClear();
         _uni.Cancel();
         _uni.Run(async ct =>
         {

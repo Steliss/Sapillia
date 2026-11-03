@@ -17,7 +17,7 @@ public class CNavmeshControler : MonoBehaviour
             
             if (dungeon == null)
             {
-                CLog.Log("제너레이터 찾지 못함. 네브메시 베이크 예약 취소");
+                CLog.Warn("제너레이터 찾지 못함. 네브메시 베이크 예약 취소");
                 _uni.Cancel();
             }
 
@@ -31,7 +31,8 @@ public class CNavmeshControler : MonoBehaviour
             await UniTask.Yield(ct);
             // 네브메시 굽기
             Bake();
-            
+            CLog.Log("네브메시 베이크 완료!");
+
         });
     }
 
