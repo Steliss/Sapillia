@@ -40,6 +40,15 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
         });
     }
 
+    private void OnDisable()
+    {
+        _inputTask?.Cancel();
+        _sceneTask?.Cancel();
+        _localizationTask?.Cancel();
+
+        _input.Unregister(EKeyAction.Interaction, this);
+    }
+
 
     private void ReloadText()
     {
