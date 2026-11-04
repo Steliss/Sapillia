@@ -77,6 +77,13 @@ public class CCrossbowDataSO : ScriptableObject
     [Min(0.01f)]
     [SerializeField] private float _specialRecoilDeceleration = 30f;
 
+    [Header("일반공격 반동")]
+    [Min(0f)]
+    [SerializeField] private float _normalRecoilSpeed = 0f;
+
+    [Min(0.01f)]
+    [SerializeField] private float _normalRecoilDeceleration = 30f;
+
     #endregion
 
     #region 프로퍼티
@@ -107,5 +114,7 @@ public class CCrossbowDataSO : ScriptableObject
     public GameObject BlastEffectPrefab => _blastEffectPrefab;
     public int AmmoCap => _ammoCap;
     public int AmmoCount => _ammoCount;
+    public float NormalRecoilSpeed => _normalRecoilSpeed;
+    public float NormalRecoilDeceleration => _normalRecoilDeceleration;
     #endregion
 }

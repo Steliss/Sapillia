@@ -11,6 +11,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
     [Header("참조")]
     [SerializeField] private CPlayerController _player;
     [SerializeField] private Transform _firePoint;
+    [SerializeField] private CPlayerMovement _playerMovement;
 
     [Header("석궁 데이터")]
     [SerializeField] private CCrossbowDataSO _crossbowData;
@@ -166,6 +167,10 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
         // 발사 성공 시 탄약 소비
         _player.PlayerData.TryConsumeAmmo(1);
+
+        // 반동 구현
+        Vector2 recoilDirection = -_firePoint.right;
+        _playerMovement.ApplyRecoil(recoilDirection, _crossbowData.NormalRecoilSpeed, _crossbowData.NormalRecoilDeceleration);
 
         // 플레이어 공격 속도 반영
         float attackSpeed = Mathf.Max(0.01f, stats.Attack_Speed);
