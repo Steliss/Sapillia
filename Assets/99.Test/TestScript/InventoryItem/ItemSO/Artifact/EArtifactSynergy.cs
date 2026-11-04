@@ -8,5 +8,4 @@ public enum EArtifactSynergy
     Robust = 0,
     Precision,
     WindSong,
-    Friends
 }

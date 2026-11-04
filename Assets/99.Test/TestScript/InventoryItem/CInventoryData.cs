@@ -13,7 +13,7 @@ public enum ETabletRotation
 public enum EItemType
 {
     None = 0,
-    Item,
+    Artifact,
     Potion,
     Tablet
 }

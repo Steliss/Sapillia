@@ -122,6 +122,54 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &444533168
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 444533170}
+  - component: {fileID: 444533169}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &444533169
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444533168}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7e61e0e036f54d498f5250c1f4599ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _artifactA: {fileID: 11400000, guid: 2baa2e919539b8f4c83ac5a54da12bd2, type: 2}
+  _artifactB: {fileID: 11400000, guid: 2baa2e919539b8f4c83ac5a54da12bd2, type: 2}
+  _starsA: 2
+  _starsB: 1
+--- !u!4 &444533170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 444533168}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 8.011693, y: -22.757992, z: 0.14184591}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &604472898
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,7 +211,7 @@ MonoBehaviour:
   _blockLeft: {fileID: 8652627897763882003, guid: c6072bee82d80d84c8e83632fa17e1e6, type: 3}
   _blockRight: {fileID: 2742869070862323178, guid: 2e1aa1c8e022c8340b8fae7725fd065b, type: 3}
   _currentFloor: 2
-  _selectedRewardType: 4
+  _selectedRewardType: 1
   _spawnWanderingMerchant: 0
   _rewardPrefabData: {fileID: 11400000, guid: dd5170059ec173f4d9c4733f327f7fed, type: 2}
   _player: {fileID: 0}
@@ -669,3 +717,4 @@ SceneRoots:
   - {fileID: 1797073138848772510}
   - {fileID: 954620657177779810}
   - {fileID: 2247739266725373443}
+  - {fileID: 444533170}
