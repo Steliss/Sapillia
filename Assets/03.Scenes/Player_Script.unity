@@ -2873,6 +2873,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3194533424404011165, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+      propertyPath: _playerMovement
+      value: 
+      objectReference: {fileID: 3793438326317744052}
     - target: {fileID: 8090106423859975957, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
       propertyPath: m_Name
       value: TestPlayerV3
@@ -2922,6 +2926,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+--- !u!114 &3793438326317744052 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1797603323278430273, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+  m_PrefabInstance: {fileID: 3793438326317744051}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5337564a8eda0c4aba78b7db4da7349, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

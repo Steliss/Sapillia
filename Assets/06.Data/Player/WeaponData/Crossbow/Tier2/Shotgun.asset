@@ -17,7 +17,7 @@ MonoBehaviour:
   _baseDamage: 10
   _attackInterval: 0.65
   _fireMode: 1
-  _blastRange: 2.5
+  _blastRange: 4
   _blastHalfAngle: 30
   _blastEffectPrefab: {fileID: 129803817961171022, guid: 3b3226f7ab4359f448e77b110f0d53fd, type: 3}
   _projectilePrefab: {fileID: 0}
@@ -49,3 +49,5 @@ MonoBehaviour:
   _specialCooldown: 0.5
   _specialRecoilSpeed: 8
   _specialRecoilDeceleration: 30
+  _normalRecoilSpeed: 4
+  _normalRecoilDeceleration: 20
