@@ -15,9 +15,17 @@ MonoBehaviour:
   _tier: 1
   _weaponName: "\uC11D\uAD81"
   _baseDamage: 10
-  _attackInterval: 0.1
+  _attackInterval: 0.3
+  _fireMode: 0
+  _blastRange: 2.5
+  _blastHalfAngle: 30
+  _blastEffectPrefab: {fileID: 0}
   _projectilePrefab: {fileID: 539973862931457406, guid: 32a82c407ea7b5a4e97d953663be8dab, type: 3}
   _projectileRange: 8
+  _normalAttackLifeTime: 0.75
+  _specialAttackLifeTime: 2
+  _ammoCap: 10
+  _ammoCount: 1
   _reloadDuration: 2
   _projectileSpeed: 12
   _crossbowSprite: {fileID: 21300000, guid: 67b02eeb9ba34f249a3f308b631632df, type: 3}
@@ -32,6 +40,8 @@ MonoBehaviour:
     Attack_Speed: 0
     Special_Range: 0
     Damage_Special: 0
+    AmmoCap: 10
+    AmmoCount: 1
   _specialProjectilePrefab: {fileID: 5599048563902009865, guid: fa8ba347d363a82419cec52ee28e5a4d, type: 3}
   _specialManaCost: 10
   _specialProjectileSpeed: 20

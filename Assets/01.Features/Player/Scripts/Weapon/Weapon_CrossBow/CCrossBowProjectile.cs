@@ -45,14 +45,14 @@ public class CCrossbowProjectile : MonoBehaviour
         if (_rb == null)
         {
             CLog.Warn("[CrossbowProjectile] Rigidbody2D 누락");
-            //ReturnToPool();
+            this.enabled = false;
             return;
         }
 
         if (direction.sqrMagnitude < 0.0001f || speed <= 0f)
         {
             CLog.Warn("[CrossbowProjectile] 발사 방향 또는 속도 오류");
-            //ReturnToPool();
+            this.enabled = false;
             return;
         }
 
@@ -101,7 +101,7 @@ public class CCrossbowProjectile : MonoBehaviour
         HandleHit(collision.collider);
     }
 
-    private void HandleHit(Collider2D other) // 몬스터 관통하도록 수정해야함
+    private void HandleHit(Collider2D other) 
     {
         if (!_isLaunched || other == null)
         {
@@ -129,7 +129,7 @@ public class CCrossbowProjectile : MonoBehaviour
         {
             CLog.Log("[Projectile] 벽 충돌");
 
-            //ReturnToPool();
+            this.enabled = false;
             return;
         }
 
@@ -149,32 +149,7 @@ public class CCrossbowProjectile : MonoBehaviour
     #endregion
 
     #region Pool
-    /*
-    private void ReturnToPool()
-    {
-        if (!_isLaunched && !gameObject.activeSelf)
-        {
-            return;
-        }
-
-        _isLaunched = false;
-
-        if (_rb != null)
-        {
-            _rb.velocity = Vector2.zero;
-            _rb.angularVelocity = 0f;
-        }
-
-        if (CObjectPoolManager.Instance != null)
-        {
-            CObjectPoolManager.Instance.ReturnPool(gameObject);
-        }
-        else
-        {
-            gameObject.SetActive(false);
-        }
-    }
-    */
+ 
     private void OnDisable()
     {
         _isLaunched = false;
@@ -191,29 +166,5 @@ public class CCrossbowProjectile : MonoBehaviour
 
     #endregion
 
-    #region 최대 사거리 도달 시 제거
-    private void FixedUpdate()
-    {
-        if(!_isLaunched || _rb == null)
-        {
-            return;
-        }
 
-        // 현재 위치
-        Vector2 currentPosition = _rb.position;
-        // 이동 거리
-        float moveDistance = Vector2.Distance(_lastPosition, currentPosition);
-
-        _travelledDistance += moveDistance;
-        // 위치 갱신
-        _lastPosition = currentPosition;
-
-        if(_travelledDistance >= _maxRange)
-        {
-            CLog.Log($"[CCrossbowProjectile] {_travelledDistance} 끝 사거리 도달");
-            //ReturnToPool();
-        }
-    }
-
-    #endregion
 }

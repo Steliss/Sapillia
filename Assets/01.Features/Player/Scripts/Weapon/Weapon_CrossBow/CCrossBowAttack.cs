@@ -14,20 +14,20 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
     [Header("석궁 데이터")]
     [SerializeField] private CCrossbowDataSO _crossbowData;
-
+    [SerializeField] private CShotgunBlastFireMode _shotgunBlast;
     #endregion
 
     #region 내부변수
 
     // 입력 시스템 / 탄창 시스템
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
-    private CUniTaskOnes _reloadTask = new CUniTaskOnes();    
+    private CUniTaskOnes _reloadTask = new CUniTaskOnes();
 
     private bool _isReloading;
 
     private bool _isFireHeld;
     private float _nextFireTime;
-
+    private float _lifeTime;
     #endregion
 
     #region 프로퍼티
@@ -50,13 +50,15 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
             }
 
             _inputHub = hub;
-            
+
             // 좌클릭 공격
             _inputHub.Register(EKeyAction.Attack, (IInputCommand<float>)this);
             // G키 재장전
             _inputHub.Register(EKeyAction.Reloading, (IInputCommand)this);
             CLog.Log("[Crossbow] 입력 등록 완료");
         });
+
+        
     }
 
     private void OnDisable()
@@ -110,8 +112,10 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
     private void TryFire()
     {
-        if (_crossbowData == null || _firePoint == null || _player == null || _player.PlayerData == null)
+        // 필수 참조
+        if (_isReloading || _crossbowData == null || _firePoint == null || _player == null || _player.PlayerData == null)
         {
+            CLog.Warn("[Crossbow] 필수참조 없음");
             return;
         }
 
@@ -121,9 +125,15 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
             return;
         }
 
-        if (_crossbowData.ProjectilePrefab == null)
+        if (_crossbowData.ProjectilePrefab == null && _crossbowData.FireMode == ECrossbowFireMode.Projectile)
         {
             CLog.Warn("[Crossbow] 투사체 프리팹 누락");
+            return;
+        }
+
+        if (!_player.PlayerData.IsInitialized || _player.PlayerData.CurrentAmmo <= 0)
+        {
+            CLog.Warn($"[Crossbow] {_player.PlayerData.CurrentAmmo} 탄약 없음");
             return;
         }
 
@@ -135,21 +145,57 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
-        // 기존 공용 오브젝트 풀 이용
-        GameObject projectileObject = CObjectPoolManager.Instance.GetPoolObject(_crossbowData.ProjectilePrefab, _firePoint);
+        bool fired = false;
+
+        switch (_crossbowData.FireMode)
+        {
+            case ECrossbowFireMode.Projectile:
+                fired = TryFireProjectile(finalDamage);
+                break;
+
+            case ECrossbowFireMode.Blast:
+                fired = _shotgunBlast.Fire(_crossbowData, _firePoint, finalDamage);
+                break;
+
+        }
+
+        if (!fired)
+        {
+            return;
+        }
+
+        // 발사 성공 시 탄약 소비
+        _player.PlayerData.TryConsumeAmmo(1);
+
+        // 플레이어 공격 속도 반영
+        float attackSpeed = Mathf.Max(0.01f, stats.Attack_Speed);
+
+        if(_player.PlayerData.CurrentAmmo <= 0)
+        {
+            TryReload();
+        }
+
+        _nextFireTime = Time.time + _crossbowData.AttackInterval / attackSpeed;
+    }
+
+
+    private bool TryFireProjectile(int damage)
+    {
+        GameObject projectileObject = CObjectPoolManager.Instance.GetPoolObject(_crossbowData.ProjectilePrefab, _lifeTime);
+        projectileObject.transform.SetLocalPositionAndRotation(_firePoint.position, _firePoint.rotation);
 
         if (projectileObject == null)
         {
             CLog.Log("[CCrossbowAttack] 화살 프리팹 비어있음");
-            return;
+            return false;
         }
 
         // 투사체 컴포넌트 확인
         if (!projectileObject.TryGetComponent(out CCrossbowProjectile projectile))
         {
             CLog.Warn("[Crossbow] Projectile 컴포넌트 누락");
-
-            return;
+            Destroy(projectileObject);
+            return false;
         }
 
         // 석궁이 바라보는 방향으로 발사
@@ -158,16 +204,13 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
                 _firePoint.right,
                 _crossbowData.ProjectileSpeed,
                 _crossbowData.ProjectileRange,
-                finalDamage,
+                damage,
                 _player.transform
             );
 
-        // 플레이어 공격 속도 반영
-        float attackSpeed = Mathf.Max(0.01f, stats.Attack_Speed);
+        return true;
 
-        _nextFireTime = Time.time + _crossbowData.AttackInterval / attackSpeed;
     }
-
     #endregion
 
     #region Weapon Data
@@ -180,7 +223,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         }
 
         _crossbowData = data;
-
+        _lifeTime = _crossbowData.NormalLifeTime;
         _isFireHeld = false;
         _nextFireTime = 0f;
 
@@ -211,7 +254,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         SPlayerStats stats = playerData.Stats;
 
         // 재장전 속도 계산
-        float reloadSpeed = Mathf.Max(0.01f, stats.Ammo_ReloadSpeed);
+        float reloadSpeed = Mathf.Max(1f, stats.Ammo_ReloadSpeed);
 
         float reloadTime = Mathf.Max(0.01f, _crossbowData.ReloadDuration / reloadSpeed);
 
@@ -239,14 +282,13 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
                     CLog.Log(
                         $"[Crossbow] 재장전 완료 / " +
                         $"Ammo : {playerData.CurrentAmmo}/" +
-                        $"{playerData.MaxAmmo} / " +
-                        $"Magazine : {playerData.CurrentMagazineCount}");
+                        $"{playerData.MaxAmmo} / ");
                 }
 
                 _isReloading = false;
             }
             catch (OperationCanceledException)
-            {                
+            {
             }
         });
     }

@@ -23,7 +23,7 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
 	private CCrossbowDataSO _crossbowData;
 	private bool _isButtonHeld;
 	private float _nextSpecialTime;
-
+    private float _lifeTime;
     #endregion
 
     #region Unity 생명주기
@@ -36,7 +36,7 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         _inputHub.Register(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
         CLog.Log("CCrossbow OnEnable 작업 완료");
         });
-
+                
     }
 
     private void OnDisable()
@@ -137,7 +137,8 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
         // 공용 풀에서 스킬 투사체 한 개 획득
-        GameObject projectileObject = pool.GetPoolObject(prefab, _firePoint);
+        GameObject projectileObject = pool.GetPoolObject(prefab, _lifeTime);
+        projectileObject.transform.SetLocalPositionAndRotation(_firePoint.position, _firePoint.rotation);
 
         if (projectileObject == null)
         {
@@ -181,6 +182,7 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
     {
         _crossbowData = data;
         _isButtonHeld = false;
+        _lifeTime = _crossbowData.SpecialLifeTime;
     }
 
     #endregion

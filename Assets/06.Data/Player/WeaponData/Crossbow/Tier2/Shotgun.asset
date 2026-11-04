@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b4ac1f618f4ea4684e98f6e223c3e4, type: 3}
+  m_Name: Shotgun
+  m_EditorClassIdentifier: 
+  _tier: 2
+  _weaponName: "\uB300\uD615\uC11D\uAD81_\uC0B0\uD0C4_\uACA9\uBC1C\uAE30"
+  _baseDamage: 10
+  _attackInterval: 0.65
+  _fireMode: 1
+  _blastRange: 2.5
+  _blastHalfAngle: 30
+  _blastEffectPrefab: {fileID: 129803817961171022, guid: 3b3226f7ab4359f448e77b110f0d53fd, type: 3}
+  _projectilePrefab: {fileID: 0}
+  _projectileRange: 5
+  _normalAttackLifeTime: 0.75
+  _specialAttackLifeTime: 2
+  _ammoCap: 2
+  _ammoCount: 2
+  _reloadDuration: 1.6
+  _projectileSpeed: 12
+  _crossbowSprite: {fileID: 21300000, guid: 4000de5dcfc15644bab9325d23c483b5, type: 3}
+  _statBonus:
+    Str: 0
+    Def: 0
+    Attribute_Physical: 0
+    Attribute_Fire: 0
+    Attribute_Ice: 0
+    Attribute_Lightning: 0
+    Damage_Weapon: 80
+    Attack_Speed: 0
+    Special_Range: 0
+    Damage_Special: 0
+    AmmoCap: 5
+    AmmoCount: 1
+  _specialProjectilePrefab: {fileID: 5599048563902009865, guid: fa8ba347d363a82419cec52ee28e5a4d, type: 3}
+  _specialManaCost: 10
+  _specialProjectileSpeed: 20
+  _specialProjectileRange: 10
+  _specialCooldown: 0.5
+  _specialRecoilSpeed: 8
+  _specialRecoilDeceleration: 30

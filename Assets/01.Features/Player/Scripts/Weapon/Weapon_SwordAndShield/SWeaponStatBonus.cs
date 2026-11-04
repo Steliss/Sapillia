@@ -22,6 +22,10 @@ public struct SWeaponStatBonus
     public float Special_Range;
     public float Damage_Special;
 
+    [Header("탄창")]
+    public int AmmoCap;
+    public int AmmoCount;
+
     // 기존 SPlayerStats 복사본에 보너스 적용
     public void Apply(ref SPlayerStats stats)
     {
@@ -36,5 +40,8 @@ public struct SWeaponStatBonus
         stats.Damage_Weapon += Damage_Weapon;
         stats.Damage_Special += Damage_Special;
         stats.Attack_Speed += Attack_Speed;
+
+        stats.Ammo_Cap = AmmoCap;
+        stats.Ammo_Count = AmmoCount;
     }
 }
