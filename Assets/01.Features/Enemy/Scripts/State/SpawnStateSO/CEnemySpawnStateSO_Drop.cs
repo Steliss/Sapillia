@@ -5,11 +5,43 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/Enemy/SpawnState/Drop", fileName = "Enemy_Spawn_Drop_")]
 public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 {
+    #region 인스펙터
+
     [Header("이펙트 프리팹")]
     [SerializeField] private GameObject _stamp;
+    [Header("애니메이터")]
+    [SerializeField] private string _aniStart;
+    [SerializeField] private string _aniEnd;
+    [Header("떨어질 높이")]
+    [SerializeField] private float _startHigh = 20f;
+    [SerializeField] private float _randomRange = 10f;
+    #endregion
 
-    private float _startHigh = 20f;
-    private float _ranHighRange = 10f;
+    #region 내부 변수
+    private int _hashStart;
+    private int _hashEnd;
+    #endregion
+
+    private void OnEnable()
+    {
+        if (!String.IsNullOrWhiteSpace(_aniStart))
+        {
+            _hashStart = Animator.StringToHash(_aniStart);
+        }
+        else
+        {
+            _hashStart = Animator.StringToHash("Air");
+        }
+
+        if (!String.IsNullOrWhiteSpace(_aniEnd))
+        {
+            _hashEnd = Animator.StringToHash(_aniEnd);
+        }
+        else
+        {
+            _hashEnd = Animator.StringToHash("Idle");
+        }
+    }
 
     public override void StateEnter()
     {
@@ -17,10 +49,12 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
         {
             Transform tr = _mashine.Sprite.transform;
             float ranHigh = _startHigh + UnityEngine.Random.Range
-                (-_ranHighRange * 0.5f, _ranHighRange * 0.5f);
+                (-_randomRange * 0.5f, _randomRange * 0.5f);
             Vector2 high = Vector3.up * ranHigh;
             tr.localPosition = high;
             float speed = 0f;
+
+            _mashine.Ani.Play(_hashStart);
 
             try
             {
@@ -35,7 +69,8 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 
                 }
                 tr.localPosition = Vector3.zero;
-                _mashine.Nav.enabled = true;
+                _mashine.Ani.Play(_hashEnd);
+
                 // 이펙트 생성
                 if (_stamp != null && CObjectPoolManager.Instance != null)
                 {

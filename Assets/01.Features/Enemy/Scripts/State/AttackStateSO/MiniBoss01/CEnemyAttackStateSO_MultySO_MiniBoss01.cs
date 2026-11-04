@@ -1,8 +1,8 @@
 using UnityEngine;
 
 
-[CreateAssetMenu(menuName = "SO/Enemy/AttackState/MultySO", fileName = "Enemy_Attack_MultySO_")]
-public class CEnemyAttackStateSO_MultySO : CEnemyAttackStateSO
+[CreateAssetMenu(menuName = "SO/Enemy/AttackState/MultySO/MiniBoss01", fileName = "Enemy_Attack_MultySO_MiniBoss01")]
+public class CEnemyAttackStateSO_MultySO_MiniBoss01 : CEnemyAttackStateSO
 {
     #region 인스펙터
     [Header("공격 패턴")]

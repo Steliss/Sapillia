@@ -18,7 +18,7 @@ public class CNavmeshControler : MonoBehaviour
             if (dungeon == null)
             {
                 CLog.Warn("제너레이터 찾지 못함. 네브메시 베이크 예약 취소");
-                _uni.Cancel();
+                return;
             }
 
             
