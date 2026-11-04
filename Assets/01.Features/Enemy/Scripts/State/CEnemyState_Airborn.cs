@@ -20,38 +20,42 @@ public class CEnemyState_Airborn : IEnemyState
         _tr = _mashine.Sprite.transform;
         _mashine.AttackUni.Cancel();
         _mashine.GameObjectsListClear();
-        _uni.Cancel();
         _uni.Run(async ct =>
         {
-            // 위로 올라갔다가 떨어지기
-            _mashine.Ani.Play(_mashine.HashAir);
-
-            for (float time = 0f; time < _airbornTimeMax; time += Time.deltaTime)
+            try
             {
+                // 위로 올라갔다가 떨어지기
+                _mashine.Ani.Play(_mashine.HashAir);
 
-                float t = time / _airbornTimeMax;
+                for (float time = 0f; time < _airbornTimeMax; time += Time.deltaTime)
+                {
 
-                float y = Mathf.Sin(t * Mathf.PI);
+                    float t = time / _airbornTimeMax;
 
-                Vector3 air = _tr.localPosition;
-                air.y = y;
-                _tr.localPosition = air;
+                    float y = Mathf.Sin(t * Mathf.PI);
 
-                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                    Vector3 air = _tr.localPosition;
+                    air.y = y;
+                    _tr.localPosition = air;
+
+                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                }
+                // 바닥에 떨어짐.
+                _tr.localPosition = Vector3.zero;
+                _mashine.Ani.Play(_mashine.HashDown);
+
+                await UniTask.Delay(TimeSpan.FromSeconds(_downTime), false, PlayerLoopTiming.Update, ct);
             }
-            // 바닥에 떨어짐.
-            _tr.localPosition = Vector3.zero;
-            _mashine.Ani.Play(_mashine.HashDown);
-
-            await UniTask.Delay(TimeSpan.FromSeconds(_downTime), false, PlayerLoopTiming.Update, ct);
-
-            if (_mashine.Hp > 0)
+            finally
             {
-                _mashine.StateChanged(_mashine.MoveState);
-            }
-            else
-            {
-                _mashine.StateChanged(_mashine.DeathState);
+                if (_mashine.Hp > 0)
+                {
+                    _mashine.StateChanged(_mashine.MoveState);
+                }
+                else
+                {
+                    _mashine.StateChanged(_mashine.DeathState);
+                }
             }
         });
 

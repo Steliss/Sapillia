@@ -22,6 +22,9 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [Header("공격 패턴 SO")]
     [SerializeField] private CEnemyAttackStateSO _attackState;
 
+    [Header("페이즈 전환용 SO. 비우면 기본 사망")]
+    [SerializeField] private CEnemyPhaseStateSO _phaseSO;
+
     [Header("체력 바")]
     [SerializeField] private Slider _hpBar;
     [SerializeField] private Slider _superArmorBar;
@@ -67,6 +70,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private float _defense;
     private float _attack;
     private float _speed;
+    private int _extraLife;
     #endregion
 
     #region 프로퍼티
@@ -94,6 +98,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public float Defense => _defense;
     public float Attack => _attack;
     public float Speed => _speed;
+    public int ExtraLife => _extraLife;
 
     // 애니메이터 해쉬
     public int HashMove { get; private set; }
@@ -105,30 +110,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     #endregion
 
 
-
-    public void StateChanged(IEnemyState next)
-    {
-        if (_state == next)
-        {
-            return;
-        }
-
-        
-
-        if (_state != null)
-        {
-            State.StateExit();
-        }
-
-        CLog.Log($"상태변경 {_state} -> {next}");
-
-        _state = next;
-
-        next.StateEnter();
-    }
-
-
-
+    #region 유니티 이벤트 함수들
     private void Awake()
     {
         // id가 비어있을 경우 오브젝트 이름으로 id 설정
@@ -153,7 +135,17 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _idleState = new CEnemyState_Idle(this);
         _moveState = new CEnemyState_Move(this);
         _airbornState = new CEnemyState_Airborn(this);
-        _deathState = new CEnemyState_Death(this);
+
+        if (_phaseSO == null)
+        {
+            _deathState = new CEnemyState_Death(this);
+        }
+        else
+        {
+            CEnemyPhaseStateSO phase = Instantiate(_phaseSO);
+            phase.Init(this);
+            _deathState = phase;
+        }
 
 
         // 애니메이터 해시 세팅 
@@ -161,7 +153,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         // 네브메쉬에이전트, 리지드바디 가져오기
         _nav = GetComponent<NavMeshAgent>();
-        
+
         if (_nav == null)
         {
             CLog.Warn($"{name} : 네브메쉬 에이전트 컴포넌트 누락");
@@ -190,10 +182,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         _startScale = _sprite.transform.localScale;
         _startColor = _sprite.color;
-
-
-        
-
     }
 
     private void OnEnable()
@@ -222,6 +210,32 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     {
         State?.StateUpdate();
     }
+
+    #endregion
+
+
+    public void StateChanged(IEnemyState next)
+    {
+        if (_state == next)
+        {
+            return;
+        }
+
+        if (_state != null)
+        {
+            State.StateExit();
+        }
+
+        CLog.Log($"상태변경 {_state} -> {next}");
+
+        _state = next;
+
+        next.StateEnter();
+    }
+
+
+
+    
 
     // 스프라이트, 애니메이터 캐싱 및 해시 세팅
     private void AnimatorSet()
@@ -289,6 +303,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _defense = _data.Defense;
             _attack = _data.Attack;
             _speed = _data.Speed;
+            _extraLife = _data.ExtraLife;
 
             Nav.speed = _speed;
 
@@ -426,6 +441,19 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _sprite.material.SetFloat(_outLineId, 1f);
     }
 
+    // 목숨이 1 이상일때 리셋
+    public bool TryExtraLife()
+    {
+        if (_extraLife > 0)
+        {
+            int life = _extraLife - 1;
+            EnemyInit();
+            _extraLife = life;
+            return true;
+        }
+        return false;
+    }
+
     public void TakeDamage(SDamageInfo damageInfo)
     {
         if (_hp <= 0)
@@ -471,6 +499,11 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _searchUni.Run(async ct =>
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(7), cancellationToken: ct);
+                CEnemySpawner spawner = GetComponentInParent<CEnemySpawner>();
+                if (spawner != null)
+                {
+                    spawner.EnemyDie();
+                }
                 CLog.Warn("예외 발생! 강제 비활성화");
                 gameObject.SetActive(false);
             });

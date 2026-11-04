@@ -14,9 +14,23 @@ public class CEnemyState_Death : IEnemyState
 
     public void StateEnter()
     {
+        // 남은 목숨이 있는지 체크
+        if (_mashine.TryExtraLife())
+        {
+            return;
+        }
+        
+
         _fadeTime = 0f;
         _mashine.Rigidbody.simulated = false;
         _mashine.Nav.enabled = false;
+
+        // 스포너에게 죽었다고 알림
+        CEnemySpawner spawner = _mashine.GetComponentInParent<CEnemySpawner>();
+        if (spawner != null)
+        {
+            spawner.EnemyDie();
+        }
     }
 
     public void StateExit()

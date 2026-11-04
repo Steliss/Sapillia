@@ -28,9 +28,23 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
     [SerializeField] private float _lineLength = 3f;
     [Header("간격")]
     [SerializeField] private float _interbal = 0.5f;
+
+    [Space(10)]
+    [Header("===== 애니메이터 =====")]
+    [SerializeField] private string _aniStart;
+    [SerializeField] private string _aniEnd;
     #endregion
 
+    #region 내부 변수
+    private int _hashStart;
+    private int _hashEnd;
+    #endregion
 
+    private void OnEnable()
+    {
+        _hashStart = Animator.StringToHash(_aniStart);
+        _hashEnd = Animator.StringToHash(_aniEnd);
+    }
 
     public override void StateEnter()
     {
@@ -68,7 +82,7 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
 
     private async UniTask<Vector2> TrackingAim(CancellationToken ct)
     {
-        _mashine.Ani.Play(_mashine.HashAttReady);
+        _mashine.Ani.Play(_hashStart);
 
         Vector2 myPos = _mashine.transform.position;
         Vector2 targetPos = _mashine.Target.position;
@@ -119,7 +133,7 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
 
     private void Throw(Vector2 toPos)
     {
-        _mashine.Ani.Play(_mashine.HashAttack);
+        _mashine.Ani.Play(_hashEnd);
 
         GameObject dynamite = CreateAttackObject
         (_projectile, _dynamiteLifeTime + 1f, _mashine.transform.position, Quaternion.identity);

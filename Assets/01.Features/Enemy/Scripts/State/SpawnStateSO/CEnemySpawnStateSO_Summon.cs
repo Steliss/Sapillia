@@ -20,6 +20,7 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
         _mashine.AttackUni.Run(async ct =>
         {
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
+            _mashine.Ani.Play(_mashine.HashIdle);
 
             Vector2 startScale = _mashine.Sprite.transform.localScale;
             _mashine.Sprite.transform.localScale = Vector2.zero;

@@ -75,7 +75,8 @@ public class CObjectPoolManager : MonoBehaviour
 
     /// <summary>
     /// 오브젝트 풀이 없으면 생성하고 풀이 있으면 풀에서 꺼내서 반환한다.
-    /// 수명이 없고 지정한 트랜스폼에서 위치와 각도로 설정
+    /// 수명이 없고 트랜스폼의 위치와 각도로 꺼낸다.
+    /// 오브젝트가 꺼지면 자동으로 반납된다.
     /// </summary>
     /// <param name="prefeb">생성할 프리팹</param>
     /// <param name="spawnPoint">위치와 각도</param>
