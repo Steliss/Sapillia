@@ -148,7 +148,6 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         if (!projectileObject.TryGetComponent(out CCrossbowProjectile projectile))
         {
             CLog.Warn("[Crossbow] Projectile 컴포넌트 누락");
-            CObjectPoolManager.Instance.ReturnPool(projectileObject);
 
             return;
         }

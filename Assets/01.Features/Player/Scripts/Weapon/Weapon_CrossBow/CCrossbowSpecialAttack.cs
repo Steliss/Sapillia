@@ -147,14 +147,12 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         if (!projectileObject.TryGetComponent(out CCrossbowProjectile projectile))
         {
             CLog.Warn("[CrossbowSpecial] Projectile 누락");
-            pool.ReturnPool(projectileObject);
             return;
         }
 
         // 실제 발사 직전에 MP 소비
         if (!playerData.TryUseMP(_crossbowData.SpecialManaCost))
         {
-            pool.ReturnPool(projectileObject);
             return;
         }
 
