@@ -35,11 +35,12 @@ public class CPlayerGamingDataSO
     [SerializeField] private float _dashRegenProgress;
 
     // 탄약 수 / 탄창 수
-    [SerializeField] private int _currentAmmo;
-    [SerializeField] private int _currentMagazineCount;
+    [SerializeField] private int _currentAmmo = 10;
+    [SerializeField] private int _currentCount = 1;
 
     // 실행 중 사용하며 JSON에는 저장하지 않음 < 전투 확인 용 >
     [NonSerialized] private bool _isBattle;
+    [NonSerialized] private bool _isAmmoInitialized;
 
     [SerializeField] private int _startMoney = 500;
     [SerializeField] private float _expGrowthMultiplier = 1.2f;
@@ -62,13 +63,11 @@ public class CPlayerGamingDataSO
     public int CurrentAmmo => _currentAmmo;
     public int MaxAmmo => _stats.Ammo_Cap;
 
-    // 장전된 탄창을 포함한 전체 보유 개수
-    public int CurrentMagazineCount => _currentMagazineCount;
     // 예비 탄창 수
-    public int ReserveMagazineCount => Mathf.Max(0, _currentMagazineCount -1);
+    public int ReserveMagazineCount => Mathf.Max(0, _currentCount - 1);
 
     // 재장전 가능 여부
-    public bool CanReloadMagazine => IsInitialized && _currentMagazineCount > 1;
+    public bool CanReloadMagazine => IsInitialized && true;
 
     #region 전투중인가?
     public bool GetIsBattle => _isBattle;
@@ -135,10 +134,11 @@ public class CPlayerGamingDataSO
         _currentAmmo = _stats.Ammo_Cap;
 
         // 현재 장전된 탄창까지 포함한 전체 탄창 수
-        _currentMagazineCount = _stats.Ammo_Count;
+        _currentCount = _stats.Ammo_Count;
 
+        _isAmmoInitialized = false;
         IsInitialized = true;
-
+        
         NotifyAll();
     }
 
@@ -154,7 +154,7 @@ public class CPlayerGamingDataSO
         OnEXPChanged?.Invoke(_currentEXP, _requiredEXP);
         OnMoneyChanged?.Invoke(_money);
         OnLevelChanged?.Invoke(_level);
-        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentCount);
 
     }
 
@@ -492,7 +492,7 @@ public class CPlayerGamingDataSO
 
         _currentAmmo -= amount;
 
-        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentCount);
 
         return true;
     }
@@ -506,12 +506,12 @@ public class CPlayerGamingDataSO
         }
 
         // 사용 중인 탄창을 버리고 예비 탄창 장착
-        _currentMagazineCount--;
+        _currentCount--;
 
         // 새로운 탄창은 최대 탄약으로 채움
         _currentAmmo = MaxAmmo;
 
-        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentCount);
 
         return true;
     }
@@ -524,10 +524,42 @@ public class CPlayerGamingDataSO
             return;
         }
 
-        _currentMagazineCount += amount;
+        _currentCount += amount;
 
-        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentMagazineCount);
-    }   
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentCount);
+    }
+    #endregion
+
+    #region Ammo Initialize
+
+    public void InitializeCrossbowAmmo()
+    {
+        if (!IsInitialized)
+        {
+            CLog.Warn("[PlayerData] 초기화 전 탄창 설정 요청");
+            return;
+        }
+
+        // 무기 교체 시 탄창이 계속 초기화되지 않도록 방지
+        if (_isAmmoInitialized)
+        {
+            return;
+        }
+
+        // 현재 플레이어의 최종 스탯을 기준으로 탄창 지급
+        _currentAmmo = Mathf.Max(1, _stats.Ammo_Cap);
+        _currentCount = Mathf.Max(1, _stats.Ammo_Count);       
+
+        _isAmmoInitialized = true;
+
+        OnAmmoChanged?.Invoke(_currentAmmo, MaxAmmo, _currentAmmo);
+
+        CLog.Log(
+            $"[PlayerData] 탄창 초기화 완료 / " +
+            $"Ammo : {_currentAmmo}/{_stats.Ammo_Cap} / " +
+            $"Magazine : {_currentCount}");
+    }
+
     #endregion
 
 

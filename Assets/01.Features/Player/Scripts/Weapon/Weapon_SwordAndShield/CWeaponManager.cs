@@ -347,6 +347,8 @@ public class CWeaponManager : MonoBehaviour
         // 플레이어 능력치 적용
         _playerData.SetEquippedWeapon(EWeaponType.Crossbow, crossbow.Tier);
         _playerData.SetWeaponStatBonus(crossbow.StatBonus);
+        _playerData.InitializeCrossbowAmmo();
+        CLog.Log($"[CWeaponManager] 탄 개수 : {_playerData.CurrentAmmo}");
 
         // 석궁 입력 활성화
         _crossbowAttack.enabled = true;
@@ -513,19 +515,33 @@ public class CWeaponManager : MonoBehaviour
 
     private bool ValidateCrossbow(CCrossbowDataSO data)
     {
-        if (data == null || data.CrossbowSprite == null || data.ProjectilePrefab == null)
+        if (data == null || data.CrossbowSprite == null)
         {
             CLog.Warn("[WeaponManager] 석궁 데이터 누락");
             return false;
         }
 
-        // 프리팹 루트에 필수 컴포넌트가 있어야 함(없을 시에만 사용되므로 안정감 올릴 수 있고, 성능저하는 크게 없음)
-        if (!data.ProjectilePrefab.TryGetComponent(out CCrossbowProjectile projectile))
+        switch (data.FireMode)
         {
-            CLog.Warn("[WeaponManager] 투사체 프리팹에 " + "CCrossbowProjectile 누락");
+            case ECrossbowFireMode.Projectile:
+                if (data.ProjectilePrefab == null || !data.ProjectilePrefab.TryGetComponent(out CCrossbowProjectile projectile))
+                {
+                    CLog.Warn("[WeaponManager] 화살 프리팹 누락");
+                    return false;
+                }
 
-            return false;
-        }
+                break;
+
+            case ECrossbowFireMode.Blast:
+                if (data.BlastEffectPrefab == null ||!data.BlastEffectPrefab.TryGetComponent(out CShotgunBlastEffect effect))
+                {
+                    CLog.Warn("[WeaponManager] 샷건 이펙트 누락");
+                    return false;
+                }
+                    break;
+            default:
+                return false;
+        }       
 
         return true;
     }

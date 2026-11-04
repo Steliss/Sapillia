@@ -180,7 +180,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player 2
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1956093274443642226, guid: db227f497e272a84bbeb4d5586fda49d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 2940273657299145489, guid: db227f497e272a84bbeb4d5586fda49d, type: 3}
@@ -273,6 +274,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _playerController: {fileID: 7795116713815676260}
+  _playerGuard: {fileID: 0}
+  _isShield: 1
 --- !u!114 &5087210374545566406
 MonoBehaviour:
   m_ObjectHideFlags: 0
