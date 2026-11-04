@@ -10,7 +10,12 @@ public class CInventorySlotUI : MonoBehaviour
 
     private CInventorySlotData _slotData;
 
+    public Sprite ItemImage => _itemImage.isActiveAndEnabled ? _itemImage.sprite : null;
 
+    /// <summary>
+    /// 슬롯 정보 갱신 함수
+    /// </summary>
+    /// <param name="slotData"></param>
     public void BindSlot(CInventorySlotData slotData)
     {
         _slotData = slotData;

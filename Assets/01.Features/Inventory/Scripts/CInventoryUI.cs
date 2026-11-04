@@ -5,6 +5,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 {
     [SerializeField] private CESCUI _esc;
     [SerializeField] private GameObject _UICanvas;
+    [SerializeField] private CInventoryDrag _drag;
 
     [Header("슬롯 프리팹")]
     [SerializeField] private CInventorySlotUI _slotPrefab;
@@ -55,6 +56,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
             CreateInventory();
+
             CLog.Log("CInventoryUI _dataTask OnEnable 작업 완료");
         });
     }
@@ -84,10 +86,15 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         ActiveUI(!_isActive);
     }
 
-    // 인벤토리 닫기
     public void ActiveUI(bool active)
     {
         _isActive = active;
+
+        if (!active)
+        {
+            _drag.CancelDrag();
+        }
+
         _UICanvas.SetActive(active);
     }
 
@@ -124,10 +131,79 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         for (int i = 0; i < dataList.Count; i++)
         {
             CInventorySlotUI slot = Instantiate(_slotPrefab, root);
-
+            slot.gameObject.SetActive(true);
             slot.BindSlot(dataList[i]);
 
             slotUIList.Add(slot);
         }
+    }
+
+    /// <summary>
+    /// 출발과 도착칸의 데이터를 바꾸고 화면에서 갱신
+    /// </summary>
+    /// <param name="fromSlot"></param>
+    /// <param name="toSlot"></param>
+    /// <returns></returns>
+    public void TryMoveSlot(CInventorySlotUI fromSlot, CInventorySlotUI toSlot)
+    {
+        // 같은 위치거나 창이 안열려 있을 경우 
+        if (!_isActive || fromSlot == toSlot)
+        {
+            return;
+        }
+
+        // 출발과 도착 슬롯이 없으면 종료
+        if (!TryFindSlot(fromSlot, out var fromList, out int fromIndex) || !TryFindSlot(toSlot, out var toList, out int toIndex))
+        {
+            return;
+        }
+
+        // ※ : TODO : 포션 슬롯에 포션만 들어가게 추가 
+
+
+        // 교환을 위한 변수
+        CInventorySlotData fromData = fromList[fromIndex];
+
+        // 같은 영역과 다른 영역 모두 두 위치의 데이터를 교환
+        fromList[fromIndex] = toList[toIndex];
+        toList[toIndex] = fromData;
+
+        // 변경된 두 칸만 갱신
+        fromSlot.BindSlot(fromList[fromIndex]);
+        toSlot.BindSlot(toList[toIndex]);
+
+        return;
+    }
+
+    // 데이터 위치 찾기 
+    // 슬롯의 위치를 기반으로 List에서 인덱스를 비교 리스트값 반환
+    private bool TryFindSlot(
+        CInventorySlotUI slot,
+        out List<CInventorySlotData> dataList,
+        out int index)
+    {
+        index = _inventorySlotUI.IndexOf(slot);
+        if (index >= 0)
+        {
+            dataList = _inventoryData.InventorySlots;
+            return true;
+        }
+
+        index = _potionSlotUI.IndexOf(slot);
+        if (index >= 0)
+        {
+            dataList = _inventoryData.PotionSlots;
+            return true;
+        }
+
+        index = _beltSlotUI.IndexOf(slot);
+        if (index >= 0)
+        {
+            dataList = _inventoryData.ExtraInventorySlots;
+            return true;
+        }
+
+        dataList = null;
+        return false;
     }
 }

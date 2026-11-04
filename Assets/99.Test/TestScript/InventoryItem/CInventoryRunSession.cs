@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// 플레이어 런 섹션과 같음
+// 런타임중 데이터 생성 관리
 public class CInventoryRunSession : MonoBehaviour
 {
     [SerializeField] private CItemDatabaseSO _itemDatabase;
