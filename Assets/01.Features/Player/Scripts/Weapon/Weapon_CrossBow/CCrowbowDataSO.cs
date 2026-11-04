@@ -8,7 +8,6 @@ public class CCrossbowDataSO : ScriptableObject
     [Header("석궁 정보")]
     [Min(1)]
     [SerializeField] private int _tier = 1;
-
     [SerializeField] private string _weaponName;
 
     [Header("공격 데이터")]
@@ -21,6 +20,10 @@ public class CCrossbowDataSO : ScriptableObject
     [Header("Ammo")]
     [SerializeField] private GameObject _projectilePrefab;
     [SerializeField] private float _projectileRange = 5.0f;
+
+    [Header("재장전")]
+    [Min(0.01f)]
+    [SerializeField] private float _reloadDuration = 2f;
 
     [Min(0.1f)]
     [SerializeField] private float _projectileSpeed = 12f;
@@ -62,7 +65,7 @@ public class CCrossbowDataSO : ScriptableObject
 
     public int BaseDamage => _baseDamage;
     public float AttackInterval => _attackInterval;
-
+    public float ReloadDuration => _reloadDuration;
     public GameObject ProjectilePrefab => _projectilePrefab;
     public float ProjectileSpeed => _projectileSpeed;
     public float ProjectileRange => _projectileRange;

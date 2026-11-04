@@ -23,6 +23,12 @@ public class CDungeonGenerator : MonoBehaviour
     [Header("보상 생성 테스트")]
     [SerializeField] private ERewardType _selectedRewardType = ERewardType.Artifact;
     [SerializeField] private bool _spawnWanderingMerchant = false;
+
+    [Header("보상 프리팹 데이터")]
+    [SerializeField] private CRewardPrefabSO _rewardPrefabData;
+
+    [Header("플레이어")]
+    [SerializeField] private GameObject _player;
     #endregion
 
     #region 내부 변수
@@ -42,7 +48,14 @@ public class CDungeonGenerator : MonoBehaviour
 
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
 
+    private bool _isReady = false;
     #endregion
+
+    #region 프로퍼티
+    public bool IsReady => _isReady;
+
+    #endregion
+
 
 
     private void Awake()
@@ -76,6 +89,7 @@ public class CDungeonGenerator : MonoBehaviour
     private void GenerateNewDungeon()
     {        
         CFloorDataSO floorData = GetCurrentFloorData();
+        _isReady = false;
 
         if (floorData == null)
         {
@@ -132,6 +146,7 @@ public class CDungeonGenerator : MonoBehaviour
             {
                 Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
                 SpawnRooms();
+                _isReady = true;
                 return;
             }
         }
@@ -766,6 +781,12 @@ public class CDungeonGenerator : MonoBehaviour
                 _generatedDungeonRoot
             );
 
+            // 플레이어 위치지정
+            if ((spawnedRoom.RoomType == ERoomType.Start) || (spawnedRoom.RoomType == ERoomType.Anvil))
+            {
+                MovePlayerToStartRoom(spawnedRoom);
+            }
+
             // 보상 방인 경우 선택된 보상 정보 전달
             if (spawnedRoom.RoomType == ERoomType.Reward)
             {
@@ -773,7 +794,13 @@ public class CDungeonGenerator : MonoBehaviour
 
                 if (rewardRoom != null)
                 {
-                    rewardRoom.Initialize(_selectedRewardType);
+                    if (_rewardPrefabData == null)
+                    {
+                        Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
+                    }
+
+                    GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
+                    rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
                 }
                 else
                 {
@@ -896,6 +923,24 @@ public class CDungeonGenerator : MonoBehaviour
     {
         return _roomConnectionValidator.ValidateRoomConnections(_roomPlacements);
     }
+
+    private void MovePlayerToStartRoom(CRoomData startRoom)
+    {
+        if (_player == null)
+        {
+            Debug.LogWarning("플레이어 인스펙터 확인");
+            return;
+        }
+
+        if (startRoom.PlayerSpawnPoint == null)
+        {
+            Debug.LogWarning("시작 방 스폰포인트가 없음");
+            return;
+        }
+
+        _player.transform.position = startRoom.PlayerSpawnPoint.position;
+    }
+
 
 
 

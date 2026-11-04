@@ -45,14 +45,14 @@ public class CCrossbowProjectile : MonoBehaviour
         if (_rb == null)
         {
             CLog.Warn("[CrossbowProjectile] Rigidbody2D 누락");
-            ReturnToPool();
+            //ReturnToPool();
             return;
         }
 
         if (direction.sqrMagnitude < 0.0001f || speed <= 0f)
         {
             CLog.Warn("[CrossbowProjectile] 발사 방향 또는 속도 오류");
-            ReturnToPool();
+            //ReturnToPool();
             return;
         }
 
@@ -129,7 +129,7 @@ public class CCrossbowProjectile : MonoBehaviour
         {
             CLog.Log("[Projectile] 벽 충돌");
 
-            ReturnToPool();
+            //ReturnToPool();
             return;
         }
 
@@ -149,7 +149,7 @@ public class CCrossbowProjectile : MonoBehaviour
     #endregion
 
     #region Pool
-
+    /*
     private void ReturnToPool()
     {
         if (!_isLaunched && !gameObject.activeSelf)
@@ -174,7 +174,7 @@ public class CCrossbowProjectile : MonoBehaviour
             gameObject.SetActive(false);
         }
     }
-
+    */
     private void OnDisable()
     {
         _isLaunched = false;
@@ -210,7 +210,8 @@ public class CCrossbowProjectile : MonoBehaviour
 
         if(_travelledDistance >= _maxRange)
         {
-            ReturnToPool();
+            CLog.Log($"[CCrossbowProjectile] {_travelledDistance} 끝 사거리 도달");
+            //ReturnToPool();
         }
     }
 

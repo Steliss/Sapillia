@@ -360,7 +360,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _dataManger.LoadGame(0);
-        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+        //_cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
     }
     private void GameStart1()
     {

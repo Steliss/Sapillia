@@ -13,9 +13,29 @@ using UnityEngine;
 /// </summary>
 public abstract class CItemSO : ScriptableObject
 {
-    public int ItemID;
-    public string Name;
-    public string Description;
-    public EItemType Type;
-    public Sprite Icon;
+    #region 인스펙터
+
+    [SerializeField] private int _itemID;
+    [SerializeField] private string _nameKey;
+    [SerializeField] private string _descriptionKey;
+    [SerializeField] private Sprite _icon;
+
+    #endregion
+
+
+    #region 프로퍼티
+
+    public int ItemID => _itemID;
+    public string NameKey => _nameKey;
+    public string DescriptionKey => _descriptionKey;
+    public Sprite Icon => _icon;
+
+    public virtual EItemType Type { get; }
+
+    #endregion
+
+
+
+
+
 }
