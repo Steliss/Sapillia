@@ -15,9 +15,6 @@ public class CDashAfterimageEffect : MonoBehaviour
     [Range(0f, 1f)]
     [SerializeField] private float _startAlpha = 0.5f;
 
-    [SerializeField]
-    private Color _tintColor = new Color(0.6f, 0.85f, 1f, 1f);
-
     [Min(0)]
     [SerializeField] private int _sortingOrderOffset = 1;
 
