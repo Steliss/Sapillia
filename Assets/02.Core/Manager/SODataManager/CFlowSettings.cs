@@ -228,8 +228,11 @@ public class CFlowGame
     [SerializeField] private string _name = string.Empty;
     [SerializeField] private int _playerprogress = 0; // 스테이지 진행도 애로 쓸까?
     [SerializeField] private int _playerretrycount = 0;
+    [SerializeField] private int _sapphire = 0;
     [SerializeField] private long _playerplaytime = 0;
     [SerializeField] private byte _saveSlot = 0;
+
+
 
     public EScene CurrentScene => _currentScene;
 
@@ -238,6 +241,11 @@ public class CFlowGame
     public int PlayerRetrycount => _playerretrycount;
     public long Playerplaytime => _playerplaytime;
     public byte SaveSlot => _saveSlot;
+    public int Sapphire => _sapphire;
+
+
+    public event Action<int> OnSapphireChanged;
+
     public void SetCurrentScene(EScene currentScene)
     {
         _currentScene = currentScene;
@@ -271,5 +279,39 @@ public class CFlowGame
     public void SetSaveSlot(byte slot)
     {
         _saveSlot = slot;   
+    }
+
+    /// <summary>
+    /// 사파이어 획득
+    /// </summary>
+    /// <param name="amount"></param>
+    public void AddDice(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        _sapphire += amount;
+        OnSapphireChanged?.Invoke(_sapphire);
+    }
+
+    /// <summary>
+    /// 사파이어 사용 시도
+    /// </summary>
+    /// <param name="amount"></param>
+    /// <returns></returns>
+    public bool TrySpendDice(int amount)
+    {
+        if (amount < 0 || _sapphire < amount)
+        {
+            return false;
+        }
+
+        _sapphire -= amount;
+
+        OnSapphireChanged?.Invoke(_sapphire);
+
+        return true;
     }
 }

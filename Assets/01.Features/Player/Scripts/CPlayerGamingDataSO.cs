@@ -30,6 +30,7 @@ public class CPlayerGamingDataSO
     [SerializeField] private int _requiredMoney;
     [SerializeField] private int _level;
     [SerializeField] private int _money;
+    [SerializeField] private int _dice;
 
     [SerializeField] private float _mpRegenProgress;
     [SerializeField] private float _dashRegenProgress;
@@ -58,6 +59,7 @@ public class CPlayerGamingDataSO
     public int RequiredMoney => _requiredMoney;
     public int Level => _level;
     public int Money => _money;
+    public int Dice => _dice;
     public bool IsInitialized { get;  set; }
     public int EquippedWeaponTier => _equippedWeaponTier;
     public int CurrentAmmo => _currentAmmo;
@@ -91,6 +93,7 @@ public class CPlayerGamingDataSO
 
     public event Action<int, int> OnEXPChanged;
     public event Action<int> OnMoneyChanged;
+    public event Action<int> OnDiceChanged;
     public event Action<int> OnLevelChanged;
     public event Action<int, int, int> OnAmmoChanged;
     #endregion
@@ -452,7 +455,34 @@ public class CPlayerGamingDataSO
 
 
     }
-   
+
+    // 주사위 획득
+    public void AddDice(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        _dice += amount;
+        OnDiceChanged?.Invoke(_dice);
+    }
+
+    // 주사위 사용 시도
+    public bool TrySpendDice(int amount)
+    {
+        if (amount < 0 || _dice < amount)
+        {
+            return false;
+        }
+
+        _dice -= amount;
+
+        OnDiceChanged?.Invoke(_dice);
+
+        return true;
+    }
+
     // 현재자원(HP, MP) 최대로 초기화
     // 메인 게임 시작시 or 체력 혹은 마나 변경되는 코스튬 적용시에만 사용하게될 예정
     public void FillResourceToMax()
