@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7537637290403645613}
   - component: {fileID: 6227167124323013255}
   - component: {fileID: 6883056812300774900}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1588,6 +1588,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 0
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &1947542813405949410
 GameObject:
   m_ObjectHideFlags: 0
@@ -1653,7 +1654,7 @@ GameObject:
   - component: {fileID: 390098007125694978}
   - component: {fileID: 3483449889203311448}
   - component: {fileID: 3011980900311276723}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5116,7 +5117,7 @@ GameObject:
   - component: {fileID: 319510360986579377}
   - component: {fileID: 8485962836976638424}
   - component: {fileID: 2064979559947698320}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

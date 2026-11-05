@@ -3548,7 +3548,7 @@ GameObject:
   - component: {fileID: 4067889742371632063}
   - component: {fileID: 4264987850386751775}
   - component: {fileID: 860769465119651236}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ThirdRoom2Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4389,7 +4389,7 @@ GameObject:
   - component: {fileID: 7498235237076175852}
   - component: {fileID: 8391711707199657209}
   - component: {fileID: 7042389945341135185}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6391,6 +6391,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 0
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &8583417414070108699
 GameObject:
   m_ObjectHideFlags: 0
@@ -6523,7 +6524,7 @@ GameObject:
   - component: {fileID: 1456981601625261287}
   - component: {fileID: 1269994148406255758}
   - component: {fileID: 3748509636795883113}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: ThirdRoom2Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

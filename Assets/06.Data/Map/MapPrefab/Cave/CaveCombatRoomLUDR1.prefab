@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3440469965820223395}
   - component: {fileID: 5616335245678743776}
   - component: {fileID: 759686284049265103}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CaveCombat1Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -762,6 +762,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 1
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &4186890901763756422
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,7 +776,7 @@ GameObject:
   - component: {fileID: 7445180530003668303}
   - component: {fileID: 3746968494581081212}
   - component: {fileID: 8193468474078304745}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CaveCombat1Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4796,7 +4797,7 @@ GameObject:
   - component: {fileID: 8711188169216123409}
   - component: {fileID: 1420909717105798384}
   - component: {fileID: 4903294467207291056}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CaveCombat1Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

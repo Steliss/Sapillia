@@ -176,6 +176,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 1
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &4318371050220475432
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +190,7 @@ GameObject:
   - component: {fileID: 3702617791302821618}
   - component: {fileID: 1797384500173430074}
   - component: {fileID: 6203521695737629652}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatObstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -917,7 +918,7 @@ GameObject:
   - component: {fileID: 1677862078413438637}
   - component: {fileID: 4702620807147114634}
   - component: {fileID: 5036235156092501}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5042,7 +5043,7 @@ GameObject:
   - component: {fileID: 5329541908454640678}
   - component: {fileID: 3505429779118485902}
   - component: {fileID: 8207860579946918857}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -601,6 +601,7 @@ MonoBehaviour:
   _left2: 1
   _right1: 0
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &3060069548253312746
 GameObject:
   m_ObjectHideFlags: 0
@@ -614,7 +615,7 @@ GameObject:
   - component: {fileID: 1452532343801328583}
   - component: {fileID: 2875047262882170262}
   - component: {fileID: 7207531315513612797}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1629,7 +1630,7 @@ GameObject:
   - component: {fileID: 4431352954387373954}
   - component: {fileID: 2157613131067836615}
   - component: {fileID: 3045146175858795630}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
