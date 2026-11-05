@@ -45,14 +45,14 @@ public class CCrossbowProjectile : MonoBehaviour
         if (_rb == null)
         {
             CLog.Warn("[CrossbowProjectile] Rigidbody2D 누락");
-            this.enabled = false;
+            gameObject.SetActive(false);
             return;
         }
 
         if (direction.sqrMagnitude < 0.0001f || speed <= 0f)
         {
             CLog.Warn("[CrossbowProjectile] 발사 방향 또는 속도 오류");
-            this.enabled = false;
+            gameObject.SetActive(false);
             return;
         }
 
@@ -129,7 +129,7 @@ public class CCrossbowProjectile : MonoBehaviour
         {
             CLog.Log("[Projectile] 벽 충돌");
 
-            this.enabled = false;
+            gameObject.SetActive(false);
             return;
         }
 

@@ -15,13 +15,13 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     #region 인스펙터
 
     [Header("참조")]
-    // Test에서는 사용 ※
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
     [SerializeField] private CPlayerController _playerController;
 
-    [Header("Test")]
-    [SerializeField] private bool _isInCombat;
+    [Header("달리기 설정")]
+    [Min(0.1f)]
+    [SerializeField] private float _runAcceleration = 35f;
 
     #endregion
 
@@ -30,7 +30,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // 런타임 데이터
     private CPlayerGamingDataSO _playerData;
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
-    private CUniTaskOnes _inputTask2 = new CUniTaskOnes();
     private CPlayerRunSession _session;
     private CDataManger _dataManager;
 
@@ -40,6 +39,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     private Vector2 _moveDirection;
     private Vector2 _facingDirection = Vector2.down;
     private Vector2 _dashDirection;
+    private Vector2 _runVelocity;
 
     // 대쉬 관련
     private float _dashTimer;
@@ -63,7 +63,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     public Vector2 MoveDirection => _moveDirection;
     public Vector2 FacingDirection => _facingDirection;
-    public bool IsInCombat => _isInCombat;
+    public bool IsInCombat => _playerData != null && _playerData.GetIsBattle;
     public float DashRemainingTime => _dashTimer;
     public float DashCoolRemaining => _dashCooldownTimer;
 
@@ -183,6 +183,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         UnRegisterInput();
 
         _moveDirection = Vector2.zero;
+        _runVelocity = Vector2.zero;
         _spaceHeld = false;
         _dashRequested = false;
 
@@ -287,7 +288,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     {
         bool pressed = value > 0.5f;
 
-        if (_isInCombat && pressed && !_spaceHeld)
+        if (pressed && !_spaceHeld)
         {
             _dashRequested = true;
         }
@@ -317,11 +318,6 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         }
 
         _dashRequested = false;
-
-        if (!_isInCombat)
-        {
-            return;
-        }
 
         if (_dashTimer > 0f || _dashCooldownTimer > 0f)
         {
@@ -364,30 +360,45 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         {
             _moveState = EPlayerMoveState.Dash;
 
+            // 대쉬 중 방향 고정
             velocity = _dashDirection * stats.DashSpeed;
 
             _dashTimer = Mathf.Max(0f, _dashTimer - Time.fixedDeltaTime);
+            // 대시 종료 후 달리기 시작
+            _runVelocity = Vector2.zero;
         }
         // 정지
         else if (_moveDirection.sqrMagnitude < 0.0001f)
         {
             _moveState = EPlayerMoveState.Idle;
+            _runVelocity = Vector2.zero;
         }
         // 걷기 / 달리기
         else
         {
-            bool canRun = !_isInCombat && _spaceHeld;
-
-            _moveState = canRun ? EPlayerMoveState.Run : EPlayerMoveState.Walk;
-
+            // 비전투 + 스페이스 유지시
+            bool canRun = !IsInCombat && _spaceHeld;
             float speed = stats.Movement_Speed;
 
             if (canRun)
             {
-                speed *= stats.Run_SpeedMulitplier;
-            }
+                _moveState = EPlayerMoveState.Run;
+                float runSpeed = speed * stats.Run_SpeedMulitplier;
+                // 현재 입력 방향을 목표 속도로
+                Vector2 targetVelocity = _moveDirection * runSpeed;
+                // 부드럽게 속도 변경
+                _runVelocity = Vector2.MoveTowards(_runVelocity, targetVelocity, _runAcceleration * Time.fixedDeltaTime);
 
-            velocity = _moveDirection * speed;
+                velocity = _runVelocity;
+            }
+            else
+            {
+                _moveState = EPlayerMoveState.Walk;
+                // 기본 걷기 속도
+                velocity = _moveDirection * speed;
+                // 걷기에서 달리기로 전환할 때 속도 연결
+                _runVelocity = velocity;
+            }
         }
 
         // 바라보는 방향
@@ -403,25 +414,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     #endregion
 
-    #region 전투모드
 
-    public void SetCombatState(bool isCombat)
-    {
-        if (_isInCombat == isCombat)
-        {
-            return;
-        }
-
-        _isInCombat = isCombat;
-
-        if (!_isInCombat)
-        {
-            _dashRequested = false;
-            _dashTimer = 0f;
-        }
-    }
-
-    #endregion
 
     #region 반동
     // 외부 공격 시스템에서 반동 요청
