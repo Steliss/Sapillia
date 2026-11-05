@@ -163,6 +163,37 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!1 &4377413374889968664
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2433423114473626019}
+  m_Layer: 6
+  m_Name: DustEffect
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2433423114473626019
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4377413374889968664}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3835911833130112720}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4669692307282679193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1100,6 +1131,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6729845664306077402, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8470468875224976992}
+    - targetCorrespondingSourceObject: {fileID: 6729845664306077402, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2433423114473626019}
     - targetCorrespondingSourceObject: {fileID: 4181436284255610953, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 101458345633175259}
@@ -1241,6 +1275,7 @@ MonoBehaviour:
   _inputHub: {fileID: 0}
   _player: {fileID: 320603148713139566}
   _firePoint: {fileID: 7277236792504716256}
+  _playerMovement: {fileID: 0}
   _crossbowData: {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
   _shotgunBlast: {fileID: 5299386650693850383}
 --- !u!70 &7081374978875803095
