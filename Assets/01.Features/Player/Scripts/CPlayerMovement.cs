@@ -18,10 +18,13 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private Rigidbody2D _rb2D;
     [SerializeField] private CPlayerController _playerController;
+    [SerializeField] private CPlayerDashDust _dashDustSpawner;
 
     [Header("달리기 설정")]
     [Min(0.1f)]
     [SerializeField] private float _runAcceleration = 35f;
+    [Min(0.05f)]
+    [SerializeField] private float _runDustInterval = 0.15f;
 
     #endregion
 
@@ -54,6 +57,9 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     // 특수공격 등의 외부 반동
     private Vector2 _recoilVelocity;
     private float _recoilDeceleration;
+
+    // 먼지 이펙트 관련
+    private float _runDustTimer;
 
     #endregion
 
@@ -189,6 +195,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _dashTimer = 0f;
         _dashCooldownTimer = 0f;
+        _runDustTimer = 0f;
 
         _moveState = EPlayerMoveState.Idle;
 
@@ -343,6 +350,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _dashTimer = stats.DashDuration;
         _dashCooldownTimer = stats.DashCooldown;
+
+        if (_dashDustSpawner != null)
+        {
+            _dashDustSpawner.PlayDust(_dashDirection);
+        }
     }
 
     #endregion
@@ -407,8 +419,12 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
             _facingDirection = _moveDirection.normalized;
         }
 
+        // 달리기 먼지 처리
+        UpdateRunDust(velocity);
+
         // Rigidbody 이동
         Vector2 finalVelocity = velocity + ConsumeRecoilVelocity();
+
         _rb2D.MovePosition(_rb2D.position + finalVelocity * Time.fixedDeltaTime);
     }
 
@@ -439,6 +455,44 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         return velocity;
     }
+    #endregion
+
+    #region 달리기 먼지 효과
+
+    private void UpdateRunDust(Vector2 velocity)
+    {
+        // 달리기 상태가 아니면 생성 중지
+        if (_moveState != EPlayerMoveState.Run)
+        {
+            _runDustTimer = 0f;
+            return;
+        }
+
+        // 이동하지 않으면 생성 중지
+        if (velocity.sqrMagnitude < 0.0001f)
+        {
+            _runDustTimer = 0f;
+            return;
+        }
+
+        // 먼지 생성 쿨타임
+        _runDustTimer -= Time.fixedDeltaTime;
+
+        if (_runDustTimer > 0f)
+        {
+            return;
+        }
+
+        // 현재 이동 방향에 해당하는 먼지 생성
+        if (_dashDustSpawner != null)
+        {
+            _dashDustSpawner.PlayDust(velocity.normalized);
+        }
+
+        // 다음 생성 시간 설정
+        _runDustTimer = _runDustInterval;
+    }
+
     #endregion
 }
 

@@ -1797,6 +1797,7 @@ MonoBehaviour:
     _name: 
     _playerprogress: 0
     _playerretrycount: 0
+    _sapphire: 0
     _playerplaytime: 0
     _saveSlot: 0
   _currentFlow:
@@ -1804,6 +1805,7 @@ MonoBehaviour:
     _name: 
     _playerprogress: 0
     _playerretrycount: 0
+    _sapphire: 0
     _playerplaytime: 0
     _saveSlot: 0
   _playerData: {fileID: 1300565264}
@@ -2790,7 +2792,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &2077907588
 AudioListener:
   m_ObjectHideFlags: 0
@@ -2873,6 +2875,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1797603323278430273, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+      propertyPath: _dashDustSpawner
+      value: 
+      objectReference: {fileID: 3793438326317744055}
     - target: {fileID: 3194533424404011165, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
       propertyPath: _playerMovement
       value: 
@@ -2924,19 +2930,71 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2649564794966598679, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3793438326317744055}
+    - targetCorrespondingSourceObject: {fileID: 2649564794966598679, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3793438326317744057}
   m_SourcePrefab: {fileID: 100100000, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
 --- !u!114 &3793438326317744052 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1797603323278430273, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
   m_PrefabInstance: {fileID: 3793438326317744051}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 3793438326317744053}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e5337564a8eda0c4aba78b7db4da7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3793438326317744053 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2649564794966598679, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+  m_PrefabInstance: {fileID: 3793438326317744051}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3793438326317744054 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2433423114473626019, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+  m_PrefabInstance: {fileID: 3793438326317744051}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3793438326317744055
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793438326317744053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cf7dd787f162741a89484c1c120067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dustData: {fileID: 11400000, guid: a12e9eaec9e64d64da9673b14f582a9e, type: 2}
+  _dustPrefab: {fileID: 4624517844496740489, guid: 09eb5ccaf45019c48a192839ea271ad8, type: 3}
+  _spawnPoint: {fileID: 3793438326317744054}
+--- !u!212 &3793438326317744056 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 1139545388701754042, guid: 9860e88fcaa2ce144b8c5e24b55886a0, type: 3}
+  m_PrefabInstance: {fileID: 3793438326317744051}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &3793438326317744057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3793438326317744053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c45c4794a933bac4183a01ce85761def, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _movement: {fileID: 3793438326317744052}
+  _playerSprite: {fileID: 3793438326317744056}
+  _afterimagePrefab: {fileID: 2120465240434935638, guid: 09d3bb94664647246a37ece7b17c9792, type: 3}
+  _spawnInterval: 0.04
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -165,7 +165,7 @@ public struct SPlayerStats
 
         Attack_Speed = Mathf.Max(0.01f, Attack_Speed);
         Movement_Speed = Mathf.Max(0f, Movement_Speed);
-        Run_SpeedMulitplier = Mathf.Max(1f, Run_SpeedMulitplier);
+        Run_SpeedMulitplier = Mathf.Max(1.5f, Run_SpeedMulitplier);
 
         Bargain = Mathf.Max(0, Bargain);
         Luck = Mathf.Max(0, Luck);
@@ -222,7 +222,7 @@ public struct SPlayerStats
 
             Attack_Speed = 1f,
             Movement_Speed = 3f,
-            Run_SpeedMulitplier = 1.6f,
+            Run_SpeedMulitplier = 2.5f,
 
             Bargain = 0,
             Luck = 0,
