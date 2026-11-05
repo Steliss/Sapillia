@@ -205,6 +205,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _inputTask?.Cancel();
         _sceneTask?.Cancel();
         _localizationTask?.Cancel(); 
+        _dataTask.Cancel();
         _settingTask?.Cancel();
 
         _input.Unregister(EKeyAction.ESC, this);
