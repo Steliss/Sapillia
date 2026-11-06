@@ -46,12 +46,26 @@ public class CInventorySlotData
     {
         ItemID = 0;
         Count = 0;
-        EnhanceLevel = 0;
         ItemType = EItemType.None;
         Rotation = ETabletRotation.None;
 
         ItemSO = null;
     }
+
+    public SPlayerStats GetArtifactStats()
+    {
+        if (IsEmpty || ItemSO is not CArtifactSO artifact)
+        {
+            return default;
+        }
+
+        return artifact.GetStats(EnhanceLevel);
+    }
+
+
+    
+
+
 }
 
 [Serializable]
@@ -117,5 +131,20 @@ public class CInventoryData
 
         _inventorySize = inventorySlots.Count;
 
+    }
+
+
+    public SPlayerStats GetTotalArtifactStats()
+    {
+        SPlayerStats totalStats = default;
+
+        foreach (CInventorySlotData slot in inventorySlots)
+        {
+            SPlayerStats slotStats = slot.GetArtifactStats();
+
+            totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
+        }
+
+        return totalStats;
     }
 }

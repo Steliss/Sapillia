@@ -11,51 +11,52 @@ public class FirstMiniBossGate : MonoBehaviour
 
     #endregion
 
-    #region 인스펙터
+    #region 내부변수
 
     private bool _isOpened = true;
 
     #endregion
 
-
-
-
-    void Update()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        DoorClose();
-        DoorOpen();
+        if (!other.CompareTag("Player"))
+            return;
 
+        Debug.Log("플레이어가 문 트리거에 닿음");
+
+        if (_isOpened)
+        {
+            DoorClose();
+        }
+        else
+        {
+            DoorOpen();
+        }
     }
-
 
     private void DoorClose()
     {
         if (!_isOpened)
-        {
             return;
-        }
 
+        _anim.ResetTrigger("Open");
+        _anim.SetTrigger("Close");
 
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            _anim.SetTrigger("Close");
-            _isOpened = false;
-        }
+        _isOpened = false;
+
+        Debug.Log("문 닫기");
     }
-
 
     private void DoorOpen()
     {
         if (_isOpened)
-        {
             return;
-        }
 
-        if(Input.GetKeyDown(KeyCode.W))
-        {
-            _anim.SetTrigger("Open");
-        }
+        _anim.ResetTrigger("Close");
+        _anim.SetTrigger("Open");
+
+        _isOpened = true;
+
+        Debug.Log("문 열기");
     }
-
-
 }

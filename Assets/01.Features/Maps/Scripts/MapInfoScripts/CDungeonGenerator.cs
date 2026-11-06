@@ -788,25 +788,25 @@ public class CDungeonGenerator : MonoBehaviour
             }
 
             // 보상 방인 경우 선택된 보상 정보 전달
-            if (spawnedRoom.RoomType == ERoomType.Reward)
-            {
-                CRewardRoom rewardRoom = spawnedRoom.GetComponent<CRewardRoom>();
+            //if (spawnedRoom.RoomType == ERoomType.Reward)
+            //{
+            //    CRewardRoom rewardRoom = spawnedRoom.GetComponent<CRewardRoom>();
 
-                if (rewardRoom != null)
-                {
-                    if (_rewardPrefabData == null)
-                    {
-                        Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
-                    }
+            //    if (rewardRoom != null)
+            //    {
+            //        if (_rewardPrefabData == null)
+            //        {
+            //            Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
+            //        }
 
-                    GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
-                    rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
-                }
-                else
-                {
-                    Debug.LogWarning("보상 방에 CRewardRoom 컴포넌트가 없습니다.");
-                }
-            }
+            //        GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
+            //        rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
+            //    }
+            //    else
+            //    {
+            //        Debug.LogWarning("보상 방에 CRewardRoom 컴포넌트가 없습니다.");
+            //    }
+            //}
 
             for (int number = 1; number <= 2; number++)
             {
