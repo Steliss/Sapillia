@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b9d1d27154ad9c45a66a7da9f88d4fb, type: 3}
+  m_Name: Enemy_Attack_HomingMelee_Boss01
+  m_EditorClassIdentifier: 
+  _attackInfos:
+  - Projectile: {fileID: 7360666606340330368, guid: 935e1d281fa4c624385f28817d536b5c, type: 3}
+    HasAngle: 1
+    AttackDistans: 1
+    BeforeDelay: 1.5
+    AttackTime: 0.7
+    AfterDelay: 0.5
+    RushDistanse: 8
+    TrackingSpeed: 50
+    AniAttReady: AttReady01
+    AniAttack: Attack01
+  - Projectile: {fileID: 2545720573446719062, guid: 796d37d1b8b6f70418ef36ae464835b7, type: 3}
+    HasAngle: 1
+    AttackDistans: 1
+    BeforeDelay: 1
+    AttackTime: 0.7
+    AfterDelay: 1
+    RushDistanse: 8
+    TrackingSpeed: 90
+    AniAttReady: AttReady02
+    AniAttack: Attack02
+  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+  _lineLength: 3
+  _lineInterbal: 1.2
+  _lineDistanse: 2.5

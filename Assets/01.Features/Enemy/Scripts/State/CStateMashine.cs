@@ -200,6 +200,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
     private void OnDisable()
     {
+        GameObjectsListClear();
         _attackUni.Cancel();
         _hurtUni.Cancel();
         _searchUni.Cancel();
@@ -412,7 +413,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         {
             for (int i = 0; i < _gameObjects.Count; i++)
             {
-                if (_gameObjects[i].activeSelf)
+                if (_gameObjects[i] != null &&_gameObjects[i].activeSelf)
                 {
                     _gameObjects[i].SetActive(false);
                 }
@@ -478,6 +479,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             if (_superArmor <= 0)
             {
                 _superArmor = 0f;
+                _attackUni.Cancel();
                 StateChanged(_airbornState);
                 _sprite.material.SetFloat(_outLineId, 0f);
             }
@@ -507,6 +509,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
                 CLog.Warn("예외 발생! 강제 비활성화");
                 gameObject.SetActive(false);
             });
+            _attackUni.Cancel();
             StateChanged(_airbornState);
             return;
         }

@@ -44,12 +44,19 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
     private CUniTaskOnes _uni = new CUniTaskOnes();
     #endregion
 
+    #region 유니티 이벤트 함수
     private void OnEnable()
     {
         _hashJumpAttReady = Animator.StringToHash(_stateJumpAttReady);
         _hashJump = Animator.StringToHash(_stateJump);
         _hashJumpAttack = Animator.StringToHash(_stateJumpAttack);
     }
+
+    private void OnDisable()
+    {
+        _uni.Cancel();
+    }
+    #endregion
 
     public override void StateEnter()
     {

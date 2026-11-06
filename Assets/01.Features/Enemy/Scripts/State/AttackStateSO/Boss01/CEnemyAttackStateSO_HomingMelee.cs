@@ -3,23 +3,38 @@ using System;
 using System.Threading;
 using UnityEngine;
 
+[CreateAssetMenu(menuName = "SO/Enemy/AttackState/HomingMelee", fileName = "Enemy_Attack_HomingMelee_")]
 public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
 {
+    #region 내부 구조체
+    [Serializable]
+    public struct SEnemyAttackInfo
+    {
+        [Header("프리팹")]
+        public GameObject Projectile;
+        public bool HasAngle;
+        public float AttackDistans;
+        [Header("선딜, 공격시간, 후딜")]
+        public float BeforeDelay;
+        public float AttackTime;
+        public float AfterDelay;
+        [Header("공격시 돌진 거리")]
+        public float RushDistanse;
+        [Header("추적 속도 (초당 회전각도)")]
+        public float TrackingSpeed;
+
+        [Header("===== 애니메이터 =====")]
+        public string AniAttReady;
+        public string AniAttack;
+        [Header("해시용 변수 입력x")]
+        [HideInInspector] public int HashAttReady;
+        [HideInInspector] public int HashAttack;
+    }
+    #endregion
+
     #region 인스펙터
     [Header("===== 공격 =====")]
-    [Header("프리팹")]
-    [SerializeField] private GameObject _projectile;
-    [SerializeField] private bool _hasAngle = true;
-    [SerializeField] private float _attackDistans = 1f;
-    [Header("선딜, 공격시간, 후딜")]
-    [SerializeField] private float _beforeDelay = 2f;
-    [SerializeField] private float _attackTime = 1f;
-    [SerializeField] private float _afterDelay = 0.5f;
-    [Header("공격시 돌진 거리")]
-    [SerializeField] private float _rushDistanse = 5f;
-    [Header("연속 공격 횟수")]
-    [Min(1)]
-    [SerializeField] private int _AttackCount = 2;
+    [SerializeField] private SEnemyAttackInfo[] _attackInfos;
     [Space(10)]
     [Header("===== 전조 =====")]
     [Header("프리팹")]
@@ -27,56 +42,58 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
     [Header("길이")]
     [SerializeField] private float _lineLength = 3f;
     [Header("간격")]
-    [SerializeField] private float _interbal = 1f;
+    [SerializeField] private float _lineInterbal = 1f;
     [Header("위치")]
-    [SerializeField] private float _distanse = 2.5f;
+    [SerializeField] private float _lineDistanse = 2.5f;
     #endregion
 
     #region 내부 변수
     private CUniTaskOnes _uni = new CUniTaskOnes();
     #endregion
 
+    #region 이벤트 함수
+    private void OnEnable()
+    {
+        for (int i = 0; i < _attackInfos.Length; i++)
+        {
+            _attackInfos[i].HashAttReady = Animator.StringToHash(_attackInfos[i].AniAttReady);
+            _attackInfos[i].HashAttack = Animator.StringToHash(_attackInfos[i].AniAttack);
+        }
+    }
+
+    private void OnDisable()
+    {
+        _uni.Cancel();
+    }
+    #endregion
+
+
+
     public override void StateEnter()
     {
         _mashine.AttackUni.Cancel();
         _mashine.AttackUni.Run(async ct =>
         {
-            // 사용할 변수 계산
             Vector2 myPos = _mashine.transform.position;
-            Vector2 tarPos = _mashine.Target.position;
+            Vector2 targetPos = _mashine.Target.position;
+            Vector2 dir = (targetPos - myPos).normalized;
+            float aimAngle = DirToAngle(dir);
 
-            Vector2 dir = (tarPos - myPos).normalized;              // 방향
-            Vector2 dir90 = new Vector2(-dir.y, dir.x);             // 법선
-            float angle = DirToAngle(dir);                          // 각도
-            Quaternion qua = Quaternion.Euler(0, 0, angle);         // 쿼터니언
-            Vector2 linePos = myPos + (dir * _distanse);
-
-            // 좌우 반전
-            if (dir.x < 0)
+            for (int i = 0; i < _attackInfos.Length; i++)
             {
-                _mashine.SpriteFlipX(true);
-            }
-            else
-            {
-                _mashine.SpriteFlipX(false);
-            }
+                // 선딜레이
+                aimAngle = await TrackingAim(ct, aimAngle, _attackInfos[i]);
 
-            // 선딜레이
-            await BeforeDelay(ct, linePos, dir90, qua);
+                // 공격
+                await Attack(ct, aimAngle, _attackInfos[i]);
 
-            // 공격
-            for (int i = 0; i < _AttackCount; i++)
-            {
-                await Attack(ct, dir, qua);
-
-                if (i != _AttackCount - 1)
-                {
-                    _mashine.Ani.Play(_mashine.HashAttReady);
-                }
                 // 후딜레이
-                await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
+                await UniTask.Delay
+                    (
+                    TimeSpan.FromSeconds(_attackInfos[i].AfterDelay), 
+                    cancellationToken: ct
+                    );
             }
-
 
             _mashine.StateChanged(_mashine.IdleState);
         });
@@ -94,11 +111,19 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
     }
 
 
-    private async UniTask BeforeDelay
-        (CancellationToken ct, Vector2 linePos, Vector2 dir90, Quaternion qua)
+    private async UniTask<float> TrackingAim
+        (CancellationToken ct, float aimAngle, SEnemyAttackInfo info)
     {
         _mashine.Nav.velocity = Vector3.zero;
-        _mashine.Ani.Play(_mashine.HashAttReady);
+        _mashine.Ani.Play(info.HashAttReady);
+
+        Transform my = _mashine.transform;
+        Transform target = _mashine.Target;
+
+        Vector2 aimDir = AngleToDir(aimAngle);
+        Vector2 aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+
+        
 
         // 라인 생성
         GameObject[] lines = new GameObject[4];
@@ -107,32 +132,65 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
         Vector3 scale = _warningLine.transform.localScale;
         scale.y = _lineLength;
 
+        Vector2 linePos = _mashine.transform.position;
+        linePos += aimDir * _lineDistanse;
+
+
         for (int i = 0; i < lines.Length; i++)
         {
             lines[i] = CreateAttackObject
                 (
                 _warningLine,
-                _beforeDelay + _attackTime,
-                linePos + (dir90 * _interbal * sides[i % 2]),
-                qua
+                info.BeforeDelay + info.AttackTime,
+                Vector2.zero,
+                Quaternion.identity
                 );
             lines[i].transform.localScale = scale;
         }
 
-        // 라인 점점 벌리기
-        for (float time = 0f; time < _beforeDelay; time += Time.deltaTime)
+        // 라인으로 추적
+        for (float time = 0f; time < info.BeforeDelay; time += Time.deltaTime)
         {
-            float gap = Mathf.Lerp(0.3f, _interbal, time / _beforeDelay);
+            Vector2 targetDir = target.position - my.position;
+            float targetAngle = DirToAngle(targetDir.normalized);
 
+            // 좌우 반전
+            bool isLeft = aimDir.x < 0;
+            _mashine.SpriteFlipX(isLeft);
+
+            // TrackingSpeed의 속도로 플레이어를 추적
+            aimAngle = Mathf.MoveTowardsAngle
+                (
+                    aimAngle, 
+                    targetAngle, 
+                    Time.deltaTime * info.TrackingSpeed
+                );
+
+            aimDir = AngleToDir(aimAngle).normalized;
+            aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+            linePos = (Vector2)my.position + aimDir * _lineDistanse;
+            Quaternion aimQua = Quaternion.Euler(0f, 0f, aimAngle);
+
+            // 고정된 라인 조정
+            for (int i = 2; i < 4; i++)
+            {
+                lines[i].transform.SetPositionAndRotation
+                    (linePos + (aimDir90 * _lineInterbal * sides[i % 2]), aimQua);
+            }
+
+            float gap = Mathf.Lerp(0.3f, _lineInterbal, time / info.BeforeDelay);
+
+            // 움직이는 라인 조정
             for (int i = 0; i < 2; i++)
             {
-                lines[i].transform.position = linePos + (dir90 * gap * sides[i]);
+                lines[i].transform.SetPositionAndRotation
+                    (linePos + (aimDir90 * gap * sides[i]), aimQua);
             }
 
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
-        _uni.Run(async token =>
+        _uni.Run(async linect =>
         {
             // 공격시간동안 라인들 투명해지며 사라지기
             SpriteRenderer[] sp = new SpriteRenderer[4];
@@ -141,33 +199,39 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
                 sp[i] = lines[i].GetComponent<SpriteRenderer>();
             }
 
-            for (float time = 0f; time < _attackTime; time += Time.deltaTime)
+            for (float time = 0f; time < info.AttackTime; time += Time.deltaTime)
             {
-                float t = 1 - (time / _attackTime);
+                float t = 1 - (time / info.AttackTime);
                 Color alpha = sp[0].color;
                 alpha.a = t;
                 for (int i = 0; i < sp.Length; i++)
                 {
                     sp[i].color = alpha;
                 }
-                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                await UniTask.Yield(PlayerLoopTiming.Update, linect);
             }
         });
+
+        return aimAngle;
     }
 
-    private async UniTask Attack(CancellationToken ct, Vector2 dir, Quaternion qua)
+    private async UniTask Attack(CancellationToken ct, float aimAngle, SEnemyAttackInfo info)
     {
-        _mashine.Ani.Play(_mashine.HashAttack);
-        _mashine.Rigidbody.AddForce(dir * _rushDistanse, ForceMode2D.Impulse);
+        _mashine.Ani.Play(info.HashAttack);
+
+        Vector2 dir = AngleToDir(aimAngle);
+        _mashine.Rigidbody.AddForce(dir * info.RushDistanse, ForceMode2D.Impulse);
 
         Vector2 myPos = _mashine.transform.position;
+        Quaternion qua = Quaternion.Euler(0f, 0f, aimAngle);
+
         // 공격 객체 생성
         GameObject go = CreateAttackObject
         (
-            _projectile,
-            _attackTime + _afterDelay,
-            myPos + (dir.normalized * _attackDistans),
-            _hasAngle ? qua : Quaternion.identity
+            info.Projectile,
+            info.AttackTime + 0.3f,
+            myPos + (dir * info.AttackDistans),
+            info.HasAngle ? qua : Quaternion.identity
         );
 
         if (go != null)
@@ -177,10 +241,10 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
             CEnemyProjectile goPro = go.GetComponent<CEnemyProjectile>();
             if (goPro != null)
             {
-                goPro.DamageSet(_mashine.Attack, dir, _attackTime);
+                goPro.DamageSet(_mashine.Attack, dir, info.AttackTime);
             }
 
-            await UniTask.Delay(TimeSpan.FromSeconds(_attackTime), cancellationToken: ct);
+            await UniTask.Delay(TimeSpan.FromSeconds(info.AttackTime), cancellationToken: ct);
         }
     }
 }

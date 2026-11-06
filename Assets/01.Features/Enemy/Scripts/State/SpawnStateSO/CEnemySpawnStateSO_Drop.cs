@@ -6,7 +6,6 @@ using UnityEngine;
 public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
 {
     #region 인스펙터
-
     [Header("이펙트 프리팹")]
     [SerializeField] private GameObject _stamp;
     [Header("애니메이터")]
@@ -22,6 +21,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
     private int _hashEnd;
     #endregion
 
+    #region 유니티 이벤트 함수
     private void OnEnable()
     {
         if (!String.IsNullOrWhiteSpace(_aniStart))
@@ -42,6 +42,8 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
             _hashEnd = Animator.StringToHash("Idle");
         }
     }
+    #endregion
+
 
     public override void StateEnter()
     {
