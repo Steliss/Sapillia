@@ -17,8 +17,8 @@ MonoBehaviour:
   _swordData: {fileID: 11400000, guid: af3cc18bb63c96b46bbc1c14e5417261, type: 2}
   _specialAttackData: {fileID: 11400000, guid: befbd30da14576247b10369fcc1300cc, type: 2}
   _specialManaCost: 15
-  _swordSprite: {fileID: 21300000, guid: bae37a86b7098774087f5c5719ad5e7a, type: 2}
-  _shieldSprite: {fileID: 21300000, guid: f18f1e6c06e128943a32055cdecf402a, type: 2}
+  _swordSprite: {fileID: 21300000, guid: 571e63c39055bd348b1e3061167bca3a, type: 3}
+  _shieldSprite: {fileID: 21300000, guid: a88a187935aa76448bb84ccd3e2247c9, type: 3}
   _statBonus:
     Str: 0
     Def: 0
@@ -30,6 +30,8 @@ MonoBehaviour:
     Attack_Speed: 0
     Special_Range: 0
     Damage_Special: 0
+    AmmoCap: 0
+    AmmoCount: 0
   _guardManaCost: 10
   _perfectGuardWindow: 0.15
   _guardBreakDuration: 10
