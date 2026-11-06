@@ -10,7 +10,7 @@ public class CSettings
     [Range(0f, 1f)]
     [SerializeField] private float _cameraShakeMultiplier = 1f;
 
-    [SerializeField] private bool _displayEffect = true;
+    [SerializeField] private float _displayEffect = 1f;
     [SerializeField] private ELanguage _currentLanhuage = ELanguage.Korean;
 
     [Header("Sound")]
@@ -57,7 +57,7 @@ public class CSettings
 
     public bool SkipBoss => _skipBoss;
     public float CameraShakeMultiplier => _cameraShakeMultiplier;
-    public bool DisplayEffect => _displayEffect;
+    public float DisplayEffect => _displayEffect;
     public float MasterSound => _masterSound;
     public float BGMSound => _BGMSound;
     public float EffectSound => _effectSound;
@@ -78,7 +78,7 @@ public class CSettings
         _cameraShakeMultiplier = multiplier;
     }
 
-    public void SetDisplayEffect(bool displayEffect)
+    public void SetDisplayEffect(float displayEffect)
     {
         _displayEffect = displayEffect;
     }
@@ -124,6 +124,13 @@ public class CSettings
         _height = height;
         _screenMode = screenMode;
     }
+
+    // 매개변수 없이 호출하면 기록된 값으로 화면 변경
+    public void SetDisplay()
+    {
+        Screen.SetResolution(_width, _height, _screenMode);
+    }
+
 
     public CKeyBindingData GetKeyBinding(EKeyAction action)
     {

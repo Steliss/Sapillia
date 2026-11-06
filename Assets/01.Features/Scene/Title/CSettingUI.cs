@@ -50,16 +50,22 @@ public class CSettingUI : MonoBehaviour
 
     [SerializeField] private GameObject _UICanvas;
 
-    [Header("변경 이미지")]
-    [SerializeField] private Sprite _changeSprite;
-
     [Header("옵션 슬롯")]
-    [SerializeField] private GameObject _gamePlaySlotButton;
     [SerializeField] private TextMeshProUGUI _gamePlaySlotButtonText;
-    [SerializeField] private CSettingButtonSlot _language;
-    [SerializeField] private CSettingButtonSlot _bossSkip;
-    [SerializeField] private CSettingButtonSlot _cameraShake;
-    [SerializeField] private CSettingButtonSlot _effect;
+    [SerializeField] private Button _gamePlaySlotButton;
+    [SerializeField] private GameObject _gamePlayTap;
+    [Space(6)]
+    [SerializeField] private TextMeshProUGUI _soundSlotButtonText;
+    [SerializeField] private Button _soundSlotButton;
+    [SerializeField] private GameObject _soundSlotTap;
+    [Space(6)]
+    [SerializeField] private TextMeshProUGUI _displaySlotButtonText;
+    [SerializeField] private Button _displaySlotButton;
+    [SerializeField] private GameObject _displayTap;
+    [Space(6)]
+    [SerializeField] private TextMeshProUGUI _keySettingSlotButtonText;
+    [SerializeField] private Button _keySettingsSlotButton;
+    [SerializeField] private GameObject _keySettingTap;
 
     private bool _isActive = false;
 
@@ -69,34 +75,20 @@ public class CSettingUI : MonoBehaviour
     {
         _localization.OnLanguageChanged += ReloadText;
 
-        _language.ButtonUp.onClick.AddListener(LanguageUp);
-        _language.ButtonDown.onClick.AddListener(LanguageDown);
-
-        _bossSkip.ButtonUp.onClick.AddListener(BossSkip);
-        _bossSkip.ButtonDown.onClick.AddListener(BossSkip);
-
-        _cameraShake.ButtonUp.onClick.AddListener(CameraShakeUp);
-        _cameraShake.ButtonDown.onClick.AddListener(CameraShakeDown);
-
-        _effect.ButtonUp.onClick.AddListener(EffectUp);
-        _effect.ButtonDown.onClick.AddListener(EffectDown);
+        _gamePlaySlotButton.onClick.AddListener(GamePlaySlotOpen);
+        _soundSlotButton.onClick.AddListener(SoundSlotOpen);
+        _displaySlotButton.onClick.AddListener(DisplaySlotOpen);
+        _keySettingsSlotButton.onClick.AddListener(KeySettingSlotOpen);
     }
 
     private void OnDisable()
     {
         _localization.OnLanguageChanged -= ReloadText;
 
-        _language.ButtonUp.onClick.RemoveListener(LanguageUp);
-        _language.ButtonDown.onClick.RemoveListener(LanguageDown);
-
-        _bossSkip.ButtonUp.onClick.RemoveListener(BossSkip);
-        _bossSkip.ButtonDown.onClick.RemoveListener(BossSkip);
-
-        _cameraShake.ButtonUp.onClick.RemoveListener(CameraShakeUp);
-        _cameraShake.ButtonDown.onClick.RemoveListener(CameraShakeDown);
-
-        _effect.ButtonUp.onClick.RemoveListener(EffectUp);
-        _effect.ButtonDown.onClick.RemoveListener(EffectDown);
+        _gamePlaySlotButton.onClick.RemoveListener(GamePlaySlotOpen);
+        _soundSlotButton.onClick.RemoveListener(SoundSlotOpen);
+        _displaySlotButton.onClick.RemoveListener(DisplaySlotOpen);
+        _keySettingsSlotButton.onClick.RemoveListener(KeySettingSlotOpen);
     }
 
     private void Awake()
@@ -111,41 +103,11 @@ public class CSettingUI : MonoBehaviour
             CLog.Log("_dataManger : Null");
         }
 
-        SetSlotButton(_language.Slot);
-        SetSlotButton(_bossSkip.Slot);
-        SetSlotButton(_cameraShake.Slot);
-        SetSlotButton(_effect.Slot);
-
     }
 
     private void Start()
     {
         ReloadText();
-    }
-
-    // 슬롯이미지 교체
-    private void SetSlotButton(GameObject slot)
-    {
-        Button button = slot.GetComponent<Button>();
-        Image image = slot.GetComponent<Image>();
-
-        button.targetGraphic = image;
-        button.transition = Selectable.Transition.SpriteSwap;
-
-        image.raycastTarget = true;
-
-        SpriteState sprites = button.spriteState;
-        sprites.highlightedSprite = _changeSprite;
-        sprites.pressedSprite = _changeSprite;
-        sprites.selectedSprite = image.sprite;
-        sprites.disabledSprite = image.sprite;
-
-        button.spriteState = sprites;
-
-        // 배경 강조용 버튼은 키보드 탐색에서 제외
-        Navigation navigation = button.navigation;
-        navigation.mode = Navigation.Mode.None;
-        button.navigation = navigation;
     }
 
     /// <summary>
@@ -159,90 +121,56 @@ public class CSettingUI : MonoBehaviour
     }
 
 
-
-    #region 게임 플레이 옵션 관련
-
     //언어 변환 및 초기 언어 세팅 관련
     private void ReloadText()
     {
         _gamePlaySlotButtonText.text = _localization.GetText("scene.gameplayslotbutton.text");
-        _bossSkip.ContentsText.text = _localization.GetText(
-         _dataManger.CurrentSetting.SkipBoss
-        ? "scene.optionset.text"
-        : "scene.optionoff.text"
-        );
-        _bossSkip.TitleText.text = _localization.GetText("scene.optionbossskip.text");
-        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
-        _language.TitleText.text = _localization.GetText("scene.optionlanguagetitle.text");
+        _soundSlotButtonText.text = _localization.GetText("scene.soundslotbutton.text");
+        _displaySlotButtonText.text = _localization.GetText("scene.displayslotbutton.text");
+        _keySettingSlotButtonText.text = _localization.GetText("scene.keysettingslotbutton.text");
 
-
-        _cameraShake.TitleText.text = _localization.GetText("scene.optioncamerashake.text");
-        _effect.TitleText.text = _localization.GetText("scene.optioneffecttitle.text");
     }
 
-
-
-    private void LanguageUp()
+    private void GamePlaySlotOpen()
     {
-        int index = (int)_dataManger.CurrentSetting.CurrentLanhuage;
-        int count = Enum.GetValues(typeof(ELanguage)).Length;
+        _gamePlayTap.transform.SetAsLastSibling();
 
-        index--;
-
-        if (index < 0)
-        {
-            index = count - 1;
-        }
-
-        _localization.ChangeLanguage((ELanguage)index);
-        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
-        ReloadText();
+        _gamePlaySlotButtonText.transform.SetAsLastSibling();
+        _soundSlotButtonText.transform.SetAsLastSibling();
+        _displaySlotButtonText.transform.SetAsLastSibling();
+        _keySettingSlotButtonText.transform.SetAsLastSibling();
     }
 
-    private void LanguageDown()
+    private void SoundSlotOpen()
     {
-        int index = (int)_dataManger.CurrentSetting.CurrentLanhuage;
-        int count = Enum.GetValues(typeof(ELanguage)).Length;
+        _soundSlotTap.transform.SetAsLastSibling();
 
-        index++;
-
-        if (index >= count)
-        {
-            index = 0;
-        }
-
-        _localization.ChangeLanguage((ELanguage)index);
-        _language.ContentsText.text = _localization.GetText("scene.optionlanguage.text");
-        ReloadText();
+        _gamePlaySlotButtonText.transform.SetAsLastSibling();
+        _soundSlotButtonText.transform.SetAsLastSibling();
+        _displaySlotButtonText.transform.SetAsLastSibling();
+        _keySettingSlotButtonText.transform.SetAsLastSibling();
     }
 
-    // 보스 연출 스킾 여부 
-    private void BossSkip()
+    private void DisplaySlotOpen()
     {
-        _dataManger.CurrentSetting.SetSkipBoss(!_dataManger.CurrentSetting.SkipBoss); 
-        _bossSkip.ContentsText.text = _localization.GetText(
-         _dataManger.CurrentSetting.SkipBoss
-        ? "scene.optionset.text"
-        : "scene.optionoff.text"
-        );
+        _displayTap.transform.SetAsLastSibling();
+
+        _gamePlaySlotButtonText.transform.SetAsLastSibling();
+        _soundSlotButtonText.transform.SetAsLastSibling();
+        _displaySlotButtonText.transform.SetAsLastSibling();
+        _keySettingSlotButtonText.transform.SetAsLastSibling();
     }
 
-    // ※ : TODO : 카메라랑 이펙트 관련 기능이 없어서 일단 넘어감
-    private void CameraShakeUp()
+    private void KeySettingSlotOpen()
     {
+        _keySettingTap.transform.SetAsLastSibling();
+
+        _gamePlaySlotButtonText.transform.SetAsLastSibling();
+        _soundSlotButtonText.transform.SetAsLastSibling();
+        _displaySlotButtonText.transform.SetAsLastSibling();
+        _keySettingSlotButtonText.transform.SetAsLastSibling();
     }
 
-    private void CameraShakeDown()
-    {
-    }
 
-    private void EffectUp()
-    {
-    }
 
-    private void EffectDown()
-    {
-    }
-
-    #endregion
 }
