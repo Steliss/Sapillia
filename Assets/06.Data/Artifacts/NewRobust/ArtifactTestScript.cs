@@ -50,6 +50,25 @@ public class ArtifactTestScript : MonoBehaviour
         Debug.Log($"슬롯 0 ({_starsA}성) | 힘: {statsA.Attribute_Physical} | 체력: {statsA.MaxHP}");
         Debug.Log($"슬롯 1 ({_starsB}성) | 특수: {statsB.Damage_Special} | 체력: {statsB.MaxHP}");
 
-        Debug.Log($"인벤토리 전체 합계 | 힘: {totalStats.Attribute_Physical} | 체력: {totalStats.Damage_Special}");
+        Debug.Log($"인벤토리 전체 합계 | 물리속성: {totalStats.Attribute_Physical} | 특수공격: {totalStats.Damage_Special}");
+
+        // 테스트용 플레이어 데이터 생성
+        CPlayerGamingDataSO playerData = new CPlayerGamingDataSO();
+        playerData.Initalize();
+
+        // 아티팩트 적용 전
+        Debug.Log($"적용 전 | 물리속성: {playerData.Stats.Attribute_Physical} | 특수공격: {playerData.Stats.Damage_Special}");
+
+        // 인벤토리에서 합산한 아티팩트 능력치 적용
+        playerData.SetArtifactBonus(totalStats);
+
+        // 아티팩트 적용 후
+        Debug.Log($"적용 후 | 물리속성: {playerData.Stats.Attribute_Physical} | 특수공격: {playerData.Stats.Damage_Special}");
+
+        // 아티팩트 보너스 제거
+        playerData.SetArtifactBonus(default);
+
+        // 제거 후
+        Debug.Log($"제거 후 | 물리속성: {playerData.Stats.Attribute_Physical} | 특수공격: {playerData.Stats.Damage_Special}");
     }
 }
