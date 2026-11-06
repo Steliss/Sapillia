@@ -3022,7 +3022,7 @@ GameObject:
   - component: {fileID: 423710271546053664}
   - component: {fileID: 4970507921168902184}
   - component: {fileID: 8640041280183199911}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLDRJail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3424,7 +3424,7 @@ GameObject:
   - component: {fileID: 6471693090464567071}
   - component: {fileID: 3186428846266103010}
   - component: {fileID: 2387626900922770470}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLDRRoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5728,7 +5728,7 @@ GameObject:
   - component: {fileID: 8831482024925868251}
   - component: {fileID: 6603547851356041078}
   - component: {fileID: 8959306171842689183}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLDRWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6597,6 +6597,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 1
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1001 &5461645042107763772
 PrefabInstance:
   m_ObjectHideFlags: 0

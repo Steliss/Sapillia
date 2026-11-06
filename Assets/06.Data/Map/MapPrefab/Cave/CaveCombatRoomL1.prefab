@@ -56,6 +56,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 0
   _right2: 0
+  _playerSpawnPoint: {fileID: 0}
 --- !u!1 &2128138989039524508
 GameObject:
   m_ObjectHideFlags: 0
@@ -69,7 +70,7 @@ GameObject:
   - component: {fileID: 6610509834736911951}
   - component: {fileID: 623916851726643872}
   - component: {fileID: 4303406493217162663}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLRoof
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3192,7 +3193,7 @@ GameObject:
   - component: {fileID: 3727147425053950527}
   - component: {fileID: 7341001652631974660}
   - component: {fileID: 5238671663040322107}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLWall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3902,7 +3903,7 @@ GameObject:
   - component: {fileID: 3431657017397513921}
   - component: {fileID: 8492111198243156275}
   - component: {fileID: 4698665035197434824}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: CombatRoomLObstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
