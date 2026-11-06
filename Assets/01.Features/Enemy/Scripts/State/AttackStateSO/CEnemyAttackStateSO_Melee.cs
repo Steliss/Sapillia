@@ -21,7 +21,7 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
     [SerializeField] private float _rushDistanse = 5f;
     [Header("연속 공격 횟수")]
     [Min(1)]
-    [SerializeField] private int _AttackCount = 2;
+    [SerializeField] private int _attackCount = 2;
     [Space(10)]
     [Header("===== 전조 =====")]
     [Header("프리팹")]
@@ -67,11 +67,11 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             await BeforeDelay(ct, linePos, dir90, qua);
 
             // 공격
-            for (int i = 0; i < _AttackCount; i++)
+            for (int i = 0; i < _attackCount; i++)
             {
                 await Attack(ct, dir, qua);
 
-                if (i != _AttackCount - 1)
+                if (i != _attackCount - 1)
                 {
                     _mashine.Ani.Play(_mashine.HashAttReady);
                 }

@@ -146,8 +146,13 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         Vector2 aimDir = AngleToDir(aim);
         Vector2 myPos = _mashine.transform.position;
 
-        GameObject bullet = CreateAttackObject
-        (_projectile, _bulletLifeTime + 1f, myPos + aimDir.normalized * 0.5f, Quaternion.identity);
+        GameObject bullet = null;
+
+        if (CObjectPoolManager.Instance != null)
+        {
+            bullet = CObjectPoolManager.Instance.GetPoolObject(_projectile, _bulletLifeTime);
+            bullet.transform.position = myPos + aimDir.normalized * 0.5f;
+        }
 
         Rigidbody2D rb = bullet.GetComponent<Rigidbody2D>();
         if (rb != null)

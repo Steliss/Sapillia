@@ -29,6 +29,7 @@ public class CEnemyState_Idle : IEnemyState
         _time += Time.deltaTime;
         if (_time > _idleTime)
         {
+            _time = 0f;
             _mashine.StateChanged(_mashine.MoveState);
         }
     }

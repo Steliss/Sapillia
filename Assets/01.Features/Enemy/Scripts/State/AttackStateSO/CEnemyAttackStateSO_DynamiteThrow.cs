@@ -7,7 +7,6 @@ using UnityEngine;
 public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
 {
     #region 인스펙터
-
     [Header("===== 공격 =====")]
     [Header("다이너마이트 프리팹")]
     [SerializeField] private GameObject _projectile;
@@ -40,11 +39,13 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
     private int _hashEnd;
     #endregion
 
+    #region 유니티 이벤트 함수
     private void OnEnable()
     {
         _hashStart = Animator.StringToHash(_aniStart);
         _hashEnd = Animator.StringToHash(_aniEnd);
     }
+    #endregion
 
     public override void StateEnter()
     {
@@ -135,8 +136,12 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
     {
         _mashine.Ani.Play(_hashEnd);
 
-        GameObject dynamite = CreateAttackObject
-        (_projectile, _dynamiteLifeTime + 1f, _mashine.transform.position, Quaternion.identity);
+        GameObject dynamite = null;
+        if (CObjectPoolManager.Instance != null)
+        {
+            dynamite = CObjectPoolManager.Instance.GetPoolObject(_projectile, _dynamiteLifeTime + 1f);
+            dynamite.transform.position = _mashine.transform.position;
+        }
 
         // 목표 근처 랜덤범위 적용
         float ranX = UnityEngine.Random.Range(-_randomPosRange.x, _randomPosRange.x);
@@ -144,7 +149,7 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
         toPos.x += ranX;
         toPos.y += ranY;
 
-        // 데미지 설정
+        // 데미지 설정 및 도착위치 설정
         CEnemyProjectile_Dynamite pro = dynamite.GetComponent<CEnemyProjectile_Dynamite>();
         if (pro != null)
         {
