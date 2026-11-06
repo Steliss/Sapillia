@@ -81,7 +81,7 @@ public class CDataManger : MonoBehaviour
     [SerializeField] private CFlowGame _currentFlow = new CFlowGame();
     [SerializeField] private CPlayerRunSession _playerData; // 플레이어 데이터
     [SerializeField] private CInventoryRunSession _inventoryData; // 인벤토리 데이터 
-
+    [SerializeField] private CArtifactStatApplier _artifactStatApplier; // 아티팩트 데이터
 
 
     public CPlayerRunSession PlayerData => _playerData;
@@ -186,6 +186,7 @@ public class CDataManger : MonoBehaviour
             _inventoryData.SetInventoryData();
             _currentFlow = new CFlowGame();
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(_defalutFlow), _currentFlow);
+            _artifactStatApplier.RefreshArtifactStats(); // 아티팩트 정보
             return SaveGame(slot);
         }
 
@@ -209,6 +210,7 @@ public class CDataManger : MonoBehaviour
         // 플레이어 복원은 런 세션에서 처리
         _playerData.SetPlayerData(data.Player);
         _inventoryData.SetInventoryData(data.Inventory);
+        _artifactStatApplier.RefreshArtifactStats(); // 아티팩트 능력치 적용
         return true;
     }
 }

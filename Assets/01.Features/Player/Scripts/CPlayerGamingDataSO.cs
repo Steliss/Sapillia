@@ -16,6 +16,7 @@ public class CPlayerGamingDataSO
     [SerializeField] private SCostumeStatBonus _costumeBonus; // 코스튬 추가 능력치
     [SerializeField] private SPlayerStats _coreStats; // 코스튬 추가 능력치 제외 능력치
     [SerializeField] private SWeaponStatBonus _weaponBonus; // 무기 추가 능력치
+    [SerializeField] private SPlayerStats _artifactBonus; // 아티팩트 추가 능력치
     [SerializeField] private SPlayerStats _stats; // 최종 능력치
     [SerializeField] private EWeaponType _weaponType = EWeaponType.SwordShield; // 들고 있는 무기(초기값 : 검과 방패)
 
@@ -113,6 +114,8 @@ public class CPlayerGamingDataSO
         // 장비 및 무기 효과 보너스 초기화
         _weaponBonus = default;
         _costumeBonus = default;
+        // 아티팩트 효과 초기화
+        _artifactBonus = default;
 
         // 기본 장착 무기
         _equippedWeaponTier = 1;
@@ -214,6 +217,20 @@ public class CPlayerGamingDataSO
         RecalculateStats();     
     }
 
+    // 아티팩트 효과 적용하기
+    public void SetArtifactBonus(SPlayerStats bonus)
+    {
+        if (!IsInitialized)
+        {
+            return;
+        }
+
+        // 기존 아티팩트 보너스를 새로운 합계로 교체
+        _artifactBonus = bonus;
+
+        RecalculateStats();
+    }
+
     // 코스튬 및 무기 효과 적용하기
     private void RecalculateStats()
     {
@@ -223,6 +240,8 @@ public class CPlayerGamingDataSO
         }
 
         SPlayerStats result = _coreStats;
+        // 아티팩트 보너스 적용
+        result = CPlayerStatsCalculator.Add(result, _artifactBonus);
 
         // 코스튬        
         // 방어
