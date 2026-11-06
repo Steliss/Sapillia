@@ -20,17 +20,36 @@ public class ArtifactTestScript : MonoBehaviour
             return;
         }
 
-        // 각 아티팩트의 강화된 능력치
-        SPlayerStats statsA = _artifactA.GetStats(_starsA);
-        SPlayerStats statsB = _artifactB.GetStats(_starsB);
+        // 테스트용 인벤토리 생성
+        CInventoryData inventory = new CInventoryData();
+        inventory.Initialize();
 
-        // 두 아티팩트의 능력치 합산
-        SPlayerStats totalStats =
-            CPlayerStatsCalculator.Add(statsA, statsB);
+        // 첫 번째 슬롯에 아티팩트 A 배치
+        CInventorySlotData slotA = inventory.InventorySlots[0];
 
-        Debug.Log($"아티팩트 A ({_starsA}성) | 힘: {statsA.Attribute_Physical} | 체력: {statsA.MaxHP}");
-        Debug.Log($"아티팩트 B ({_starsB}성) | 힘: {statsB.Attribute_Physical} | 체력: {statsB.MaxHP}");
+        slotA.ItemID = _artifactA.ItemID;
+        slotA.ItemType = _artifactA.Type;
+        slotA.ItemSO = _artifactA;
+        slotA.EnhanceLevel = _starsA;
 
-        Debug.Log($"합산 결과 | 힘: {totalStats.Attribute_Physical} | 체력: {totalStats.MaxHP}");
+        // 두 번째 슬롯에 아티팩트 B 배치
+        CInventorySlotData slotB = inventory.InventorySlots[1];
+
+        slotB.ItemID = _artifactB.ItemID;
+        slotB.ItemType = _artifactB.Type;
+        slotB.ItemSO = _artifactB;
+        slotB.EnhanceLevel = _starsB;
+
+        // 슬롯별 능력치 계산
+        SPlayerStats statsA = slotA.GetArtifactStats();
+        SPlayerStats statsB = slotB.GetArtifactStats();
+
+        // 인벤토리 전체 능력치 합산
+        SPlayerStats totalStats = inventory.GetTotalArtifactStats();
+
+        Debug.Log($"슬롯 0 ({_starsA}성) | 힘: {statsA.Attribute_Physical} | 체력: {statsA.MaxHP}");
+        Debug.Log($"슬롯 1 ({_starsB}성) | 특수: {statsB.Damage_Special} | 체력: {statsB.MaxHP}");
+
+        Debug.Log($"인벤토리 전체 합계 | 힘: {totalStats.Attribute_Physical} | 체력: {totalStats.Damage_Special}");
     }
 }
