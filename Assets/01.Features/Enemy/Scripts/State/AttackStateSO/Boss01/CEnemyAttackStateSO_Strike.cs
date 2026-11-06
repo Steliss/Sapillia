@@ -95,7 +95,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
 
                 // 선 딜레이
                 _mashine.Ani.Play(_attackInfos[i].HashAttReady);
-                await BeforeDelay(ct, myPos, _attackInfos[i]);
+                await SquareAttackBefore(ct, myPos, _attackInfos[i]);
 
                 // 공격과 투사체 생성
                 _mashine.Ani.Play(_attackInfos[i].HashAttack);
@@ -128,7 +128,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
 
     }
 
-    private async UniTask BeforeDelay(CancellationToken ct, Vector2 pos, SEnemyAttackInfo info)
+    private async UniTask SquareAttackBefore(CancellationToken ct, Vector2 pos, SEnemyAttackInfo info)
     {
         Vector2 range = info.Range * 0.5f;
 
@@ -209,7 +209,6 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
                 await UniTask.Yield(PlayerLoopTiming.Update, linect);
             }
         });
-        
     }
 
     private void FireBullet(SEnemyBulletInfo info)
