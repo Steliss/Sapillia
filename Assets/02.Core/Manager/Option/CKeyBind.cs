@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System;
 
 public class CKeyBind : MonoBehaviour
 {
 
     [Header("참조")]
-    [SerializeField] private CDataManger _flowData;
+    [SerializeField] private CDataManger _data;
     [SerializeField] private InputActionAsset _inputActions;
 
     [Header("변경할 동작")]
@@ -17,17 +18,19 @@ public class CKeyBind : MonoBehaviour
     private InputActionRebindingExtensions.RebindingOperation _operation;
     private CKeyBindingData _binding;
 
+    public event Action OnRebindEnded;
+
     private bool _isEnable;
+
+    public bool IsRebinding => _operation != null;
 
     private void Start()
     {
-        // ※ TODO: json 저장 _flowData 불러오기 필요
-
-        ApplySavedBindings();
+        ApplySavedBindind();
     }
 
     // SO에 저장된 기본 키와 보조 키를 실제 입력에 적용
-    public void ApplySavedBindings()
+    public void ApplySavedBindind()
     {
         foreach (EKeyAction keyAction in System.Enum.GetValues(typeof(EKeyAction)))
         {
@@ -37,7 +40,7 @@ public class CKeyBind : MonoBehaviour
                 continue;
             }
 
-            CKeyBindingData binding = _flowData.CurrentSetting.GetKeyBinding(keyAction);
+            CKeyBindingData binding = _data.CurrentSetting.GetKeyBinding(keyAction);
 
             InputAction action = _inputActions.FindAction(binding._actionName, throwIfNotFound: true);
 
@@ -56,7 +59,7 @@ public class CKeyBind : MonoBehaviour
         }
 
         _keyAction = keyAction;
-        _binding = _flowData.CurrentSetting.GetKeyBinding(_keyAction);
+        _binding = _data.CurrentSetting.GetKeyBinding(_keyAction);
 
         _actionName = _binding._actionName;
         _action = _inputActions.FindAction(_actionName, throwIfNotFound: true);
@@ -82,22 +85,26 @@ public class CKeyBind : MonoBehaviour
         _isEnable = _action.enabled;
         _action.Disable();
 
+        // 조건설정
         _operation = _action.PerformInteractiveRebinding(bindingIndex)
             .WithExpectedControlType("Button")
             .WithControlsExcluding("<Mouse>/position")
             .WithControlsExcluding("<Mouse>/delta")
             .WithControlsExcluding("<Mouse>/scroll")
             .WithCancelingThrough("<Keyboard>/escape")
-            .OnComplete(operation =>
-            {
-                string keyPath = _action.bindings[bindingIndex].effectivePath;
-            
-                _flowData.CurrentSetting.SetKeyBinding(_keyAction, slot, keyPath);
-            
-                FinishRebind();
-            
-                // ※ TODO: 변경내용 json 저장, _flowData 저장 필요
-            })
+
+        // 입력 후 실행함수 등록 
+        .OnComplete(operation =>
+        {
+            string keyPath = _action.bindings[bindingIndex].effectivePath;
+
+            ClearDuplicateBindind(slot, keyPath);
+
+            _data.CurrentSetting.SetKeyBinding(_keyAction, slot, keyPath);
+
+            FinishRebind();
+            _data.SaveSettings();
+        })
             .OnCancel(operation =>
             {
                 FinishRebind();
@@ -117,9 +124,80 @@ public class CKeyBind : MonoBehaviour
         {
             _action.Enable();
         }
+
+        OnRebindEnded?.Invoke();
     }
 
+    public void CancelRebind()
+    {
+        if (_operation != null)
+        {
+            _operation.Cancel();
+        }
+    }
 
-    // ※ : 타 코드에서 실행 종료시 방어 코드 필요하면 추가
+    // 모든 동작의 기본키 / 보조키에서 중복 확인
+    private void ClearDuplicateBindind(EKeySlot changedSlot, string keyPath)
+    {
+        foreach (EKeyAction keyAction in Enum.GetValues(typeof(EKeyAction)))
+        {
+            // Move ESC키 제외
+            if (keyAction == EKeyAction.Move || keyAction == EKeyAction.ESC)
+            {
+                continue;
+            }
+
+            CKeyBindingData binding = _data.CurrentSetting.GetKeyBinding(keyAction);
+            InputAction action = _inputActions.FindAction(binding._actionName, throwIfNotFound: true);
+
+            ClearDuplicateBind(
+                keyAction,
+                EKeySlot.Primary,
+                action,
+                binding._primaryIndex,
+                changedSlot,
+                keyPath);
+
+            ClearDuplicateBind(
+                keyAction,
+                EKeySlot.Secondary,
+                action,
+                binding._secondaryIndex,
+                changedSlot,
+                keyPath);
+        }
+    }
+
+    // 한 바인딩을 검사하고 중복이면 해제
+    private void ClearDuplicateBind(
+        EKeyAction keyAction,
+        EKeySlot keySlot,
+        InputAction action,
+        int bindingIndex,
+        EKeySlot changedSlot,
+        string keyPath)
+    {
+        // 방금 변경한 바인딩 자신은 유지
+        if (keyAction == _keyAction && keySlot == changedSlot)
+        {
+            return;
+        }
+
+        string registeredPath = action.bindings[bindingIndex].effectivePath;
+
+        if (!string.Equals(
+            registeredPath,
+            keyPath,
+            StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        // 실제 입력 해제
+        action.ApplyBindingOverride(bindingIndex, "");
+
+        // 저장할 설정 데이터도 해제
+        _data.CurrentSetting.SetKeyBinding(keyAction, keySlot, "");
+    }
 
 }

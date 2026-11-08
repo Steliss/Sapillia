@@ -124,14 +124,14 @@ public class CDataManger : MonoBehaviour
     /// 설정 리셋 
     /// </summary>
     /// <returns></returns>
-     public bool ResetSettings()
+    public bool ResetSettings()
     {
         if (!CSaveData.Save(_defaultSetting, "Setting"))
         {
             return false;
         }
 
-        return LoadSettings();
+        return CSaveData.Load(_currentSetting, "Setting");
     }
 
     /// <summary>
