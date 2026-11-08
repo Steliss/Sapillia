@@ -14,14 +14,10 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
         public GameObject Projectile;
         public bool HasAngle;
         public float AttackDistans;
-        [Header("선딜, 공격시간, 후딜")]
-        public float BeforeDelay;
+        [Header("공격 판정 시간")]
         public float AttackTime;
-        public float AfterDelay;
         [Header("공격시 돌진 거리")]
         public float RushDistanse;
-        [Header("추적 속도 (초당 회전각도)")]
-        public float TrackingSpeed;
 
         [Header("===== 애니메이터 =====")]
         public string AniAttReady;
@@ -37,19 +33,9 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
     [SerializeField] private SEnemyAttackInfo[] _attackInfos;
     [Space(10)]
     [Header("===== 전조 =====")]
-    [Header("프리팹")]
-    [SerializeField] private GameObject _warningLine;
-    [Header("길이")]
-    [SerializeField] private float _lineLength = 3f;
-    [Header("간격")]
-    [SerializeField] private float _lineInterbal = 1f;
-    [Header("위치")]
-    [SerializeField] private float _lineDistanse = 2.5f;
+    [SerializeField] private SLineInfo[] _lineinfos;
     #endregion
 
-    #region 내부 변수
-    private CUniTaskOnes _uni = new CUniTaskOnes();
-    #endregion
 
     #region 이벤트 함수
     private void OnEnable()
@@ -59,11 +45,6 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
             _attackInfos[i].HashAttReady = Animator.StringToHash(_attackInfos[i].AniAttReady);
             _attackInfos[i].HashAttack = Animator.StringToHash(_attackInfos[i].AniAttack);
         }
-    }
-
-    private void OnDisable()
-    {
-        _uni.Cancel();
     }
     #endregion
 
@@ -82,15 +63,17 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
             for (int i = 0; i < _attackInfos.Length; i++)
             {
                 // 선딜레이
-                aimAngle = await TrackingAim(ct, aimAngle, _attackInfos[i]);
+                _mashine.Ani.Play(_attackInfos[i].HashAttReady);
+                aimAngle = await WarningLine_Melee(ct, aimAngle, _lineinfos[i]);
 
                 // 공격
+                _mashine.Ani.Play(_attackInfos[i].HashAttack);
                 await Attack(ct, aimAngle, _attackInfos[i]);
 
                 // 후딜레이
                 await UniTask.Delay
                     (
-                    TimeSpan.FromSeconds(_attackInfos[i].AfterDelay), 
+                    TimeSpan.FromSeconds(_lineinfos[i].AfterDelay), 
                     cancellationToken: ct
                     );
             }
@@ -110,114 +93,8 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
 
     }
 
-
-    private async UniTask<float> TrackingAim
-        (CancellationToken ct, float aimAngle, SEnemyAttackInfo info)
-    {
-        _mashine.Nav.velocity = Vector3.zero;
-        _mashine.Ani.Play(info.HashAttReady);
-
-        Transform my = _mashine.transform;
-        Transform target = _mashine.Target;
-
-        Vector2 aimDir = AngleToDir(aimAngle);
-        Vector2 aimDir90 = new Vector2(-aimDir.y, aimDir.x);
-
-        
-
-        // 라인 생성
-        GameObject[] lines = new GameObject[4];
-        float[] sides = { -1f, 1f };
-
-        Vector3 scale = _warningLine.transform.localScale;
-        scale.y = _lineLength;
-
-        Vector2 linePos = _mashine.transform.position;
-        linePos += aimDir * _lineDistanse;
-
-
-        for (int i = 0; i < lines.Length; i++)
-        {
-            lines[i] = CreateAttackObject
-                (
-                _warningLine,
-                info.BeforeDelay + info.AttackTime,
-                Vector2.zero,
-                Quaternion.identity
-                );
-            lines[i].transform.localScale = scale;
-        }
-
-        // 라인으로 추적
-        for (float time = 0f; time < info.BeforeDelay; time += Time.deltaTime)
-        {
-            Vector2 targetDir = target.position - my.position;
-            float targetAngle = DirToAngle(targetDir.normalized);
-
-            // 좌우 반전
-            bool isLeft = aimDir.x < 0;
-            _mashine.SpriteFlipX(isLeft);
-
-            // TrackingSpeed의 속도로 플레이어를 추적
-            aimAngle = Mathf.MoveTowardsAngle
-                (
-                    aimAngle, 
-                    targetAngle, 
-                    Time.deltaTime * info.TrackingSpeed
-                );
-
-            aimDir = AngleToDir(aimAngle).normalized;
-            aimDir90 = new Vector2(-aimDir.y, aimDir.x);
-            linePos = (Vector2)my.position + aimDir * _lineDistanse;
-            Quaternion aimQua = Quaternion.Euler(0f, 0f, aimAngle);
-
-            // 고정된 라인 조정
-            for (int i = 2; i < 4; i++)
-            {
-                lines[i].transform.SetPositionAndRotation
-                    (linePos + (aimDir90 * _lineInterbal * sides[i % 2]), aimQua);
-            }
-
-            float gap = Mathf.Lerp(0.3f, _lineInterbal, time / info.BeforeDelay);
-
-            // 움직이는 라인 조정
-            for (int i = 0; i < 2; i++)
-            {
-                lines[i].transform.SetPositionAndRotation
-                    (linePos + (aimDir90 * gap * sides[i]), aimQua);
-            }
-
-            await UniTask.Yield(PlayerLoopTiming.Update, ct);
-        }
-
-        _uni.Run(async linect =>
-        {
-            // 공격시간동안 라인들 투명해지며 사라지기
-            SpriteRenderer[] sp = new SpriteRenderer[4];
-            for (int i = 0; i < sp.Length; i++)
-            {
-                sp[i] = lines[i].GetComponent<SpriteRenderer>();
-            }
-
-            for (float time = 0f; time < info.AttackTime; time += Time.deltaTime)
-            {
-                float t = 1 - (time / info.AttackTime);
-                Color alpha = sp[0].color;
-                alpha.a = t;
-                for (int i = 0; i < sp.Length; i++)
-                {
-                    sp[i].color = alpha;
-                }
-                await UniTask.Yield(PlayerLoopTiming.Update, linect);
-            }
-        });
-
-        return aimAngle;
-    }
-
     private async UniTask Attack(CancellationToken ct, float aimAngle, SEnemyAttackInfo info)
     {
-        _mashine.Ani.Play(info.HashAttack);
 
         Vector2 dir = AngleToDir(aimAngle);
         _mashine.Rigidbody.AddForce(dir * info.RushDistanse, ForceMode2D.Impulse);

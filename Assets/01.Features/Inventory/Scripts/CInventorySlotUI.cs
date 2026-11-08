@@ -1,16 +1,34 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CInventorySlotUI : MonoBehaviour
+public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private Button _button;
     [SerializeField] private Image _itemImage;
     [SerializeField] private TextMeshProUGUI _countText;
 
     private CInventorySlotData _slotData;
+    private CInventoryUI _inventoryUI;
 
     public Sprite ItemImage => _itemImage.isActiveAndEnabled ? _itemImage.sprite : null;
+
+    public void SetInventoryUI(CInventoryUI inventoryUI)
+    {
+        _inventoryUI = inventoryUI;
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        _inventoryUI.ShowItemInfo(this);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        _inventoryUI.HideItemInfo();
+    }
+
 
     /// <summary>
     /// 슬롯 정보 갱신 함수

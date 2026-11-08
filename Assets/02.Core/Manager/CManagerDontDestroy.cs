@@ -9,6 +9,7 @@ public class CManagerDontDestroy : MonoBehaviour
     [SerializeField] private CDataManger _dataManger;
     [SerializeField] private CLocalizationManager _localizationData;
     [SerializeField] private CSettingUI _setting;
+    [SerializeField] private CSoundManager _sound;
     [SerializeField] private bool _isLog = true;
 
     public CSceneManager SceneManager => _sceneManager;
@@ -16,6 +17,7 @@ public class CManagerDontDestroy : MonoBehaviour
     public CDataManger DataManger => _dataManger;
     public CLocalizationManager LocalizationData => _localizationData;
     public CSettingUI Settings => _setting;
+    public CSoundManager Sound => _sound;
     public static CManagerDontDestroy Instance { get; private set; }
 
     private void Awake()
@@ -50,6 +52,11 @@ public class CManagerDontDestroy : MonoBehaviour
         if (_setting == null)
         {
             CLog.Log("CManagerDontDestroy _setting : Null");
+        }
+
+        if (_sound == null)
+        {
+            CLog.Log("CManagerDontDestroy _sound : Null");
         }
         Instance = this;
 
@@ -150,5 +157,20 @@ public class CManagerDontDestroy : MonoBehaviour
 
         CLog.Log("Settings 생성완료");
         return Instance.Settings;
+    }
+
+    /// <summary>
+    /// 사운드
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    public static async UniTask<CSoundManager> SoundAsync(CancellationToken token)
+    {
+        await UniTask.WaitUntil(() => Instance != null && Instance.Sound != null, cancellationToken: token);
+
+        token.ThrowIfCancellationRequested();
+
+        CLog.Log("Sound 생성완료");
+        return Instance.Sound;
     }
 }

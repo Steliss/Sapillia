@@ -27,7 +27,11 @@ public class CEnemyState_Idle : IEnemyState
     public void StateUpdate()
     {
         _time += Time.deltaTime;
-        if (_time > _idleTime)
+        if (_mashine.IsPatrol)
+        {
+            _mashine.PatrolSearch(_mashine.PatrolRadius);
+        }
+        else if (_time > _idleTime)
         {
             _time = 0f;
             _mashine.StateChanged(_mashine.MoveState);

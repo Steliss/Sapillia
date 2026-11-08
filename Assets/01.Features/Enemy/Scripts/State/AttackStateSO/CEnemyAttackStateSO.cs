@@ -26,58 +26,30 @@ using UnityEngine;
 public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
 {
     #region 구조체
-    [Serializable]
-    public struct SEnemyFireBulletInfo
-    {
-        [Header("총알 프리팹")]
-        [SerializeField] public GameObject Projectile;
-        [Header("총알 속도")]
-        [SerializeField] public float BulletSpeed;
-        [Header("추적 속도 (초당 회전각도)")]
-        [SerializeField] public float TrackingSpeed;
-        [Header("각도 보정")]
-        [SerializeField] public float AnglePlus;
-        [Header("총알 수명")]
-        [SerializeField] public float BulletLifeTime;
-    }
+    
+
+
 
     [Serializable]
-    public struct SEnemySquareAttackInfo
-    {
-        [Header("이펙트 프리팹")]
-        public GameObject Effect;
-        [Header("선딜, 후딜")]
-        public float BeforeDelay;
-        public float AfterDelay;
-        [Header("공격 범위")]
-        public Vector2 Range;
-        [Header("투사체 정보")]
-        public SEnemyFireBulletInfo[] BulletInfos;
-
-        [Header("===== 애니메이터 =====")]
-        public string AniAttReady;
-        public string AniAttack;
-
-        [Header("해시용 변수. 입력x")]
-        [HideInInspector] public int HashAttReady;
-        [HideInInspector] public int HashAttack;
-    }
-
-    [Serializable]
-    public struct SWarningLineInfo
+    public struct SLineInfo
     {
         [Header("===== 전조 =====")]
         [Header("프리팹")]
-        [SerializeField] public GameObject Prefeb;
-        [Header("속성")]
-        [SerializeField] public float LineLength;
-        [SerializeField] public int LineCount;
-        [SerializeField] public bool IsClose;
-        [SerializeField] public float Interbal;
-        [SerializeField] public float StartInterbal;
+        public GameObject Prefeb;
+        [Header("선 / 후딜")]
+        public float BeforeDelay;
+        public float AfterDelay;
+        [Header("일반 라인 속성")]
+        public float LineLength;
+        public float Interbal;
+        public float Distanse;
+        public bool IsTracking;
+        public float TrackingSpeed;
+        [Header("사각 라인 속성")]
+        public float xLineLength;
+        public float yLineLength;
+        public Vector2 SquareRange;
     }
-
-
     #endregion
 
     #region 상태머신
@@ -87,9 +59,9 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
         _mashine = mashine;
     }
 
-    public abstract void StateEnter();
-    public abstract void StateExit();
-    public abstract void StateUpdate();
+    public virtual void StateEnter() { }
+    public virtual void StateExit() { }
+    public virtual void StateUpdate() { }
     #endregion
 
     #region 함수
@@ -117,10 +89,10 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
     {
         return Quaternion.Euler(0, 0, angle) * Vector2.up;
     }
-    /*
-    private async UniTask SquareAttackBefore(CancellationToken ct, Vector2 pos, SEnemySquareAttackInfo info)
+    
+    protected async UniTask WarningLine_Square(CancellationToken ct, Vector2 pos, SLineInfo info)
     {
-        Vector2 range = info.Range * 0.5f;
+        Vector2 range05 = info.SquareRange * 0.5f;
 
         // 라인 생성
         GameObject[] xLines = new GameObject[4];
@@ -130,32 +102,32 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
         for (int i = 0; i < xLines.Length; i++)
         {
             Vector2 linePos = pos;
-            linePos.x += range.x * sides[i % 2];
+            linePos.x += range05.x * sides[i % 2];
             xLines[i] = CreateAttackObject
                 (
-                    _warningLine,
+                    info.Prefeb,
                     info.BeforeDelay + info.AfterDelay,
                     linePos,
                     Quaternion.Euler(0, 0, 0)
                 );
             Vector2 scale = xLines[i].transform.localScale;
-            scale.y = _xLineLength;
+            scale.y = info.xLineLength;
             xLines[i].transform.localScale = scale;
         }
 
         for (int i = 0; i < yLines.Length; i++)
         {
             Vector2 linePos = pos;
-            linePos.y += range.y * sides[i % 2];
+            linePos.y += range05.y * sides[i % 2];
             yLines[i] = CreateAttackObject
                 (
-                    _warningLine,
+                    info.Prefeb,
                     info.BeforeDelay + info.AfterDelay,
                     linePos,
                     Quaternion.Euler(0, 0, 90)
                 );
             Vector2 scale = yLines[i].transform.localScale;
-            scale.y = _yLineLength;
+            scale.y = info.yLineLength;
             yLines[i].transform.localScale = scale;
         }
 
@@ -163,8 +135,8 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
         float moveTime = info.BeforeDelay;
         for (float time = 0f; time < moveTime; time += Time.deltaTime)
         {
-            float xGap = Mathf.Lerp(_yLineLength * 0.5f, range.x, time / moveTime);
-            float yGap = Mathf.Lerp(_xLineLength * 0.5f, range.y, time / moveTime);
+            float xGap = Mathf.Lerp(info.yLineLength * 0.5f, range05.x, time / moveTime);
+            float yGap = Mathf.Lerp(info.xLineLength * 0.5f, range05.y, time / moveTime);
 
             for (int i = 0; i < 2; i++)
             {
@@ -175,32 +147,230 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
-        _uni.Run(async linect =>
-        {
-            // 페이드 아웃
-            SpriteRenderer[] sps = new SpriteRenderer[8];
-            for (int i = 0; i < 4; i++)
-            {
-                sps[i] = xLines[i].GetComponent<SpriteRenderer>();
-                sps[i + 4] = yLines[i].GetComponent<SpriteRenderer>();
-            }
-
-            for (float time = 0f; time < info.AfterDelay; time += Time.deltaTime)
-            {
-                float t = 1 - (time / info.AfterDelay);
-                Color alpha = sps[0].color;
-                alpha.a = t;
-
-                for (int i = 0; i < sps.Length; i++)
-                {
-                    sps[i].color = alpha;
-                }
-
-                await UniTask.Yield(PlayerLoopTiming.Update, linect);
-            }
-        });
+        FadeOutLine(ct, xLines).Forget();
+        FadeOutLine(ct, yLines).Forget();
     }
-    */
+    
+    protected async UniTask<Vector2> WarningLine_FirePos(CancellationToken ct, SLineInfo info)
+    {
+        Vector2 myPos = _mashine.transform.position;
+        Vector2 targetPos = _mashine.Target.position;
+
+        // 라인 생성
+        GameObject[] lines = new GameObject[2];
+        float[] sides = { -1f, 1f };
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i] = CreateAttackObject
+            (info.Prefeb, info.BeforeDelay + 1.5f, myPos, Quaternion.identity);
+
+            Vector2 scale = lines[i].transform.localScale;
+            scale.y = info.LineLength;
+            lines[i].transform.localScale = scale;
+        }
+
+        // 플레이어 위치부터 조준 시작
+        Vector2 aimPos = targetPos;
+
+        // 조준 트래킹
+        for (float time = 0f; time < info.BeforeDelay; time += Time.deltaTime)
+        {
+            myPos = _mashine.transform.position;
+            targetPos = _mashine.Target.position;
+            Vector2 dir = targetPos - myPos;
+
+
+            // 에임 따라가기
+            if (info.IsTracking)
+            {
+                aimPos = Vector2.MoveTowards(aimPos, targetPos, Time.deltaTime * info.TrackingSpeed);
+            }
+
+            Vector2 aimDir = (aimPos - myPos).normalized;
+            Vector2 aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+            Vector2 linePos = myPos + aimDir * info.LineLength * 0.5f;
+            Quaternion qua = Quaternion.Euler(0, 0, DirToAngle(aimDir));
+            float gap = Mathf.Lerp(info.Interbal, 0f, time / info.BeforeDelay);
+
+            // 선 따라가기
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[i].transform.SetPositionAndRotation(linePos + (aimDir90 * gap * sides[i]), qua);
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
+        }
+        FadeOutLine(ct, lines).Forget();
+        return aimPos;
+    }
+
+    protected async UniTask<float> WarningLine_FireAngle(CancellationToken ct, SLineInfo info)
+    {
+        Vector2 myPos = _mashine.transform.position;
+        Vector2 targetPos = _mashine.Target.position;
+
+        // 라인 생성
+        GameObject[] lines = new GameObject[2];
+        float[] sides = { -1f, 1f };
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i] = CreateAttackObject
+            (info.Prefeb, info.BeforeDelay + 1.5f, myPos, Quaternion.identity);
+
+            Vector2 scale = lines[i].transform.localScale;
+            scale.y = info.LineLength;
+            lines[i].transform.localScale = scale;
+        }
+
+        // 플레이어 위치부터 조준 시작
+        float targetAngle = DirToAngle((targetPos - myPos).normalized);
+        float aimAngle = targetAngle;
+
+        // 조준 트래킹
+        for (float time = 0f; time < info.BeforeDelay; time += Time.deltaTime)
+        {
+            myPos = _mashine.transform.position;
+            targetPos = _mashine.Target.position;
+            Vector2 dir = targetPos - myPos;
+
+
+            // 타겟 각도 갱신
+            if (info.IsTracking)
+            {
+                targetAngle = DirToAngle(dir.normalized);
+            }
+
+            // 에임 따라가기
+            aimAngle = Mathf.MoveTowardsAngle(aimAngle, targetAngle, Time.deltaTime * info.TrackingSpeed);
+
+            Vector2 aimDir = AngleToDir(aimAngle);
+            Vector2 aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+            Vector2 linePos = myPos + aimDir * info.LineLength * 0.5f;
+            Quaternion qua = Quaternion.Euler(0, 0, aimAngle);
+            float gap = Mathf.Lerp(info.Interbal, 0f, time / info.BeforeDelay);
+
+            // 선 따라가기
+            for (int i = 0; i < lines.Length; i++)
+            {
+                lines[i].transform.SetPositionAndRotation(linePos + (aimDir90 * gap * sides[i]), qua);
+            }
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
+        }
+        FadeOutLine(ct, lines).Forget();
+        return aimAngle;
+    }
+
+    
+
+    protected async UniTask FadeOutLine(CancellationToken ct, GameObject[] lines, float fadeTime = 1f)
+    {
+        // 페이드 아웃
+        SpriteRenderer[] sps = new SpriteRenderer[lines.Length];
+        for (int i = 0; i < lines.Length; i++)
+        {
+            sps[i] = lines[i].GetComponent<SpriteRenderer>();
+        }
+
+        for (float time = 0f; time < fadeTime; time += Time.deltaTime)
+        {
+            float t = 1 - (time / fadeTime);
+            Color alpha = sps[0].color;
+            alpha.a = t;
+
+            for (int i = 0; i < sps.Length; i++)
+            {
+                sps[i].color = alpha;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
+        }
+    }
+
+    protected async UniTask<float> WarningLine_Melee(CancellationToken ct, float aimAngle, SLineInfo info)
+    {
+        _mashine.Nav.velocity = Vector3.zero;
+
+        Transform my = _mashine.transform;
+        Transform target = _mashine.Target;
+
+        Vector2 aimDir = AngleToDir(aimAngle);
+        Vector2 aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+
+
+
+        // 라인 생성
+        GameObject[] lines = new GameObject[4];
+        float[] sides = { -1f, 1f };
+
+        Vector3 scale = info.Prefeb.transform.localScale;
+        scale.y = info.LineLength;
+
+        Vector2 linePos = _mashine.transform.position;
+        linePos += aimDir * info.Distanse;
+
+
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i] = CreateAttackObject
+                (
+                info.Prefeb,
+                info.BeforeDelay + 1.5f,
+                Vector2.zero,
+                Quaternion.identity
+                );
+            lines[i].transform.localScale = scale;
+        }
+
+        // 라인으로 추적
+        for (float time = 0f; time < info.BeforeDelay; time += Time.deltaTime)
+        {
+            Vector2 targetDir = target.position - my.position;
+            float targetAngle = DirToAngle(targetDir.normalized);
+
+            // 좌우 반전
+            bool isLeft = aimDir.x < 0;
+            _mashine.SpriteFlipX(isLeft);
+
+            // TrackingSpeed의 속도로 플레이어를 추적
+            if (info.IsTracking)
+            {
+                aimAngle = Mathf.MoveTowardsAngle
+                    (
+                        aimAngle,
+                        targetAngle,
+                        Time.deltaTime * info.TrackingSpeed
+                    );
+            }
+
+            aimDir = AngleToDir(aimAngle).normalized;
+            aimDir90 = new Vector2(-aimDir.y, aimDir.x);
+            linePos = (Vector2)my.position + aimDir * info.Distanse;
+            Quaternion aimQua = Quaternion.Euler(0f, 0f, aimAngle);
+
+            // 고정된 라인 조정
+            for (int i = 2; i < 4; i++)
+            {
+                lines[i].transform.SetPositionAndRotation
+                    (linePos + (aimDir90 * info.Interbal * sides[i % 2]), aimQua);
+            }
+
+            float gap = Mathf.Lerp(0.3f, info.Interbal, time / info.BeforeDelay);
+
+            // 움직이는 라인 조정
+            for (int i = 0; i < 2; i++)
+            {
+                lines[i].transform.SetPositionAndRotation
+                    (linePos + (aimDir90 * gap * sides[i]), aimQua);
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, ct);
+        }
+
+        FadeOutLine(ct, lines).Forget();
+
+        return aimAngle;
+    }
+
 
     #endregion
 }

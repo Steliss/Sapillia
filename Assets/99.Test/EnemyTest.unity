@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Boom_Mole
       objectReference: {fileID: 0}
+    - target: {fileID: 6888828368181365855, guid: 2200ce96196ce8e4197cf67c4b8c6ea9, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8404854163087793039, guid: 2200ce96196ce8e4197cf67c4b8c6ea9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.68
@@ -1047,6 +1051,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Dynamite_Mole
       objectReference: {fileID: 0}
+    - target: {fileID: 2262762403484843176, guid: 7f82f6e6751a71f408c3a5a3fdd4a330, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4835179996385594602, guid: 7f82f6e6751a71f408c3a5a3fdd4a330, type: 3}
       propertyPath: m_LocalPosition.x
       value: 18.63
@@ -1214,15 +1222,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6341856920903205765, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6931884764999922458, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
       propertyPath: m_AnchorMax.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6931884764999922458, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
       propertyPath: m_AnchorMax.y
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1248,6 +1256,10 @@ PrefabInstance:
     - target: {fileID: 3830035056282647171, guid: af4f3a5de647697429bfa9fb46c7e58c, type: 3}
       propertyPath: m_Name
       value: Boss01
+      objectReference: {fileID: 0}
+    - target: {fileID: 3830035056282647171, guid: af4f3a5de647697429bfa9fb46c7e58c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4803775729561862697, guid: af4f3a5de647697429bfa9fb46c7e58c, type: 3}
       propertyPath: m_Pivot.x
@@ -1329,7 +1341,8 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8848281906766465348, guid: af4f3a5de647697429bfa9fb46c7e58c, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -1343,10 +1356,10 @@ SceneRoots:
   - {fileID: 389501483}
   - {fileID: 1763978987}
   - {fileID: 913369981}
-  - {fileID: 6035348339553081022}
   - {fileID: 91915331}
   - {fileID: 1520569761}
   - {fileID: 1614566650}
   - {fileID: 7957415805346517589}
   - {fileID: 10836492}
   - {fileID: 1758465978}
+  - {fileID: 6035348339553081022}

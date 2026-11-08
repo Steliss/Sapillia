@@ -1,11 +1,20 @@
 using System.Collections.Generic;
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CInventoryUI : MonoBehaviour, IInputCommand
 {
     [SerializeField] private CESCUI _esc;
     [SerializeField] private GameObject _UICanvas;
     [SerializeField] private CInventoryDrag _drag;
+
+    [SerializeField] private GameObject _InventoryInfo;
+    [SerializeField] private Image _infoImage;
+    [SerializeField] private TextMeshProUGUI _infoTitle;
+    [SerializeField] private TextMeshProUGUI _infoDesc;
 
     [Header("슬롯 프리팹")]
     [SerializeField] private CInventorySlotUI _slotPrefab;
@@ -78,6 +87,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _input.Unregister(EKeyAction.Inventory, this);
     }
 
+
     private void ReloadText()
     {
     }
@@ -96,6 +106,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     public void ActiveUI(bool active)
     {
         _isActive = active;
+
+        HideItemInfo();
 
         if (!active)
         {
@@ -138,10 +150,12 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         for (int i = 0; i < dataList.Count; i++)
         {
             CInventorySlotUI slot = Instantiate(_slotPrefab, root);
-            slot.gameObject.SetActive(true);
+
+            slot.SetInventoryUI(this);
             slot.BindSlot(dataList[i]);
 
             slotUIList.Add(slot);
+            slot.gameObject.SetActive(true);
         }
     }
 
@@ -182,6 +196,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         // 아티팩트 갱신        
         _inventoryData.NotifyInventoryChanged();
         
+        ShowItemInfo(toSlot);
 
         return;
     }
@@ -238,6 +253,41 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         {
             slot.Refresh();
         }
+    }
+    /// <summary>
+    /// 마우스를 올린 슬롯의 아이템 정보 표시
+    /// </summary>
+    public void ShowItemInfo(CInventorySlotUI slot)
+    {
+        if (!_isActive || _localization == null || !TryFindSlot(slot, out var dataList, out int index))
+        {
+            HideItemInfo();
+            return;
+        }
+
+        CInventorySlotData data = dataList[index];
+
+        if (data.IsEmpty || data.ItemSO == null || data.ItemID == 0)
+        {
+            HideItemInfo();
+            return;
+        }
+
+        CItemSO item = data.ItemSO;
+
+        _infoImage.sprite = item.Icon;
+        _infoTitle.text = _localization.GetText(item.NameKey);
+        _infoDesc.text = _localization.GetText(item.DescriptionKey);
+
+        _InventoryInfo.SetActive(true);
+    }
+
+    /// <summary>
+    /// 아이템 정보 숨기기
+    /// </summary>
+    public void HideItemInfo()
+    {
+        _InventoryInfo.SetActive(false);
     }
 
 }

@@ -46,7 +46,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private Rigidbody2D _rb;
     private bool _isPatrol = true;
     private CUniTaskOnes _attackUni = new CUniTaskOnes();
-    private CUniTaskOnes _searchUni = new CUniTaskOnes();
     private CUniTaskOnes _hurtUni = new CUniTaskOnes();
     private Transform _target;
     private Vector3 _startScale;
@@ -83,6 +82,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
     public float PatrolMoveRange => _patrolMoveRange;
+    public float PatrolRadius => _patrolRadius;
     public LayerMask TargetLayer => _targetMask;
 
     // 상태
@@ -188,14 +188,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     {
         // 데이터 베이스에서 데이터 갱신
         EnemyInit();
-        _searchUni.Run(async ct =>
-        {
-            while (_isPatrol)
-            {
-                PatrolSearch(_patrolRadius);
-                await UniTask.Yield(PlayerLoopTiming.Update, ct);
-            }
-        });
     }
 
     private void OnDisable()
@@ -203,7 +195,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         GameObjectsListClear();
         _attackUni.Cancel();
         _hurtUni.Cancel();
-        _searchUni.Cancel();
     }
 
 
@@ -233,9 +224,6 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         next.StateEnter();
     }
-
-
-
     
 
     // 스프라이트, 애니메이터 캐싱 및 해시 세팅
@@ -259,19 +247,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     }
 
     // 주변 플레이어 검색
-    private void PatrolSearch(float radius)
+    public void PatrolSearch(float radius)
     {
         if (!_isPatrol)
         {
-            _searchUni.Cancel();
             return;
         }
-
-        if (_state == (IEnemyState)_spawnState)
-        {
-            return;
-        }
-
 
         Collider2D hit = Physics2D.OverlapCircle(transform.position, radius, _targetMask);
 
@@ -406,7 +387,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         _gameObjects.Add(go);
     }
 
-    // 생성한 오브젝트 꺼서 오브젝트 풀로 반납
+    // 생성한 오브젝트 끄기
     public void GameObjectsListClear()
     {
         if (_gameObjects.Count > 0)
@@ -498,7 +479,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _hp = 0f;
             _sprite.color = Color.gray;
             // 7초뒤 비활성화 예약
-            _searchUni.Run(async ct =>
+            _hurtUni.Run(async ct =>
             {
                 await UniTask.Delay(TimeSpan.FromSeconds(7), cancellationToken: ct);
                 CEnemySpawner spawner = GetComponentInParent<CEnemySpawner>();
@@ -509,6 +490,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
                 CLog.Warn("예외 발생! 강제 비활성화");
                 gameObject.SetActive(false);
             });
+
             _attackUni.Cancel();
             StateChanged(_airbornState);
             return;
