@@ -60,6 +60,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             
             CreateInventory();
 
+            _inventoryData.OnInventoryChanged += RefreshInventoryUI;
+
             CLog.Log("CInventoryUI _dataTask OnEnable 작업 완료");
         });
     }
@@ -69,6 +71,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _inputTask.Cancel();
         _dataTask.Cancel();
         _localizationTask.Cancel();
+                
+        _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
         _localization.OnLanguageChanged -= ReloadText;
         _input.Unregister(EKeyAction.Inventory, this);
@@ -213,4 +217,27 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         dataList = null;
         return false;
     }
+
+
+    /// <summary>
+    /// 인벤토리 슬롯 UI 갱신
+    /// </summary>
+    private void RefreshInventoryUI()
+    {
+        foreach (CInventorySlotUI slot in _inventorySlotUI)
+        {
+            slot.Refresh();
+        }
+
+        foreach (CInventorySlotUI slot in _potionSlotUI)
+        {
+            slot.Refresh();
+        }
+
+        foreach (CInventorySlotUI slot in _beltSlotUI)
+        {
+            slot.Refresh();
+        }
+    }
+
 }
