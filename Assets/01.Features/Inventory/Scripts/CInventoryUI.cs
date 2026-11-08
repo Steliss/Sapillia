@@ -38,6 +38,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
 
+
     private bool _isActive;
     public bool IsActive => _isActive;
 
@@ -64,7 +65,11 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
+
+            
             CreateInventory();
+
+            _inventoryData.OnInventoryChanged += RefreshInventoryUI;
 
             CLog.Log("CInventoryUI _dataTask OnEnable 작업 완료");
         });
@@ -75,6 +80,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _inputTask.Cancel();
         _dataTask.Cancel();
         _localizationTask.Cancel();
+                
+        _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
         _localization.OnLanguageChanged -= ReloadText;
         _input.Unregister(EKeyAction.Inventory, this);
@@ -186,6 +193,9 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         fromSlot.BindSlot(fromList[fromIndex]);
         toSlot.BindSlot(toList[toIndex]);
 
+        // 아티팩트 갱신        
+        _inventoryData.NotifyInventoryChanged();
+        
         ShowItemInfo(toSlot);
 
         return;
@@ -223,6 +233,27 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         return false;
     }
 
+
+    /// <summary>
+    /// 인벤토리 슬롯 UI 갱신
+    /// </summary>
+    private void RefreshInventoryUI()
+    {
+        foreach (CInventorySlotUI slot in _inventorySlotUI)
+        {
+            slot.Refresh();
+        }
+
+        foreach (CInventorySlotUI slot in _potionSlotUI)
+        {
+            slot.Refresh();
+        }
+
+        foreach (CInventorySlotUI slot in _beltSlotUI)
+        {
+            slot.Refresh();
+        }
+    }
     /// <summary>
     /// 마우스를 올린 슬롯의 아이템 정보 표시
     /// </summary>

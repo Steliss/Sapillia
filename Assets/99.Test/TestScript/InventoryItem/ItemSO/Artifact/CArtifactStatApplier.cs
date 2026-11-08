@@ -9,6 +9,13 @@ public class CArtifactStatApplier : MonoBehaviour
     [SerializeField] private CDataManger _dataManager;
     #endregion
 
+    #region 내부변수
+
+    private CInventoryData _subscribedInventory;
+
+    #endregion
+
+
     /// <summary>
     /// 인벤토리의 아티팩트 능력치를 플레이어에게 적용
     /// </summary>
@@ -39,4 +46,58 @@ public class CArtifactStatApplier : MonoBehaviour
             $"| 특수공격: {player.Stats.Damage_Special}"
         );
     }
+
+
+    /// <summary>
+    /// 인벤토리 변경 이벤트 연결
+    /// </summary>
+    public void BindInventory()
+    {
+        if (_dataManager == null)
+        {
+            return;
+        }
+
+        CInventoryData inventory = _dataManager.InventoryData?.InventoryData;
+
+        if (inventory == null)
+        {
+            return;
+        }
+
+        // 기존 인벤토리 이벤트 구독 해제
+        if (_subscribedInventory != null)
+        {
+            _subscribedInventory.OnInventoryChanged -= RefreshArtifactStats;
+        }
+
+        // 새로운 인벤토리 연결
+        _subscribedInventory = inventory;
+
+        // 인벤토리 변경 시 아티팩트 능력치 갱신
+        _subscribedInventory.OnInventoryChanged += RefreshArtifactStats;
+    }
+
+
+    [Header("획득 테스트용")]
+    [SerializeField] private CArtifactSO _testArtifact;
+
+    [ContextMenu("Test Add Artifact")]
+    private void TestAddArtifact()
+    {
+        CInventoryData inventory = _dataManager.InventoryData?.InventoryData;
+
+        if (inventory == null || _testArtifact == null)
+        {
+            Debug.LogWarning("인벤토리 또는 테스트 아티팩트가 없습니다.");
+            return;
+        }
+
+        bool success = inventory.AddArtifact(_testArtifact);
+
+        Debug.Log(success
+            ? $"아티팩트 획득 성공: {_testArtifact.ItemID}"
+            : "아티팩트 획득 실패");
+    }
+
 }
