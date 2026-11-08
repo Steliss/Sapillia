@@ -61,6 +61,10 @@ public class CEnemyState_Move : IEnemyState
         {
             _mashine.Nav.SetDestination(_mashine.Target.position);
         }
+        else
+        {
+            _mashine.PatrolSearch(_mashine.PatrolRadius);
+        }
 
         // 상태 전환
         if (_mashine.Nav.remainingDistance < _mashine.Nav.stoppingDistance + 0.1f)

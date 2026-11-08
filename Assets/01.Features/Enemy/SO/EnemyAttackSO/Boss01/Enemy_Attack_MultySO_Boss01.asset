@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7604882fac53b1145bcd639647f4b36b, type: 3}
   m_Name: Enemy_Attack_MultySO_Boss01
   m_EditorClassIdentifier: 
-  _firstAttacks: []
+  _firstAttacks:
+  - AttackSO: {fileID: 11400000, guid: 51204d6118f835748a4c9cba0ae595c5, type: 2}
+    StartCoolTime: 0
+    MaxCoolTime: 0
   _randomAttacks:
   - AttackSO: {fileID: 11400000, guid: 0f351e381099be24c88853fee9bc6b31, type: 2}
     StartCoolTime: 10
