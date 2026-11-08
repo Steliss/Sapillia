@@ -186,6 +186,7 @@ public class CDataManger : MonoBehaviour
             _inventoryData.SetInventoryData();
             _currentFlow = new CFlowGame();
             JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(_defalutFlow), _currentFlow);
+            _artifactStatApplier.BindInventory();
             _artifactStatApplier.RefreshArtifactStats(); // 아티팩트 정보
             return SaveGame(slot);
         }
@@ -210,6 +211,7 @@ public class CDataManger : MonoBehaviour
         // 플레이어 복원은 런 세션에서 처리
         _playerData.SetPlayerData(data.Player);
         _inventoryData.SetInventoryData(data.Inventory);
+        _artifactStatApplier.BindInventory();  // 인벤토리 변경 이벤트 연결
         _artifactStatApplier.RefreshArtifactStats(); // 아티팩트 능력치 적용
         return true;
     }

@@ -29,6 +29,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
 
+
     private bool _isActive;
     public bool IsActive => _isActive;
 
@@ -55,6 +56,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
+
+            
             CreateInventory();
 
             CLog.Log("CInventoryUI _dataTask OnEnable 작업 완료");
@@ -171,6 +174,10 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         // 변경된 두 칸만 갱신
         fromSlot.BindSlot(fromList[fromIndex]);
         toSlot.BindSlot(toList[toIndex]);
+
+        // 아티팩트 갱신        
+        _inventoryData.NotifyInventoryChanged();
+        
 
         return;
     }

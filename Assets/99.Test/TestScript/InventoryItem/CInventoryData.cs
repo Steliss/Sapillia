@@ -39,6 +39,8 @@ public class CInventorySlotData
 
     public bool IsEmpty => ItemID == 0; // 인덱스 확인용 불값
 
+    
+
     /// <summary>
     /// 해당 슬롯의 아이템 비우기
     /// </summary>
@@ -63,8 +65,6 @@ public class CInventorySlotData
     }
 
 
-    
-
 
 }
 
@@ -84,7 +84,9 @@ public class CInventoryData
 
     public const int _width = 6; // 인벤토리의 가로 칸 수
 
-    public int InventorySize => _inventorySize; 
+    public int InventorySize => _inventorySize;
+
+    [field : NonSerialized] public event Action OnInventoryChanged;
 
 
     /// <summary>
@@ -147,4 +149,56 @@ public class CInventoryData
 
         return totalStats;
     }
+
+
+    /// <summary>
+    /// 아티팩트를 인벤토리의 첫 번째 빈 슬롯에 추가
+    /// </summary>
+    public bool AddArtifact(CArtifactSO artifact)
+    {
+        // 유효한 아티팩트인지 검사
+        if (artifact == null || artifact.ItemID <= 0)
+        {
+            return false;
+        }
+
+        // 빈 슬롯 검색
+        foreach (CInventorySlotData slot in inventorySlots)
+        {
+            if (!slot.IsEmpty)
+            {
+                continue;
+            }
+
+            // 아티팩트 정보 등록
+            slot.ItemID = artifact.ItemID;
+            slot.ItemType = artifact.Type;
+            slot.ItemSO = artifact;
+            slot.Count = 1;
+            slot.Rotation = ETabletRotation.None;
+
+            // 슬롯의 EnhanceLevel은 변경하지 않음
+
+            // 인벤토리 변경 알림
+            NotifyInventoryChanged();
+
+            return true;
+        }
+
+        // 빈 슬롯이 없으면 획득 실패
+        return false;
+    }
+
+
+
+
+    /// <summary>
+    /// 인벤토리 변경됐을때
+    /// </summary>
+    public void NotifyInventoryChanged()
+    {
+        OnInventoryChanged?.Invoke();
+    }
+
+
 }
