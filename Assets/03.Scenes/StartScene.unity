@@ -2263,6 +2263,7 @@ GameObject:
   m_Component:
   - component: {fileID: 154711373}
   - component: {fileID: 154711372}
+  - component: {fileID: 154711374}
   m_Layer: 0
   m_Name: DataManager
   m_TagString: Untagged
@@ -2588,6 +2589,7 @@ MonoBehaviour:
     _saveSlot: 0
   _playerData: {fileID: 2057100753}
   _inventoryData: {fileID: 1043294126}
+  _artifactStatApplier: {fileID: 154711374}
 --- !u!4 &154711373
 Transform:
   m_ObjectHideFlags: 0
@@ -2606,6 +2608,19 @@ Transform:
   - {fileID: 2129575410}
   m_Father: {fileID: 1044418178}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &154711374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 154711371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4c3928b8c13edd4baef0595f3e23a37, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dataManager: {fileID: 154711372}
 --- !u!1 &163383932
 GameObject:
   m_ObjectHideFlags: 0

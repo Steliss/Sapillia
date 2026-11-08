@@ -18,6 +18,7 @@ public abstract class CItemSO : ScriptableObject
     [SerializeField] private int _itemID;
     [SerializeField] private string _nameKey;
     [SerializeField] private string _descriptionKey;
+    [SerializeField] private string _storyKey;
     [SerializeField] private Sprite _icon;
 
     #endregion
