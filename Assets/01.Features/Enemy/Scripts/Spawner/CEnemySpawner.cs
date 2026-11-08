@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CEnemySpawner : MonoBehaviour
@@ -14,10 +13,14 @@ public class CEnemySpawner : MonoBehaviour
     #endregion
 
     #region 인스펙터
-    [SerializeField] private List<GameObject> _doors;
-    [SerializeField] private List<SEnemySpawnData> _enemys;
+    [SerializeField] private GameObject[] _doors;
+    [SerializeField] private SEnemySpawnData[] _enemys;
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private Vector2 _randomSpawnRange;
+    [Header("전투 종료시 보상 프리팹 (비워도 됨)")]
+    [SerializeField] private GameObject _reward;
+    [Header("보상 위치 보정 (기본 스포너 위치)")]
+    [SerializeField] private Vector2 _rewardPosPlus;
     #endregion
 
     #region 내부 변수
@@ -62,13 +65,13 @@ public class CEnemySpawner : MonoBehaviour
         GetComponent<Collider2D>().enabled = false;
 
         // 문 활성화
-        for (int i = 0; i < _doors.Count; i++)
+        for (int i = 0; i < _doors.Length; i++)
         {
             _doors[i].SetActive(true);
         }
 
         // 몬스터 스폰
-        for (int i = 0; i < _enemys.Count; i++)
+        for (int i = 0; i < _enemys.Length; i++)
         {
             for (int j = 0; j < _enemys[i].Count; j++)
             {
@@ -106,6 +109,14 @@ public class CEnemySpawner : MonoBehaviour
             _isBattle = false;
             _playerData?.SetIsBattle(false);
             gameObject.SetActive(false);
+
+            if (_reward != null)
+            {
+                Vector2 pos = (Vector2)transform.position + _rewardPosPlus;
+                Instantiate(_reward, pos, Quaternion.identity);
+            }
+
+
             CLog.Log("전투 종료!");
         }
     }
