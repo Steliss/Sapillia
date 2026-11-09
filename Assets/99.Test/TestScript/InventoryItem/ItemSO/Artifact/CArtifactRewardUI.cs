@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class CArtifactRewardUI : MonoBehaviour
 {
@@ -24,14 +23,40 @@ public class CArtifactRewardUI : MonoBehaviour
 
     private CArtifactReward _currentReward;
 
+    private bool _isRewardGenerated = false;
+
     #endregion
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CancelSelection();
+        }
+    }
+
+
+
+
 
     /// <summary>
     /// 랜덤 아티팩트 4개 선택 및 표시
     /// </summary>
     public void ShowRewards(CArtifactReward reward)
     {
+        if (_currentReward != reward)
+        {
+            _isRewardGenerated = false;
+        }
+
         _currentReward = reward;
+
+        if (_isRewardGenerated)
+        {
+            gameObject.SetActive(true);
+            return;
+        }
 
         _selectedArtifacts.Clear();
 
@@ -79,6 +104,7 @@ public class CArtifactRewardUI : MonoBehaviour
             _rewardButtons[i].onClick.AddListener(() => SelectArtifact(index));
         }
 
+        _isRewardGenerated = true;
         gameObject.SetActive(true);
     }
 
@@ -88,18 +114,24 @@ public class CArtifactRewardUI : MonoBehaviour
     /// </summary>
     private void SelectArtifact(int index)
     {
-        Debug.Log($"[보상 선택 테스트] 버튼 {index + 1} 클릭됨");
 
         if (_dataManager == null)
         {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            Debug.LogError("[CArtifactRewardUI] DataManager를 찾을 수 없습니다.");
             return;
         }
+
 
         CInventoryData inventory = _dataManager.InventoryData?.InventoryData;
 
         if (inventory == null)
         {
-            Debug.LogError("[CArtifactRewardUI] DataManager가 연결되지 않았습니다.");
+            Debug.LogError("[CArtifactRewardUI] InventoryData가 준비되지 않았습니다.");
             return;
         }
 
@@ -122,6 +154,20 @@ public class CArtifactRewardUI : MonoBehaviour
         {
             Destroy(_currentReward.gameObject);
             _currentReward = null;
+        }
+    }
+
+
+    /// <summary>
+    /// 보상 선택을 취소하고 UI 닫기
+    /// </summary>
+    public void CancelSelection()
+    {
+        gameObject.SetActive(false);
+
+        if (_currentReward != null)
+        {
+            _currentReward.CancelReward();
         }
     }
 }
