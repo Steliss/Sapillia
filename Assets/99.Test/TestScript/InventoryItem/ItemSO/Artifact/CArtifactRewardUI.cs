@@ -88,6 +88,8 @@ public class CArtifactRewardUI : MonoBehaviour
     /// </summary>
     private void SelectArtifact(int index)
     {
+        Debug.Log($"[보상 선택 테스트] 버튼 {index + 1} 클릭됨");
+
         if (_dataManager == null)
         {
             return;
@@ -97,6 +99,7 @@ public class CArtifactRewardUI : MonoBehaviour
 
         if (inventory == null)
         {
+            Debug.LogError("[CArtifactRewardUI] DataManager가 연결되지 않았습니다.");
             return;
         }
 
