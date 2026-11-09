@@ -28,6 +28,14 @@ public class CArtifactReward : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F))
         {
+            if (_rewardUI == null)
+            {
+                Debug.LogError(
+                    $"[CArtifactReward] Reward UI가 연결되지 않았습니다! 오브젝트: {gameObject.name}"
+                );
+                return;
+            }
+
             _isRewardOpened = true;
             _rewardUI.ShowRewards(this);
         }
