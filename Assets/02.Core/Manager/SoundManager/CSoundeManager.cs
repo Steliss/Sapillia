@@ -121,5 +121,39 @@ public class CSoundManager : MonoBehaviour
         return false;
     }
 
+
+
+    /// <summary>
+    /// 현재 설정의 볼륨을 FMOD에 적용
+    /// </summary>
+    /// <param name="setting"></param>
+    public void ApplyVolume(CSettings setting)
+    {
+        SetBusVolume("bus:/", setting.MasterSound);
+        SetBusVolume("bus:/Master Bus/BGMGlobal", setting.BGMSound);
+        SetBusVolume("bus:/Master Bus/SFX", setting.EffectSound);
+        SetBusVolume("bus:/Master Bus/AMB", setting.EnvironmentSound);
+    }
+
+    private void SetBusVolume(string path, float volume)
+    {
+        FMOD.RESULT result = RuntimeManager.StudioSystem.getBus(path, out FMOD.Studio.Bus bus);
+
+        if (result != FMOD.RESULT.OK)
+        {
+            CLog.Error($"Bus 조회 실패: {path}, {result}");
+            return;
+        }
+
+        result = bus.setVolume(Mathf.Clamp01(volume));
+
+        if (result != FMOD.RESULT.OK)
+        {
+            CLog.Error($"Bus 볼륨 적용 실패: {path}, {result}");
+        }
+    }
+
+
+
     // 필요시 onDestroy로 재생중인 BGM 정리 
 }
