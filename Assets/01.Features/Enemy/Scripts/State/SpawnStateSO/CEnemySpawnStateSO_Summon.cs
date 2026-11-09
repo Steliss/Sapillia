@@ -1,7 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -21,6 +19,7 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
         {
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
             _mashine.Ani.Play(_mashine.HashIdle);
+            _mashine.Collider.enabled = false;
 
             Vector2 startScale = _mashine.Sprite.transform.localScale;
             _mashine.Sprite.transform.localScale = Vector2.zero;
@@ -60,6 +59,7 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
     public override void StateExit()
     {
         _mashine.AttackUni.Cancel();
+        _mashine.Collider.enabled = true;
     }
 
     public override void StateUpdate()
