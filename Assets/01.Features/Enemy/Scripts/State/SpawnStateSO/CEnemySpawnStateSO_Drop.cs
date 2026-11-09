@@ -55,49 +55,40 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
             Vector2 high = Vector3.up * ranHigh;
             tr.localPosition = high;
             float speed = 0f;
-
+            _mashine.Collider.enabled = false;
             _mashine.Ani.Play(_hashStart);
 
-            try
+            while (tr.localPosition.y > 0)
             {
-                while (tr.localPosition.y > 0)
-                {
-                    speed += 9.81f * Time.deltaTime;
-                    high.y -= speed * Time.deltaTime;
+                speed += 9.81f * Time.deltaTime;
+                high.y -= speed * Time.deltaTime;
 
-                    tr.localPosition = high;
+                tr.localPosition = high;
 
-                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
 
-                }
-                tr.localPosition = Vector3.zero;
-                _mashine.Ani.Play(_hashEnd);
-
-                // 이펙트 생성
-                if (_stamp != null && CObjectPoolManager.Instance != null)
-                {
-                    GameObject go = CObjectPoolManager.Instance.GetPoolObject(_stamp, 2f);
-                    Vector2 goPos = tr.position;
-                    goPos.y -= 0.4f;
-                    go.transform.position = goPos;
-                }
-
-                // 1초 대기 후 진행
-                await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
-
-                
             }
-            finally
+            tr.localPosition = Vector3.zero;
+            _mashine.Ani.Play(_hashEnd);
+
+            // 이펙트 생성
+            if (_stamp != null && CObjectPoolManager.Instance != null)
             {
-                tr.localPosition = Vector3.zero;
-                _mashine.StateChanged(_mashine.IdleState);
+                GameObject go = CObjectPoolManager.Instance.GetPoolObject(_stamp, 2f);
+                Vector2 goPos = tr.position;
+                goPos.y -= 0.4f;
+                go.transform.position = goPos;
             }
+
+            tr.localPosition = Vector3.zero;
+            _mashine.StateChanged(_mashine.IdleState);
         });
     }
 
     public override void StateExit()
     {
         _mashine.Nav.enabled = true;
+        _mashine.Collider.enabled = true;
     }
 
     public override void StateUpdate()

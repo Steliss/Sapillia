@@ -57,6 +57,7 @@ public class CEnemyAttackStateSO_Charge : CEnemyAttackStateSO
             for (int i = 0; i < _attackInfos.Length; i++)
             {
                 // 선 딜레이
+
                 _mashine.Ani.Play(_attackInfos[i].HashAttReady);
                 await WarningLine_Square(ct, _mashine.transform.position, _lineInfo[i]);
 
