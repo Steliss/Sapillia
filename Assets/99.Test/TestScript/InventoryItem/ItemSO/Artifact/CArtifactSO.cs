@@ -21,6 +21,9 @@ public class CArtifactSO : CItemSO
     [Min(0f)]
     [SerializeField] private float _starIncreaseRate = 0.5f;
 
+    [Header("인챈트수치")]
+    [SerializeField] private int _inchant = 0;
+
     #endregion
 
     #region 프로퍼티
@@ -29,6 +32,8 @@ public class CArtifactSO : CItemSO
 
     public EArtifactGrade Grade => _grade;
     public int MaxStars => _maxStars;
+
+    public int Inchant => _inchant;
     public IReadOnlyList<EArtifactSynergy> Synergies => _synergies;
 
     public SPlayerStats BaseStats => _baseStats;

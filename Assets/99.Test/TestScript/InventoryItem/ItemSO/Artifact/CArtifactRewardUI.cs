@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.InputSystem.LowLevel.InputStateHistory;
 
 public class CArtifactRewardUI : MonoBehaviour
 {
@@ -14,6 +13,18 @@ public class CArtifactRewardUI : MonoBehaviour
     [Header("보상 버튼 4개")]
     [SerializeField] private Button[] _rewardButtons = new Button[4];
 
+    [Header("아티팩트 아이콘 이미지 4개")]
+    [SerializeField] private Image[] _artifactImages = new Image[4];
+
+
+    [Header("등급별 배경 이미지")]
+    [SerializeField] private Sprite _normalBackground;
+    [SerializeField] private Sprite _advancedBackground;
+    [SerializeField] private Sprite _rareBackground;
+    [SerializeField] private Sprite _legendaryBackground;
+
+
+
     [Header("데이터 매니저")]
     [SerializeField] private CDataManger _dataManager;
     #endregion
@@ -24,14 +35,40 @@ public class CArtifactRewardUI : MonoBehaviour
 
     private CArtifactReward _currentReward;
 
+    private bool _isRewardGenerated = false;
+
     #endregion
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            CancelSelection();
+        }
+    }
+
+
+
+
 
     /// <summary>
     /// 랜덤 아티팩트 4개 선택 및 표시
     /// </summary>
     public void ShowRewards(CArtifactReward reward)
     {
+        if (_currentReward != reward)
+        {
+            _isRewardGenerated = false;
+        }
+
         _currentReward = reward;
+
+        if (_isRewardGenerated)
+        {
+            gameObject.SetActive(true);
+            return;
+        }
 
         _selectedArtifacts.Clear();
 
@@ -63,22 +100,27 @@ public class CArtifactRewardUI : MonoBehaviour
             candidates.RemoveAt(randomIndex);
         }
 
-        // 버튼에 아티팩트 아이콘 표시
         for (int i = 0; i < 4; i++)
         {
-            Image image = _rewardButtons[i].image;
+            // 아티팩트 아이콘
+            Image image = _artifactImages[i];
 
             image.sprite = _selectedArtifacts[i].Icon;
             image.enabled = image.sprite != null;
 
+            // 등급별 배경
+            Image background = _rewardButtons[i].image;
+            background.sprite = GetGradeBackground(_selectedArtifacts[i].Grade);
+
             // 기존 클릭 이벤트 제거
             _rewardButtons[i].onClick.RemoveAllListeners();
 
-            // 클릭했을 때 해당 아티팩트 선택
             int index = i;
             _rewardButtons[i].onClick.AddListener(() => SelectArtifact(index));
         }
 
+
+        _isRewardGenerated = true;
         gameObject.SetActive(true);
     }
 
@@ -88,18 +130,24 @@ public class CArtifactRewardUI : MonoBehaviour
     /// </summary>
     private void SelectArtifact(int index)
     {
-        Debug.Log($"[보상 선택 테스트] 버튼 {index + 1} 클릭됨");
 
         if (_dataManager == null)
         {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            Debug.LogError("[CArtifactRewardUI] DataManager를 찾을 수 없습니다.");
             return;
         }
+
 
         CInventoryData inventory = _dataManager.InventoryData?.InventoryData;
 
         if (inventory == null)
         {
-            Debug.LogError("[CArtifactRewardUI] DataManager가 연결되지 않았습니다.");
+            Debug.LogError("[CArtifactRewardUI] InventoryData가 준비되지 않았습니다.");
             return;
         }
 
@@ -124,4 +172,41 @@ public class CArtifactRewardUI : MonoBehaviour
             _currentReward = null;
         }
     }
+
+
+    /// <summary>
+    /// 보상 선택을 취소하고 UI 닫기
+    /// </summary>
+    public void CancelSelection()
+    {
+        gameObject.SetActive(false);
+
+        if (_currentReward != null)
+        {
+            _currentReward.CancelReward();
+        }
+    }
+
+
+    private Sprite GetGradeBackground(EArtifactGrade grade)
+    {
+        switch (grade)
+        {
+            case EArtifactGrade.Normal:
+                return _normalBackground;
+
+            case EArtifactGrade.Advanced:
+                return _advancedBackground;
+
+            case EArtifactGrade.Rare:
+                return _rareBackground;
+
+            case EArtifactGrade.Legendary:
+                return _legendaryBackground;
+
+            default:
+                return _normalBackground;
+        }
+    }
+
 }
