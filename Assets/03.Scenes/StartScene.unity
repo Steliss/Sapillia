@@ -2621,6 +2621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _dataManager: {fileID: 154711372}
+  _testArtifact: {fileID: 0}
 --- !u!1 &163383932
 GameObject:
   m_ObjectHideFlags: 0
@@ -13724,10 +13725,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1316343279}
   - {fileID: 1962637696}
-  - {fileID: 733895320}
   - {fileID: 1131987488}
+  - {fileID: 733895320}
+  - {fileID: 1316343279}
   - {fileID: 1646799161}
   - {fileID: 4028961}
   - {fileID: 1850500640}
@@ -24826,7 +24827,7 @@ MonoBehaviour:
     _action: 21
     _titleText: {fileID: 549405841}
     _primaryButton: {fileID: 112769214}
-    _primaryText: {fileID: 528823134}
+    _primaryText: {fileID: 1423752927}
     _secondaryButton: {fileID: 1264288331}
     _secondaryText: {fileID: 1183581611}
   - _slot: {fileID: 1465952976}
