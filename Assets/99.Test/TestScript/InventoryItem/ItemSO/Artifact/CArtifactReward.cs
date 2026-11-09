@@ -26,11 +26,26 @@ public class CArtifactReward : MonoBehaviour
             return;
         }
 
+
         if (Input.GetKeyDown(KeyCode.F))
         {
+            if (_rewardUI == null)
+            {
+                _rewardUI = FindAnyObjectByType<CArtifactRewardUI>(
+                    FindObjectsInactive.Include
+                );
+            }
+
+            if (_rewardUI == null)
+            {
+                Debug.LogError("[CArtifactReward] 보상 선택 UI를 찾을 수 없습니다.");
+                return;
+            }
+
             _isRewardOpened = true;
             _rewardUI.ShowRewards(this);
         }
+
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -51,6 +66,11 @@ public class CArtifactReward : MonoBehaviour
         }
 
         _isPlayerNearby = false;
+    }
+
+    public void CancelReward()
+    {
+        _isRewardOpened = false;
     }
 
 }
