@@ -47,7 +47,9 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         {
             _itemImage.sprite = null;
             _itemImage.enabled = false;
-            _countText.text = "";
+            _countText.text = _slotData == null || _slotData.EnhanceLevel == 0 
+                ? "" 
+                : _slotData.EnhanceLevel.ToString();
             return;
         }
 
@@ -58,7 +60,17 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
             _itemImage.enabled = _itemImage.sprite != null;
         }
 
-
-        _countText.text = _slotData.Count.ToString();
+        if (_slotData.ItemType == EItemType.Potion)
+        {
+            _countText.text = _slotData.Count.ToString();
+        }
+        else if (_slotData.ItemSO is CArtifactSO artifact)
+        {
+            _countText.text = $"{_slotData.EnhanceLevel} / {artifact.MaxStars}";
+        }
+        else
+        {
+            _countText.text = $"{_slotData.EnhanceLevel}";
+        }
     }
 }

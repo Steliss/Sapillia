@@ -2,6 +2,8 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 {
@@ -128,7 +130,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     private void ReloadText()
     {
         _continueText.text = _localization.GetText("scene.continuetext.text");
-        _giveUPText.text = _localization.GetText("scene.giveuptext.text");
         _settingText.text = _localization.GetText("scene.settingtext.text");
         _extiText.text = _localization.GetText("scene.extitext.text");
     }
@@ -147,11 +148,17 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
             return;
         }
 
+        string sceneName = SceneManager.GetActiveScene().name;
+
         _isInitialize = true;
 
-        if(_data.CurrentFlow.CurrentScene == EScene.Town)
+        if (sceneName == "Town" || sceneName == "Menu")
         {
             _giveUPText.text = _localization.GetText("scene.enmpty.text");
+        }
+        else
+        {
+            _giveUPText.text = _localization.GetText("scene.giveuptext.text");
         }
     }
 
@@ -163,7 +170,9 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void GiveUP()
     {
-        if(_data.CurrentFlow.CurrentScene == EScene.Town)
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Town")
         {
             return;
         }

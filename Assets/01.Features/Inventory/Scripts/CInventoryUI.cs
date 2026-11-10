@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CInventoryUI : MonoBehaviour, IInputCommand
@@ -100,6 +98,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             return;
         }
 
+        RefreshInventoryUI();
         ActiveUI(!_isActive);
     }
 
@@ -254,6 +253,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             slot.Refresh();
         }
     }
+
     /// <summary>
     /// 마우스를 올린 슬롯의 아이템 정보 표시
     /// </summary>

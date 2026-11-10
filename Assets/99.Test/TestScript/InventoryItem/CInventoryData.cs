@@ -54,9 +54,12 @@ public class CInventorySlotData
         ItemSO = null;
     }
 
+    /// <summary>
+    /// 현재 레벨에 따른 아티팩트 능력치 반환
+    /// </summary>
     public SPlayerStats GetArtifactStats()
     {
-        if (IsEmpty || ItemSO is not CArtifactSO artifact)
+        if (IsEmpty || ItemSO is not CArtifactSO artifact || EnhanceLevel < 0)
         {
             return default;
         }
@@ -64,8 +67,26 @@ public class CInventorySlotData
         return artifact.GetStats(EnhanceLevel);
     }
 
+    /// <summary>
+    /// 석판 회전함수
+    /// </summary>
+    /// <returns></returns>
+    public List<CTabletEffectLange> RotateTablet()
+    {
+        if (IsEmpty || ItemSO is not CTabletSO tablet)
+        {
+            return new List<CTabletEffectLange>();
+        }
 
+        // 회전 가능한 경우 다음 방향으로 변경
+        if (tablet.CanRotate)
+        {
+            Rotation = tablet.NextRotation(Rotation);
+        }
 
+        // 현재 방향의 전체 영향 범위 반환
+        return tablet.RotatedEffects(Rotation);
+    }
 }
 
 [Serializable]
@@ -132,24 +153,24 @@ public class CInventoryData
         }
 
         _inventorySize = inventorySlots.Count;
-
+        
+        NotifyInventoryChanged();
     }
 
 
-    public SPlayerStats GetTotalArtifactStats()
+public SPlayerStats GetTotalArtifactStats()
+{
+    SPlayerStats totalStats = default;
+
+    foreach (CInventorySlotData slot in inventorySlots)
     {
-        SPlayerStats totalStats = default;
+        SPlayerStats slotStats = slot.GetArtifactStats();
 
-        foreach (CInventorySlotData slot in inventorySlots)
-        {
-            SPlayerStats slotStats = slot.GetArtifactStats();
-
-            totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
-        }
-
-        return totalStats;
+        totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
     }
 
+    return totalStats;
+}
 
     /// <summary>
     /// 아티팩트를 인벤토리의 첫 번째 빈 슬롯에 추가
@@ -197,8 +218,86 @@ public class CInventoryData
     /// </summary>
     public void NotifyInventoryChanged()
     {
+        ApplyTabletLevels();
+
         OnInventoryChanged?.Invoke();
     }
 
 
+    /// <summary>
+    /// 메인 인벤토리의 각 칸에 적용되는 석판 레벨 증감 합계
+    /// </summary>
+    public int[] CalculateTabletLevels()
+    {
+        int[] levels = new int[inventorySlots.Count];
+
+        for (int i = 0; i < inventorySlots.Count; i++)
+        {
+            CInventorySlotData slot = inventorySlots[i];
+
+            if (slot.IsEmpty || slot.ItemSO is not CTabletSO tablet)
+            {
+                continue;
+            }
+
+            // 왼쪽부터 X 증가, 위에서 아래로 Y 증가
+            int tabletX = i % _width;
+            int tabletY = i / _width;
+
+            List<CTabletEffectLange> effects = tablet.RotatedEffects(slot.Rotation);
+
+            foreach (CTabletEffectLange effect in effects)
+            {
+                int targetX = tabletX + effect.Offset.x;
+
+                // 효과 좌표는 위쪽이 Y+이므로 빼기
+                int targetY = tabletY - effect.Offset.y;
+
+                // 좌우 경계와 위쪽 경계 검사
+                if (targetX < 0 ||
+                    targetX >= _width ||
+                    targetY < 0)
+                {
+                    continue;
+                }
+
+                int targetIndex = targetY * _width + targetX;
+
+                // 아래쪽 경계와 마지막 줄의 없는 칸 검사
+                if (targetIndex >= inventorySlots.Count)
+                {
+                    continue;
+                }
+
+                levels[targetIndex] += effect.LevelChange;
+            }
+        }
+
+        return levels;
+    }
+
+
+    /// <summary>
+    /// 석판 계산 결과를 각 슬롯에 덮어쓰기
+    /// </summary>
+    public void ApplyTabletLevels()
+    {
+        int[] levels = CalculateTabletLevels();
+
+        for (int i = 0; i < inventorySlots.Count; i++)
+        {
+            inventorySlots[i].EnhanceLevel = levels[i];
+        }
+
+        // 보관용 영역에는 석판 효과가 적용되지 않음
+        foreach (CInventorySlotData slot in potionSlots)
+        {
+            slot.EnhanceLevel = 0;
+        }
+
+        foreach (CInventorySlotData slot in extraInventorySlots)
+        {
+            slot.EnhanceLevel = 0;
+        }
+    }
 }
