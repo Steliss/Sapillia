@@ -7,10 +7,12 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private Image _dragIcon;
     [SerializeField] private CInventoryUI _inventoryUI;
     [SerializeField] private RectTransform _UICanvas;
-
-
+    
+    private CInventoryData _inventoryData;
     private CInventorySlotUI _fromSlot;
 
+    private CDataManger _data;
+    private CUniTaskOnes _dataTask = new CUniTaskOnes();
 
     private int _pointerId;
 
@@ -20,6 +22,18 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         _dragIcon.raycastTarget = false;
         _dragIcon.preserveAspect = true;
         CancelDrag();
+    }
+
+    private void OnEnable()
+    {
+        _dataTask.Run(async token =>
+        {
+            _data = await CManagerDontDestroy.DataMangerAsync(token);
+            _inventoryData = _data.InventoryData.GetInventoryData();
+            token.ThrowIfCancellationRequested();
+
+            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+        });
     }
 
     // 유니티 함수 드래그 시작시
@@ -74,6 +88,8 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             // 인벤토리 데이터 교환
             _inventoryUI.TryMoveSlot(fromSlot, toSlot);
         }
+
+        _inventoryData.NotifyInventoryChanged();
     }
 
     // CInventorySlotUI이 붙은 UI 찾기 
