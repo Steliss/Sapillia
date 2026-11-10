@@ -4,18 +4,6 @@ using System.Threading;
 using UnityEngine;
 
 /*
-- 근접 공격
- ㄴ 일반 공격
- ㄴ 추적 공격
- ㄴ 사각형 공격 (투사체 생성, 유도? 지정위치?)
- ㄴ 점프 사각형 공격 (투사체 생성)
- ㄴ 한방향 돌진 공격
-
-- 원거리 공격
- ㄴ 한 방향 이동
- ㄴ 유도
- ㄴ 지정위치 이동
- ㄴ 이동하며 투사체 뿌리기 (유도? 한방향?)
 
 - 전조
  ㄴ 근접공격 4라인 (벌어짐)
@@ -93,6 +81,10 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
     protected async UniTask WarningLine_Square(CancellationToken ct, Vector2 pos, SLineInfo info)
     {
         Vector2 range05 = info.SquareRange * 0.5f;
+
+        // 좌우 반전
+        bool isLeft = _mashine.Target.position.x < _mashine.transform.position.x;
+        _mashine.SpriteFlipX(isLeft);
 
         // 라인 생성
         GameObject[] xLines = new GameObject[4];
@@ -192,6 +184,10 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
             Quaternion qua = Quaternion.Euler(0, 0, DirToAngle(aimDir));
             float gap = Mathf.Lerp(info.Interbal, 0f, time / info.BeforeDelay);
 
+            // 좌우 반전
+            bool isLeft = aimDir.x < 0f;
+            _mashine.SpriteFlipX(isLeft);
+
             // 선 따라가기
             for (int i = 0; i < lines.Length; i++)
             {
@@ -249,6 +245,10 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
             Quaternion qua = Quaternion.Euler(0, 0, aimAngle);
             float gap = Mathf.Lerp(info.Interbal, 0f, time / info.BeforeDelay);
 
+            // 좌우 반전
+            bool isLeft = aimDir.x < 0f;
+            _mashine.SpriteFlipX(isLeft);
+
             // 선 따라가기
             for (int i = 0; i < lines.Length; i++)
             {
@@ -259,8 +259,6 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
         FadeOutLine(ct, lines).Forget();
         return aimAngle;
     }
-
-    
 
     protected async UniTask FadeOutLine(CancellationToken ct, GameObject[] lines, float fadeTime = 1f)
     {
@@ -327,9 +325,6 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
             Vector2 targetDir = target.position - my.position;
             float targetAngle = DirToAngle(targetDir.normalized);
 
-            // 좌우 반전
-            bool isLeft = aimDir.x < 0;
-            _mashine.SpriteFlipX(isLeft);
 
             // TrackingSpeed의 속도로 플레이어를 추적
             if (info.IsTracking)
@@ -346,6 +341,10 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
             aimDir90 = new Vector2(-aimDir.y, aimDir.x);
             linePos = (Vector2)my.position + aimDir * info.Distanse;
             Quaternion aimQua = Quaternion.Euler(0f, 0f, aimAngle);
+
+            // 좌우 반전
+            bool isLeft = aimDir.x < 0;
+            _mashine.SpriteFlipX(isLeft);
 
             // 고정된 라인 조정
             for (int i = 2; i < 4; i++)

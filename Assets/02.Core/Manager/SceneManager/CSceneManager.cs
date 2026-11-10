@@ -101,7 +101,7 @@ public class CSceneManager : MonoBehaviour
                 _fadeImage.color = color;
 
                 CreateBackGround(scene.BackGroundPrefab);
-                SetLoadingText(true);
+                SetLoadingText(true, sceneID);
                 SetBackGroundActive(true);
 
                 await FadeAsync(1f, scene.FadeOutDuration);
@@ -117,7 +117,7 @@ public class CSceneManager : MonoBehaviour
 
                 _dataManger.CurrentFlow.SetCurrentScene(sceneID);
                 SetBackGroundActive(false);
-                SetLoadingText(false);
+                SetLoadingText(false, sceneID);
             }
         }
         finally
@@ -157,44 +157,58 @@ public class CSceneManager : MonoBehaviour
     }
 
     // 타이틀 로딩 씬 설명
-    private void SetLoadingText(bool isActive)
+    private void SetLoadingText(bool isActive, EScene sceneID)
     {
         if (isActive)
         {
-            if (_dataManger.CurrentFlow.CurrentScene == EScene.Menu)
+            if (sceneID == EScene.Start)
             {
                 _floorText.text = _localization.GetText("scene.enmpty.text");
                 _MapNameText.text = _localization.GetText("scene.enmpty.text");
                 _MapDescText1.text = _localization.GetText("scene.enmpty.text");
                 _MapDescText2.text = _localization.GetText("scene.enmpty.text");
             }
-            else if (_dataManger.CurrentFlow.CurrentScene == EScene.Town)
+            else if (sceneID == EScene.Menu)
+            {
+                _floorText.text = _localization.GetText("scene.enmpty.text");
+                _MapNameText.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText1.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText2.text = _localization.GetText("scene.enmpty.text");
+            }
+            else if (sceneID == EScene.Town)
+            {
+                _floorText.text = _localization.GetText("scene.enmpty.text");
+                _MapNameText.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText1.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText2.text = _localization.GetText("scene.enmpty.text");
+            }
+            else if(sceneID == EScene.stage1)
             {
                 _floorText.text = _localization.GetText("scene.stage1.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage1.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
             }
-            else if(_dataManger.CurrentFlow.CurrentScene == EScene.stage1)
-            {
-                _floorText.text = _localization.GetText("scene.stage1.floorname");
-                _MapNameText.text = _localization.GetText("scene.stage1.mapname");
-                _MapDescText1.text = _localization.GetText("scene.stage1.desc1");
-                _MapDescText2.text = _localization.GetText("scene.stage1.desc2");
-            }
-            else if (_dataManger.CurrentFlow.CurrentScene == EScene.stage2)
+            else if (sceneID == EScene.stage2)
             {
                 _floorText.text = _localization.GetText("scene.stage2.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage2.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage2.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage2.desc2");
             }
-            else if (_dataManger.CurrentFlow.CurrentScene == EScene.stage3)
+            else if (sceneID == EScene.stage3)
             {
                 _floorText.text = _localization.GetText("scene.stage3.floorname");
                 _MapNameText.text = _localization.GetText("scene.stage3.mapname");
                 _MapDescText1.text = _localization.GetText("scene.stage3.desc1");
                 _MapDescText2.text = _localization.GetText("scene.stage3.desc2");
+            }
+            else if(sceneID == EScene.Test)
+            {
+                _floorText.text = _localization.GetText("scene.enmpty.text");
+                _MapNameText.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText1.text = _localization.GetText("scene.enmpty.text");
+                _MapDescText2.text = _localization.GetText("scene.enmpty.text");
             }
         }
         else

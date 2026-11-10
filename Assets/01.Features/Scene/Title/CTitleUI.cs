@@ -372,7 +372,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _dataManger.LoadGame(1);
-        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+        _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
     }
     private void GameStart2()
     {
@@ -383,7 +383,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _dataManger.LoadGame(2);
-        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+        _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
         gameObject.SetActive(false);
     }
 

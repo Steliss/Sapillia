@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _firstAttacks:
   - AttackSO: {fileID: 11400000, guid: 51204d6118f835748a4c9cba0ae595c5, type: 2}
+    StartCoolTime: 10
+    MaxCoolTime: 0
+  - AttackSO: {fileID: 11400000, guid: 5b8558f42e983b34db72a1a39b7b659e, type: 2}
+    StartCoolTime: 10
+    MaxCoolTime: 0
+  - AttackSO: {fileID: 11400000, guid: 31fe70f985276c14b8e032c2f04d9e3b, type: 2}
     StartCoolTime: 0
     MaxCoolTime: 0
   _randomAttacks:
