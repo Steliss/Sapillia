@@ -13,10 +13,12 @@ public struct SCostumeStatBonus
     public int Fire;
     public int Ice;
     public int Lightning;
-
-    // Pink
+        
     [Header("HP / MP")]
     public int MaxHP;
     public int MaxMP;
+
+    [Header("EXP")]
+    public float EXP;
     #endregion
 }
