@@ -66,7 +66,11 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
         else if (_slotData.ItemSO is CArtifactSO artifact)
         {
-            _countText.text = $"{_slotData.EnhanceLevel} / {artifact.MaxStars}";
+            int totalLevel = _slotData.EnhanceLevel + artifact.Inchant;
+
+            totalLevel = Mathf.Clamp(totalLevel, 0, artifact.MaxStars);
+
+            _countText.text = $"{totalLevel} / {artifact.MaxStars}";
         }
         else
         {
