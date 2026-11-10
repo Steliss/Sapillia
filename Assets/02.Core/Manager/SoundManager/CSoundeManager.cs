@@ -1,7 +1,19 @@
 using FMOD.Studio;
 using FMODUnity;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+public enum EBGM
+{
+    MainTheme,
+    TownTheme,
+    PlaceDungeonMole
+}
+
+
+
 
 public class CSoundManager : MonoBehaviour
 {
@@ -50,9 +62,9 @@ public class CSoundManager : MonoBehaviour
     ///  BGM 사운드
     /// </summary>
     /// <param name="name"></param>
-    public void PlayBGM(string name)
+    public void PlayBGM(EBGM bgm)
     {
-        if (!TryFindSound(_catalog.BGM, name, out EventReference sound))
+        if (!TryFindSound(_catalog.BGM, bgm.ToString(), out EventReference sound))
         {
             CLog.Error("BGM Sound가 재생목록에 없음");
             return;

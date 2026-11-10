@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class CmenuScene : MonoBehaviour
+public class CBGMScene : MonoBehaviour
 {
+    [SerializeField] private EBGM BGM;
+
     private CSoundManager _sound;
     private CDataManger _data;
 
@@ -11,7 +13,7 @@ public class CmenuScene : MonoBehaviour
     private EReady _ready = EReady.None;
     private EReady RequiredReady = EReady.Sound | EReady.Data;
 
-    private bool _isInitialize;
+    private bool _isInitialize = false;
 
     private void OnEnable()
     {
@@ -23,8 +25,8 @@ public class CmenuScene : MonoBehaviour
             _sound = await CManagerDontDestroy.SoundAsync(token);
             token.ThrowIfCancellationRequested();
 
-            CLog.Warn("CmenuScene _soundTask OnEnable 작업 완료");
-            SetReady(EReady.Sound);
+            CLog.Log("CBGMScene _soundTask OnEnable 작업 완료");
+            SetReady(EReady.Sound, BGM);
         });
 
         _dataTask.Run(async token =>
@@ -32,8 +34,8 @@ public class CmenuScene : MonoBehaviour
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             token.ThrowIfCancellationRequested();
 
-            CLog.Warn("CmenuScene _dataTask OnEnable 작업 완료");
-            SetReady(EReady.Data);
+            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+            SetReady(EReady.Data, BGM);
         });
     }
 
@@ -43,7 +45,7 @@ public class CmenuScene : MonoBehaviour
         _dataTask.Cancel();
     }
 
-    private void SetReady(EReady ready)
+    private void SetReady(EReady ready, EBGM BGM)
     {
         _ready |= ready;
 
@@ -60,6 +62,6 @@ public class CmenuScene : MonoBehaviour
         _isInitialize = true;
 
         _sound.ApplyVolume(_data.CurrentSetting);
-        _sound.PlayBGM("MainTheme");
+        _sound.PlayBGM(BGM);
     }
 }
