@@ -137,6 +137,7 @@ public enum EReady
     Localization = 4,
     Data = 8,
     Setting = 16,
+    Sound = 32,
 
-    All = Input | Scene | Localization | Data | Setting
+    All = Input | Scene | Localization | Data | Setting | Sound
 }
