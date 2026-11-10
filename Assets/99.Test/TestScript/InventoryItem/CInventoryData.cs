@@ -57,15 +57,19 @@ public class CInventorySlotData
     /// <summary>
     /// 현재 레벨에 따른 아티팩트 능력치 반환
     /// </summary>
+
     public SPlayerStats GetArtifactStats()
     {
-        if (IsEmpty || ItemSO is not CArtifactSO artifact || EnhanceLevel < 0)
+        if (IsEmpty || ItemSO is not CArtifactSO artifact)
         {
             return default;
         }
 
-        return artifact.GetStats(EnhanceLevel);
+        int totalLevel = EnhanceLevel + artifact.Inchant;
+
+        return artifact.GetStats(totalLevel);
     }
+
 
     /// <summary>
     /// 석판 회전함수
@@ -97,7 +101,7 @@ public class CInventoryData
     [SerializeField] private List<CInventorySlotData> inventorySlots = new List<CInventorySlotData>(); // 인벤토리
     [SerializeField] private List<CInventorySlotData> potionSlots = new List<CInventorySlotData>();    // 포션
     [SerializeField] private List<CInventorySlotData> extraInventorySlots = new List<CInventorySlotData>(); // 벨트
-
+        
     public List<CInventorySlotData> InventorySlots => inventorySlots;
     public List<CInventorySlotData> PotionSlots => potionSlots;
     public List<CInventorySlotData> ExtraInventorySlots => extraInventorySlots;
@@ -109,7 +113,10 @@ public class CInventoryData
 
     [field : NonSerialized] public event Action OnInventoryChanged;
 
+    // 아티팩트 이름 키값 넘겨주는 이벤트
+    [field : NonSerialized] public event Action<string> OnArtifactAcquired;
 
+    
     /// <summary>
     /// 인벤토리 초기 생성 관련
     /// </summary>
@@ -202,6 +209,8 @@ public SPlayerStats GetTotalArtifactStats()
 
             // 인벤토리 변경 알림
             NotifyInventoryChanged();
+
+            OnArtifactAcquired?.Invoke(artifact.NameKey);
 
             return true;
         }
