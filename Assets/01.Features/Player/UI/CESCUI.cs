@@ -175,6 +175,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     #region 버튼 명령
     private void Continue()
     {
+        _isActive = false;
         _backGround.SetActive(false);
     }
 
@@ -207,7 +208,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void Exit()
     {
-        // 저장 테스트 필요
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
         _backGround.SetActive(false);
