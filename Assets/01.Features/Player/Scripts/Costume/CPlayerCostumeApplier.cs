@@ -104,12 +104,22 @@ public class CPlayerCostumeApplier : MonoBehaviour
             return;
         }
 
+        if (costume.AnimatorOverride == null)
+        {
+            CLog.Warn($"[CostumeApplier] {costume.CostumeName} " + $"AnimatorOverride 없음");
+            return;
+        }
+
         // 플레이어 외형 변경
         if (_playerAnimator != null)
         {
-            _playerCostume.ApplyCostume(_costumeManager.CurrentCostume);
+            _playerAnimator.runtimeAnimatorController = costume.AnimatorOverride;
             CLog.Log("[CPlayerCostumeApplier] 코스튬 외형 변경 완료");
         }
+
+        CLog.Log($"[CostumeApplier] 외형 적용 : {costume.CostumeName} / " +
+        $"Animator : {_playerAnimator.gameObject.name} / " +
+        $"Controller : {_playerAnimator.runtimeAnimatorController.name}");
 
         // 코스튬 추가 능력치 반영
         _playerController.PlayerData.SetCostumeBonus(costume.Bonus);
