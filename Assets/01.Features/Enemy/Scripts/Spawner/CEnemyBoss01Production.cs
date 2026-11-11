@@ -26,7 +26,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private Canvas _textBubble;
     [SerializeField] private TextMeshProUGUI[] _texts;
     [Header("애니메이터")]
-    [SerializeField] private GameObject _plag;
+    [SerializeField] private GameObject _flag;
     [SerializeField] private Animator _ani;
     [SerializeField] private SpriteRenderer _sp;
     [SerializeField] private string _aniJump = "Jump";
@@ -314,7 +314,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         FadeOut().Forget();
         _zoomInCamera.Priority = 1;
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
-        _plag?.SetActive(true);
+        _flag?.SetActive(true);
     }
 
 
