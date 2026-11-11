@@ -1,8 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IInputCommand
 {
     [SerializeField] private Image _dragIcon;
     [SerializeField] private CInventoryUI _inventoryUI;
@@ -12,7 +14,9 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     private CInventorySlotUI _fromSlot;
 
     private CDataManger _data;
+    private CInputCommandHub _input;
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
+    private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
     private int _pointerId;
 
@@ -34,7 +38,91 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
             CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
         });
+        _inputTask.Run(async token =>
+        {
+            _input = await CManagerDontDestroy.InputCommandHubAsync(token);
+            _input.Register(EKeyAction.UsePotion, this);
+            token.ThrowIfCancellationRequested();
+
+            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+        });
     }
+
+    private void OnDisable()
+    {
+        CancelDrag();
+
+        _dataTask.Cancel();
+        _inputTask.Cancel();
+
+        _input.Unregister(EKeyAction.UsePotion, this);
+    }
+
+    public void Execute()
+    {
+
+        if (!_inventoryUI.IsActive || _inventoryData == null || _fromSlot != null)
+        {
+            return;
+        }
+
+        CInventorySlotUI targetSlot = FindMouseSlot();
+
+        if (targetSlot == null)
+
+
+        {
+            return;
+        }
+
+        CInventorySlotData slot = targetSlot.SlotData;
+
+        if (slot == null ||
+            slot.IsEmpty ||
+            slot.ItemSO is not CTabletSO tablet ||
+            !tablet.CanRotate)
+        {
+            return;
+        }
+
+        // 슬롯의 회전 상태 변경
+        slot.RotateTablet();
+
+        // 변경된 방향으로 석판 효과 재계산 및 변경 알림
+        _inventoryData.NotifyInventoryChanged();
+
+        targetSlot.Refresh();
+    }
+
+    // 마우스 아래 슬롯 
+    private CInventorySlotUI FindMouseSlot()
+    {
+        if (EventSystem.current == null || Mouse.current == null)
+        {
+            return null;
+        }
+
+        PointerEventData pointer = new PointerEventData(EventSystem.current)
+        {
+            position = Mouse.current.position.ReadValue()
+        };
+
+        List<RaycastResult> results = new();
+        EventSystem.current.RaycastAll(pointer, results);
+
+        foreach (RaycastResult result in results)
+        {
+            CInventorySlotUI slot = FindSlot(result);
+
+            if (slot != null)
+            {
+                return slot;
+            }
+        }
+
+        return null;
+    }
+
 
     // 유니티 함수 드래그 시작시
     public void OnBeginDrag(PointerEventData eventData)
@@ -116,8 +204,4 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         _dragIcon.sprite = null;
     }
 
-    private void OnDisable()
-    {
-        CancelDrag();
-    }
 }

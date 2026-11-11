@@ -12,6 +12,9 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
     private CInventorySlotData _slotData;
     private CInventoryUI _inventoryUI;
 
+    public CInventorySlotData SlotData => _slotData;
+
+
     public Sprite ItemImage => _itemImage.isActiveAndEnabled ? _itemImage.sprite : null;
 
     public void SetInventoryUI(CInventoryUI inventoryUI)
@@ -51,6 +54,18 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
                 ? "" 
                 : _slotData.EnhanceLevel.ToString();
             return;
+        }
+
+        // 석판의 경우 회전 나머지는 원본 이미지
+        if (_slotData.ItemSO is CTabletSO)
+        {
+            float angle = -(int)_slotData.Rotation * 90f;
+
+            _itemImage.rectTransform.localRotation = Quaternion.Euler(0f, 0f, angle);
+        }
+        else
+        {
+            _itemImage.rectTransform.localRotation = Quaternion.identity;
         }
 
         // 아이템 원본이 연결되어 있으면 아이콘 표시

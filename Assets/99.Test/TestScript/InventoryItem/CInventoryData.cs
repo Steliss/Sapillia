@@ -297,16 +297,5 @@ public SPlayerStats GetTotalArtifactStats()
         {
             inventorySlots[i].EnhanceLevel = levels[i];
         }
-
-        // 보관용 영역에는 석판 효과가 적용되지 않음
-        foreach (CInventorySlotData slot in potionSlots)
-        {
-            slot.EnhanceLevel = 0;
-        }
-
-        foreach (CInventorySlotData slot in extraInventorySlots)
-        {
-            slot.EnhanceLevel = 0;
-        }
     }
 }

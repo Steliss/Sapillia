@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c27e6aa54e643d042bd52b0c1e669eba, type: 3}
+  m_Name: Tablet_Miracle
+  m_EditorClassIdentifier: 
+  _itemID: 1031
+  _nameKey: item.tablet.1031.name
+  _descriptionKey: item.tablet.cantrotate
+  _storyKey: scene.enmpty.text
+  _icon: {fileID: 21300000, guid: e4f3166bc1dd3cf41839647e0739c8f0, type: 2}
+  _grade: 3
+  _canRotate: 0
+  _effects:
+  - _offset: {x: 0, y: -5}
+    _levelChange: 1
+  - _offset: {x: 0, y: -4}
+    _levelChange: 1
+  - _offset: {x: 0, y: -3}
+    _levelChange: 1
+  - _offset: {x: 0, y: -2}
+    _levelChange: 1
+  - _offset: {x: 0, y: -1}
+    _levelChange: 1
+  - _offset: {x: 0, y: 1}
+    _levelChange: 1
+  - _offset: {x: 0, y: 2}
+    _levelChange: 1
+  - _offset: {x: 0, y: 3}
+    _levelChange: 1
+  - _offset: {x: 0, y: 4}
+    _levelChange: 1
+  - _offset: {x: 0, y: 5}
+    _levelChange: 1
+  - _offset: {x: -5, y: 0}
+    _levelChange: 1
+  - _offset: {x: -4, y: 0}
+    _levelChange: 1
+  - _offset: {x: -3, y: 0}
+    _levelChange: 1
+  - _offset: {x: -2, y: 0}
+    _levelChange: 1
+  - _offset: {x: -1, y: 0}
+    _levelChange: 1
+  - _offset: {x: 1, y: 0}
+    _levelChange: 1
+  - _offset: {x: 2, y: 0}
+    _levelChange: 1
+  - _offset: {x: 3, y: 0}
+    _levelChange: 1
+  - _offset: {x: 4, y: 0}
+    _levelChange: 1
+  - _offset: {x: 5, y: 0}
+    _levelChange: 1
