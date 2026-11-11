@@ -1,8 +1,9 @@
-using System;
-using UnityEngine;
-using System.Threading;
 using Cysharp.Threading.Tasks;
+using System;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public enum EWeaponType
 {
@@ -18,7 +19,6 @@ public class CWeaponManager : MonoBehaviour
     [SerializeField] private CCrossbowAim _crossbowAim;
     [SerializeField] private CSwordAndShieldAim _swordAim;
 
-
     [Header("무기 세트 목록")]
     [SerializeField] private CSwordShieldSetSO[] _weaponSets;
 
@@ -33,6 +33,9 @@ public class CWeaponManager : MonoBehaviour
     [SerializeField] private CPlayerSpecialAttack _specialAttack;
     [SerializeField] private CPlayerGuard _playerGuard;
     [SerializeField] private CWeaponMotion _weaponMotion;
+
+    [Header("강화 후보")]
+    [SerializeField] private CWeaponUpgradeOptionSO[] _upgradeOptions;
 
     [Header("검과 방패 외형")]
     [SerializeField] private SpriteRenderer _swordRenderer;
@@ -548,6 +551,28 @@ public class CWeaponManager : MonoBehaviour
 
     #endregion
 
+    #region Weapon Upgrade
+    public bool HasWeapon(EWeaponType type, int tier)
+    {
+        if (tier < 1)
+        {
+            return false;
+        }
+
+        switch (type)
+        {
+            case EWeaponType.SwordShield:
+                return FindSwordShield(tier) != null;
+
+            case EWeaponType.Crossbow:
+                return FindCrossbow(tier) != null;
+        }
+
+        return false;
+    }
+
+    #endregion
+
     #region Weapon Swap Test
 
     // Test : 1티어 석궁 장착 ※
@@ -586,4 +611,172 @@ public class CWeaponManager : MonoBehaviour
     }
 
     #endregion
+
+    #region 강화 무기 후보군
+    public void GetAvailableUpgradeOptions(EWeaponType currentType, int currentTier, List<CWeaponUpgradeOptionSO> results)
+    {
+        if (results == null)
+        {
+            return;
+        }
+
+        results.Clear();
+
+        if (_upgradeOptions == null)
+        {
+            return;
+        }
+
+        foreach (CWeaponUpgradeOptionSO option in _upgradeOptions)
+        {
+            if (option == null)
+            {
+                continue;
+            }
+
+            if (!option.IsMatch(currentType, currentTier))
+            {
+                continue;
+            }
+
+            // 정확히 다음 티어인지 확인
+            if (option.ToTier != currentTier + 1)
+            {
+                continue;
+            }
+
+            // 실제 장착할 무기 데이터 확인
+            if (!HasUpgradeTarget(option))
+            {
+                continue;
+            }
+
+            results.Add(option);
+        }
+    }
+
+    public bool TryApplyUpgrade(CWeaponUpgradeOptionSO option)
+    {
+        if (option == null || !HasUpgradeTarget(option))
+        {
+            CLog.Warn("[WeaponManager] 강화 후보 없음");
+            return false;
+        }
+
+        // 등록된 강화 후보인지 확인
+        if (_upgradeOptions == null || Array.IndexOf(_upgradeOptions, option) < 0)
+        {
+            return false;
+        }
+
+        if (!ValidateReferences() || _playerData == null || !_playerData.IsInitialized)
+        {
+            return false;
+        }
+
+        // 현재 무기와 정확히 연결되는 강화만 허용
+        if (!option.IsMatch(_playerData.WeaponType, _playerData.EquippedWeaponTier))
+        {
+            return false;
+        }
+
+        if (option.ToTier != _playerData.EquippedWeaponTier + 1)
+        {
+            return false;
+        }
+
+        switch (option.WeaponType)
+        {
+            case EWeaponType.SwordShield:                
+                CSwordShieldSetSO set = option.SwordShieldSet;
+
+                if (!ValidateSwordShield(set))
+                {
+                    return false;
+                }
+
+                ApplySet(set);
+                return true;
+                
+
+            case EWeaponType.Crossbow:               
+                CCrossbowDataSO crossbow = option.CrossbowData;
+
+                if (!ValidateCrossbow(crossbow))
+                {
+                    return false;
+                }
+
+                ApplyCrossbow(crossbow);
+                return true;                
+        }  
+
+        return false;
+    }
+    #endregion
+
+    #region 무기
+    // 검방
+    private bool TryApplySwordShieldUpgrade(CSwordShieldSetSO nextSet)
+    {
+        if (nextSet == null)
+        {
+            CLog.Warn("[WeaponManager] SwordShieldSet 누락");
+            return false;
+        }
+
+        ApplySet(nextSet);
+
+        // 현재 장착 정보 저장
+        if (_playerData != null)
+        {
+            _playerData.SetEquippedWeapon(EWeaponType.SwordShield, nextSet.Tier);
+        }
+
+        OnWeaponChanged?.Invoke(EWeaponType.SwordShield, nextSet.Tier);
+        return true;
+    }
+
+    // 석궁
+    private bool TryApplyCrossbowUpgrade(CCrossbowDataSO nextData)
+    {
+        if (nextData == null)
+        {
+            CLog.Warn("[WeaponManager] CrossbowData 누락");
+            return false;
+        }
+
+        ApplyCrossbow(nextData);
+
+        if (_playerData != null)
+        {
+            _playerData.SetEquippedWeapon(EWeaponType.Crossbow, nextData.Tier);
+        }
+
+        OnWeaponChanged?.Invoke(EWeaponType.Crossbow, nextData.Tier);
+        return true;
+    }
+
+    #endregion
+
+    private bool HasUpgradeTarget(CWeaponUpgradeOptionSO option)
+    {
+        if (option == null)
+        {
+            return false;
+        }
+
+        switch (option.WeaponType)
+        {
+            case EWeaponType.SwordShield:
+                return option.SwordShieldSet != null &&
+                       option.SwordShieldSet.Tier == option.ToTier;
+
+            case EWeaponType.Crossbow:
+                return option.CrossbowData != null &&
+                       option.CrossbowData.Tier == option.ToTier;
+        }
+
+        return false;
+    }
 }
