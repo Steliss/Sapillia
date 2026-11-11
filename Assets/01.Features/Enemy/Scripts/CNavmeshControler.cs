@@ -1,7 +1,6 @@
 using Cysharp.Threading.Tasks;
 using NavMeshPlus.Components;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class CNavmeshControler : MonoBehaviour
 {

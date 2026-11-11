@@ -13,22 +13,22 @@ MonoBehaviour:
   m_Name: Enemy_Attack_MultySO_Boss01
   m_EditorClassIdentifier: 
   _firstAttacks:
-  - AttackSO: {fileID: 11400000, guid: 51204d6118f835748a4c9cba0ae595c5, type: 2}
-    StartCoolTime: 10
-    MaxCoolTime: 0
   - AttackSO: {fileID: 11400000, guid: 5b8558f42e983b34db72a1a39b7b659e, type: 2}
-    StartCoolTime: 10
-    MaxCoolTime: 0
+    StartCoolTime: 5
+    MaxCoolTime: 10
   - AttackSO: {fileID: 11400000, guid: 31fe70f985276c14b8e032c2f04d9e3b, type: 2}
-    StartCoolTime: 0
-    MaxCoolTime: 0
+    StartCoolTime: 3
+    MaxCoolTime: 10
   _randomAttacks:
   - AttackSO: {fileID: 11400000, guid: 0f351e381099be24c88853fee9bc6b31, type: 2}
-    StartCoolTime: 10
-    MaxCoolTime: 10
+    StartCoolTime: 0
+    MaxCoolTime: 1
   - AttackSO: {fileID: 11400000, guid: c3a9d2b51e714b5419daac9e9bfb935d, type: 2}
     StartCoolTime: 0
     MaxCoolTime: 1
   - AttackSO: {fileID: 11400000, guid: 4f8b5a14fe0c7714e903da2771315c29, type: 2}
-    StartCoolTime: 0
-    MaxCoolTime: 1
+    StartCoolTime: 1
+    MaxCoolTime: 3
+  - AttackSO: {fileID: 11400000, guid: 51204d6118f835748a4c9cba0ae595c5, type: 2}
+    StartCoolTime: 1
+    MaxCoolTime: 3

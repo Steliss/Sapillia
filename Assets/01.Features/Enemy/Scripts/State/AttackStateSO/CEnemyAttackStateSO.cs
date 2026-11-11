@@ -3,21 +3,9 @@ using System;
 using System.Threading;
 using UnityEngine;
 
-/*
-
-- 전조
- ㄴ 근접공격 4라인 (벌어짐)
- ㄴ 범위공격 8라인 (벌어짐)
- ㄴ 원거리 공격 2라인 (좁혀짐)
-*/
-
 public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
 {
     #region 구조체
-    
-
-
-
     [Serializable]
     public struct SLineInfo
     {

@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
 using System;
-using System.Threading;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/Strike", fileName = "Enemy_Attack_Strike_")]
