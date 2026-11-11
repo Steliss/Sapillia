@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7988ac36da2c30499b6b61b3ea83de9, type: 3}
+  m_Name: Enemy_Attack_Strike_Boss01
+  m_EditorClassIdentifier: 
+  _attackInfos:
+  - Effect: {fileID: 2741068594627437749, guid: 3238962a14d21a44690889757a36ca5a, type: 3}
+    BulletInfos:
+    - Projectile: {fileID: 4413080243178358331, guid: cc186a51bfe7c54459411df79bdc545e, type: 3}
+      BulletSpeed: 5
+      BulletLifeTime: 5
+      TrackingSpeed: 60
+      AnglePlus: 0
+    - Projectile: {fileID: 4413080243178358331, guid: cc186a51bfe7c54459411df79bdc545e, type: 3}
+      BulletSpeed: 5
+      BulletLifeTime: 5
+      TrackingSpeed: 60
+      AnglePlus: -80
+    - Projectile: {fileID: 4413080243178358331, guid: cc186a51bfe7c54459411df79bdc545e, type: 3}
+      BulletSpeed: 5
+      BulletLifeTime: 5
+      TrackingSpeed: 60
+      AnglePlus: 80
+    AniAttReady: StrikeReady
+    AniAttack: Strike
+    HashAttReady: -1703500632
+    HashAttack: 174793462
+  _lineInfo:
+  - Prefeb: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+    BeforeDelay: 1
+    AfterDelay: 0.5
+    LineLength: 5
+    Interbal: 0.5
+    Distanse: 0
+    IsTracking: 0
+    TrackingSpeed: 0
+    xLineLength: 1
+    yLineLength: 2
+    SquareRange: {x: 6, y: 3}

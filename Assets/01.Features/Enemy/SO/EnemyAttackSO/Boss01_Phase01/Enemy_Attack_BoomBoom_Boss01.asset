@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 022851aac71c20e4e95a73ccfa4ba04b, type: 3}
+  m_Name: Enemy_Attack_BoomBoom_Boss01
+  m_EditorClassIdentifier: 
+  _attackInfo:
+    RandomRangeStart: {x: 12, y: 15}
+    RandomRangeEnd: {x: 35, y: 26}
+    JumpReadyTime: 1
+    JumpTime: 1
+    BoomBoomTime: 3
+    CoolTime: 0.1
+    JumpEffect: {fileID: 6747113391761969384, guid: 294247fac07b41b40870c160ff292a17, type: 3}
+    AniJumpReady: BigJumpReady
+    AniJump: BigJump
+    AniLanding: Landing
+    AniLandingEnd: LandingEnd
+    HashJumpReady: -568970357
+    HashJump: 1825847509
+    HashLanding: 545781641
+    HashLandingEnd: -25938809
+  _bulletInfo:
+    Projectile: {fileID: 493104598849414757, guid: e50e7cb9c81142048b2c17daf08b7a08, type: 3}
+    Projectile_Drop: {fileID: 8947232313116089196, guid: 38b7f55f58fac3344a7377f4c675d00c, type: 3}
+    LifeTime: 1.5

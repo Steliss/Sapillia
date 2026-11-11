@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7604882fac53b1145bcd639647f4b36b, type: 3}
+  m_Name: Enemy_Attack_MultySO_Boss01
+  m_EditorClassIdentifier: 
+  _firstAttacks:
+  - AttackSO: {fileID: 11400000, guid: c32c1896ac54d2843b986969f5df6303, type: 2}
+    StartCoolTime: 4
+    MaxCoolTime: 10
+  - AttackSO: {fileID: 11400000, guid: 152a805596b0e5347882a5185e7f982f, type: 2}
+    StartCoolTime: 7
+    MaxCoolTime: 10
+  _randomAttacks:
+  - AttackSO: {fileID: 11400000, guid: 32647e7b3d0e6e544ba6d00748cf6d87, type: 2}
+    StartCoolTime: 0
+    MaxCoolTime: 1
+  - AttackSO: {fileID: 11400000, guid: 10d7063bb738e1e4187c83de9a30661b, type: 2}
+    StartCoolTime: 0
+    MaxCoolTime: 1
+  - AttackSO: {fileID: 11400000, guid: 2c4b30414f32d754b837f3575d9c2244, type: 2}
+    StartCoolTime: 1
+    MaxCoolTime: 3
+  - AttackSO: {fileID: 11400000, guid: 8fea583e911d27c41bd397736c9cc503, type: 2}
+    StartCoolTime: 1
+    MaxCoolTime: 3

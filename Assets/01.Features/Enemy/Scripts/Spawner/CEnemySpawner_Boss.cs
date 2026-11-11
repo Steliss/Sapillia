@@ -1,10 +1,5 @@
-using Cinemachine;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.U2D;
-using UnityEngine.UI;
 
 public class CEnemySpawner_Boss : MonoBehaviour
 {
@@ -81,7 +76,7 @@ public class CEnemySpawner_Boss : MonoBehaviour
         // 연출 시작
         _uni.Run(async ct => 
         {
-            await _production.StartProduction(ct);
+            await _production.StartProduction(ct, _targetTr);
             // 연출 종료
             BossSpawn();
             _isBattle = true;
@@ -96,9 +91,8 @@ public class CEnemySpawner_Boss : MonoBehaviour
         {
             GameObject boss = CObjectPoolManager.Instance.GetPoolObject(_boss[_phase]);
             boss.transform.parent = transform;
-
             boss.transform.position = _targetTr.position;
-
+            CLog.Log($"소환 위치 : {_targetTr.position}");
         }
     }
 
@@ -109,18 +103,24 @@ public class CEnemySpawner_Boss : MonoBehaviour
         {
             _phase = 1;
             // 페이즈 연출 필요 후 보스스폰
-            BossSpawn();
+            _uni.Run(async ct =>
+            {
+                bool randomLR = UnityEngine.Random.Range(0, 2) == 0;
+                await _production.PhaseProduction(ct, randomLR);
+                BossSpawn();
+            });
         }
         else
         {
             _uni.Run(async ct =>
             {
                 // 사망 연출 필요
-                await _production.StartProduction(ct);
+                await _production.DieProduction(ct);
 
                 _isBattle = false;
                 _playerData?.SetIsBattle(false);
 
+                // 보상 드롭
                 for (int i = 0; i < _rewards.Length; i++)
                 {
                     Vector2 pos = (Vector2)transform.position + _rewards[i].PosPlus;
@@ -128,7 +128,11 @@ public class CEnemySpawner_Boss : MonoBehaviour
                 }
 
                 CLog.Log("전투 종료!");
-                gameObject.SetActive(false);
+                // 문 비활성화
+                for (int i = 0; i < _doors.Length; i++)
+                {
+                    _doors[i].SetActive(false);
+                }
             });
             
         }
