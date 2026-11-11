@@ -25,9 +25,14 @@ public class CStageNodeUI : MonoBehaviour
     [Header("특수 아이콘")]
     [SerializeField] private Sprite _merchantIcon;
 
-    [Header("노드 선택 패널")]
+    [Header("다음층 패널")]
     [SerializeField] private GameObject _nextStagePanel;
 
+    [Header("현재 위치 아이콘")]
+    [SerializeField] private RectTransform _currentLocationIcon;
+
+    [Header("노드 선택 아이콘")]
+    [SerializeField] private RectTransform _nodeSelectIcon;
 
     [Header("테스트용")]
     [SerializeField] private int _testFloor = 1;
@@ -39,6 +44,12 @@ public class CStageNodeUI : MonoBehaviour
     private CDataManger _dataManager;
 
     private List<CStageNodeData> _stageNodes = new List<CStageNodeData>();
+
+    #endregion
+
+    #region 프로퍼티
+
+    public bool IsOpened => _nextStagePanel != null && _nextStagePanel.activeSelf;
 
     #endregion
 
@@ -80,6 +91,20 @@ public class CStageNodeUI : MonoBehaviour
             );
         }
     }
+
+    private void Update()
+    {
+        if (!_nextStagePanel.activeSelf)
+        {
+            return;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Close();
+        }
+    }
+
 
 
     private List<EStageNodeReward> GetRewardPool()
@@ -278,4 +303,43 @@ public class CStageNodeUI : MonoBehaviour
     }
 
 
+    public void Close()
+    {
+        _nextStagePanel.SetActive(false);
+    }
+
+
+    public void MoveCurrentLocation(RectTransform target)
+    {
+        if (_currentLocationIcon == null || target == null)
+        {
+            return;
+        }
+
+        _currentLocationIcon.position = target.position;
+    }
+
+
+
+    public void ShowNodeSelect(RectTransform target)
+    {
+        if (_nodeSelectIcon == null || target == null)
+        {
+            return;
+        }
+
+        _nodeSelectIcon.position = target.position + new Vector3(0f, 100f, 0f);
+        _nodeSelectIcon.gameObject.SetActive(true);
+
+        StopCoroutine(nameof(HideNodeSelect));
+        StartCoroutine(HideNodeSelect());
+    }
+
+
+    private IEnumerator HideNodeSelect()
+    {
+        yield return new WaitForSeconds(0.9f);
+
+        _nodeSelectIcon.gameObject.SetActive(false);
+    }
 }

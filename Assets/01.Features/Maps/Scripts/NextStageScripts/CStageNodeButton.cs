@@ -19,6 +19,7 @@ public class CStageNodeButton : MonoBehaviour
 
     #endregion
 
+
     public void SetNodeData(CStageNodeData nodeData, Sprite rewardSprite, Sprite specialSprite)
     {
         _nodeData = nodeData;
@@ -35,5 +36,21 @@ public class CStageNodeButton : MonoBehaviour
     public void SetInteractable(bool interactable)
     {
         _button.interactable = interactable;
+    }
+
+    public void OnNodeClicked()
+    {
+        CStageNodeUI stageNodeUI = FindFirstObjectByType<CStageNodeUI>();
+
+        if (stageNodeUI == null)
+        {
+            return;
+        }
+
+        RectTransform target = GetComponent<RectTransform>();
+
+        stageNodeUI.ShowNodeSelect(target);
+
+        stageNodeUI.MoveCurrentLocation(target);
     }
 }

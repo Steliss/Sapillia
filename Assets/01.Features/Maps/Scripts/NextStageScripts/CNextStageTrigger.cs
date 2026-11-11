@@ -15,14 +15,22 @@ public class CNextStageTrigger : MonoBehaviour
     private CStageNodeUI _stageNodeUI;
 
     private bool _isPlayerInside = false;
-    private bool _isOpened = false;
 
     #endregion
 
+
+
     private void Update()
     {
-        if (!_isPlayerInside || _isOpened)
+        if (!_isPlayerInside)
+        {
             return;
+        }
+
+        if (_stageNodeUI != null && _stageNodeUI.IsOpened)
+        {
+            return;
+        }
 
         if (Input.GetKeyDown(KeyCode.F))
         {
@@ -61,22 +69,11 @@ public class CNextStageTrigger : MonoBehaviour
         }
 
         _stageNodeUI.Open();
-
-        _isOpened = true;
     }
 
-
-
-
-
-    public void ResetInteraction()
-    {
-        _isOpened = false;
-    }
 
     private void OnDisable()
     {
         _isPlayerInside = false;
-        _isOpened = false;
     }
 }
