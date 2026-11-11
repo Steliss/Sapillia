@@ -101,8 +101,6 @@ public class CCostumeManager : MonoBehaviour
         SelectCostume(Costume.White);
     }
 
-
-
     #endregion
 
 

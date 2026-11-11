@@ -8,9 +8,9 @@ public class CCostumeDataSO : ScriptableObject
     [SerializeField] private string _costumeID;
     [SerializeField] private string _costumeName;
 
-    // 코스튬 설명
-    [TextArea]
-    [SerializeField] private float _description;
+    [Header("코스튬 설명")]
+    [TextArea(2, 5)]
+    [SerializeField] private string _description;
 
     [Header("이미지 정보")]
     [SerializeField] private Sprite _icon;
@@ -24,7 +24,7 @@ public class CCostumeDataSO : ScriptableObject
     #region 프로퍼티
     public string CostumID => _costumeID;
     public string CostumeName => _costumeName;
-    public float Description => _description;
+    public string Description => _description;
 
     public Sprite Icon => _icon;
 
