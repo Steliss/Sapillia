@@ -268,9 +268,9 @@ public class CFlowGame
         _playerprogress = progress;
     }
 
-    public void SetRetryCount(int count)
+    public void AddProgress(int progress)
     {
-        _playerretrycount = count;
+        _playerprogress += progress;
     }
 
     public void AddRetryCount(int count)

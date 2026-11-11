@@ -9,6 +9,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CPlayerStatusUI playerStatsUI;
     [SerializeField] private CInventoryUI inventoryUI;
+    [SerializeField] private CLogUI logUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
@@ -40,6 +41,9 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     private EReady RequiredReady = EReady.Localization | EReady.Data;
 
     public bool IsActive => _isActive;
+
+    // 플레이어 행동 제어 변수 
+    public bool IsAnyUIOpen => _isActive || logUI.IsActive || _settingUI.IsActive || inventoryUI.IsActive || playerStatsUI.IsActive;
 
     private void OnEnable()
     {
@@ -99,6 +103,12 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     public void ExecuteESC()
     {
+        if (logUI.IsActive)
+        {
+            logUI.ActiveUI(false);
+            return;
+        }
+
         if (_settingUI.IsActive)
         {
             _settingUI.ActiveUI(false);
@@ -165,6 +175,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     #region 버튼 명령
     private void Continue()
     {
+        _isActive = false;
         _backGround.SetActive(false);
     }
 
@@ -178,7 +189,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         // 포기 관련
-        if(_data.ResetPlayer())
+        if (_data.ResetPlayer())
         {
             // 패배 관련 띄우기 여부 
 
@@ -197,7 +208,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void Exit()
     {
-        // 저장 테스트 필요
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
         _backGround.SetActive(false);
