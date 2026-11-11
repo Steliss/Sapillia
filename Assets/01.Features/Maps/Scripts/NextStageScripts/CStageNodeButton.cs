@@ -28,9 +28,12 @@ public class CStageNodeButton : MonoBehaviour
         _rewardIcon.sprite = rewardSprite;
         _rewardIcon.gameObject.SetActive(rewardSprite != null);
 
-        // 특수 아이콘
-        _specialIcon.sprite = specialSprite;
-        _specialIcon.gameObject.SetActive(specialSprite != null);
+        // 방랑상인 아이본
+        if (_specialIcon != null)
+        {
+            _specialIcon.sprite = specialSprite;
+            _specialIcon.gameObject.SetActive(specialSprite != null);
+        }
     }
 
     public void SetInteractable(bool interactable)
