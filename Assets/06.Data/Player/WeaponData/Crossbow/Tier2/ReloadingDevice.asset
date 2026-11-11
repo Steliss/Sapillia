@@ -1,0 +1,53 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b4ac1f618f4ea4684e98f6e223c3e4, type: 3}
+  m_Name: ReloadingDevice
+  m_EditorClassIdentifier: 
+  _tier: 2
+  _weaponName: "\uB300\uD615 \uC11D\uAD81: \uC7AC\uC7A5\uC804 \uC7A5\uCE58"
+  _baseDamage: 10
+  _attackInterval: 0.5
+  _fireMode: 0
+  _blastRange: 2.5
+  _blastHalfAngle: 30
+  _blastEffectPrefab: {fileID: 0}
+  _projectilePrefab: {fileID: 539973862931457406, guid: 32a82c407ea7b5a4e97d953663be8dab, type: 3}
+  _projectileRange: 5
+  _normalAttackLifeTime: 0.75
+  _specialAttackLifeTime: 2
+  _ammoCap: 20
+  _ammoCount: 1
+  _reloadDuration: 2
+  _projectileSpeed: 12
+  _crossbowSprite: {fileID: 21300000, guid: dcabb96e8074e914e83f51d801e3dd54, type: 3}
+  _statBonus:
+    Str: 0
+    Def: 0
+    Attribute_Physical: 0
+    Attribute_Fire: 0
+    Attribute_Ice: 0
+    Attribute_Lightning: 0
+    Damage_Weapon: -45
+    Attack_Speed: 500
+    Special_Range: 0
+    Damage_Special: 0
+    AmmoCap: 20
+    AmmoCount: 1
+  _specialProjectilePrefab: {fileID: 0}
+  _specialManaCost: 10
+  _specialProjectileSpeed: 20
+  _specialProjectileRange: 10
+  _specialCooldown: 0.5
+  _specialRecoilSpeed: 8
+  _specialRecoilDeceleration: 30
+  _normalRecoilSpeed: 0
+  _normalRecoilDeceleration: 30
