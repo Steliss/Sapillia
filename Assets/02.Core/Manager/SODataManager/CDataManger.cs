@@ -210,4 +210,18 @@ public class CDataManger : MonoBehaviour
         _inventoryData.SetInventoryData(data.Inventory);
         return true;
     }
+
+    /// <summary>
+    /// 플레이어 정보 초기화
+    /// </summary>
+    /// <returns></returns>
+    public bool ResetPlayer()
+    {
+        _playerData.SetPlayerData(); 
+        _inventoryData.SetInventoryData();
+        _currentFlow.SetProgress(0);
+        _currentFlow.AddRetryCount(1);
+
+        return SaveGame(CurrentFlow.SaveSlot);
+    }
 }

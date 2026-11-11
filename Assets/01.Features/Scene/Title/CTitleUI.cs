@@ -372,7 +372,14 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _dataManger.LoadGame(1);
-        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+
+        if(_dataManger.CurrentFlow.CurrentScene == EScene.Menu || _dataManger.CurrentFlow.CurrentScene == EScene.Start)
+        {
+            _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+            return;
+        }
+
+        _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
     }
     private void GameStart2()
     {
@@ -383,8 +390,14 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _dataManger.LoadGame(2);
-        _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
-        gameObject.SetActive(false);
+
+        if (_dataManger.CurrentFlow.CurrentScene == EScene.Menu || _dataManger.CurrentFlow.CurrentScene == EScene.Start)
+        {
+            _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+            return;
+        }
+        
+        _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
     }
 
     // 케릭터 이름 기입

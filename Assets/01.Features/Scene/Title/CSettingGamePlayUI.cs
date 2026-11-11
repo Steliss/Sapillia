@@ -17,7 +17,7 @@ public class CSettingGamePlayUI : MonoBehaviour
 
     private void OnEnable()
     {
-
+        ReloadText();
 
         _language.ButtonUp.onClick.AddListener(LanguageUp);
         _language.ButtonDown.onClick.AddListener(LanguageDown);
@@ -34,8 +34,6 @@ public class CSettingGamePlayUI : MonoBehaviour
 
     private void OnDisable()
     {
-
-
         _language.ButtonUp.onClick.RemoveListener(LanguageUp);
         _language.ButtonDown.onClick.RemoveListener(LanguageDown);
 

@@ -1,7 +1,19 @@
 using FMOD.Studio;
 using FMODUnity;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
+
+
+public enum EBGM
+{
+    MainTheme,
+    TownTheme,
+    PlaceDungeonMole
+}
+
+
+
 
 public class CSoundManager : MonoBehaviour
 {
@@ -50,9 +62,9 @@ public class CSoundManager : MonoBehaviour
     ///  BGM 사운드
     /// </summary>
     /// <param name="name"></param>
-    public void PlayBGM(string name)
+    public void PlayBGM(EBGM bgm)
     {
-        if (!TryFindSound(_catalog.BGM, name, out EventReference sound))
+        if (!TryFindSound(_catalog.BGM, bgm.ToString(), out EventReference sound))
         {
             CLog.Error("BGM Sound가 재생목록에 없음");
             return;
@@ -120,6 +132,40 @@ public class CSoundManager : MonoBehaviour
         Debug.LogWarning($"사운드 목록에서 이름을 찾을 수 없슴: {name}", this);
         return false;
     }
+
+
+
+    /// <summary>
+    /// 현재 설정의 볼륨을 FMOD에 적용
+    /// </summary>
+    /// <param name="setting"></param>
+    public void ApplyVolume(CSettings setting)
+    {
+        SetBusVolume("bus:/", setting.MasterSound);
+        SetBusVolume("bus:/Master Bus/BGMGlobal", setting.BGMSound);
+        SetBusVolume("bus:/Master Bus/SFX", setting.EffectSound);
+        SetBusVolume("bus:/Master Bus/AMB", setting.EnvironmentSound);
+    }
+
+    private void SetBusVolume(string path, float volume)
+    {
+        FMOD.RESULT result = RuntimeManager.StudioSystem.getBus(path, out FMOD.Studio.Bus bus);
+
+        if (result != FMOD.RESULT.OK)
+        {
+            CLog.Error($"Bus 조회 실패: {path}, {result}");
+            return;
+        }
+
+        result = bus.setVolume(Mathf.Clamp01(volume));
+
+        if (result != FMOD.RESULT.OK)
+        {
+            CLog.Error($"Bus 볼륨 적용 실패: {path}, {result}");
+        }
+    }
+
+
 
     // 필요시 onDestroy로 재생중인 BGM 정리 
 }

@@ -2,17 +2,20 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
+
 
 public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CPlayerStatusUI playerStatsUI;
     [SerializeField] private CInventoryUI inventoryUI;
+    [SerializeField] private CLogUI logUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
     [SerializeField] private TextMeshProUGUI _continueText;
-    [SerializeField] private Button _diaryButton;
-    [SerializeField] private TextMeshProUGUI _diaryText;
+    [SerializeField] private Button _giveUPButton;
+    [SerializeField] private TextMeshProUGUI _giveUPText;
     [SerializeField] private Button _settingButton;
     [SerializeField] private TextMeshProUGUI _settingText;
     [SerializeField] private Button _exitButton;
@@ -32,8 +35,15 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
 
     private bool _isActive = false;
+    private bool _isInitialize = false;
+
+    private EReady _ready = EReady.None;
+    private EReady RequiredReady = EReady.Localization | EReady.Data;
 
     public bool IsActive => _isActive;
+
+    // 플레이어 행동 제어 변수 
+    public bool IsAnyUIOpen => _isActive || logUI.IsActive || _settingUI.IsActive || inventoryUI.IsActive || playerStatsUI.IsActive;
 
     private void OnEnable()
     {
@@ -48,6 +58,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
             _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
             _localization.OnLanguageChanged += ReloadText;
             ReloadText();
+            SetReady(EReady.Localization);
             CLog.Log("CESCUI _localizationTask OnEnable 작업 완료");
         });
         _settingTask.Run(async token =>
@@ -58,6 +69,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         _sceneTask.Run(async token =>
         {
             _Scene = await CManagerDontDestroy.SceneManagerAsync(token);
+            SetReady(EReady.Data);
             CLog.Log("CESCUI _sceneTask OnEnable 작업 완료");
         });
         _dataTask.Run(async token =>
@@ -67,7 +79,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         });
 
         _continueButton.onClick.AddListener(Continue);
-        _diaryButton.onClick.AddListener(Diary);
+        _giveUPButton.onClick.AddListener(GiveUP);
         _settingButton.onClick.AddListener(Setting);
         _exitButton.onClick.AddListener(Exit);
     }
@@ -84,13 +96,19 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         _dataTask?.Cancel();
 
         _continueButton.onClick.RemoveListener(Continue);
-        _diaryButton.onClick.RemoveListener(Diary);
+        _giveUPButton.onClick.RemoveListener(GiveUP);
         _settingButton.onClick.RemoveListener(Setting);
         _exitButton.onClick.RemoveListener(Exit);
     }
 
     public void ExecuteESC()
     {
+        if (logUI.IsActive)
+        {
+            logUI.ActiveUI(false);
+            return;
+        }
+
         if (_settingUI.IsActive)
         {
             _settingUI.ActiveUI(false);
@@ -122,21 +140,65 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     private void ReloadText()
     {
         _continueText.text = _localization.GetText("scene.continuetext.text");
-        _diaryText.text = _localization.GetText("scene.diarytext.text");
         _settingText.text = _localization.GetText("scene.settingtext.text");
         _extiText.text = _localization.GetText("scene.extitext.text");
     }
 
+    private void SetReady(EReady ready)
+    {
+        _ready |= ready;
+
+        if (_isInitialize)
+        {
+            return;
+        }
+
+        if ((_ready & RequiredReady) != RequiredReady)
+        {
+            return;
+        }
+
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        _isInitialize = true;
+
+        if (sceneName == "Town" || sceneName == "Menu")
+        {
+            _giveUPText.text = _localization.GetText("scene.enmpty.text");
+        }
+        else
+        {
+            _giveUPText.text = _localization.GetText("scene.giveuptext.text");
+        }
+    }
 
     #region 버튼 명령
     private void Continue()
     {
+        _isActive = false;
         _backGround.SetActive(false);
     }
 
-    private void Diary()
+    private void GiveUP()
     {
-        // 구현 필요 
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == "Town")
+        {
+            return;
+        }
+
+        // 포기 관련
+        if (_data.ResetPlayer())
+        {
+            // 패배 관련 띄우기 여부 
+
+            _Scene.ChangeScreenAsync(EScene.Town).Forget();
+        }
+        else
+        {
+            CLog.Warn("CESCUI 플레이어 초기화 오류");
+        }
     }
 
     private void Setting()
@@ -146,7 +208,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void Exit()
     {
-        // 저장 테스트 필요
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
         _backGround.SetActive(false);

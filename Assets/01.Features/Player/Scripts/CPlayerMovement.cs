@@ -19,6 +19,7 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     [SerializeField] private Rigidbody2D _rb2D;
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private CPlayerDashDust _dashDustSpawner;
+    [SerializeField] private CESCUI _ui;
 
     [Header("달리기 설정")]
     [Min(0.1f)]
@@ -82,6 +83,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         if (_rb2D == null)
         {
             CLog.Error("[Movement] Rigidbody2D 참조 누락");
+        }
+        if(_ui == null)
+        {
+            CLog.Error("[Movement] CESCUI 참조 누락");
         }
 
         
@@ -175,6 +180,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         if (!TryBindPlayerData())
         {
             
+            return;
+        }
+
+        if(_ui.IsAnyUIOpen)
+        {
             return;
         }
 

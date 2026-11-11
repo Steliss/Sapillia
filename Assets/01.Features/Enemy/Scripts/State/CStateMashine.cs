@@ -44,6 +44,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private NavMeshAgent _nav;
     private SpriteRenderer _sprite;
     private Rigidbody2D _rb;
+    private Collider2D _coll;
     private bool _isPatrol = true;
     private CUniTaskOnes _attackUni = new CUniTaskOnes();
     private CUniTaskOnes _hurtUni = new CUniTaskOnes();
@@ -78,6 +79,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     public NavMeshAgent Nav => _nav;
     public SpriteRenderer Sprite => _sprite;
     public Rigidbody2D Rigidbody => _rb;
+    public Collider2D Collider => _coll;
     public bool IsPatrol => _isPatrol;
     public CUniTaskOnes AttackUni => _attackUni;
     public Transform Target => _target;
@@ -179,6 +181,13 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             _rb = GetComponent<Rigidbody2D>();
         }
 
+        _coll = GetComponent<Collider2D>();
+        if (_coll == null)
+        {
+            CLog.Warn($"{name} : 콜라이더2D 컴포넌트 누락");
+            gameObject.AddComponent<Collider2D>();
+            _coll = GetComponent<Collider2D>();
+        }
 
         _startScale = _sprite.transform.localScale;
         _startColor = _sprite.color;
