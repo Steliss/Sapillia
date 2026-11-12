@@ -101,7 +101,7 @@ public class CInventoryData
     [SerializeField] private List<CInventorySlotData> inventorySlots = new List<CInventorySlotData>(); // 인벤토리
     [SerializeField] private List<CInventorySlotData> potionSlots = new List<CInventorySlotData>();    // 포션
     [SerializeField] private List<CInventorySlotData> extraInventorySlots = new List<CInventorySlotData>(); // 벨트
-        
+
     public List<CInventorySlotData> InventorySlots => inventorySlots;
     public List<CInventorySlotData> PotionSlots => potionSlots;
     public List<CInventorySlotData> ExtraInventorySlots => extraInventorySlots;
@@ -111,12 +111,12 @@ public class CInventoryData
 
     public int InventorySize => _inventorySize;
 
-    [field : NonSerialized] public event Action OnInventoryChanged;
+    [field: NonSerialized] public event Action OnInventoryChanged;
 
     // 아티팩트 이름 키값 넘겨주는 이벤트
-    [field : NonSerialized] public event Action<string> OnArtifactAcquired;
+    [field: NonSerialized] public event Action<string> OnArtifactAcquired;
 
-    
+
     /// <summary>
     /// 인벤토리 초기 생성 관련
     /// </summary>
@@ -160,24 +160,24 @@ public class CInventoryData
         }
 
         _inventorySize = inventorySlots.Count;
-        
+
         NotifyInventoryChanged();
     }
 
 
-public SPlayerStats GetTotalArtifactStats()
-{
-    SPlayerStats totalStats = default;
-
-    foreach (CInventorySlotData slot in inventorySlots)
+    public SPlayerStats GetTotalArtifactStats()
     {
-        SPlayerStats slotStats = slot.GetArtifactStats();
+        SPlayerStats totalStats = default;
 
-        totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
+        foreach (CInventorySlotData slot in inventorySlots)
+        {
+            SPlayerStats slotStats = slot.GetArtifactStats();
+
+            totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
+        }
+
+        return totalStats;
     }
-
-    return totalStats;
-}
 
     /// <summary>
     /// 아티팩트를 인벤토리의 첫 번째 빈 슬롯에 추가
@@ -296,17 +296,6 @@ public SPlayerStats GetTotalArtifactStats()
         for (int i = 0; i < inventorySlots.Count; i++)
         {
             inventorySlots[i].EnhanceLevel = levels[i];
-        }
-
-        // 보관용 영역에는 석판 효과가 적용되지 않음
-        foreach (CInventorySlotData slot in potionSlots)
-        {
-            slot.EnhanceLevel = 0;
-        }
-
-        foreach (CInventorySlotData slot in extraInventorySlots)
-        {
-            slot.EnhanceLevel = 0;
         }
     }
 }
