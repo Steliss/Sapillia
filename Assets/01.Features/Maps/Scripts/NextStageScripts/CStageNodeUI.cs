@@ -34,8 +34,6 @@ public class CStageNodeUI : MonoBehaviour
     [Header("노드 선택 아이콘")]
     [SerializeField] private RectTransform _nodeSelectIcon;
 
-    [Header("테스트용")]
-    [SerializeField] private int _testFloor = 1;
 
     #endregion
 
@@ -44,6 +42,8 @@ public class CStageNodeUI : MonoBehaviour
     private CDataManger _dataManager;
 
     private List<CStageNodeData> _stageNodes = new List<CStageNodeData>();
+
+    private CStageNodeData _selectedNode;
 
     #endregion
 
@@ -67,8 +67,7 @@ public class CStageNodeUI : MonoBehaviour
             return;
         }
 
-        //int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
-        int currentFloor = _testFloor;
+        int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
         int nextFloor = currentFloor + 1;
 
         Debug.Log($"현재 층: {currentFloor}");
@@ -274,7 +273,7 @@ public class CStageNodeUI : MonoBehaviour
 
     private void UpdateNodeInteractable()
     {
-        int currentFloor = _testFloor;
+        int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
         int nextFloor = currentFloor + 1;
 
         foreach (CStageNodeButton node in _floor2Nodes)
@@ -299,6 +298,8 @@ public class CStageNodeUI : MonoBehaviour
 
     public void Open()
     {
+        UpdateNodeInteractable();
+
         _nextStagePanel.SetActive(true);
     }
 
@@ -341,5 +342,24 @@ public class CStageNodeUI : MonoBehaviour
         yield return new WaitForSeconds(0.9f);
 
         _nodeSelectIcon.gameObject.SetActive(false);
+    }
+
+
+    public void SelectNode(CStageNodeData nodeData)
+    {
+        if (nodeData == null)
+        {
+            return;
+        }
+
+        _selectedNode = nodeData;
+
+        Debug.Log(
+            $"선택한 노드: {_selectedNode.Floor}층 / " +
+            $"보상: {_selectedNode.Reward} / " +
+            $"방랑상인: {_selectedNode.HasMerchant} / " +
+            $"미니보스: {_selectedNode.HasMiniBoss} / " +
+            $"보스: {_selectedNode.HasStageBoss}"
+        );
     }
 }

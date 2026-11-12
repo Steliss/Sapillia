@@ -86,7 +86,20 @@ public class CDungeonGenerator : MonoBehaviour
     }
 
 
-    private void GenerateNewDungeon()
+    public void SetCurrentFloor(int floor)
+    {
+        if (floor < 1 || floor > 5)
+        {
+            Debug.LogError($"잘못된 층 번호: {floor}");
+            return;
+        }
+
+        _currentFloor = floor;
+    }
+
+
+
+    public void GenerateNewDungeon()
     {        
         CFloorDataSO floorData = GetCurrentFloorData();
         _isReady = false;
