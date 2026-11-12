@@ -886,6 +886,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+--- !u!1 &1440202012 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7148561473079872492, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+  m_PrefabInstance: {fileID: 1440202011}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1662653881
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,7 +1048,7 @@ MonoBehaviour:
   _selectedRewardType: 1
   _spawnWanderingMerchant: 0
   _rewardPrefabData: {fileID: 0}
-  _player: {fileID: 0}
+  _player: {fileID: 1440202012}
 --- !u!4 &1833521145
 Transform:
   m_ObjectHideFlags: 0
