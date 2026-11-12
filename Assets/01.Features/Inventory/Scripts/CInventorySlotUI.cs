@@ -7,7 +7,7 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 {
     [SerializeField] private Button _button;
     [SerializeField] private Image _itemImage;
-    [SerializeField] private TextMeshProUGUI _countText;
+    [SerializeField] protected TextMeshProUGUI _countText;
 
     private CInventorySlotData _slotData;
     private CInventoryUI _inventoryUI;
@@ -44,7 +44,7 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
     }
 
     // 아이콘과 수량 갱신
-    public void Refresh()
+    public virtual void Refresh()
     {
         if (_slotData == null || _slotData.IsEmpty)
         {

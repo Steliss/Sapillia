@@ -11,10 +11,12 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
     private CLocalizationManager _localization;
     private CSceneManager _sceneManager;
     private CInputCommandHub _input;
+    private CDataManger _data;
 
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
+    private CUniTaskOnes _dataTask = new CUniTaskOnes();
 
     private bool _isActive = false;
 
@@ -38,6 +40,12 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
             ReloadText();
             CLog.Log("CTownGateEnter _localizationTask OnEnable 작업 완료");
         });
+        _dataTask.Run(async token =>
+        {
+            _data = await CManagerDontDestroy.DataMangerAsync(token);
+            ReloadText();
+            CLog.Log("CTownGateEnter DataMangerAsync OnEnable 작업 완료");
+        });
     }
 
     private void OnDisable()
@@ -45,6 +53,7 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
         _inputTask?.Cancel();
         _sceneTask?.Cancel();
         _localizationTask?.Cancel();
+        _dataTask?.Cancel();
 
         _input.Unregister(EKeyAction.Interaction, this);
     }
@@ -72,6 +81,7 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
     {
         if (_isActive)
         {
+            _data.CurrentFlow.AddProgress(1);
             _sceneManager.ChangeScreenAsync(EScene.stage1).Forget();
         }
     }
