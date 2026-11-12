@@ -43,6 +43,8 @@ public class CStageNodeUI : MonoBehaviour
 
     private List<CStageNodeData> _stageNodes = new List<CStageNodeData>();
 
+    private CStageNodeData _selectedNode;
+
     #endregion
 
     #region 프로퍼티
@@ -340,5 +342,24 @@ public class CStageNodeUI : MonoBehaviour
         yield return new WaitForSeconds(0.9f);
 
         _nodeSelectIcon.gameObject.SetActive(false);
+    }
+
+
+    public void SelectNode(CStageNodeData nodeData)
+    {
+        if (nodeData == null)
+        {
+            return;
+        }
+
+        _selectedNode = nodeData;
+
+        Debug.Log(
+            $"선택한 노드: {_selectedNode.Floor}층 / " +
+            $"보상: {_selectedNode.Reward} / " +
+            $"방랑상인: {_selectedNode.HasMerchant} / " +
+            $"미니보스: {_selectedNode.HasMiniBoss} / " +
+            $"보스: {_selectedNode.HasStageBoss}"
+        );
     }
 }

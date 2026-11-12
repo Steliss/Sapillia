@@ -52,6 +52,8 @@ public class CStageNodeButton : MonoBehaviour
 
         RectTransform target = GetComponent<RectTransform>();
 
+        stageNodeUI.SelectNode(_nodeData);
+
         stageNodeUI.ShowNodeSelect(target);
 
         stageNodeUI.MoveCurrentLocation(target);
