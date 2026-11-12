@@ -955,8 +955,6 @@ public class CDungeonGenerator : MonoBehaviour
     }
 
 
-
-
     private void SpawnBlock(SRoomPlacement placement, ERoomDirection direction, int number)
     {
         _roomBlockSpawner.SpawnBlock(
@@ -971,5 +969,60 @@ public class CDungeonGenerator : MonoBehaviour
             _blockRight,
             _generatedDungeonRoot
         );
+    }
+
+    public void SetSelectedNode(CStageNodeData nodeData)
+    {
+        if (nodeData == null)
+        {
+            Debug.LogError("선택된 노드 데이터가 없습니다.");
+            return;
+        }
+
+        SetCurrentFloor(nodeData.Floor);
+
+        _spawnWanderingMerchant = nodeData.HasMerchant;
+
+        if (nodeData.Reward != EStageNodeReward.None)
+        {
+            _selectedRewardType = ConvertRewardType(nodeData.Reward);
+        }
+
+        Debug.Log(
+            $"던전 설정 완료: {nodeData.Floor}층 / " +
+            $"보상: {nodeData.Reward} / " +
+            $"방랑상인: {_spawnWanderingMerchant}"
+        );
+    }
+
+    private ERewardType ConvertRewardType(EStageNodeReward reward)
+    {
+        switch (reward)
+        {
+            case EStageNodeReward.Artifact:
+                return ERewardType.Artifact;
+
+            case EStageNodeReward.Tablet:
+                return ERewardType.Tablet;
+
+            case EStageNodeReward.Dice:
+                return ERewardType.Dice;
+
+            case EStageNodeReward.Money:
+                return ERewardType.Leaf;
+
+            case EStageNodeReward.Experience:
+                return ERewardType.Experience;
+
+            case EStageNodeReward.Anvil:
+                return ERewardType.Anvil;
+
+            case EStageNodeReward.Enchant:
+                return ERewardType.Enchant;
+
+            default:
+                throw new System.ArgumentOutOfRangeException(
+                    nameof(reward), reward, "지원하지 않는 노드 보상입니다.");
+        }
     }
 }

@@ -1,11 +1,10 @@
 public enum ERewardType
 {
-    Dice,               // 주사위
-    Artifact,           // 아티팩트
-    Tablet,             // 석판
-    Enchant,            // 인챈트
-    Anvil,              // 모루
-    InventoryExpansion, // 인벤토리 확장(2칸)
-    Experience,         // 경험치
-    Leaf                // 잎(돈)
+    Dice = 0,        // 주사위
+    Artifact = 1,    // 아티팩트
+    Tablet = 2,      // 석판
+    Enchant = 3,     // 인챈트
+    Anvil = 4,       // 모루
+    Experience = 6,  // 경험치
+    Leaf = 7         // 잎(돈)
 }
