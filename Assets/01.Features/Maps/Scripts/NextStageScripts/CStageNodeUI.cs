@@ -34,8 +34,6 @@ public class CStageNodeUI : MonoBehaviour
     [Header("노드 선택 아이콘")]
     [SerializeField] private RectTransform _nodeSelectIcon;
 
-    [Header("테스트용")]
-    [SerializeField] private int _testFloor = 1;
 
     #endregion
 
@@ -67,8 +65,7 @@ public class CStageNodeUI : MonoBehaviour
             return;
         }
 
-        //int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
-        int currentFloor = _testFloor;
+        int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
         int nextFloor = currentFloor + 1;
 
         Debug.Log($"현재 층: {currentFloor}");
@@ -274,7 +271,7 @@ public class CStageNodeUI : MonoBehaviour
 
     private void UpdateNodeInteractable()
     {
-        int currentFloor = _testFloor;
+        int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
         int nextFloor = currentFloor + 1;
 
         foreach (CStageNodeButton node in _floor2Nodes)
@@ -299,6 +296,8 @@ public class CStageNodeUI : MonoBehaviour
 
     public void Open()
     {
+        UpdateNodeInteractable();
+
         _nextStagePanel.SetActive(true);
     }
 
