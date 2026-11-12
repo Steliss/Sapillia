@@ -306,6 +306,10 @@ public class CStageNodeUI : MonoBehaviour
 
     public void Close()
     {
+        StopCoroutine(nameof(HideNodeSelect));
+
+        _nodeSelectIcon.gameObject.SetActive(false);
+
         _nextStagePanel.SetActive(false);
     }
 
@@ -342,6 +346,23 @@ public class CStageNodeUI : MonoBehaviour
         yield return new WaitForSeconds(0.9f);
 
         _nodeSelectIcon.gameObject.SetActive(false);
+
+        if (_selectedNode == null)
+        {
+            yield break;
+        }
+
+        CDungeonGenerator dungeonGenerator = FindFirstObjectByType<CDungeonGenerator>();
+
+        if (dungeonGenerator == null)
+        {
+            Debug.LogError("CDungeonGenerator를 찾을 수 없습니다.");
+            yield break;
+        }
+
+        _nextStagePanel.SetActive(false);
+
+        dungeonGenerator.GenerateNewDungeon();
     }
 
 
@@ -361,5 +382,15 @@ public class CStageNodeUI : MonoBehaviour
             $"미니보스: {_selectedNode.HasMiniBoss} / " +
             $"보스: {_selectedNode.HasStageBoss}"
         );
+
+        CDungeonGenerator dungeonGenerator = FindFirstObjectByType<CDungeonGenerator>();
+
+        if (dungeonGenerator == null)
+        {
+            Debug.LogError("CDungeonGenerator를 찾을 수 없습니다.");
+            return;
+        }
+
+        dungeonGenerator.SetSelectedNode(_selectedNode);
     }
 }

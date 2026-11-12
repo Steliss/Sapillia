@@ -44,9 +44,6 @@ public class CRewardPrefabSO : ScriptableObject
             case ERewardType.Enchant:
                 return _enchantPrefab;
 
-            case ERewardType.InventoryExpansion:
-                return _inventoryExpansionPrefab;
-
             case ERewardType.Experience:
                 return _experiencePrefab;
 
