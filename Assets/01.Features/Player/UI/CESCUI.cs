@@ -10,6 +10,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     [SerializeField] private CPlayerStatusUI playerStatsUI;
     [SerializeField] private CInventoryUI inventoryUI;
     [SerializeField] private CLogUI logUI;
+    [SerializeField] private CMerchant merchantUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
@@ -103,6 +104,15 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     public void ExecuteESC()
     {
+        if (merchantUI != null)
+        {
+            if (merchantUI.IsActive)
+            {
+                merchantUI.ActiveUI(false);
+                return;
+            }
+        }
+
         if (logUI.IsActive)
         {
             logUI.ActiveUI(false);
