@@ -12,6 +12,7 @@ public class CPlayerCostumeApplier : MonoBehaviour
     [Header("플레이어")]
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private CPlayerCostume _playerCostume;
+
     [Header("플레이어 Animator")]
     [SerializeField] private Animator _playerAnimator;
 
@@ -19,7 +20,7 @@ public class CPlayerCostumeApplier : MonoBehaviour
 
     #region 내부 변수
     private CUniTaskOnes _initTask = new CUniTaskOnes();
-
+    private CDataManger _data;
     #endregion
 
     #region Unity
@@ -44,6 +45,9 @@ public class CPlayerCostumeApplier : MonoBehaviour
 
         _initTask.Run(async token =>
         {
+            _data = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("[CPlayerCostumeApplier] 데이터매니저 작업 완료");
+
             try
             {
                 // 플레이어 데이터 초기화 완료 대기
@@ -123,7 +127,7 @@ public class CPlayerCostumeApplier : MonoBehaviour
 
         // 코스튬 추가 능력치 반영
         _playerController.PlayerData.SetCostumeBonus(costume.Bonus);
-
+        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         CLog.Log($"[CostumeApplier] 코스튬 적용 완료 : " + $"{costume.CostumeName}");
     }
 
