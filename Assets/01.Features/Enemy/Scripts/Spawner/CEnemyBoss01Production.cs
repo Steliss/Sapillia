@@ -15,7 +15,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private Vector2 _fallMinPos = new Vector2(12f, 15f);
     [SerializeField] private Vector2 _fallMaxPos = new Vector2(35f, 26f);
     [SerializeField] private Vector2 _fallInterbalPos = new Vector2(3, 1.5f);
-    [SerializeField] private float _jjumpTime = 10f;
+    [SerializeField] private int _jjumpCount = 17;
     [Header("카메라")]
     [SerializeField] private float _zoomInTime;
     [SerializeField] private float _zoomOutTime;
@@ -202,7 +202,7 @@ public class CEnemyBoss01Production : MonoBehaviour
 
 
         // 연속 낙석
-        for (int i = 0; i < 17; i++)
+        for (int i = 0; i < _jjumpCount; i++)
         {
             _ani.Play(_hashJumpJumpReady);
             await UniTask.Delay(TimeSpan.FromSeconds(0.4f), cancellationToken: ct);
