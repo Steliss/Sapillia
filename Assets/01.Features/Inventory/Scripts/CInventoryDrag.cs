@@ -9,7 +9,8 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     [SerializeField] private Image _dragIcon;
     [SerializeField] private CInventoryUI _inventoryUI;
     [SerializeField] private RectTransform _UICanvas;
-    
+    [SerializeField] private CMerchant _merchant;
+
     private CInventoryData _inventoryData;
     private CInventorySlotUI _fromSlot;
 
@@ -169,15 +170,47 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         CInventorySlotUI fromSlot = _fromSlot;
         CInventorySlotUI toSlot = FindSlot(eventData.pointerCurrentRaycast);
 
+        // 거래 중 상점 슬롯이 삭제될 수 있으므로 먼저 드래그 종료
         CancelDrag();
 
-        if (toSlot != null)
+        if (toSlot == null || fromSlot == toSlot)
         {
-            // 인벤토리 데이터 교환
-            _inventoryUI.TryMoveSlot(fromSlot, toSlot);
+            return;
         }
 
-        _inventoryData.NotifyInventoryChanged();
+        bool fromShop = fromSlot is CMerchantSlotUI;
+        bool toShop = toSlot is CMerchantSlotUI;
+
+        // 상점 → 상점
+        if (fromShop && toShop)
+        {
+            return;
+        }
+
+        // 상점 → 인벤토리
+        if (fromShop)
+        {
+            if (_merchant != null)
+            {
+                _merchant.TryBuy((CMerchantSlotUI)fromSlot, toSlot);
+            }
+
+            return;
+        }
+
+        // 인벤토리 → 상점
+        if (toShop)
+        {
+            if (_merchant != null)
+            {
+                _merchant.TrySell(fromSlot);
+            }
+
+            return;
+        }
+
+        // 인벤토리 → 인벤토리
+        _inventoryUI.TryMoveSlot(fromSlot, toSlot);
     }
 
     // CInventorySlotUI이 붙은 UI 찾기 

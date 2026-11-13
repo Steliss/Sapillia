@@ -43,7 +43,6 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
         _dataTask.Run(async token =>
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
-            ReloadText();
             CLog.Log("CTownGateEnter DataMangerAsync OnEnable 작업 완료");
         });
     }
@@ -73,6 +72,7 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
 
     protected override void OnPlayerExit()
     {
+        _isActive = false;
         _interractObject.SetActive(false);
     }
 
