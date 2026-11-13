@@ -56,6 +56,10 @@ public class CObjectPoolManager : MonoBehaviour
     /// <returns></returns>
     public GameObject GetPoolObject(GameObject prefeb)
     {
+        if (prefeb == null)
+        {
+            return null;
+        }
         return ObjectPooling(prefeb);
     }
 
@@ -68,6 +72,10 @@ public class CObjectPoolManager : MonoBehaviour
     /// <returns></returns>
     public GameObject GetPoolObject(GameObject prefeb, float lifeTime)
     {
+        if (prefeb == null)
+        {
+            return null;
+        }
         GameObject go = ObjectPooling(prefeb);
         _lifeMap[go] = lifeTime;
         return go;
@@ -83,6 +91,10 @@ public class CObjectPoolManager : MonoBehaviour
     /// <returns></returns>
     public GameObject GetPoolObject(GameObject prefeb, Transform spawnPoint)
     {
+        if (prefeb == null)
+        {
+            return null;
+        }
         GameObject go = ObjectPooling(prefeb);
         go.transform.SetPositionAndRotation(spawnPoint.position, spawnPoint.rotation);
         return go;
@@ -180,7 +192,7 @@ public class CObjectPoolManager : MonoBehaviour
 
     private void LifeUpdate()
     {
-        if (_lifeMap.Count <= 0)
+        if (_alives.Count <= 0)
         {
             return;
         }
@@ -200,6 +212,7 @@ public class CObjectPoolManager : MonoBehaviour
             if (!go.activeSelf)
             {
                 ReturnPool(go);
+                continue;
             }
 
             // 수명이 있는 경우에만 감소
@@ -213,6 +226,7 @@ public class CObjectPoolManager : MonoBehaviour
                     if (go.activeSelf)
                     {
                         go.SetActive(false);
+                        ReturnPool(go);
                     }
                     continue;
                 }
@@ -261,12 +275,6 @@ public class CObjectPoolManager : MonoBehaviour
                 {
                     rb.velocity = Vector3.zero;
                     rb.angularVelocity = 0f;
-                }
-
-                // 켜져있는 경우 비활성화
-                if (go.activeSelf)
-                {
-                    go.SetActive(false);
                 }
 
                 if (_lootMap[id] != null)
