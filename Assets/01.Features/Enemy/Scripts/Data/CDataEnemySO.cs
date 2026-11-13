@@ -14,6 +14,10 @@ public class CDataEnemySO : CDataSO
     [Header("목숨 갯수")]
     [SerializeField, Min(0)] private int _extraLife = 0;
 
+    [Header("드롭 재화")]
+    [SerializeField, Min(0f)] private int _exp;
+    [SerializeField, Min(0f)] private int _money;
+
     public float Hp => _hp;
     public float SuperArmor => _superArmor;
     public float Defense => _defense;
@@ -21,4 +25,6 @@ public class CDataEnemySO : CDataSO
     public float Speed => _speed;
     public float SuperArmorRate => _superArmorRate;
     public int ExtraLife => _extraLife;
+    public int Exp => _exp;
+    public int Money => _money;
 }

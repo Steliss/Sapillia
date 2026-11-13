@@ -25,27 +25,31 @@ public class CEnemySpawner : MonoBehaviour
 
     #region 내부 변수
     private int _aliveEnemys = 0;
-    private bool _isBattle = false; 
+    private bool _isBattle = false;
 
-    private CDataManger _data;
+    //private CUniTaskOnes _dataTask = new CUniTaskOnes();
+    //private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
-    private CUniTaskOnes _dataTask = new CUniTaskOnes();
     #endregion
-
+    /*
     private void OnEnable()
     {
-        _dataTask.Run(async token =>
+        if (_playerData == null)
         {
-            _data = await CManagerDontDestroy.DataMangerAsync(token);
-            _playerData = _data.PlayerData.GetPlayerData();
-            // ReloadData();
-            CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
-        });
+            _dataTask.Run(async token =>
+            {
+                _data = await CManagerDontDestroy.DataMangerAsync(token);
+                _playerData = _data.PlayerData.GetPlayerData();
+                CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
+            });
+        }
     }
+    
     private void OnDisable()
     {
         _dataTask?.Cancel();
     }
+    */
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -95,6 +99,11 @@ public class CEnemySpawner : MonoBehaviour
         }
 
         _isBattle = true;
+
+        if (_playerData == null)
+        {
+            _playerData = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+        }
         _playerData?.SetIsBattle(true);
     }
     

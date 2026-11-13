@@ -37,6 +37,12 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [SerializeField] private readonly string _stateAttReady = "AttReady";
     [SerializeField] private readonly string _stateAir = "Air";
     [SerializeField] private readonly string _stateDown = "Down";
+
+    [Header("드롭 재화 오브젝트")]
+    [SerializeField] private GameObject _exp;
+    [SerializeField] private GameObject _expMini;
+    [SerializeField] private GameObject _money;
+    [SerializeField] private GameObject _moneyMini;
     #endregion
 
     #region 내부 변수
@@ -354,6 +360,66 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         });
     }
 
+    private void DropItem()
+    {
+        int money = _data.Money / 10;
+        int moneyMini = _data.Money % 10;
+        int exp = _data.Exp / 10;
+        int expMini = _data.Exp % 10;
+
+        CObjectPoolManager objPool = CObjectPoolManager.Instance;
+
+        if (objPool == null)
+        {
+            CLog.Warn("오브젝트 풀 없음! 재화 드롭 취소");
+            return;
+        }
+        
+        // 돈 드랍
+        for (int i = 0; i < money; i++)
+        {
+            GameObject moneyObject = objPool.GetPoolObject(_money);
+            if (moneyObject != null)
+            {
+                moneyObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = moneyObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Money, 10, transform.position);
+            }
+        }
+        if (moneyMini > 0)
+        {
+            GameObject moneyMiniObject = objPool.GetPoolObject(_moneyMini);
+            if (moneyMiniObject != null)
+            {
+                moneyMiniObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = moneyMiniObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Money, moneyMini, transform.position);
+            }
+        }
+
+        // 경험치 드랍
+        for (int i = 0; i < exp; i++)
+        {
+            GameObject expObject = objPool.GetPoolObject(_exp);
+            if (expObject != null)
+            {
+                expObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = expObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Exp, 10, transform.position);
+            }
+        }
+        if (expMini > 0)
+        {
+            GameObject expMiniObject = objPool.GetPoolObject(_expMini);
+            if (expMiniObject != null)
+            {
+                expMiniObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = expMiniObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Exp, expMini, transform.position);
+            }
+        }
+    }
+
     public void HpBarUpdate()
     {
         if (_hpBar == null || _superArmorBar == null)
@@ -499,7 +565,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
                 CLog.Warn("예외 발생! 강제 비활성화");
                 gameObject.SetActive(false);
             });
-
+            DropItem();
             _attackUni.Cancel();
             StateChanged(_airbornState);
             return;
