@@ -1,5 +1,6 @@
-        using System.Collections.Generic;
-        using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class CDungeonGenerator : MonoBehaviour
 {
@@ -164,7 +165,7 @@ public class CDungeonGenerator : MonoBehaviour
             {
                 Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
                 SpawnRooms();
-                NevmashBake();
+                StartCoroutine(BakeNavMeshNextFrame());
                 _isReady = true;
                 return;
             }
@@ -406,8 +407,6 @@ public class CDungeonGenerator : MonoBehaviour
 
         _roomPlacements.Add(new SRoomPlacement(nextRoom, gridPos, selectedPosition, parentDepth + 1));
 
-        Debug.Log($"방 생성 위치 : {gridPos}, 깊이 : {parentDepth + 1}");
-
         AddRoomPassages(nextRoom, selectedPosition);
 
         RemoveRoomPassage(
@@ -621,7 +620,6 @@ public class CDungeonGenerator : MonoBehaviour
                 continue;
             }
 
-            // 이미 사용한 방이라면 건너뛰기
             if (_usedRoomPrefabs.Contains(randomRoom))
             {
                 continue;
@@ -629,10 +627,8 @@ public class CDungeonGenerator : MonoBehaviour
 
             if (TryAddRoom(randomRoom))
             {
-                // 배치에 성공한 경우에만 사용 기록
                 _usedRoomPrefabs.Add(randomRoom);
 
-                Debug.Log($"랜덤 방 생성 성공: {randomRoom.name}");
                 return true;
             }
         }
@@ -669,7 +665,6 @@ public class CDungeonGenerator : MonoBehaviour
 
             if (TryAddRoom(rewardRoom))
             {
-                Debug.Log($"보상 방 생성 성공: {rewardRoom.name}");
                 return true;
             }
         }
@@ -687,7 +682,6 @@ public class CDungeonGenerator : MonoBehaviour
 
         if (miniBossPrefabs == null || miniBossPrefabs.Length == 0)
         {
-            Debug.LogWarning("중간보스 방 프리팹이 없습니다.");
             return false;
         }
 
@@ -707,7 +701,6 @@ public class CDungeonGenerator : MonoBehaviour
 
             if (TryAddRoom(miniBossRoom))
             {
-                Debug.Log($"중간보스 방 생성 성공: {miniBossRoom.name}");
                 return true;
             }
         }
@@ -751,7 +744,6 @@ public class CDungeonGenerator : MonoBehaviour
 
             if (TryAddRoom(exitRoom))
             {
-                Debug.Log($"층 이동 방 생성 성공: {exitRoom.name}");
                 return true;
             }
         }
@@ -885,8 +877,6 @@ public class CDungeonGenerator : MonoBehaviour
 
         int combatTargetCount = targetRoomCount - 2;
         int currentRoomCount = 1;
-
-        Debug.Log($"목표 방 개수{targetRoomCount}");
 
         while (currentRoomCount < combatTargetCount)
         {
@@ -1044,5 +1034,12 @@ public class CDungeonGenerator : MonoBehaviour
             }
         }
         _nav.Bake();
+    }
+
+    private IEnumerator BakeNavMeshNextFrame()
+    {
+        yield return null;
+
+        NevmashBake();
     }
 }
