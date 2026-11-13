@@ -231,6 +231,7 @@ public struct SPlayerStats
             RequiredEXP = 100,
             EXP_multiplier = 1f,
             Levelup_Heal = 9f,
+            PickUpMoney_Rate = 1f,
 
             Damage_All = 1f,
             Damage_Fixed = 0,
