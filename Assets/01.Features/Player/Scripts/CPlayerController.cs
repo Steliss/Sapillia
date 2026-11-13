@@ -115,6 +115,10 @@ public class CPlayerController : MonoBehaviour,IInputCommand
     public void Execute()
     {
         // 대충 포션 사용 함수
+
+
+
+
     }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)

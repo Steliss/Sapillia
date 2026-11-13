@@ -35,7 +35,6 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
-            token.ThrowIfCancellationRequested();
 
             CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
         });
@@ -43,7 +42,6 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         {
             _input = await CManagerDontDestroy.InputCommandHubAsync(token);
             _input.Register(EKeyAction.UsePotion, this);
-            token.ThrowIfCancellationRequested();
 
             CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
         });
