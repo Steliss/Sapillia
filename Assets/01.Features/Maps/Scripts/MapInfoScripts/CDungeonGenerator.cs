@@ -29,6 +29,10 @@ public class CDungeonGenerator : MonoBehaviour
 
     [Header("플레이어")]
     [SerializeField] private GameObject _player;
+
+    [Header("네브메쉬")]
+    [SerializeField] private CNavmeshControler _nav;
+
     #endregion
 
     #region 내부 변수
@@ -49,6 +53,7 @@ public class CDungeonGenerator : MonoBehaviour
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
 
     private bool _isReady = false;
+    
     #endregion
 
     #region 프로퍼티
@@ -159,6 +164,7 @@ public class CDungeonGenerator : MonoBehaviour
             {
                 Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
                 SpawnRooms();
+                NevmashBake();
                 _isReady = true;
                 return;
             }
@@ -801,25 +807,25 @@ public class CDungeonGenerator : MonoBehaviour
             }
 
             // 보상 방인 경우 선택된 보상 정보 전달
-            //if (spawnedRoom.RoomType == ERoomType.Reward)
-            //{
-            //    CRewardRoom rewardRoom = spawnedRoom.GetComponent<CRewardRoom>();
+            if (spawnedRoom.RoomType == ERoomType.Reward)
+            {
+                CRewardRoom rewardRoom = spawnedRoom.GetComponent<CRewardRoom>();
 
-            //    if (rewardRoom != null)
-            //    {
-            //        if (_rewardPrefabData == null)
-            //        {
-            //            Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
-            //        }
+                if (rewardRoom != null)
+                {
+                    if (_rewardPrefabData == null)
+                    {
+                        Debug.LogError("보상 프리팹 SO가 등록되지 않았습니다.");
+                    }
 
-            //        GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
-            //        rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
-            //    }
-            //    else
-            //    {
-            //        Debug.LogWarning("보상 방에 CRewardRoom 컴포넌트가 없습니다.");
-            //    }
-            //}
+                    GameObject rewardPrefab = _rewardPrefabData.GetRewardPrefab(_selectedRewardType);
+                    rewardRoom.Initialize(_selectedRewardType, rewardPrefab);
+                }
+                else
+                {
+                    Debug.LogWarning("보상 방에 CRewardRoom 컴포넌트가 없습니다.");
+                }
+            }
 
             for (int number = 1; number <= 2; number++)
             {
@@ -1024,5 +1030,19 @@ public class CDungeonGenerator : MonoBehaviour
                 throw new System.ArgumentOutOfRangeException(
                     nameof(reward), reward, "지원하지 않는 노드 보상입니다.");
         }
+    }
+
+
+    private void NevmashBake()
+    {
+        if (_nav == null)
+        {
+            _nav = GetComponentInChildren<CNavmeshControler>();
+            if (_nav == null)
+            {
+                CLog.Warn("네브메시 누락");
+            }
+        }
+        _nav.Bake();
     }
 }
