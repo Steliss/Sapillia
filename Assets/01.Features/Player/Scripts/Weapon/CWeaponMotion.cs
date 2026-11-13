@@ -41,7 +41,7 @@ public class CWeaponMotion : MonoBehaviour
 
     private float _holdTimer;
     private float _holdDuration;
-
+ 
     // 최초 자세
     private Vector3 _initialLocalPosition;
     private Quaternion _initialLocalRotation;
@@ -56,6 +56,7 @@ public class CWeaponMotion : MonoBehaviour
 
     private readonly Collider2D[] _overlapResults = new Collider2D[32];
     private readonly RaycastHit2D[] _castResults = new RaycastHit2D[32];
+
     #endregion
 
     #region 프로퍼티
@@ -64,6 +65,7 @@ public class CWeaponMotion : MonoBehaviour
     public bool IsHolding => _isHolding;
     public bool CanStart => isActiveAndEnabled && !_isAttacking && Time.time >= _nextAttackTime;
     public float Progress => _duration > 0f ? Mathf.Clamp01(_elapsedTime / _duration) : 1f;
+ 
     #endregion
 
     private void Awake()
@@ -154,7 +156,7 @@ public class CWeaponMotion : MonoBehaviour
     }
 
     #region 공격
-    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial = false)
+    public bool TryPlay(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial = false, bool isDash = false)
     {
         if (!CanStart || attack == null)
         {
@@ -184,7 +186,7 @@ public class CWeaponMotion : MonoBehaviour
             _aim.LockAim();
         }
 
-        _damage = CalculateDamage(attack, baseDamage, stats, isSpecial);       
+        _damage = CalculateDamage(attack, baseDamage, stats, isSpecial, isDash);       
         
         // 검 끝 판정 위치 설정
         _hitPoint.localPosition = Vector3.right * attack.HitDistance;
@@ -197,25 +199,34 @@ public class CWeaponMotion : MonoBehaviour
 
         ApplyPose(0f);
 
-        // 공격 확인용 테스트 ※
-        CLog.Log
-           (
-                $"[WeaponMotion] " +
-                $"Type:{(isSpecial ? "Special" : "Normal")} / " +
-                $"Damage:{_damage} / " +
-                $"Radius:{attack.HitRadius} / " +
-                $"Distance:{attack.HitDistance}"
-           );
+        string attackType = isDash ? "Dash" : isSpecial ? "Special" : "Normal";
+
+        CLog.Log($"[WeaponMotion] " + $"Type:{attackType} / Damage:{_damage}");
 
         return true;
     }
 
     // 최종 데미지 계산
-    private int CalculateDamage(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial)
+    private int CalculateDamage(CWeaponAttackDataSO attack, int baseDamage, SPlayerStats stats, bool isSpecial, bool isDash)
     {
-        // 일반공격은 공격 패턴 배율을 적용
-        // 특수공격은 플레이어의 Damage_Special 사용
-        float attackMultiplier = isSpecial ? stats.Damage_Special : attack.DamageMultiplier * stats.Damage_Normal;
+        float attackMultiplier;
+
+        if (isSpecial)
+        {
+            // 특수공격
+            attackMultiplier = stats.Damage_Special;
+        }
+        else if (isDash)
+        {
+            // 대시 공격
+            attackMultiplier = attack.DamageMultiplier * stats.Damage_Dash;
+        }
+        else
+        {
+            // 일반공격
+            attackMultiplier = attack.DamageMultiplier * stats.Damage_Normal;
+        }
+
         float damage = baseDamage * stats.Damage_All * stats.Damage_Weapon * attackMultiplier;
 
         return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
