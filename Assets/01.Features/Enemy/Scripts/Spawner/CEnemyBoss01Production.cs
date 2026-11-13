@@ -314,7 +314,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         FadeOut().Forget();
         _zoomInCamera.Priority = 1;
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
-        _flag?.SetActive(true);
+        _flag.SetActive(true);
     }
 
 

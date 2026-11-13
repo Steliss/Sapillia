@@ -19,6 +19,11 @@ public class CEnemySpawner_Boss : MonoBehaviour
     [SerializeField] private LayerMask _targetLayer;
     [SerializeField] private SEnemyRewardData[] _rewards;
     [SerializeField] private CEnemyBoss01Production _production;
+    [Header("재화")]
+    [SerializeField] private GameObject _sapphire;
+    [SerializeField] private GameObject _dice;
+    [SerializeField] private int _diceCount;
+    [SerializeField] private int _sapphireCount;
     #endregion
 
     #region 내부 변수
@@ -27,11 +32,12 @@ public class CEnemySpawner_Boss : MonoBehaviour
     private int _phase = 0;
     private CUniTaskOnes _uni = new CUniTaskOnes();
 
-    private CDataManger _data;
+    //private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
-    private CUniTaskOnes _dataTask = new CUniTaskOnes();
+    //private CUniTaskOnes _dataTask = new CUniTaskOnes();
     #endregion
 
+    /*
     private void OnEnable()
     {
         _dataTask.Run(async token =>
@@ -46,7 +52,7 @@ public class CEnemySpawner_Boss : MonoBehaviour
     {
         _dataTask?.Cancel();
     }
-
+    */
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (_isBattle)
@@ -72,15 +78,18 @@ public class CEnemySpawner_Boss : MonoBehaviour
 
         _targetTr = collision.transform;
 
-
+        _isBattle = true;
+        if (_playerData == null && CManagerDontDestroy.Instance != null)
+        {
+            _playerData = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+        }
+        _playerData?.SetIsBattle(true);
         // 연출 시작
         _uni.Run(async ct => 
         {
             await _production.StartProduction(ct, _targetTr);
             // 연출 종료
             BossSpawn();
-            _isBattle = true;
-            _playerData?.SetIsBattle(true);
         });
     }
 
@@ -126,7 +135,7 @@ public class CEnemySpawner_Boss : MonoBehaviour
                     Vector2 pos = (Vector2)transform.position + _rewards[i].PosPlus;
                     Instantiate(_rewards[i].Reward, pos, Quaternion.identity);
                 }
-
+                DropItem();
                 CLog.Log("전투 종료!");
                 // 문 비활성화
                 for (int i = 0; i < _doors.Length; i++)
@@ -135,6 +144,47 @@ public class CEnemySpawner_Boss : MonoBehaviour
                 }
             });
             
+        }
+    }
+
+
+    private void DropItem()
+    {
+        CObjectPoolManager objPool = CObjectPoolManager.Instance;
+
+        if (objPool == null)
+        {
+            CLog.Warn("오브젝트 풀 없음! 재화 드롭 취소");
+            return;
+        }
+        if (_sapphire == null || _dice == null)
+        {
+            CLog.Warn($"{name} : 재화 오브젝트 누락. 재화 드롭 취소");
+            return;
+        }
+
+        // 돈 드랍
+        for (int i = 0; i < _sapphireCount; i++)
+        {
+            GameObject sapphireObject = objPool.GetPoolObject(_sapphire);
+            if (sapphireObject != null)
+            {
+                sapphireObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = sapphireObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Sapphire, 1, transform.position);
+            }
+        }
+
+        // 경험치 드랍
+        for (int i = 0; i < _diceCount; i++)
+        {
+            GameObject diceObject = objPool.GetPoolObject(_dice);
+            if (diceObject != null)
+            {
+                diceObject.transform.position = transform.position;
+                CEnemyProjectile_DropItem item = diceObject.GetComponent<CEnemyProjectile_DropItem>();
+                item?.SetWhatis(CEnemyProjectile_DropItem.EIm.Dice, 1, transform.position);
+            }
         }
     }
 }
