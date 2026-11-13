@@ -777,6 +777,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4985203861778311384, guid: 15c62ed2e1394724eb847f6eb7799500, type: 3}
   m_PrefabInstance: {fileID: 1284416485}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1284416487 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7018046412659608395, guid: 15c62ed2e1394724eb847f6eb7799500, type: 3}
+  m_PrefabInstance: {fileID: 1284416485}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09a2e11761accd14a8e7e1b230073f0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1299645148
 GameObject:
   m_ObjectHideFlags: 0
@@ -1043,8 +1054,9 @@ MonoBehaviour:
   _currentFloor: 1
   _selectedRewardType: 1
   _spawnWanderingMerchant: 0
-  _rewardPrefabData: {fileID: 0}
+  _rewardPrefabData: {fileID: 11400000, guid: dd5170059ec173f4d9c4733f327f7fed, type: 2}
   _player: {fileID: 1440202012}
+  _nav: {fileID: 1284416487}
 --- !u!4 &1833521145
 Transform:
   m_ObjectHideFlags: 0
