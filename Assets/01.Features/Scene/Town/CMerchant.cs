@@ -236,8 +236,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         EArtifactGrade grade;
         CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
 
-        // TODO: 포션 추가
-        if (product.ItemSO is CArtifactSO artifact)
+        if (product.ItemSO is CPotionSO potion)
+        {
+            grade = potion.Grade;
+        }
+        else if (product.ItemSO is CArtifactSO artifact)
         {
             grade = artifact.Grade;
         }
@@ -255,7 +258,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             EArtifactGrade.Normal => 100,
             EArtifactGrade.Advanced => 200,
             EArtifactGrade.Rare => 400,
-            EArtifactGrade.Legendary => 800,
+            EArtifactGrade.Legendary => 800,    
             _ => 0
         };
 

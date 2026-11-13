@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -113,6 +114,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             _drag.CancelDrag();
         }
 
+        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         _UICanvas.SetActive(active);
     }
 
@@ -178,8 +180,10 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             return;
         }
 
-        // ※ : TODO : 포션 슬롯에 포션만 들어가게 추가 
-
+        if (toList == _inventoryData.PotionSlots && fromSlot.SlotData.ItemType != EItemType.Potion)
+        {
+            return;
+        }
 
         // 교환을 위한 변수
         CInventorySlotData fromData = fromList[fromIndex];
