@@ -149,6 +149,9 @@ public class CWeaponManager : MonoBehaviour
     {
         _weaponInitTask.Run(async token =>
         {
+            _data = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("[CPlayerCostumeApplier] 데이터매니저 작업 완료");
+
             // 데이터 매니저 생성 대기
             await CManagerDontDestroy.DataMangerAsync(token);
 
@@ -169,8 +172,7 @@ public class CWeaponManager : MonoBehaviour
 
             InitializeStartingWeapon();
 
-            _data = await CManagerDontDestroy.DataMangerAsync(token);
-            CLog.Log("[CPlayerCostumeApplier] 데이터매니저 작업 완료");
+            
         }
         );
     }
@@ -314,8 +316,6 @@ public class CWeaponManager : MonoBehaviour
         OnWeaponSwapped?.Invoke(nextSet);
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
-        // 저장
-        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         CLog.Log($"[WeaponManager] 검·방패 {nextSet.SetName} 장착");
     }
 
@@ -366,8 +366,6 @@ public class CWeaponManager : MonoBehaviour
         // 공통 변경 이벤트
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
-        // 저장
-        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         CLog.Log($"[WeaponManager] 석궁 {crossbow.Tier}티어 장착");
     }
 
