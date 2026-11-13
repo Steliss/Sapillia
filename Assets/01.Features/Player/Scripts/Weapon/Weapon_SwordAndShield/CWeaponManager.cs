@@ -59,6 +59,7 @@ public class CWeaponManager : MonoBehaviour
     private CPlayerGamingDataSO _playerData;
     private CSwordShieldSetSO _currentSet;
     private CCrossbowDataSO _currentCrossbow;
+    private CDataManger _data;
 
     // 초기값 → 검방
     private EWeaponType _currentWeaponType = EWeaponType.SwordShield;
@@ -167,6 +168,9 @@ public class CWeaponManager : MonoBehaviour
             }
 
             InitializeStartingWeapon();
+
+            _data = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("[CPlayerCostumeApplier] 데이터매니저 작업 완료");
         }
         );
     }
@@ -190,12 +194,7 @@ public class CWeaponManager : MonoBehaviour
     #endregion
 
     #region Swap
-
-    // UI 버튼이나 테스트 입력에서 호출
-    public void EquipTier(int tier)
-    {
-        //TrySwapTier(tier);
-    }
+       
 
     public bool TrySwapTier(int tier)
     {
@@ -229,6 +228,7 @@ public class CWeaponManager : MonoBehaviour
                     }
 
                     ApplySet(set);
+                    _data.SaveGame(_data.CurrentFlow.SaveSlot);
                     return true;
                 }
 
@@ -242,6 +242,7 @@ public class CWeaponManager : MonoBehaviour
                     }
 
                     ApplyCrossbow(crossbow);
+                    _data.SaveGame(_data.CurrentFlow.SaveSlot);
                     return true;
                 }
         }
@@ -313,6 +314,8 @@ public class CWeaponManager : MonoBehaviour
         OnWeaponSwapped?.Invoke(nextSet);
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
+        // 저장
+        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         CLog.Log($"[WeaponManager] 검·방패 {nextSet.SetName} 장착");
     }
 
@@ -363,6 +366,8 @@ public class CWeaponManager : MonoBehaviour
         // 공통 변경 이벤트
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
+        // 저장
+        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         CLog.Log($"[WeaponManager] 석궁 {crossbow.Tier}티어 장착");
     }
 
