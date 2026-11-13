@@ -553,6 +553,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 538372315539515297, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: m_SortingOrder
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 810116179662201751, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _playerGuard
       value: 
@@ -577,6 +581,10 @@ PrefabInstance:
       propertyPath: _targetLayers.m_Bits
       value: 4224
       objectReference: {fileID: 0}
+    - target: {fileID: 3607813354065827572, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4140437010830429051, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: m_Layer
       value: 6
@@ -584,6 +592,10 @@ PrefabInstance:
     - target: {fileID: 4310316216387762367, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4932340853544324415, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5216822924063250421, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: m_BodyType
@@ -807,7 +819,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: a1bc2f90e9384b44f8ad33a457940d2f, type: 2}
   - {fileID: 11400000, guid: 71e1f50d6ba7b0d4da1ae25ad5182dd3, type: 2}
   - {fileID: 11400000, guid: d754e17363edca143b57fc6a3fda7b3c, type: 2}
-  _startingWeaponType: 1
+  _startingWeaponType: 0
   _startingTier: 1
   _playerAttack: {fileID: 6624016362393810773}
   _specialAttack: {fileID: 3151387335311265592}
@@ -962,7 +974,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 98097cc1603b0a54a8d1b80bbaf6f1b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _costumeManager: {fileID: 0}
+  _costumeManager: {fileID: 7877351587010841838}
   _playerController: {fileID: 4395221656971624870}
   _playerCostume: {fileID: 1833618578605448587}
   _playerAnimator: {fileID: 8038977919181618630}
