@@ -26,21 +26,38 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Range(0f, 1f)]
     [SerializeField] private float _inputBufferStart = 0.5f;
 
+    [Header("대시 공격")]
+    [SerializeField] private CPlayerMovement _movement;
+
+    [SerializeField] private CWeaponAttackDataSO _dashAttackData;
+
+    [Min(0.01f)]
+    [SerializeField] private float _dashAttackWindow = 0.25f;
+
+
     #endregion
 
     #region 내부변수
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
 
+    // 콤보
     private int _nextComboIndex;
-    // 콤보 유지 시간
     private float _comboExpireTime = float.NegativeInfinity;
-    // 좌클릭 유지 여부
+
+    // 좌클릭 입력
     private bool _isAttackHeld;
-    // 다음 공격 예약
     private bool _attackQueued;
-    // 일반공격 / 특수공격 공통 입력 중복 방지
     private bool _leftButtonHeld;
+
+    // 대시공격
+    private int _lastDashAttackSequence;
+    private bool _dashAttackConsumedHold;
     #endregion
+
+    public void SetDashAttackData(CWeaponAttackDataSO data)
+    {
+        _dashAttackData = data;
+    }
 
     private void OnEnable()
     {
@@ -72,8 +89,6 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             _specialAttack.NotifyLeftReleased();
         }
 
-       // _comboExpireTime = float.NegativeInfinity;
-        //_nextComboIndex = 0;
     }
     private void Update()
     {
@@ -89,18 +104,21 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
 
-       
+        // 좌클릭을 떼기 전까지 일반공격 실행 방지
+        if (_dashAttackConsumedHold)
+        {
+            return;
+        }
 
-        // 1. 특수공격 진행 중에는
-        // 일반공격과 예약된 콤보 실행 차단
+
+        // 특수공격 진행 중에 반공격과 예약된 콤보 실행 차단
         if (_specialAttack != null && _specialAttack.BlockNormalAttack)
         {
             //CLog.Log($"[CPlayerAttacks] 특수 공격 진행중이라 일반 공격 예약 해제");
             return;
         }
         
-        // 2. 우클릭 유지 중에는 일반공격 시작 금지
-        // 기존 예약 공격도 취소
+        // 우클릭 유지 중에는 일반공격 시작 금지, 기존 예약 공격도 취소
         if (_playerGuard != null && _playerGuard.IsGuardRequested)
         {
             //CLog.Log($"[CPlayerAttacks] 특수 공격 진행중이라 일반 공격 해제");
@@ -109,7 +127,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
                        
-        // 3. 현재 공격 종료 대기
+        // 현재 공격 종료 대기
         if (!_weaponMotion.CanStart)
         {
             //CLog.Log($"[CPlayerAttacks] 일반 공격 진행 중");
@@ -140,23 +158,25 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     public void Execute(float value)
     {
         bool pressed = value > 0.5f;
-
-
+        
         // 좌클릭 땜
         if (!pressed)
         {
             _leftButtonHeld = false;
             _isAttackHeld = false;
 
+            _dashAttackConsumedHold = false;
+
             if (_specialAttack != null)
             {
                 _specialAttack.NotifyLeftReleased();
             }
+                        
 
             return;
-        }
+        }               
 
-        // 2. 같은 좌클릭의 중복 입력 방지
+        // 같은 좌클릭의 중복 입력 방지
         if (_leftButtonHeld)
         {
             return;
@@ -164,9 +184,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
         _leftButtonHeld = true;
 
-
-        // 3. 이미 특수공격 중이라면
-        // 일반공격 입력으로 전달하지 않음
+        // 이미 특수공격 중이라면 일반공격 입력으로 전달하지 않음
         if (_specialAttack != null && _specialAttack.BlockNormalAttack)
         {
             _isAttackHeld = false;
@@ -174,17 +192,31 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
 
-        // 4. 우클릭 중이라면 특수공격 우선
+        // 우클릭 중이라면 특수공격 우선
         if (_playerGuard != null && _playerGuard.IsGuardRequested)
         {
             TrySpecialAttack();
             return;
         }
 
-        // 5. 우클릭이 없으면 기존 일반공격
+        // 우클릭이 없으면 기존 일반공격
         if (_weaponMotion == null)
         {
             CLog.Warn("[PlayerAttack] WeaponMotion 누락");
+            return;
+        }
+
+        // 대시 공격을 일반공격보다 먼저 검사
+        if (TryDashAttack(_weaponData.BaseDamage))
+        {
+            // 대시 공격 성공 시 기존 일반공격 입력 제거
+            _isAttackHeld = false;
+            _attackQueued = false;
+
+            _dashAttackConsumedHold = true;
+
+            ResetCombo();
+
             return;
         }
 
@@ -368,6 +400,70 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
     #endregion
 
+    #region 대쉬 공격
+
+    private bool TryDashAttack(int baseDamage)
+    {
+        if (_movement == null || _weaponMotion == null || _playerController == null || _dashAttackData == null)
+        {
+            return false;
+        }
+
+        CPlayerGamingDataSO playerData = _playerController.PlayerData;
+
+        if (playerData == null || !playerData.IsInitialized)
+        {
+            return false;
+        }
+
+        // 검과 방패시에만 실행 진행
+        if (playerData.WeaponType != EWeaponType.SwordShield)
+        {
+            return false;
+        }
+
+        // 아직 대시를 한 번도 성공하지 않았다면 불가능
+        int dashSequence = _movement.DashSequence;
+
+        if (dashSequence <= 0 || dashSequence == _lastDashAttackSequence)
+        {
+            return false;
+        }
+
+        // 대시 시작 후 경과 시간
+        float elapsed = Time.time - _movement.LastDashStartTime;
+
+        // 허용된 입력 시간 확인
+        if (elapsed < 0f || elapsed > _dashAttackWindow)
+        {
+            return false;
+        }
+
+        // 기존 공격이 진행 중이라면 실행하지 않음
+        if (!_weaponMotion.CanStart)
+        {
+            return false;
+        }
+
+        // 대시 공격 실행
+        bool success = _weaponMotion.TryPlay(_dashAttackData, baseDamage, playerData.Stats, isSpecial: false, isDash: true);
+
+        if (!success)
+        {
+            return false;
+        }
+
+        // 이번 대시에서 공격 기회 사용
+        _lastDashAttackSequence = dashSequence;
+
+        CLog.Log($"[PlayerAttack] 대시 공격 성공 / " + $"입력 시간 : {elapsed:F2}초");
+
+        return true;
+    }
+
+
+
+    #endregion
 
     #region 무기 스왑
     public void SetWeaponData(CWeaponDataSO weaponData)
@@ -383,6 +479,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         // 이전 일반공격 유지 및 예약 취소
         _isAttackHeld = false;
         _attackQueued = false;
+        _dashAttackConsumedHold = false;
 
         // 새 무기는 1타부터 시작
         ResetCombo();
