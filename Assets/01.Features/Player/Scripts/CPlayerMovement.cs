@@ -52,6 +52,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     private bool _spaceHeld;
     private bool _dashRequested;
 
+    // 대쉬 어택
+    private float _lastDashStartTime = float.NegativeInfinity;
+    private int _dashSequence;
+
     // 데이터 확인
     private bool _warnedMissingData;
 
@@ -73,6 +77,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     public bool IsInCombat => _playerData != null && _playerData.GetIsBattle;
     public float DashRemainingTime => _dashTimer;
     public float DashCoolRemaining => _dashCooldownTimer;
+    public float LastDashStartTime => _lastDashStartTime;
+    public int DashSequence => _dashSequence;
 
     #endregion
 
@@ -360,6 +366,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _dashTimer = stats.DashDuration;
         _dashCooldownTimer = stats.DashCooldown;
+
+        // 대시 공격 판정용
+        _lastDashStartTime = Time.time;
+        _dashSequence++;
 
         if (_dashDustSpawner != null)
         {

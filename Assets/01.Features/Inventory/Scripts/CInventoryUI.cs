@@ -202,7 +202,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
     // 데이터 위치 찾기 
     // 슬롯의 위치를 기반으로 List에서 인덱스를 비교 리스트값 반환
-    private bool TryFindSlot(
+    public bool TryFindSlot(
         CInventorySlotUI slot,
         out List<CInventorySlotData> dataList,
         out int index)

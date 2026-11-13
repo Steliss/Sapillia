@@ -63,6 +63,7 @@ public struct SPlayerStats
 
     #region 경험치 및 성장
     [Min(0f)] public int RequiredEXP;
+    [Min(0f)] public float EXP_multiplier;
     [Min(0f)] public float PickUpMoney_Rate;
     [Min(0f)] public float Levelup_Heal;
     #endregion
@@ -228,6 +229,7 @@ public struct SPlayerStats
             Luck = 0,
 
             RequiredEXP = 100,
+            EXP_multiplier = 1f,
             Levelup_Heal = 9f,
 
             Damage_All = 1f,

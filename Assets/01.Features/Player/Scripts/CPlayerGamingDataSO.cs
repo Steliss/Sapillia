@@ -240,6 +240,7 @@ public class CPlayerGamingDataSO
         }
 
         SPlayerStats result = _coreStats;
+
         // 아티팩트 보너스 적용
         result = CPlayerStatsCalculator.Add(result, _artifactBonus);
 
@@ -256,6 +257,9 @@ public class CPlayerGamingDataSO
         result.Attribute_Fire += _costumeBonus.Fire;
         result.Attribute_Ice += _costumeBonus.Ice;
         result.Attribute_Lightning += _costumeBonus.Lightning;
+
+        // 경험치 배율
+        result.EXP_multiplier += _costumeBonus.EXP;
 
         // 무기
         _weaponBonus.Apply(ref result);
@@ -418,8 +422,10 @@ public class CPlayerGamingDataSO
         {
             return;
         }
+                
+        float totalamount = amount * _stats.EXP_multiplier;
 
-        _currentEXP += amount;
+        _currentEXP += Mathf.CeilToInt(totalamount);
 
         while (_currentEXP >= _requiredEXP)
         {
@@ -454,7 +460,9 @@ public class CPlayerGamingDataSO
             return;
         }
 
-        _money += amount;
+        float totalamount = amount * _stats.PickUpMoney_Rate;
+
+        _money += Mathf.CeilToInt(totalamount);
         OnMoneyChanged?.Invoke(_money);
     }
 

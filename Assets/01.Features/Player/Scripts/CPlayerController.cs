@@ -1,22 +1,26 @@
 using Cysharp.Threading.Tasks;
+using System;
 using UnityEngine;
 
-public class CPlayerController : MonoBehaviour
+public class CPlayerController : MonoBehaviour,IInputCommand
 {
     #region 인스펙터
-    //[SerializeField] private CPlayerGamingDataSO _playerData;
     [SerializeField] private CPlayerCostume _playerCostume;
+    [SerializeField] private CESCUI _ui;
     #endregion
 
     #region 내부변수
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CDataManger _dataManager;
+    private CInputCommandHub _inputHub;
     #endregion
 
 
     #region 프로퍼티
     public CPlayerGamingDataSO PlayerData { get; private set; }
     #endregion
+
+    #region Unity
 
     private void Awake()
     {
@@ -38,19 +42,9 @@ public class CPlayerController : MonoBehaviour
             // 중복 연결 방지
             if (PlayerData != null)
             {
-                CLog.Log("여긴가");
                 return;
             }
 
-            /*
-            // 테스트용으로 1번 슬롯 불러오기
-            if (!_dataManager.LoadGame(1))
-            {
-                CLog.Warn("[CPlayerController] 게임 불러오기 실패");
-                return;
-            }
-            */
-            // 런 세션에서 플레이어 데이터 가져오기
             PlayerData = _dataManager.PlayerData.GetPlayerData();
 
             if (PlayerData == null)
@@ -63,23 +57,65 @@ public class CPlayerController : MonoBehaviour
             CLog.Log("[PlayerController] PlayerData 연결 성공");
             CLog.Log($"HP : {PlayerData.CurrentHP}");
             CLog.Log($"MP : {PlayerData.CurrentMP}");
+
+            _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            if (_inputHub == null)
+            {
+                CLog.Error("[CPlayerMovement] InputHub 참조 실패");
+                return;
+            }
+
+            RegisterInput();
+            CLog.Log("[CPlayerMovement] 모든 초기화 완료");
         });
 
     }
 
-    void Start()
+    private void OnDisable()
     {
-
-
-       
+        UnRegisterInput();
     }
 
+  
     private void Update()
     {
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
         PlayerData.ReChargeDashperTime(Time.deltaTime);
         PlayerData.RecoverMPperTime(Time.deltaTime);
     }
 
+    #endregion
+
+
+    private void RegisterInput()
+    {
+        _inputHub.Register(EKeyAction.UsePotion, (IInputCommand)this);
+    }
+
+    private void UnRegisterInput()
+    {
+        if (_inputHub == null)
+        {
+            return;
+        }
+
+        _inputHub.Unregister(EKeyAction.UsePotion, (IInputCommand)this);
+    }
+
+    public void Execute()
+    {
+        // 대충 포션 사용 함수
+    }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)
     {

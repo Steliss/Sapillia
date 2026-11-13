@@ -69,7 +69,6 @@ public static class CSaveData
 
 #endregion
 
-// ※ TODO: Json 하나로 세이브 로드 관리 
 /// <summary>
 /// 새 프로필 들어갈때 신규 생성이라 매니저 클래스에서 _currentFlow값 보관해서 쓰면 안됨. 
 /// </summary>

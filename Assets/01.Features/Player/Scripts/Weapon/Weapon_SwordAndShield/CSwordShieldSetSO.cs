@@ -36,6 +36,9 @@ public class CSwordShieldSetSO : ScriptableObject
     [Min(0f)]
     [SerializeField] private float _guardBreakDuration = 10f;
 
+    [Header("대시 공격")]
+    [SerializeField] private CWeaponAttackDataSO _dashAttackData;
+
     #endregion
 
     #region 프로퍼티
@@ -50,6 +53,7 @@ public class CSwordShieldSetSO : ScriptableObject
     public int GuardManaCost => _guardManaCost;
     public float PerfectGuardWindow => _perfectGuardWindow;
     public float GuardBreakDuration => _guardBreakDuration;
+    public CWeaponAttackDataSO DashAttackData => _dashAttackData;
     public SWeaponStatBonus StatBonus => _statBonus;
     #endregion
 }
