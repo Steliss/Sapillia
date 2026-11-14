@@ -14,6 +14,7 @@ public class CPotionSO : CItemSO
     public EArtifactGrade Grade => _grade;
     public override EItemType Type => EItemType.Potion;
     public IReadOnlyList<CItemEffectSO> Effects => _effects;
+    public int MaxStack => _maxStack;   
 
 
 }

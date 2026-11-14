@@ -108,6 +108,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _shopSlots.Clear();
 
         AddShopItem(EItemType.Potion);
+        AddShopItem(EItemType.Potion);
+        AddShopItem(EItemType.Potion);
+        AddShopItem(EItemType.Potion);
+        AddShopItem(EItemType.Potion);
+        AddShopItem(EItemType.Potion);
 
         AddShopItem(EItemType.Artifact);
         AddShopItem(EItemType.Artifact);

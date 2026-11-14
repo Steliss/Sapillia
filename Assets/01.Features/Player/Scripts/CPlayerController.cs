@@ -7,6 +7,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
     #region 인스펙터
     [SerializeField] private CPlayerCostume _playerCostume;
     [SerializeField] private CESCUI _ui;
+    [SerializeField] private CPotionList _potion;
     #endregion
 
     #region 내부변수
@@ -114,11 +115,12 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
     public void Execute()
     {
-        // 대충 포션 사용 함수
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
 
-
-
-
+        _potion.UseCurrentPotion(PlayerData);
     }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)

@@ -10,7 +10,7 @@ public class CHealEffect : CItemEffectSO
     [SerializeField, Min(0f)] private float _amount = 30f;
 
 
-    public override void Apply(CPlayerController player)
+    public override void Apply(CPlayerGamingDataSO player)
     {
         if (player == null)
         {
@@ -18,19 +18,16 @@ public class CHealEffect : CItemEffectSO
             return;
         }
 
-        // 실제 플레이어 데이터 접근 경로에 맞게 변경
-        CPlayerGamingDataSO data = player.PlayerData;
-
-        if (data == null)
+        if (player == null)
         {
             return;
         }
 
         int healAmount = _flatHeal
-            ? Mathf.RoundToInt(data.Stats.MaxHP * _amount / 100f)
+            ? Mathf.RoundToInt(player.Stats.MaxHP * _amount / 100f)
             : Mathf.RoundToInt(_amount);
 
-        data.Heal(healAmount);
+        player.Heal(healAmount);
     }
 }
 
