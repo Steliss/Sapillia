@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c1285ae2f5e3864d9c5b87417f8250e, type: 3}
+  m_Name: Potion_RedPotion
+  m_EditorClassIdentifier: 
+  _itemID: 2001
+  _nameKey: item.potion.2001.name
+  _descriptionKey: item.potion.2001.desc
+  _storyKey: item.potion.2001.story
+  _icon: {fileID: 21300000, guid: 05892a59f8bc3234db016619a3b93aba, type: 3}
+  _grade: 0
+  _maxStack: 5
+  _effects:
+  - {fileID: 11400000, guid: 8bc1a65da5806f748a8dd405997e96da, type: 2}

@@ -113,6 +113,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             _drag.CancelDrag();
         }
 
+        _data.SaveGame(_data.CurrentFlow.SaveSlot);
         _UICanvas.SetActive(active);
     }
 
@@ -166,38 +167,68 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     /// <returns></returns>
     public void TryMoveSlot(CInventorySlotUI fromSlot, CInventorySlotUI toSlot)
     {
-        // 같은 위치거나 창이 안열려 있을 경우 
         if (!_isActive || fromSlot == toSlot)
         {
             return;
         }
 
-        // 출발과 도착 슬롯이 없으면 종료
         if (!TryFindSlot(fromSlot, out var fromList, out int fromIndex) || !TryFindSlot(toSlot, out var toList, out int toIndex))
         {
             return;
         }
 
-        // ※ : TODO : 포션 슬롯에 포션만 들어가게 추가 
-
-
-        // 교환을 위한 변수
         CInventorySlotData fromData = fromList[fromIndex];
+        CInventorySlotData toData = toList[toIndex];
 
-        // 같은 영역과 다른 영역 모두 두 위치의 데이터를 교환
-        fromList[fromIndex] = toList[toIndex];
-        toList[toIndex] = fromData;
+        if (fromData.IsEmpty)
+        {
+            return;
+        }
 
-        // 변경된 두 칸만 갱신
+        // 포션 슬롯에는 포션만 배치 가능
+        if (toList == _inventoryData.PotionSlots && fromData.ItemType != EItemType.Potion)
+        {
+            return;
+        }
+
+        // 교환으로 포션 슬롯에 들어올 아이템도 검사
+        if (fromList == _inventoryData.PotionSlots && !toData.IsEmpty && toData.ItemType != EItemType.Potion)
+        {
+            return;
+        }
+
+        // 같은 종류의 포션이면 수량 합산
+        if (fromData.ItemSO is CPotionSO potion && !toData.IsEmpty && fromData.ItemID == toData.ItemID)
+        {
+            int remainingSpace = Mathf.Max(0, potion.MaxStack - toData.Count);
+            int moveCount = Mathf.Min(fromData.Count, remainingSpace);
+
+            if (moveCount == 0)
+            {
+                return;
+            }
+
+            toData.Count += moveCount;
+            fromData.Count -= moveCount;
+
+            if (fromData.Count == 0)
+            {
+                fromData.Clear();
+            }
+        }
+        else
+        {
+            // 다른 종류 또는 빈 슬롯이면 기존처럼 교환
+            fromList[fromIndex] = toData;
+            toList[toIndex] = fromData;
+        }
+
         fromSlot.BindSlot(fromList[fromIndex]);
         toSlot.BindSlot(toList[toIndex]);
 
-        // 아티팩트 갱신        
         _inventoryData.NotifyInventoryChanged();
-        
-        ShowItemInfo(toSlot);
 
-        return;
+        ShowItemInfo(toSlot);
     }
 
     // 데이터 위치 찾기 
