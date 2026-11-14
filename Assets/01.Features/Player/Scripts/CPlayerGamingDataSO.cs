@@ -452,7 +452,7 @@ public class CPlayerGamingDataSO
         OnLevelChanged?.Invoke(_level);
     }
 
-    // 돈 획득
+    // 필드 돈 획득
     public void AddMoney(int amount)
     {
         if (amount <= 0)
@@ -463,6 +463,18 @@ public class CPlayerGamingDataSO
         float totalamount = amount * _stats.PickUpMoney_Rate;
 
         _money += Mathf.CeilToInt(totalamount);
+        OnMoneyChanged?.Invoke(_money);
+    }
+
+    // 상인 돈 획득
+    public void ToMarchantAddMoney(int amount)
+    {
+        if (amount <= 0)
+        {
+            return;
+        }
+
+        _money += Mathf.CeilToInt(amount);
         OnMoneyChanged?.Invoke(_money);
     }
 

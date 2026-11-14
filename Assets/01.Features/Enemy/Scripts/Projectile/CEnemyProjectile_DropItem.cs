@@ -10,6 +10,14 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         End
     }
 
+    public enum EIm
+    {
+        Exp,
+        Money,
+        Sapphire,
+        Dice,
+    }
+
     #region 인스펙터
     [Header("팔로우 옵션")]
     [SerializeField] private float _followSpeed = 5f;
@@ -31,7 +39,6 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
 
     #region 내부 변수
     private Transform _target;
-    private float _exp;
     private float _jumpTime;
     private float _jumpTimeMax;
     private float _jumpHig;
@@ -39,7 +46,10 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
     private int _hashIng;
     private int _hashEnd;
     private EState _state = EState.None;
+    private EIm _im;
     private float _lifeTime = 1f;
+    private CPlayerGamingDataSO _data;
+    private int _amount;
     #endregion
 
     private void Awake()
@@ -50,13 +60,19 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         }
         _hashEnd = Animator.StringToHash(_aniEnd);
         _hashIng = Animator.StringToHash(_aniIng);
+
+        if (CManagerDontDestroy.Instance != null)
+        {
+            _data = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+            if (_data == null)
+            {
+                CLog.Log($"{name} : 데이터SO 연결 실패");
+            }
+        }
     }
 
     private void OnEnable()
     {
-        _jumpTime = 0f;
-        _jumpTimeMax = UnityEngine.Random.Range(_jumpRandomTimeMin, _jumpRandomTimeMax);
-        _jumpHig = UnityEngine.Random.Range(_jumpRandomHigMin, _jumpRandomHigMax);
     }
 
     private void OnDisable()
@@ -144,9 +160,44 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
 
         if (sqrDistance < sqrGetDistance)
         {
-            // ※ 연동 획득 함수 추가해야함
+            GiveAmount();
             _state = EState.End;
             _ani.Play(_hashEnd);
+        }
+    }
+
+    private void GiveAmount()
+    {
+        if (_data == null)
+        {
+            if (CManagerDontDestroy.Instance == null)
+            {
+                CLog.Log($"{name} : CManagerDontDestroy 접근 실패");
+                return;
+            }
+            _data = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+            if (_data == null)
+            {
+                CLog.Log($"{name} : 게이밍 데이터SO 접근 실패");
+                return;
+            }
+            
+        }
+
+        switch (_im)
+        {
+            case EIm.Exp:
+                _data.AddEXP(_amount);
+                break;
+            case EIm.Money:
+                _data.AddMoney(_amount);
+                break;
+            case EIm.Sapphire:
+                // ※ 사파이어 접근할 곳 필요
+                break;
+            case EIm.Dice:
+                _data.AddDice(_amount);
+                break;
         }
     }
 
@@ -161,13 +212,15 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
 
 
     /// <summary>
-    /// 보상 정보와 위치 담기 경험치, 돈, 사파이어, 주사위 
+    /// 드롭되는 재화가 무엇인지, 양이 어느정도인지, 어디에서 뿌려지는지 정하기
     /// </summary>
-    /// <param name="exp">보상 수치</param>
-    /// <param name="pos">위치</param>
-    public void SetExp(float exp, Vector2 pos)
+    /// <param name="im">재화가 무엇인가</param>
+    /// <param name="amount">재화의 양</param>
+    /// <param name="pos">드롭 위치</param>
+    public void SetWhatis(EIm im, int amount, Vector2 pos)
     {
-        _exp = exp;
+        _im = im;
+        _amount = amount;
         Vector2 fallPos = _fallRandomRange * 0.5f;
         Vector2 randomPos = new Vector2
             (
@@ -178,6 +231,9 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         _state = EState.Fall;
         _ani.Play(_hashIng);
         _lifeTime = 1f;
+        _jumpTime = 0f;
+        _jumpTimeMax = UnityEngine.Random.Range(_jumpRandomTimeMin, _jumpRandomTimeMax);
+        _jumpHig = UnityEngine.Random.Range(_jumpRandomHigMin, _jumpRandomHigMax);
     }
 
 }

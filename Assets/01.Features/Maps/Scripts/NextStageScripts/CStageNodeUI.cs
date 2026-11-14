@@ -218,6 +218,8 @@ public class CStageNodeUI : MonoBehaviour
             SetNode(_floor4Nodes[i], _stageNodes[index]);
             index++;
         }
+
+        SetNode(_floor5BossNode, _stageNodes[index]);
     }
 
 
@@ -275,6 +277,8 @@ public class CStageNodeUI : MonoBehaviour
     {
         int currentFloor = _dataManager.CurrentFlow.PlayerProgress;
         int nextFloor = currentFloor + 1;
+
+        Debug.Log($"[노드 활성화 확인] 현재 층: {currentFloor}, 다음 층: {nextFloor}");
 
         foreach (CStageNodeButton node in _floor2Nodes)
         {
@@ -363,6 +367,18 @@ public class CStageNodeUI : MonoBehaviour
         _nextStagePanel.SetActive(false);
 
         dungeonGenerator.GenerateNewDungeon();
+
+        Debug.Log($"[던전 생성 확인] IsReady: {dungeonGenerator.IsReady}");
+
+        if (dungeonGenerator.IsReady)
+        {
+            _dataManager.CurrentFlow.SetProgress(_selectedNode.Floor);
+
+            Debug.Log(
+                $"[진행도 갱신 확인] 선택 층: {_selectedNode.Floor}, " +
+                $"현재 진행도: {_dataManager.CurrentFlow.PlayerProgress}"
+            );
+        }
     }
 
 
