@@ -23,6 +23,8 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
     [Header("===== 애니메이터 =====")]
     [SerializeField] private string _aniStart;
     [SerializeField] private string _aniEnd;
+    [Header("===== 사운드 =====")]
+    [SerializeField] private string _soundThrow = "AttackThrow";
     #endregion
 
     #region 내부 변수
@@ -47,6 +49,7 @@ public class CEnemyAttackStateSO_DynamiteThrow : CEnemyAttackStateSO
             _mashine.Ani.Play(_hashStart);
             Vector2 aimPos = await WarningLine_FirePos(ct, _lineInfo);
             // 던지기
+            _mashine.SoundPlay(_soundThrow);
             for (int i = 0; i < _multiFire; i++)
             {
                 Throw(aimPos);

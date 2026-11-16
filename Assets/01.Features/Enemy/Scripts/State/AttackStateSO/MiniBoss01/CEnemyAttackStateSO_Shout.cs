@@ -17,6 +17,8 @@ public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
     [Header("애니메이터 스테이트")]
     [SerializeField] private string _stateShout = "Shout";
     [SerializeField] private string _stateShoutReady = "ShoutReady";
+    [Header("사운드")]
+    [SerializeField] private string _soundShout = "VoiceSkeletonElite";
     #endregion
 
     #region 내부 변수
@@ -42,6 +44,7 @@ public class CEnemyAttackStateSO_Shout : CEnemyAttackStateSO
             _mashine.SuperArmorGet();
             _mashine.HpBarUpdate();
             _mashine.Ani.Play(_hashShout);
+            _mashine.SoundPlay(_soundShout);
 
             GameObject shoutWave = CreateAttackObject
             (
