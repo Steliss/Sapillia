@@ -22,6 +22,8 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
     [Space(10)]
     [Header("===== 전조 =====")]
     [SerializeField] private SLineInfo _lineInfo;
+    [Header("===== 전조 =====")]
+    [SerializeField] private string _soundMelee = "AttackSpear_Dash";
     #endregion
 
 
@@ -95,6 +97,7 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
             myPos + (dir.normalized * _attackDistans), 
             _hasAngle ? qua : Quaternion.identity
         );
+        _mashine.SoundPlay(_soundMelee);
 
         if (go != null)
         {

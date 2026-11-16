@@ -24,6 +24,9 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
     [Space(10)]
     [Header("===== 전조 =====")]
     [SerializeField] private SLineInfo _lineInfo;
+    [Header("===== 사운드 =====")]
+    [SerializeField] private string _soundIng = "AttackDynamiteRed";
+    [SerializeField] private string _soundEnd = "HitDynamite";
     #endregion
 
 
@@ -34,13 +37,16 @@ public class CEnemyAttackStateSO_Fire : CEnemyAttackStateSO
         {
             // 선딜
             _mashine.Ani.Play(_mashine.HashAttReady);
+            _mashine.SoundPlay(_soundIng);
             await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
 
             // 조준
             _mashine.Ani.Play(_mashine.HashAttack);
+            _mashine.SoundPlay(_soundIng);
             float aim = await WarningLine_FireAngle(ct, _lineInfo);
 
             // 발사
+            _mashine.SoundPlay(_soundEnd);
             GameObject effect = CreateAttackObject
                 (_fireEffect, _bulletLifeTime, _mashine.Sprite.transform.position, Quaternion.identity);
 

@@ -34,6 +34,11 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
     [SerializeField] private Animator _ani;
     [SerializeField] private string _aniIng = "Ing";
     [SerializeField] private string _aniEnd = "End";
+    [Header("사운드")]
+    [SerializeField] private string _soundExp = "SpellLight";
+    [SerializeField] private string _soundDice = "AcquireDice";
+    [SerializeField] private string _soundSapphire = "AcquireSapphire";
+    [SerializeField] private string _soundMoney = "CollectCoin";
     #endregion
 
 
@@ -50,6 +55,7 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
     private float _lifeTime = 1f;
     private CPlayerGamingDataSO _data;
     private int _amount;
+    private CSoundManager _soundManager;
     #endregion
 
     private void Awake()
@@ -161,6 +167,7 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         if (sqrDistance < sqrGetDistance)
         {
             GiveAmount();
+            SoundPlay(_im);
             _state = EState.End;
             _ani.Play(_hashEnd);
         }
@@ -197,6 +204,34 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
                 break;
             case EIm.Dice:
                 _data.AddDice(_amount);
+                break;
+        }
+    }
+
+    private void SoundPlay(EIm im)
+    {
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance == null)
+            {
+                return;
+            }
+            _soundManager = CManagerDontDestroy.Instance.Sound;
+        }
+
+        switch (im)
+        {
+            case EIm.Exp:
+                _soundManager.PlayEffect(_soundExp, transform.position);
+                break;
+            case EIm.Money:
+                _soundManager.PlayEffect(_soundMoney, transform.position);
+                break;
+            case EIm.Sapphire:
+                _soundManager.PlayEffect(_soundSapphire, transform.position);
+                break;
+            case EIm.Dice:
+                _soundManager.PlayEffect(_soundDice, transform.position);
                 break;
         }
     }

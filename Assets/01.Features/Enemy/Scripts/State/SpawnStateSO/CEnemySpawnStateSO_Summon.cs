@@ -6,10 +6,16 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "SO/Enemy/SpawnState/Summon", fileName = "Enemy_Spawn_Summon_")]
 public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
 {
+    #region 인스펙터
+    [Header("소환 이펙트")]
     [SerializeField] private GameObject _magicCircle;
     [SerializeField] private GameObject _summonEffect;
     [SerializeField] private float _spawnTime = 2f;
     [SerializeField] private float _afterDelay = 1f;
+
+    [Header("사운드")]
+    [SerializeField] private string _soundSummon = "MagicSummonSkeleton";
+    #endregion
 
     private int _hashEnd = Animator.StringToHash("End");
 
@@ -50,6 +56,7 @@ public class CEnemySpawnStateSO_Summon : CEnemySpawnStateSO
 
             _mashine.Sprite.transform.localScale = startScale;
             _mashine.Nav.enabled = true;
+            _mashine.SoundPlay(_soundSummon);
 
             await UniTask.Delay(TimeSpan.FromSeconds(_afterDelay), cancellationToken: ct);
             _mashine.StateChanged(_mashine.IdleState);

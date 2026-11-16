@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using static CEnemyProjectile_DropItem;
 
 public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 {
@@ -59,6 +60,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private Color _startColor;
     private readonly int _outLineId = Shader.PropertyToID("_OutlineOn");
     private List<GameObject> _gameObjects = new List<GameObject>();
+    private CSoundManager _soundManager;
     #endregion
 
     #region 스테이트
@@ -509,6 +511,25 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             return true;
         }
         return false;
+    }
+
+    public void SoundPlay(string soundName)
+    {
+        if (string.IsNullOrWhiteSpace(soundName))
+        {
+            return;
+        }
+
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance == null)
+            {
+                return;
+            }
+            _soundManager = CManagerDontDestroy.Instance.Sound;
+        }
+
+        _soundManager.PlayEffect(soundName, transform.position);
     }
 
     public void TakeDamage(SDamageInfo damageInfo)

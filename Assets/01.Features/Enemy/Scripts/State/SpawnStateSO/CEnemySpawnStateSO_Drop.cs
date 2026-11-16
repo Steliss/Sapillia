@@ -14,6 +14,8 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
     [Header("떨어질 높이")]
     [SerializeField] private float _startHigh = 20f;
     [SerializeField] private float _randomRange = 10f;
+    [Header("착지 사운드")]
+    [SerializeField] private string _soundLanding = "LandMid";
     #endregion
 
     #region 내부 변수
@@ -79,6 +81,7 @@ public class CEnemySpawnStateSO_Drop : CEnemySpawnStateSO
                 goPos.y -= 0.4f;
                 go.transform.position = goPos;
             }
+            _mashine.SoundPlay(_soundLanding);
 
             tr.localPosition = Vector3.zero;
             _mashine.StateChanged(_mashine.IdleState);
