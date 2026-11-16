@@ -52215,6 +52215,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Merchant
       objectReference: {fileID: 0}
+    - target: {fileID: 1725677202786374863, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.b
+      value: 0.23529413
+      objectReference: {fileID: 0}
+    - target: {fileID: 1725677202786374863, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.g
+      value: 0.15686275
+      objectReference: {fileID: 0}
+    - target: {fileID: 1725677202786374863, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.r
+      value: 0.25882354
+      objectReference: {fileID: 0}
     - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _drag
       value: 
@@ -52223,10 +52235,50 @@ PrefabInstance:
       propertyPath: _inventoryUI
       value: 
       objectReference: {fileID: 6300441129374152515}
+    - target: {fileID: 3401646522019614268, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958913058383016164, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3958913058383016164, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5209263041447107634, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Value
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5209263041447107634, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Direction
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6094404050576379709, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073749928768117413, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.b
+      value: 0.38180846
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073749928768117413, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.g
+      value: 0.38776484
+      objectReference: {fileID: 0}
+    - target: {fileID: 7073749928768117413, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Color.r
+      value: 0.49056602
+      objectReference: {fileID: 0}
     - target: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _inventoryUI
       value: 
       objectReference: {fileID: 6300441129374152515}
+    - target: {fileID: 8281891871070958338, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _itemdata
+      value: 
+      objectReference: {fileID: 11400000, guid: 7c257969594313b42aeef4804eb7b22c, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -52240,6 +52292,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 635742260016701644, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
+      propertyPath: _merchant
+      value: 
+      objectReference: {fileID: 659268341}
     - target: {fileID: 1203616343196040860, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_Name
       value: SceneUI

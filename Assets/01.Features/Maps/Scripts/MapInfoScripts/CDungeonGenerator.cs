@@ -83,14 +83,7 @@ public class CDungeonGenerator : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            GenerateNewDungeon();
-        }
-    }
-
+    
 
     public void SetCurrentFloor(int floor)
     {

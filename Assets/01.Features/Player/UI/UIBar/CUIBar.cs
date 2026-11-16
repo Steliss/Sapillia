@@ -7,17 +7,14 @@ public class CUIBar : MonoBehaviour
 
     public virtual void SetValue(float currentValue, float maxValue)
     {
-
         if (maxValue > 0f)
         {
-            if (currentValue < 0f)
-            {
-                currentValue = 0f;
-            }
-
             _fillImage.fillAmount = Mathf.Clamp01(currentValue / maxValue);
         }
-
+        else
+        {
+            _fillImage.fillAmount = 0f;
+        }
     }
 
 }

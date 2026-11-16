@@ -41,8 +41,6 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
             CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
-
-            _merchantUI.MoneyDisplay(Money, playerdata.Money);
             CLog.Log("CMerchant _dataTask OnEnable 작업 완료");
         });
     }
@@ -258,14 +256,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             return false;
         }
 
-        int price = grade switch
-        {
-            EArtifactGrade.Normal => 100,
-            EArtifactGrade.Advanced => 200,
-            EArtifactGrade.Rare => 400,
-            EArtifactGrade.Legendary => 800,    
-            _ => 0
-        };
+        int price = _itemData.GetPrice(grade);
 
         if (price == 0)
         {
@@ -281,9 +272,10 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             {
                 return false;
             }
-
-            playerdata.AddMoney(-price);
-            AddMoney(price);
+            else
+            {
+                AddMoney(price);
+            }
         }
         else
         {
@@ -295,10 +287,9 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             }
 
             AddMoney(-price);
-            playerdata.AddMoney(price);
+            playerdata.ToMarchantAddMoney(price);
         }
 
-        _merchantUI.MoneyDisplay(Money, playerdata.Money);
         return true;
     }
 
