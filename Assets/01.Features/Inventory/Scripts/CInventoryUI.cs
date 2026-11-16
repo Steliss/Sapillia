@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CInventoryUI : MonoBehaviour, IInputCommand
 {
+    [SerializeField] private CMerchant _merchant;
     [SerializeField] private CESCUI _esc;
     [SerializeField] private GameObject _UICanvas;
     [SerializeField] private CInventoryDrag _drag;
@@ -93,7 +94,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     // 인벤토리 열고 닫기
     public void Execute()
     {
-        if (_esc.IsActive)
+        if (_esc.IsActive || _merchant.IsActive)
         {
             return;
         }

@@ -20,7 +20,7 @@ public abstract class CItemSO : ScriptableObject
     [SerializeField] private string _descriptionKey;
     [SerializeField] private string _storyKey;
     [SerializeField] private Sprite _icon;
-
+    [SerializeField] private EArtifactGrade _grade;
     #endregion
 
 
@@ -32,6 +32,7 @@ public abstract class CItemSO : ScriptableObject
     public Sprite Icon => _icon;
 
     public virtual EItemType Type { get; }
+    public EArtifactGrade Grade => _grade;
 
     #endregion
 
