@@ -10,8 +10,27 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
     [SerializeField] private CMerchant _merchant;
 
     private CMerchantUI _merchantUI;
-
     private CInventoryDrag _drag;
+
+    private CLocalizationManager _localization;
+    private CUniTaskOnes _localizationTask = new();
+
+
+
+    private void OnEnable()
+    {
+        _localizationTask.Run(async token =>
+        {
+            _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
+            Refresh();
+            CLog.Log("CMerchantSlotUI OnEnable 작업 완료");
+        });
+    }
+
+    private void OnDisable()
+    {
+        _localizationTask.Cancel();
+    }
 
     public void SetDrag(CInventoryDrag drag)
     {
@@ -64,7 +83,10 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
 
         int price = Mathf.CeilToInt(_itemdata.GetPrice(SlotData.ItemSO.Grade) * (Mathf.Max(0f, 1f - _merchant.Bargain * 0.01f)));
 
-        _nameText.text = SlotData.ItemSO.name;
+        if (_localization != null)
+        {
+            _nameText.text = _localization.GetText(SlotData.ItemSO.NameKey);
+        }
 
         if(SlotData.ItemType == EItemType.Potion)
         {
