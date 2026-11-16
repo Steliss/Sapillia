@@ -28332,7 +28332,247 @@ MonoBehaviour:
         Data3: -1415058812
         Data4: 1486035674
       Path: event:/BGM/placeDungeonMole
-  _effect: []
+  _effect:
+  - _name: AttackDynamiteFuse
+    _sound:
+      Guid:
+        Data1: -235432629
+        Data2: 1180321297
+        Data3: -258165573
+        Data4: -1084787755
+      Path: event:/Scene/attackDynamiteFuse
+  - _name: AttackDynamiteRed
+    _sound:
+      Guid:
+        Data1: 1793854646
+        Data2: 1259088500
+        Data3: 1335568291
+        Data4: -1420859048
+      Path: event:/Scene/attackDynamiteRed
+  - _name: AttackSkeletonGoatJump01
+    _sound:
+      Guid:
+        Data1: 953854522
+        Data2: 1240161126
+        Data3: -1427884156
+        Data4: 290529133
+      Path: event:/Scene/attackSkeletonGoatJump01
+  - _name: AttackSkeletonGoatJump02
+    _sound:
+      Guid:
+        Data1: 760878417
+        Data2: 1111854188
+        Data3: 2114348724
+        Data4: -404151031
+      Path: event:/Scene/attackSkeletonGoatJump02
+  - _name: AttackSkeletonGoatJump03
+    _sound:
+      Guid:
+        Data1: -446450732
+        Data2: 1163011964
+        Data3: -2011899492
+        Data4: -1818706087
+      Path: event:/Scene/attackSkeletonGoatJump03
+  - _name: AttackSpear_Dash
+    _sound:
+      Guid:
+        Data1: -167147028
+        Data2: 1320811493
+        Data3: 1401595053
+        Data4: 1249428389
+      Path: event:/Scene/attackSpear_Dash
+  - _name: AttackThrow
+    _sound:
+      Guid:
+        Data1: -1271720962
+        Data2: 1126224829
+        Data3: -155711060
+        Data4: -1732582013
+      Path: event:/Scene/attackThrow
+  - _name: BreakArmor
+    _sound:
+      Guid:
+        Data1: 1566145075
+        Data2: 1123032732
+        Data3: -1836811356
+        Data4: 685099272
+      Path: event:/Scene/breakArmor
+  - _name: ClearRewardAppear
+    _sound:
+      Guid:
+        Data1: -1064292075
+        Data2: 1082856418
+        Data3: -164297295
+        Data4: -85952462
+      Path: event:/Scene/clearRewardAppear
+  - _name: CreateSephirite
+    _sound:
+      Guid:
+        Data1: -1396962076
+        Data2: 1286802498
+        Data3: -1403867514
+        Data4: -1555715999
+      Path: event:/Scene/createSephirite
+  - _name: CollectCoin
+    _sound:
+      Guid:
+        Data1: 1913077987
+        Data2: 1273532761
+        Data3: 1112858517
+        Data4: 754817714
+      Path: event:/Scene/collectCoin
+  - _name: DieMonster
+    _sound:
+      Guid:
+        Data1: -760606203
+        Data2: 1281042650
+        Data3: 1535763594
+        Data4: -961369588
+      Path: event:/Scene/dieMonster
+  - _name: DrillExcavation_Loop
+    _sound:
+      Guid:
+        Data1: -1714524700
+        Data2: 1092804812
+        Data3: -1741308787
+        Data4: -1073155994
+      Path: event:/Scene/drillExcavation_Loop
+  - _name: DrillMole_Loop
+    _sound:
+      Guid:
+        Data1: 79028674
+        Data2: 1113316135
+        Data3: 1923102363
+        Data4: 1780417184
+      Path: event:/Scene/drillMole_Loop
+  - _name: GateOpenBone
+    _sound:
+      Guid:
+        Data1: -1560606445
+        Data2: 1253618511
+        Data3: 1115753601
+        Data4: -1478736472
+      Path: event:/Scene/GateOpenBone
+  - _name: HitDynamite
+    _sound:
+      Guid:
+        Data1: -898773339
+        Data2: 1212261681
+        Data3: 1149413280
+        Data4: 317131149
+      Path: event:/Scene/hitDynamite
+  - _name: JumpBig
+    _sound:
+      Guid:
+        Data1: -1316676195
+        Data2: 1261678247
+        Data3: 1214422401
+        Data4: 1664939177
+      Path: event:/Scene/jumpBig
+  - _name: LandBig
+    _sound:
+      Guid:
+        Data1: -1660082389
+        Data2: 1224094211
+        Data3: -1375750515
+        Data4: 1399118869
+      Path: event:/Scene/landBig
+  - _name: MagicSummonSkeleton
+    _sound:
+      Guid:
+        Data1: -484447664
+        Data2: 1276855553
+        Data3: -99138169
+        Data4: 882649328
+      Path: event:/Scene/magicSummonSkeleton
+  - _name: MoleDash
+    _sound:
+      Guid:
+        Data1: -17800852
+        Data2: 1246794955
+        Data3: -318124892
+        Data4: 1353412536
+      Path: event:/Scene/moleDash
+  - _name: MoleJump
+    _sound:
+      Guid:
+        Data1: -1228185665
+        Data2: 1279020741
+        Data3: 1571793562
+        Data4: 631895228
+      Path: event:/Scene/moleJump
+  - _name: MoleThrowDynamite
+    _sound:
+      Guid:
+        Data1: -294925616
+        Data2: 1210444626
+        Data3: 1635521957
+        Data4: -283601931
+      Path: event:/Scene/moleThrowDynamite
+  - _name: VoiceSkeletonElite
+    _sound:
+      Guid:
+        Data1: 678292179
+        Data2: 1337611061
+        Data3: 1013861304
+        Data4: -452073886
+      Path: event:/Scene/voiceSkeletonElite
+  - _name: VoiceSkeletonEliteAttack
+    _sound:
+      Guid:
+        Data1: 1312836683
+        Data2: 1331046482
+        Data3: -1091225956
+        Data4: 170475045
+      Path: event:/Scene/voiceSkeletonEliteAttack
+  - _name: VoiceSkeletonEliteDeath
+    _sound:
+      Guid:
+        Data1: 836947911
+        Data2: 1087868508
+        Data3: -1066112581
+        Data4: -542921120
+      Path: event:/Scene/voiceSkeletonEliteDeath
+  - _name: VoiceSkeletonEliteJump
+    _sound:
+      Guid:
+        Data1: -348606022
+        Data2: 1183542810
+        Data3: 711254150
+        Data4: 1351745815
+      Path: event:/Scene/voiceSkeletonEliteJump
+  - _name: BattleAlert
+    _sound:
+      Guid:
+        Data1: -1393806677
+        Data2: 1320069483
+        Data3: -1389724540
+        Data4: -2128244874
+      Path: event:/System/battleAlert
+  - _name: AcquireDice
+    _sound:
+      Guid:
+        Data1: -197581327
+        Data2: 1128131845
+        Data3: -1233809994
+        Data4: 148297964
+      Path: event:/Scene/acquireDice
+  - _name: AcquireSapphire
+    _sound:
+      Guid:
+        Data1: -53822081
+        Data2: 1341046110
+        Data3: -1704708724
+        Data4: -90133087
+      Path: event:/Scene/acquireSapphire
+  - _name: SpellLight
+    _sound:
+      Guid:
+        Data1: -767610091
+        Data2: 1228646584
+        Data3: 1882262953
+        Data4: 1148248250
+      Path: event:/Scene/SpellLight
   _enviroment: []
 --- !u!1 &2129691444
 GameObject:
