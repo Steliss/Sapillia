@@ -14,14 +14,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _projectile: {fileID: 2182515107303193145, guid: 19787abbe9296e94f98293a4b668b929, type: 3}
   _fireEffect: {fileID: 6972623845968668855, guid: 05963e78bbe01f340a8e876481120791, type: 3}
-  _beforeDelay: 2
-  _trackingTime: 1
-  _trackingSpeed: 50
+  _beforeDelay: 1
   _multiFire: 5
   _firePower: 3
   _bulletLifeTime: 3
   _randomPowerRange: 0.5
   _randomAngleRange: 5
-  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
-  _lineLength: 3
-  _interbal: 0.5
+  _lineInfo:
+    Prefeb: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+    BeforeDelay: 1
+    AfterDelay: 0.1
+    LineLength: 3
+    Interbal: 0.5
+    Distanse: 3
+    IsTracking: 1
+    TrackingSpeed: 50
+    xLineLength: 0
+    yLineLength: 0
+    SquareRange: {x: 0, y: 0}
