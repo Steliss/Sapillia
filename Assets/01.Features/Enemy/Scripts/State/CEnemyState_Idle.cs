@@ -31,7 +31,8 @@ public class CEnemyState_Idle : IEnemyState
         {
             _mashine.PatrolSearch(_mashine.PatrolRadius);
         }
-        else if (_time > _idleTime)
+
+        if (_time > _idleTime)
         {
             _time = 0f;
             _mashine.StateChanged(_mashine.MoveState);

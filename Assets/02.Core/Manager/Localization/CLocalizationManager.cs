@@ -136,4 +136,23 @@ public class CLocalizationManager : MonoBehaviour
         CLog.Log($"번역 문장이 없습니다 : {key}");
         return key;
     }
+
+
+    /// <summary>
+    /// 번역 문장의 자리표시자에 값을 적용
+    /// </summary>
+    public string GetText(string key, params object[] values)
+    {
+        string text = GetText(key);
+
+        if (values == null || values.Length == 0)
+        {
+            return text;
+        }
+
+        return string.Format(text, values);
+    }
+
+
+
 }

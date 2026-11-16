@@ -11,7 +11,18 @@ public class CPotionSO : CItemSO
 
     public override EItemType Type => EItemType.Potion;
     public IReadOnlyList<CItemEffectSO> Effects => _effects;
-    public int MaxStack => _maxStack;   
+    public int MaxStack => _maxStack;
 
+    public override object[] GetDescriptionValues()
+    {
+        List<object> values = new();
+
+        foreach (CItemEffectSO effect in _effects)
+        {
+            values.AddRange(effect.GetDescriptionValues());
+        }
+
+        return values.ToArray();
+    }
 
 }
