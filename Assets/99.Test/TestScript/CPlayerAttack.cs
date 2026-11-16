@@ -57,6 +57,14 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     public void SetDashAttackData(CWeaponAttackDataSO data)
     {
         _dashAttackData = data;
+
+        if (_dashAttackData == null)
+        {
+            CLog.Warn("[PlayerAttack] DashAttackData 없음");
+            return;
+        }
+
+        CLog.Log($"[PlayerAttack] 대시 공격 데이터 설정 완료 : " + $"{_dashAttackData.name}");
     }
 
     private void OnEnable()

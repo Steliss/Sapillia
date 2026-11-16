@@ -50,7 +50,7 @@ public class CWeaponMotion : MonoBehaviour
     private bool _hasInitialPose;
 
     private int _damage;
-
+    private bool[] _effectPlayed;
 
     private readonly HashSet<IDamageable> _hitTargets = new HashSet<IDamageable>();
 
@@ -147,6 +147,8 @@ public class CWeaponMotion : MonoBehaviour
         DetectHits(previous, current);
         // 베기 이펙트
         UpdateSlashEffect(current);
+        // 추가 이펙트 실행
+        UpdateAttackEffects(current);
 
         if (current >= 1f)
         {
@@ -164,6 +166,8 @@ public class CWeaponMotion : MonoBehaviour
         }
 
         _attackData = attack;
+
+        ResetAttackEffects();
 
         float speed = Mathf.Max(0.01f, stats.Attack_Speed);
 
@@ -472,6 +476,107 @@ public class CWeaponMotion : MonoBehaviour
 
         _slashRenderer.color = color;
     }
+
+    private void ResetAttackEffects()
+    {
+        SWeaponEffectData[] effects = _attackData.Effects;
+
+        _effectPlayed = effects != null ? new bool[effects.Length] : null;
+    }
+
+    private void UpdateAttackEffects(float progress)
+    {
+        if (_attackData == null ||
+            _effectPlayed == null)
+        {
+            return;
+        }
+
+        SWeaponEffectData[] effects = _attackData.Effects;
+
+        for (int i = 0; i < effects.Length; i++)
+        {
+            if (_effectPlayed[i])
+            {
+                continue;
+            }
+
+            if (progress < effects[i].StartProgress)
+            {
+                continue;
+            }
+
+            // 실행 여부를 먼저 기록
+            _effectPlayed[i] = true;
+
+            SpawnAttackEffect(effects[i]);
+        }
+    }
+
+    private void SpawnAttackEffect(SWeaponEffectData effect)
+    {
+        if (effect.Prefab == null || CObjectPoolManager.Instance == null)
+        {
+            return;
+        }
+
+        Transform anchor = null;
+
+        switch (effect.Anchor)
+        {
+            case EWeaponEffectAnchor.Player:
+                anchor = _attacker;
+                break;
+
+            case EWeaponEffectAnchor.Weapon:
+                anchor = _weaponSwing;
+                break;
+
+            case EWeaponEffectAnchor.HitPoint:
+                anchor = _hitPoint;
+                break;
+        }
+
+        if (anchor == null)
+        {
+            return;
+        }
+
+        GameObject effectObject = CObjectPoolManager.Instance.GetPoolObject(effect.Prefab, anchor);
+
+        if (effectObject == null)
+        {
+            return;
+        }
+
+        Vector3 position = anchor.TransformPoint(effect.Offset);
+        Quaternion rotation = GetEffectRotation(effect, anchor);
+
+        effectObject.transform.SetPositionAndRotation(position, rotation);
+
+        Destroy(effectObject, 0.2f);
+    }
+
+    #region 이펙트 효과 회전
+
+    private Quaternion GetEffectRotation(SWeaponEffectData effect, Transform anchor)
+    {
+        // 기본값은 생성 기준 Transform의 회전
+        Quaternion baseRotation = anchor.rotation;
+
+        // 마우스 조준 회전을 사용하도록 설정한 경우
+        if (effect.RotationMode == EWeaponEffectRotationMode.MouseAim && _aim != null)
+        {
+            baseRotation = _aim.EffectAimRotation;
+        }
+
+        // SO의 AngleOffset을 추가 보정값으로 적용
+        return baseRotation * Quaternion.Euler(0f, 0f, effect.AngleOffset);
+    }
+
+    #endregion
+
+
 
     private void OnDisable()
     {
