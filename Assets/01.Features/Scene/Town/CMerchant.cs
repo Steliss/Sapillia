@@ -8,6 +8,9 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     [SerializeField] private CItemDatabaseSO _itemData;
     [SerializeField] private CMerchantUI _merchantUI;
 
+    [Header("협상력")]
+    [SerializeField] private int bargain = 10;
+
     private CInputCommandHub _input;
     private CDataManger _data;
     private CInventoryData _inventoryData;
@@ -21,9 +24,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     private bool _isNear;
 
     private int _money = 2000;
+    private int _bargain = 0;
 
     public bool IsActive => _isActive;
     public int Money => _money;
+    public int Bargain => _bargain;
     public List<CInventorySlotData> ShopSlots => _shopSlots;
 
     private void OnEnable()
@@ -40,7 +45,10 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
+
             CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
+            _bargain = playerdata.Stats.Bargain - bargain;
+
             CLog.Log("CMerchant _dataTask OnEnable 작업 완료");
         });
     }
@@ -82,8 +90,14 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     {
         _isActive = active;
 
+        if (active)
+        {
+            _merchantUI.RebuildSlots();
+        }
+
         _inventoryUI.ActiveUI(active);
         _shopUI.SetActive(active);
+
     }
 
     // 아이템 원본으로 상품 슬롯 생성
@@ -119,6 +133,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         AddShopItem(EItemType.Tablet);
     }
 
+    // 상점 아이템 생성
     private void AddShopItem(EItemType type)
     {
         CItemSO item = _itemData.GetRandomItem(type);
@@ -137,6 +152,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _money += value;
     }
 
+
     // 상점 → 플레이어 인벤토리
     public bool TryBuy(CMerchantSlotUI fromSlot, CInventorySlotUI toSlot)
     {
@@ -147,7 +163,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
         CInventorySlotData product = fromSlot.SlotData;
 
-        if (product == null || product.IsEmpty || product.ItemSO == null)
+        if (product == null || product.IsEmpty || product.ItemSO == null || product.Count <= 0)
         {
             return false;
         }
@@ -165,11 +181,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             return false;
         }
 
-        // 빈 슬롯에만 구매 가능
-        if (!toList[toIndex].IsEmpty)
-        {
-            return false;
-        }
+        CInventorySlotData toData = toList[toIndex];
 
         // 포션 전용 슬롯에는 포션만 허용
         if (toList == _inventoryData.PotionSlots && product.ItemType != EItemType.Potion)
@@ -177,16 +189,54 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             return false;
         }
 
-        if (!TradeItem(product, true))
+        if (!toData.IsEmpty)
         {
-            return false;
+            // 같은 종류의 포션만 합산 가능
+            if (!(product.ItemSO is CPotionSO potion) || product.ItemID != toData.ItemID)
+            {
+                return false;
+            }
+
+            // 최대 수량이면 구매 불가
+            if (toData.Count >= potion.MaxStack)
+            {
+                return false;
+            }
+
+            if (!TradeItem(product, true))
+            {
+                return false;
+            }
+
+            toData.Count++;
+        }
+        else
+        {
+            if (!TradeItem(product, true))
+            {
+                return false;
+            }
+
+            // 포션은 1개 복사, 다른 아이템은 기존 데이터 이동
+            toList[toIndex] = product.ItemSO is CPotionSO ? CreateShopSlot(product.ItemSO, 1) : product;
         }
 
-        // 상품 이동 후 상점 목록에서 제거
-        toList[toIndex] = product;
-        _shopSlots.RemoveAt(shopIndex);
+        if (product.ItemSO is CPotionSO)
+        {
+            // 포션은 구매한 1개만 차감
+            product.Count--;
 
-        toSlot.BindSlot(product);
+            if (product.Count == 0)
+            {
+                _shopSlots.RemoveAt(shopIndex);
+            }
+        }
+        else
+        {
+            _shopSlots.RemoveAt(shopIndex);
+        }
+
+        toSlot.BindSlot(toList[toIndex]);
 
         _inventoryUI.HideItemInfo();
         _merchantUI.RebuildSlots();
@@ -210,19 +260,47 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
         CInventorySlotData product = fromList[fromIndex];
 
-        if (product == null || product.IsEmpty || product.ItemSO == null)
+        if (product == null || product.IsEmpty || product.ItemSO == null || product.Count <= 0)
         {
             return false;
         }
 
-        if(!TradeItem(product, false))
+        if (!TradeItem(product, false))
         {
             return false;
         }
 
-        // 상점에 추가하고 플레이어 슬롯은 빈 슬롯으로 교체
-        _shopSlots.Add(product);
-        fromList[fromIndex] = new CInventorySlotData();
+        if (product.ItemSO is CPotionSO potion)
+        {
+            // 같은 포션 중 수량 여유가 있는 슬롯 검색
+            CInventorySlotData shopPotion = _shopSlots.Find(slot =>
+                !slot.IsEmpty &&
+                slot.ItemID == product.ItemID &&
+                slot.Count < potion.MaxStack);
+
+            if (shopPotion != null)
+            {
+                shopPotion.Count++;
+            }
+            else
+            {
+                _shopSlots.Add(CreateShopSlot(product.ItemSO, 1));
+            }
+
+            // 플레이어 포션은 1개만 차감
+            product.Count--;
+
+            if (product.Count == 0)
+            {
+                product.Clear();
+            }
+        }
+        else
+        {
+            // 다른 아이템은 기존 데이터 이동
+            _shopSlots.Add(product);
+            fromList[fromIndex] = new CInventorySlotData();
+        }
 
         fromSlot.BindSlot(fromList[fromIndex]);
 
@@ -233,38 +311,24 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         return true;
     }
 
-
+    // 아이템 1개 가격으로 거래
     private bool TradeItem(CInventorySlotData product, bool isBuy)
     {
-        EArtifactGrade grade;
+        EArtifactGrade grade = product.ItemSO.Grade;
         CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
-
-        if (product.ItemSO is CPotionSO potion)
-        {
-            grade = potion.Grade;
-        }
-        else if (product.ItemSO is CArtifactSO artifact)
-        {
-            grade = artifact.Grade;
-        }
-        else if (product.ItemSO is CTabletSO tablet)
-        {
-            grade = tablet.Grade;
-        }
-        else
-        {
-            return false;
-        }
 
         int price = _itemData.GetPrice(grade);
 
-        if (price == 0)
+        if (price <= 0)
         {
             return false;
         }
 
-        // TODO: 협상력에 따른 가격 조정
-        //price *= playerdata.Stats.Bargain;
+        // 구매 기본 100%, 판매 기본 50%
+        float priceRate = isBuy ? 1f - _bargain * 0.01f : 0.5f + _bargain * 0.004f;
+
+        priceRate = Mathf.Max(0f, priceRate);
+        price = Mathf.CeilToInt(price * priceRate);
 
         if (isBuy)
         {
@@ -272,15 +336,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             {
                 return false;
             }
-            else
-            {
-                AddMoney(price);
-            }
+
+            AddMoney(price);
         }
         else
         {
-            price /= 2;
-
             if (_money < price)
             {
                 return false;
@@ -292,6 +352,4 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
         return true;
     }
-
-   
 }

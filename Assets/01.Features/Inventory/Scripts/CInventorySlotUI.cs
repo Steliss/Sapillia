@@ -22,12 +22,12 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         _inventoryUI = inventoryUI;
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public virtual void OnPointerEnter(PointerEventData eventData)
     {
         _inventoryUI.ShowItemInfo(this);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public virtual void OnPointerExit(PointerEventData eventData)
     {
         _inventoryUI.HideItemInfo();
     }

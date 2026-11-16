@@ -9,6 +9,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     [SerializeField] private CESCUI _esc;
     [SerializeField] private GameObject _UICanvas;
     [SerializeField] private CInventoryDrag _drag;
+    [SerializeField] private CItemDatabaseSO _itemdata;
 
     [SerializeField] private GameObject _InventoryInfo;
     [SerializeField] private Image _infoImage;
@@ -309,9 +310,19 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         _infoImage.sprite = item.Icon;
         _infoTitle.text = _localization.GetText(item.NameKey);
-        _infoDesc.text = _localization.GetText(item.DescriptionKey);
+        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues());
 
-        _InventoryInfo.SetActive(true);
+        if (_merchant.IsActive)
+        {
+            int price = Mathf.CeilToInt(_itemdata.GetPrice(item.Grade) * Mathf.Max(0f, 0.5f + _merchant.Bargain * 0.004f));
+
+            _infoDesc.text += "\n\n\n" + _localization.GetText("scene.sellprice.text") + price;
+        }
+        else
+        {
+            _infoDesc.text += "\n\n" + _localization.GetText(item.StoryKey);
+        }
+            _InventoryInfo.SetActive(true);
     }
 
     /// <summary>

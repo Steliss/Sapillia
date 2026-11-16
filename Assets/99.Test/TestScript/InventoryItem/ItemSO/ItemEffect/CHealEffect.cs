@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 
@@ -28,6 +26,11 @@ public class CHealEffect : CItemEffectSO
             : Mathf.RoundToInt(_amount);
 
         player.Heal(healAmount);
+    }
+
+    public override object[] GetDescriptionValues()
+    {
+        return new object[] { _amount };
     }
 }
 

@@ -1,17 +1,15 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 
 public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private CItemDatabaseSO _itemdata;
+    [SerializeField] private CMerchant _merchant;
 
-    private int _price;
+    private CMerchantUI _merchantUI;
 
     private CInventoryDrag _drag;
 
@@ -35,12 +33,22 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
         _drag.OnEndDrag(eventData);
     }
 
-
-    public void SetPrice(int price)
+    public void SetMerchantUI(CMerchantUI merchantUI)
     {
-        _price = price;
-        Refresh();
+        _merchantUI = merchantUI;
     }
+
+
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        _merchantUI.ShowItemInfo(this);
+    }
+
+    public override void OnPointerExit(PointerEventData eventData)
+    {
+        _merchantUI.HideItemInfo();
+    }
+
 
     public override void Refresh()
     {
@@ -54,8 +62,22 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
             return;
         }
 
+        int price = Mathf.CeilToInt(_itemdata.GetPrice(SlotData.ItemSO.Grade) * (Mathf.Max(0f, 1f - _merchant.Bargain * 0.01f)));
+
         _nameText.text = SlotData.ItemSO.name;
-        _countText.text = _itemdata.GetPrice(SlotData.ItemSO.Grade).ToString();
+
+        if(SlotData.ItemType == EItemType.Potion)
+        {
+            _countText.text = $"{SlotData.Count}  / {price}";
+        }
+        else
+        {
+            _countText.text = $"{price}";
+        }
     }
+
+
+
+
 }
 
