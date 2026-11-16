@@ -75,9 +75,9 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
             _itemImage.enabled = _itemImage.sprite != null;
         }
 
-        if (_slotData.ItemType == EItemType.Potion)
+        if (_slotData.ItemSO is CPotionSO potion)
         {
-            _countText.text = _slotData.Count.ToString();
+            _countText.text = $"{_slotData.Count} / {potion.MaxStack}";
         }
         else if (_slotData.ItemSO is CArtifactSO artifact)
         {
