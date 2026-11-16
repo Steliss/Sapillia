@@ -10,6 +10,9 @@ public class CExperienceReward : MonoBehaviour
     [SerializeField] private GameObject _boxClose;
     [SerializeField] private GameObject _boxOpen;
 
+    [Header("상자 열림 애니메이션")]
+    [SerializeField] private Animator _boxAnimator;
+
     [Header("경험치 구슬 프리팹")]
     [SerializeField] private CEnemyProjectile_DropItem _expBallPrefab;
     [SerializeField] private CEnemyProjectile_DropItem _expMiniBallPrefab;
@@ -18,11 +21,11 @@ public class CExperienceReward : MonoBehaviour
     [SerializeField] private Transform _expSpawnPoint;
 
     [Header("경험치 보상 설정")]
-    [SerializeField, Min(0)] private int _expBallCount = 3;
-    [SerializeField, Min(0)] private int _expMiniBallCount = 5;
+    [SerializeField] private int _expBallCount = 3;
+    [SerializeField] private int _expMiniBallCount = 5;
 
-    [SerializeField, Min(1)] private int _expBallAmount = 100;
-    [SerializeField, Min(1)] private int _expMiniBallAmount = 20;
+    [SerializeField] private int _expBallAmount = 100;
+    [SerializeField] private int _expMiniBallAmount = 20;
 
     #endregion
 
@@ -75,10 +78,12 @@ public class CExperienceReward : MonoBehaviour
     private void OpenBox()
     {
         _isOpened = true;
+        _boxAnimator.SetTrigger("Open");
 
         _boxClose.SetActive(false);
         _boxOpen.SetActive(true);
 
+        
         SpawnExperience();
 
         Debug.Log("경험치 상자 열림 및 경험치 구슬 생성");
