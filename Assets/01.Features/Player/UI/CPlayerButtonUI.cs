@@ -46,6 +46,8 @@ public class CPlayerButtonUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _sapphire;
     [SerializeField] private TextMeshProUGUI _money;
 
+    [SerializeField] private CPotionList _potion;
+
     private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
 

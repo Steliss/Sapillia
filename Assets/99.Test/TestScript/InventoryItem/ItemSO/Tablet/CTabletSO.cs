@@ -22,7 +22,6 @@ public class CTabletEffectLange
 public class CTabletSO : CItemSO
 {
     [Header("석판 정보")]
-    [SerializeField] private EArtifactGrade _grade;
     [SerializeField] private bool _canRotate = true;
 
     [Header("석판 범위")]
@@ -30,7 +29,6 @@ public class CTabletSO : CItemSO
 
     public override EItemType Type => EItemType.Tablet;
 
-    public EArtifactGrade Grade => _grade;
     public bool CanRotate => _canRotate;
 
 

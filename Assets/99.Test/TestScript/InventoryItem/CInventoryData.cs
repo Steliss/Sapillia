@@ -178,19 +178,20 @@ public class CInventoryData
 
         return totalStats;
     }
+    
 
-    /// <summary>
-    /// 아티팩트를 인벤토리의 첫 번째 빈 슬롯에 추가
-    /// </summary>
-    public bool AddArtifact(CArtifactSO artifact)
+    public bool AddItem(CItemSO item)
     {
-        // 유효한 아티팩트인지 검사
-        if (artifact == null || artifact.ItemID <= 0)
+        if (item == null || item.ItemID <= 0)
         {
             return false;
         }
 
-        // 빈 슬롯 검색
+        if (item is not CArtifactSO && item is not CTabletSO)
+        {
+            return false;
+        }
+
         foreach (CInventorySlotData slot in inventorySlots)
         {
             if (!slot.IsEmpty)
@@ -198,28 +199,35 @@ public class CInventoryData
                 continue;
             }
 
-            // 아티팩트 정보 등록
-            slot.ItemID = artifact.ItemID;
-            slot.ItemType = artifact.Type;
-            slot.ItemSO = artifact;
+            slot.ItemID = item.ItemID;
+            slot.ItemType = item.Type;
+            slot.ItemSO = item;
             slot.Count = 1;
             slot.Rotation = ETabletRotation.None;
 
-            // 슬롯의 EnhanceLevel은 변경하지 않음
-
-            // 인벤토리 변경 알림
             NotifyInventoryChanged();
 
-            OnArtifactAcquired?.Invoke(artifact.NameKey);
+            if (item is CArtifactSO artifact)
+            {
+                OnArtifactAcquired?.Invoke(artifact.NameKey);
+            }
 
             return true;
         }
 
-        // 빈 슬롯이 없으면 획득 실패
         return false;
     }
 
 
+    public bool AddArtifact(CArtifactSO artifact)
+    {
+        return AddItem(artifact);
+    }
+
+    public bool AddTablet(CTabletSO tablet)
+    {
+        return AddItem(tablet);
+    }
 
 
     /// <summary>

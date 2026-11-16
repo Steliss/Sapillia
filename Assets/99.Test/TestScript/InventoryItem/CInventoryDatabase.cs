@@ -9,6 +9,25 @@ public class CItemDatabaseSO : ScriptableObject
 {
     [SerializeField] private List<CItemSO> _items = new List<CItemSO>();
 
+
+    /// <summary>
+    /// 등급에 따른 가격 설정
+    /// </summary>
+    /// <param name="grade"></param>
+    /// <returns></returns>
+    public int GetPrice(EArtifactGrade grade)
+    {
+        return grade switch
+        {
+            EArtifactGrade.Normal => 100,
+            EArtifactGrade.Advanced => 200,
+            EArtifactGrade.Rare => 400,
+            EArtifactGrade.Legendary => 800,
+            _ => 0
+        };
+    }
+
+
     /// <summary>
     /// ID를 통한 아이템 획득
     /// </summary>

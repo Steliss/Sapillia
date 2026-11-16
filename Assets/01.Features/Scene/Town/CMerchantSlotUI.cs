@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using static UnityEditor.Progress;
 
 
 public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private TextMeshProUGUI _nameText;
+    [SerializeField] private CItemDatabaseSO _itemdata;
 
     private int _price;
 
@@ -53,7 +55,7 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
         }
 
         _nameText.text = SlotData.ItemSO.name;
-        _countText.text = _price.ToString();
+        _countText.text = _itemdata.GetPrice(SlotData.ItemSO.Grade).ToString();
     }
 }
 
