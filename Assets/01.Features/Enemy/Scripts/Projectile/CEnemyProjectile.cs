@@ -87,19 +87,20 @@ public class CEnemyProjectile : MonoBehaviour
 
         IDamageInfoReceiver player = collision.GetComponentInChildren<IDamageInfoReceiver>();
 
-        if (player == null)
+        if (player != null)
         {
             CLog.Log("[MeleeProjectile] IDamageInfoReceiver를 찾지 못함");
+            SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _dir);
+
+            player.TakeDamage(info);
+
+            CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
+            CLog.Log($"[EnemyAttack Damage : {info.Damage}");
+            CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
             return;
         }
 
-        SDamageInfo info = new SDamageInfo(Mathf.RoundToInt(_damage), _dir);
-
-        player.TakeDamage(info);
-
-        CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
-        CLog.Log($"[EnemyAttack Damage : {info.Damage}");
-        CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
+        
 
         HitEnd();
     }

@@ -1,19 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using static UnityEditor.Progress;
 
 
 public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     [SerializeField] private TextMeshProUGUI _nameText;
     [SerializeField] private CItemDatabaseSO _itemdata;
+    [SerializeField] private CMerchant _merchant;
 
-    private int _price;
-
+    private CMerchantUI _merchantUI;
     private CInventoryDrag _drag;
+
+    private CLocalizationManager _localization;
+    private CUniTaskOnes _localizationTask = new();
+
+
+
+    private void OnEnable()
+    {
+        _localizationTask.Run(async token =>
+        {
+            _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
+            Refresh();
+            CLog.Log("CMerchantSlotUI OnEnable 작업 완료");
+        });
+    }
+
+    private void OnDisable()
+    {
+        _localizationTask.Cancel();
+    }
 
     public void SetDrag(CInventoryDrag drag)
     {
@@ -35,12 +52,22 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
         _drag.OnEndDrag(eventData);
     }
 
-
-    public void SetPrice(int price)
+    public void SetMerchantUI(CMerchantUI merchantUI)
     {
-        _price = price;
-        Refresh();
+        _merchantUI = merchantUI;
     }
+
+
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        _merchantUI.ShowItemInfo(this);
+    }
+
+    public override void OnPointerExit(PointerEventData eventData)
+    {
+        _merchantUI.HideItemInfo();
+    }
+
 
     public override void Refresh()
     {
@@ -54,8 +81,25 @@ public class CMerchantSlotUI : CInventorySlotUI, IBeginDragHandler, IDragHandler
             return;
         }
 
-        _nameText.text = SlotData.ItemSO.name;
-        _countText.text = _itemdata.GetPrice(SlotData.ItemSO.Grade).ToString();
+        int price = Mathf.CeilToInt(_itemdata.GetPrice(SlotData.ItemSO.Grade) * (Mathf.Max(0f, 1f - _merchant.Bargain * 0.01f)));
+
+        if (_localization != null)
+        {
+            _nameText.text = _localization.GetText(SlotData.ItemSO.NameKey);
+        }
+
+        if(SlotData.ItemType == EItemType.Potion)
+        {
+            _countText.text = $"{SlotData.Count}  / {price}";
+        }
+        else
+        {
+            _countText.text = $"{price}";
+        }
     }
+
+
+
+
 }
 

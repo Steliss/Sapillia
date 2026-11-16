@@ -36,7 +36,7 @@ public class CEnemyState_Move : IEnemyState
     public void StateExit()
     {
         _mashine.Nav.isStopped = true;
-        _mashine.Rigidbody.velocity = Vector3.zero;
+        _mashine.Nav.velocity = Vector3.zero;
     }
 
     public void StateUpdate()

@@ -13,11 +13,20 @@ MonoBehaviour:
   m_Name: Enemy_Attack_Melee_DuelistMole
   m_EditorClassIdentifier: 
   _projectile: {fileID: 5402917408532344797, guid: 1af12925dedd2544690d9042cd5f1d87, type: 3}
-  _beforeDelay: 2
+  _hasAngle: 1
+  _attackDistans: 1
   _attackTime: 1
-  _afterDelay: 0.5
   _rushDistanse: 5
-  _AttackCount: 2
-  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
-  _lineLength: 2.5
-  _interbal: 1
+  _attackCount: 1
+  _lineInfo:
+    Prefeb: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+    BeforeDelay: 1.5
+    AfterDelay: 1
+    LineLength: 2.5
+    Interbal: 1
+    Distanse: 2.5
+    IsTracking: 0
+    TrackingSpeed: 0
+    xLineLength: 0
+    yLineLength: 0
+    SquareRange: {x: 0, y: 0}

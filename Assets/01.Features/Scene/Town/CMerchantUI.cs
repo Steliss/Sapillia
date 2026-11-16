@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 
 public class CMerchantUI : MonoBehaviour
@@ -9,12 +10,35 @@ public class CMerchantUI : MonoBehaviour
     [SerializeField] private Transform _slotRoot;
     [SerializeField] private CInventoryUI _inventoryUI;
     [SerializeField] private CInventoryDrag _drag;
+    [SerializeField] private CItemDatabaseSO _itemdata;
+    [SerializeField] private CMerchant _merchant;
 
-    [SerializeField] private TextMeshProUGUI _merchantText;
-    [SerializeField] private TextMeshProUGUI _playerText;
+
+    [Header("아이템 정보")]
+    [SerializeField] private GameObject _InventoryInfo;
+    [SerializeField] private Image _infoImage;
+    [SerializeField] private TextMeshProUGUI _infoTitle;
+    [SerializeField] private TextMeshProUGUI _infoDesc;
 
     private List<CMerchantSlotUI> _slotUI = new();
     private List<CInventorySlotData> _shopSlots;
+
+    private CLocalizationManager _localization;
+    private CUniTaskOnes _localizationTask = new();
+
+    private void OnEnable()
+    {
+        _localizationTask.Run(async token =>
+        {
+            _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
+            CLog.Log("CMerchantUI OnEnable 작업 완료");
+        });
+    }
+
+    private void OnDisable()
+    {
+        _localizationTask.Cancel();
+    }
 
     // 상인의 상품 목록 연결
     public void BindSlots(List<CInventorySlotData> shopSlots)
@@ -37,8 +61,7 @@ public class CMerchantUI : MonoBehaviour
         {
             CMerchantSlotUI slot = Instantiate(_slotPrefab, _slotRoot);
 
-            // 생성한 슬롯에 설명 UI와 드래그 연결
-            slot.SetInventoryUI(_inventoryUI);
+            slot.SetMerchantUI(this);
             slot.SetDrag(_drag);
 
             slot.BindSlot(_shopSlots[i]);
@@ -58,9 +81,36 @@ public class CMerchantUI : MonoBehaviour
         _slotUI.Clear();
     }
 
-    public void MoneyDisplay(int merchant, int player)
+
+    // 마우스를 올린 슬롯의 아이템 정보 표시
+    public void ShowItemInfo(CInventorySlotUI slot)
     {
-        _merchantText.text = merchant.ToString();
-        _playerText.text = player.ToString();
+        if (_localization == null || slot == null)
+        {
+            HideItemInfo();
+            return;
+        }
+
+        CInventorySlotData data = slot.SlotData;
+
+        if (data == null || data.IsEmpty || data.ItemSO == null)
+        {
+            HideItemInfo();
+            return;
+        }
+
+        CItemSO item = data.ItemSO;
+
+        _infoImage.sprite = item.Icon;
+        _infoTitle.text = _localization.GetText(item.NameKey);
+        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues()) + "\n\n" + _localization.GetText(item.StoryKey);
+
+        _InventoryInfo.SetActive(true);
     }
+
+    public void HideItemInfo()
+    {
+        _InventoryInfo.SetActive(false);
+    }
+
 }

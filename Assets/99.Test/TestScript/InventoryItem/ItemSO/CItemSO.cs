@@ -29,6 +29,7 @@ public abstract class CItemSO : ScriptableObject
     public int ItemID => _itemID;
     public string NameKey => _nameKey;
     public string DescriptionKey => _descriptionKey;
+    public string StoryKey => _storyKey;
     public Sprite Icon => _icon;
 
     public virtual EItemType Type { get; }
@@ -37,7 +38,11 @@ public abstract class CItemSO : ScriptableObject
     #endregion
 
 
-
+    // 아이템 설명에 넣을 값
+    public virtual object[] GetDescriptionValues()
+    {
+        return System.Array.Empty<object>();
+    }
 
 
 }

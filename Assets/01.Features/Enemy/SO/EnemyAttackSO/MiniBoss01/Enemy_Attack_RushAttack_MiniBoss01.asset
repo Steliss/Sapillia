@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43dde2735e79b840a8ddcbf88118905, type: 3}
   m_Name: Enemy_Attack_RushAttack_MiniBoss01
   m_EditorClassIdentifier: 
-  _beforeDelay: 1
   _rushTime: 1.5
-  _afterDelay: 1
   _rushSpeed: 6
   _hitBox: {x: 2.5, y: 2}
-  _warningLine: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
-  _lineLength: 6
-  _linePos: 5
-  _interbal: 1
+  _lineInfo:
+    Prefeb: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
+    BeforeDelay: 1
+    AfterDelay: 1
+    LineLength: 6
+    Interbal: 1
+    Distanse: 6
+    IsTracking: 0
+    TrackingSpeed: 0
+    xLineLength: 0
+    yLineLength: 0
+    SquareRange: {x: 0, y: 0}
   _stateRushAttReady: RushAttReady
   _stateRushAttack: RushAttack
