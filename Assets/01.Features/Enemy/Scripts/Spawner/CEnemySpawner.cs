@@ -21,11 +21,15 @@ public class CEnemySpawner : MonoBehaviour
     [SerializeField] private GameObject _reward;
     [Header("보상 위치 보정 (기본 스포너 위치)")]
     [SerializeField] private Vector2 _rewardPosPlus;
+    [Header("전투 시작 이펙트")]
+    [SerializeField] private GameObject _startEffect;
+
     #endregion
 
     #region 내부 변수
     private int _aliveEnemys = 0;
     private bool _isBattle = false;
+    private CObjectPoolManager _pool;
 
     //private CUniTaskOnes _dataTask = new CUniTaskOnes();
     //private CDataManger _data;
@@ -68,6 +72,24 @@ public class CEnemySpawner : MonoBehaviour
         // 트리거 끄기
         GetComponent<Collider2D>().enabled = false;
 
+        if (_pool == null)
+        {
+            _pool = CObjectPoolManager.Instance;
+            if (_pool == null)
+            {
+                CLog.Warn($"{name} : 오브젝트 풀이 없음. 몬스터 생성 취소");
+                return;
+            }
+        }
+
+        // 전투 시작 이펙트 생성
+        if (_startEffect != null)
+        {
+            GameObject effect = _pool.GetPoolObject(_startEffect, 1f);
+            effect.transform.SetParent(collision.transform);
+            effect.transform.localPosition = new Vector2(0, 5f);
+        }
+
         // 문 활성화
         for (int i = 0; i < _doors.Length; i++)
         {
@@ -79,22 +101,19 @@ public class CEnemySpawner : MonoBehaviour
         {
             for (int j = 0; j < _enemys[i].Count; j++)
             {
-                GameObject enemy;
-                if (CObjectPoolManager.Instance != null)
-                {
-                    enemy = CObjectPoolManager.Instance.GetPoolObject(_enemys[i].Enemy);
-                    Vector2 ranPos = transform.position;
-                    enemy.transform.parent = transform;
-                    
-                    // 랜덤범위 스폰 적용
-                    float ranX = UnityEngine.Random.Range(-_randomSpawnRange.x, _randomSpawnRange.x);
-                    float ranY = UnityEngine.Random.Range(-_randomSpawnRange.y, _randomSpawnRange.y);
-                    ranPos.x += ranX * 0.5f;
-                    ranPos.y += ranY * 0.5f;
-                    enemy.transform.position = ranPos;
+                GameObject enemy = _pool.GetPoolObject(_enemys[i].Enemy);
+                Vector2 ranPos = transform.position;
+                enemy.transform.parent = transform;
 
-                    _aliveEnemys++;
-                }
+                // 랜덤범위 스폰 적용
+                float ranX = UnityEngine.Random.Range(-_randomSpawnRange.x, _randomSpawnRange.x);
+                float ranY = UnityEngine.Random.Range(-_randomSpawnRange.y, _randomSpawnRange.y);
+                ranPos.x += ranX * 0.5f;
+                ranPos.y += ranY * 0.5f;
+                enemy.transform.position = ranPos;
+
+                _aliveEnemys++;
+
             }
         }
 
@@ -102,7 +121,10 @@ public class CEnemySpawner : MonoBehaviour
 
         if (_playerData == null)
         {
-            _playerData = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+            if (CManagerDontDestroy.Instance != null)
+            {
+                _playerData = CManagerDontDestroy.Instance.DataManger.PlayerData.GetPlayerData();
+            }
         }
         _playerData?.SetIsBattle(true);
     }

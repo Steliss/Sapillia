@@ -36,7 +36,12 @@ public class CEnemyProjectile_Strike : CEnemyProjectile_Homing
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
-        
+        if (((1 << collision.gameObject.layer) & _targetLayer) == 0)
+        {
+            return;
+        }
+
+        _attackTime = 0f;
     }
 
 

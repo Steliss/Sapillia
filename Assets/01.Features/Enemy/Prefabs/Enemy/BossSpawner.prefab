@@ -211,6 +211,10 @@ MonoBehaviour:
     m_Bits: 8256
   _rewards: []
   _production: {fileID: 5562187924308450721}
+  _sapphire: {fileID: 7973361561252025588, guid: 4d903842aef20744c8d0dd13dafb4180, type: 3}
+  _dice: {fileID: 8176688652893768341, guid: 3e8f64555c363cd4c8fd536fc2ac51ac, type: 3}
+  _diceCount: 5
+  _sapphireCount: 5
 --- !u!1 &531974936504262701
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,7 +1177,7 @@ MonoBehaviour:
   _fallMinPos: {x: 12, y: 15}
   _fallMaxPos: {x: 35, y: 26}
   _fallInterbalPos: {x: 3, y: 1.5}
-  _jjumpTime: 10
+  _jjumpCount: 17
   _zoomInTime: 2
   _zoomOutTime: 0
   _zoomInCamera: {fileID: 2695531970675024828}
@@ -1185,7 +1189,7 @@ MonoBehaviour:
   - {fileID: 5790753686170473797}
   - {fileID: 4899124845055563335}
   - {fileID: 2830688697002752654}
-  _flag: {fileID: 0}
+  _flag: {fileID: 2562481957882920544}
   _ani: {fileID: 6815256235274676321}
   _sp: {fileID: 1111951230669839814}
   _aniJump: Jump
