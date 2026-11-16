@@ -5,9 +5,7 @@ using System.Collections.Generic;
 public class CArtifactSO : CItemSO
 {
     #region 인스펙터
-
     [Header("아티팩트 정보")]
-    [SerializeField] private EArtifactGrade _grade;
     [Min(0)]
     [SerializeField] private int _maxStars;
 
@@ -30,7 +28,6 @@ public class CArtifactSO : CItemSO
 
     public override EItemType Type => EItemType.Artifact;
 
-    public EArtifactGrade Grade => _grade;
     public int MaxStars => _maxStars;
 
     public int Inchant => _inchant;
