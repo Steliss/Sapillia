@@ -44,6 +44,9 @@ public class CWeaponAttackDataSO : ScriptableObject
     [Header("Slash 이펙트")]
     [SerializeField] private Sprite _slashSprite;
 
+    [Header("공격 이펙트")]
+    [SerializeField] private SWeaponEffectData[] _effects;       
+
     [Min(0f)]
     [SerializeField] private float _slashScale = 1f;
 
@@ -62,7 +65,7 @@ public class CWeaponAttackDataSO : ScriptableObject
     public float HitEnd => Mathf.Max(_hitStart, _hitEnd);
     public Sprite SlashSprite => _slashSprite;
     public float SlashScale => _slashScale;
-
+    public SWeaponEffectData[] Effects => _effects;
     #endregion
 
     #region 공격모션
