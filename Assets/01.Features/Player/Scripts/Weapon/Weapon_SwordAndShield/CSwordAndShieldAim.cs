@@ -35,6 +35,8 @@ public class CSwordAndShieldAim : MonoBehaviour
 
     public Vector2 AimDirection => _aimDirection;
     public bool IsAimLocked => _isAimLocked;
+    // 이펙트에 전달할 최종 무기 조준 회전
+    public Quaternion EffectAimRotation => _weaponPivot != null ? _weaponPivot.rotation : Quaternion.identity;
 
     #endregion
 

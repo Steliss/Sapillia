@@ -273,6 +273,9 @@ public class CWeaponManager : MonoBehaviour
         // 일반공격 데이터 변경
         _playerAttack.SetWeaponData(nextSet.SwordData);
 
+        // 대시 공격 데이터 변경
+        _playerAttack.SetDashAttackData(nextSet.DashAttackData);
+
         // 특수공격 데이터 및 MP 비용 변경
         _specialAttack.SetSpecialAttackData(nextSet.SpecialAttackData, nextSet.SpecialManaCost);
 
@@ -317,6 +320,15 @@ public class CWeaponManager : MonoBehaviour
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
         CLog.Log($"[WeaponManager] 검·방패 {nextSet.SetName} 장착");
+
+        if (nextSet.DashAttackData == null)
+        {
+            CLog.Warn($"[WeaponManager] {nextSet.SetName} 대시 공격 SO 누락");
+        }
+        else
+        {
+            CLog.Log($"[WeaponManager] 대시 공격 SO 연결 완료 : {nextSet.DashAttackData.name}");
+        }
     }
 
     // 석궁 변경 장착
