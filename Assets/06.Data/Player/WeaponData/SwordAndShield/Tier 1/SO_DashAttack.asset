@@ -23,31 +23,22 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 180
+      value: -90
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: -90
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
       outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 90
-      inSlope: 0.36651516
-      outSlope: 0.36651516
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.9566636
-      value: 90
-      inSlope: -44.77504
-      outSlope: -44.77504
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
@@ -56,30 +47,21 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
       value: 0.2
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0
+      value: 0.2
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
@@ -88,10 +70,22 @@ MonoBehaviour:
   _hitEnd: 0.75
   _slashSprite: {fileID: 0}
   _effects:
-  - Prefab: {fileID: 4343243500258598974, guid: 09931d2142b011840b78baa2690980c7, type: 3}
-    StartProgress: 0.053
-    Anchor: 1
+  - Prefab: {fileID: 7570097275557059968, guid: bde6293f886de844aa2075f9aeb60b7f, type: 3}
+    StartProgress: 0
+    Anchor: 2
     RotationMode: 0
-    Offset: {x: 0, y: 0}
+    Offset: {x: -1, y: 1}
     AngleOffset: 90
-  _slashScale: 0.1
+  - Prefab: {fileID: 7728059997502442165, guid: a4326c0fc4049cf4d8886d4cf0e99020, type: 3}
+    StartProgress: 0.33
+    Anchor: 2
+    RotationMode: 1
+    Offset: {x: -1, y: 1}
+    AngleOffset: 90
+  - Prefab: {fileID: 5970981294866888985, guid: 0951dabd7d514f246b45b6c01cbd53e5, type: 3}
+    StartProgress: 0.66
+    Anchor: 2
+    RotationMode: 1
+    Offset: {x: -1, y: 1}
+    AngleOffset: 90
+  _slashScale: 0.001

@@ -3291,6 +3291,38 @@ PrefabInstance:
       propertyPath: _ui
       value: 
       objectReference: {fileID: 876583619}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _maxDownAngle
+      value: 89
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _leftUpOffset.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _playerRenderer
+      value: 
+      objectReference: {fileID: 2878737471933728840}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _rightUpOffset.x
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _leftDownOffset.x
+      value: -0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _rightDownOffset.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _lowerSortingOffset
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3806786947943576016, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      propertyPath: _weaponSortingGroup
+      value: 
+      objectReference: {fileID: 2878737471933728841}
     - target: {fileID: 4395221656971624870, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
       propertyPath: _ui
       value: 
@@ -3350,7 +3382,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5924176596339935300, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2878737471933728841}
   m_SourcePrefab: {fileID: 100100000, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
 --- !u!114 &2878737471933728837 stripped
 MonoBehaviour:
@@ -3363,11 +3398,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e5337564a8eda0c4aba78b7db4da7349, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2878737471933728838 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5924176596339935300, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+  m_PrefabInstance: {fileID: 2878737471933728836}
+  m_PrefabAsset: {fileID: 0}
 --- !u!70 &2878737471933728839 stripped
 CapsuleCollider2D:
   m_CorrespondingSourceObject: {fileID: 1925077086592268795, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
   m_PrefabInstance: {fileID: 2878737471933728836}
   m_PrefabAsset: {fileID: 0}
+--- !u!212 &2878737471933728840 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3989501440754089586, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
+  m_PrefabInstance: {fileID: 2878737471933728836}
+  m_PrefabAsset: {fileID: 0}
+--- !u!210 &2878737471933728841
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2878737471933728838}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
