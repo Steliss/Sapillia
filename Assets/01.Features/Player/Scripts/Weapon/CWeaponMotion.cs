@@ -23,7 +23,7 @@ public class CWeaponMotion : MonoBehaviour
     [SerializeField] private CWeaponAttackDataSO _attackData;
 
     [Header("공격자 위치 Transform")]
-    [SerializeField] private Transform _attacker;
+    [SerializeField] private Transform _attacker;   
 
 
     // ※ 테스트 용도
@@ -553,6 +553,13 @@ public class CWeaponMotion : MonoBehaviour
         Quaternion rotation = GetEffectRotation(effect, anchor);
 
         effectObject.transform.SetPositionAndRotation(position, rotation);
+
+        CWeaponEffectFollow follow = effectObject.GetComponent<CWeaponEffectFollow>();
+
+        if (follow != null)
+        {
+            follow.Initialize(anchor, _aim, effect);
+        }
 
         Destroy(effectObject, 0.2f);
     }
