@@ -143,7 +143,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
         if (_isActive)
         {
-            Time.timeScale = 0f;
+            //Time.timeScale = 0f;
         }
     }
 

@@ -37,6 +37,7 @@ public class CGameFlow : MonoBehaviour
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
 
+    private bool _stopActive;
 
     private void OnEnable()
     {
@@ -89,7 +90,12 @@ public class CGameFlow : MonoBehaviour
 
     private void ReloadText(bool win)
     {
-        Time.timeScale = 0f;
+        if (_stopActive == false)
+        {
+            Time.timeScale = 0f;
+        }
+
+        _stopActive = true;
 
         _canvas.SetActive(true);
 
@@ -124,6 +130,7 @@ public class CGameFlow : MonoBehaviour
 
     private void RetryButton()
     {
+        Time.timeScale = 1f;
         _data.ResetPlayer();
         _scene.ChangeScreenAsync(EScene.Town).Forget();
     }

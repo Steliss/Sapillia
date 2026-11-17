@@ -2869,7 +2869,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
+  m_fontSize: 12.95
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3355,7 +3355,7 @@ RectTransform:
   m_Father: {fileID: 6512160440513432644}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 20, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -13905,7 +13905,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 10
+  m_fontSize: 12.95
   m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -15166,7 +15166,6 @@ RectTransform:
   - {fileID: 450740953140482708}
   - {fileID: 7512817070097747366}
   - {fileID: 1781265076598748810}
-  - {fileID: 3534873955176941608}
   - {fileID: 7978097254897305426}
   - {fileID: 3657413782764331039}
   - {fileID: 5487921238281397613}
@@ -20146,7 +20145,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 10
+  m_SortingOrder: 91
   m_TargetDisplay: 0
 --- !u!114 &257673280701147183
 MonoBehaviour:
@@ -26976,7 +26975,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7636000832473301906}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -26985,7 +26984,7 @@ RectTransform:
   - {fileID: 2142971505506685471}
   - {fileID: 7007063703658026161}
   - {fileID: 6197867849009020411}
-  m_Father: {fileID: 7861153475382757567}
+  m_Father: {fileID: 6571225090268750567}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.02, y: 0.02}
   m_AnchorMax: {x: 0.28, y: 1.1}
@@ -29243,6 +29242,7 @@ RectTransform:
   m_Children:
   - {fileID: 1600949907699442735}
   - {fileID: 5102026496694690747}
+  - {fileID: 3534873955176941608}
   m_Father: {fileID: 2491245956804834580}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -29268,10 +29268,10 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 90
+  m_SortingOrder: 92
   m_TargetDisplay: 0
 --- !u!114 &6327859807136239536
 MonoBehaviour:
