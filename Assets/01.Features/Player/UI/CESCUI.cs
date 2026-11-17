@@ -138,8 +138,13 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _isActive = !_isActive;
+
         _backGround.SetActive(_isActive);
 
+        if (_isActive)
+        {
+            Time.timeScale = 0f;
+        }
     }
 
     public void Execute()

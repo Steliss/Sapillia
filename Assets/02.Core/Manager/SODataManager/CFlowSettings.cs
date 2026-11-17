@@ -239,6 +239,7 @@ public class CFlowGame
     [SerializeField] private long _playerplaytime = 0;
     [SerializeField] private byte _saveSlot = 0;
 
+    [SerializeField] private int _currentGameSapphire = 0;
 
 
     public EScene CurrentScene => _currentScene;
@@ -249,6 +250,7 @@ public class CFlowGame
     public long Playerplaytime => _playerplaytime;
     public byte SaveSlot => _saveSlot;
     public int Sapphire => _sapphire;
+    public int CurrentGameSapphire => _currentGameSapphire;
 
 
     public event Action<int> OnSapphireChanged;
@@ -299,6 +301,7 @@ public class CFlowGame
             return;
         }
 
+        _currentGameSapphire += amount;
         _sapphire += amount;
         OnSapphireChanged?.Invoke(_sapphire);
     }
@@ -320,5 +323,10 @@ public class CFlowGame
         OnSapphireChanged?.Invoke(_sapphire);
 
         return true;
+    }
+
+    public void ResetCurrentGameSapphire()
+    {
+        _currentGameSapphire = 0;
     }
 }

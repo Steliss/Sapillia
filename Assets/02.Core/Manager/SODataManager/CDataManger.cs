@@ -218,8 +218,10 @@ public class CDataManger : MonoBehaviour
     {
         _playerData.SetPlayerData(); 
         _inventoryData.SetInventoryData();
+
         _currentFlow.SetProgress(0);
         _currentFlow.AddRetryCount(1);
+        _currentFlow.ResetCurrentGameSapphire();
 
         return SaveGame(CurrentFlow.SaveSlot);
     }
