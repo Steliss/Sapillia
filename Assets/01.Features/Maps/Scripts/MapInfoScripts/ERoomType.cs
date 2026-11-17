@@ -9,5 +9,6 @@ public enum ERoomType
     Exit,
     Reward,
     Miniboss,
-    Anvil
+    Anvil,
+    Merchant
 }

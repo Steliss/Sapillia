@@ -60,7 +60,7 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     public void Execute()
     {
 
-        if (!_inventoryUI.IsActive || _inventoryData == null || _fromSlot != null)
+        if (!_inventoryUI.IsActive || _inventoryUI.IsEnchantMode || _inventoryData == null || _fromSlot != null)
         {
             return;
         }
@@ -126,7 +126,7 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
     // 유니티 함수 드래그 시작시
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (!_inventoryUI.IsActive || _fromSlot != null || eventData.button != PointerEventData.InputButton.Left)
+        if (!_inventoryUI.IsActive || _inventoryUI.IsEnchantMode || _fromSlot != null || eventData.button != PointerEventData.InputButton.Left)
         {
             return;
         }

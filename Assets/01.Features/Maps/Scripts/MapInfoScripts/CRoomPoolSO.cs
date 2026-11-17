@@ -41,7 +41,9 @@ public class CRoomPoolSO : ScriptableObject
     [Header("모루 전용 방")]
     [SerializeField] private CRoomData _anvilRoomPrefab;
 
-
+    [Header("방랑상인 방")]
+    [SerializeField] private CRoomData _merchantRoomPrefab;
+        
 
     #endregion
 
@@ -62,6 +64,8 @@ public class CRoomPoolSO : ScriptableObject
     public CRoomData BossExtraRoom => _bossExtraRoom;
 
     public CRoomData AnvilRoomPrefab => _anvilRoomPrefab;
+
+    public CRoomData MerchantRoomPrefab => _merchantRoomPrefab;
 
     #endregion
 }

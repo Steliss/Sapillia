@@ -31,6 +31,9 @@ public class CInventorySlotData
     public int ItemID;
     public int Count;
     public int EnhanceLevel;
+
+    public int InchantLevel;
+
     public EItemType ItemType;
     public ETabletRotation Rotation;
 
@@ -48,6 +51,8 @@ public class CInventorySlotData
     {
         ItemID = 0;
         Count = 0;
+        EnhanceLevel = 0; // 강화수치
+        InchantLevel = 0; // 인챈트수치
         ItemType = EItemType.None;
         Rotation = ETabletRotation.None;
 
@@ -65,7 +70,7 @@ public class CInventorySlotData
             return default;
         }
 
-        int totalLevel = EnhanceLevel + artifact.Inchant;
+        int totalLevel = EnhanceLevel + InchantLevel;
 
         return artifact.GetStats(totalLevel);
     }
@@ -204,6 +209,7 @@ public class CInventoryData
             slot.ItemSO = item;
             slot.Count = 1;
             slot.Rotation = ETabletRotation.None;
+            slot.InchantLevel = 0;
 
             NotifyInventoryChanged();
 
@@ -305,5 +311,34 @@ public class CInventoryData
         {
             inventorySlots[i].EnhanceLevel = levels[i];
         }
+    }
+
+
+    /// <summary>
+    /// 아티팩트 인챈트
+    /// </summary>
+    public bool TryEnchantArtifact(CInventorySlotData slot)
+    {
+        if (slot == null || slot.IsEmpty)
+        {
+            return false;
+        }
+
+        if (slot.ItemSO is not CArtifactSO artifact)
+        {
+            return false;
+        }
+
+        // 아티팩트 자체 인챈트가 최대 레벨인지 확인
+        if (slot.InchantLevel >= artifact.MaxStars)
+        {
+            return false;
+        }
+
+        slot.InchantLevel++;
+
+        NotifyInventoryChanged();
+
+        return true;
     }
 }

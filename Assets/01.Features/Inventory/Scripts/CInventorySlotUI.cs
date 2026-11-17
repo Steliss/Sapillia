@@ -17,6 +17,26 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
 
     public Sprite ItemImage => _itemImage.isActiveAndEnabled ? _itemImage.sprite : null;
 
+
+    private void Awake()
+    {
+        _button.onClick.AddListener(OnSlotClicked);
+    }
+
+    /// <summary>
+    /// 인벤토리 슬롯 클릭
+    /// </summary>
+    private void OnSlotClicked()
+    {
+        if (_inventoryUI == null || !_inventoryUI.IsEnchantMode)
+        {
+            return;
+        }
+
+        _inventoryUI.TryEnchantSlot(this);
+    }
+
+
     public void SetInventoryUI(CInventoryUI inventoryUI)
     {
         _inventoryUI = inventoryUI;
@@ -81,7 +101,7 @@ public class CInventorySlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExi
         }
         else if (_slotData.ItemSO is CArtifactSO artifact)
         {
-            int totalLevel = _slotData.EnhanceLevel + artifact.Inchant;
+            int totalLevel = _slotData.EnhanceLevel + _slotData.InchantLevel;
 
             totalLevel = Mathf.Clamp(totalLevel, 0, artifact.MaxStars);
 
