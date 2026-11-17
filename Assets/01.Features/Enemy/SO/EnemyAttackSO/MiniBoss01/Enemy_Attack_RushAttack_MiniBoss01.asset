@@ -15,6 +15,8 @@ MonoBehaviour:
   _rushTime: 1.5
   _rushSpeed: 6
   _hitBox: {x: 2.5, y: 2}
+  _dashDust: {fileID: 69357291715208232, guid: 344a1f56ab4811448aa543f0ede0fb12, type: 3}
+  _dustPlusY: -0.5
   _lineInfo:
     Prefeb: {fileID: 474534808600305679, guid: ad2659863fdcc5843b114b9b08dd9639, type: 3}
     BeforeDelay: 1
@@ -29,3 +31,6 @@ MonoBehaviour:
     SquareRange: {x: 0, y: 0}
   _stateRushAttReady: RushAttReady
   _stateRushAttack: RushAttack
+  _soundStart01: QTempleMiniboss_Mouse_JumpUp
+  _soundStart02: SpellArcaneBullet
+  _soundStep: PrologueBit

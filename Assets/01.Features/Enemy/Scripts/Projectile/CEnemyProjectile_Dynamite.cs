@@ -5,7 +5,26 @@ public class CEnemyProjectile_Dynamite : CEnemyProjectile
     #region 내부 변수
     private float _jumpTime = 0f;
     private float _jumpTimeMax = 1f;
+    private string _soundIng = "AttackDynamiteFuse";
+    private string _soundEnd = "HitDynamite";
+    private CSoundManager _soundManager;
     #endregion
+
+    private void OnEnable()
+    {
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance != null)
+            {
+                _soundManager = CManagerDontDestroy.Instance.Sound;
+            }
+            else
+            {
+                return;
+            }
+        }
+        _soundManager?.PlayEffect(_soundIng, transform.position);
+    }
 
     protected override void Update()
     {
@@ -24,6 +43,7 @@ public class CEnemyProjectile_Dynamite : CEnemyProjectile
 
         // 폭발하며 데미지를 주기
         _ani.Play(_hashEnd);
+        _soundManager?.PlayEffect(_soundEnd, transform.position);
         _rb.simulated = false;
         _jumpTime = 0f;
 

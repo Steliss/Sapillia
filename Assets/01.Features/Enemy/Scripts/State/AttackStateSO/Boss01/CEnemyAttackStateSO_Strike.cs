@@ -44,7 +44,9 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
     #region 인스펙터
     [SerializeField] private SAttackInfo_Square[] _attackInfos;
     [SerializeField] private SLineInfo[] _lineInfo;
+    [SerializeField] private string _soundStrike = "MoleBigBombMissileExplosion_Big";
     #endregion
+
 
     private void OnEnable()
     {
@@ -74,6 +76,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
 
                 // 공격과 투사체 생성
                 _mashine.Ani.Play(_attackInfos[i].HashAttack);
+                _mashine.SoundPlay(_soundStrike);
                 if (_attackInfos[i].Effect != null)
                 {
                     CreateAttackObject(_attackInfos[i].Effect, 1f, myPos, Quaternion.identity);     // 이펙트

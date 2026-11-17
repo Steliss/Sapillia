@@ -53,14 +53,17 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
         [HideInInspector] public int HashLanding;
         [HideInInspector] public int HashLandingEnd;
     }
-
-
     #endregion
 
 
     #region 인스펙터
     [SerializeField] private SAttackInfo _attackInfo;
     [SerializeField] private SLineInfo _lineInfo;
+    #endregion
+
+    #region 내부 변수
+    private string _soundJump = "MoleJump";
+    private string _soundDrill = "DrillMole_Loop";
     #endregion
 
     private void OnEnable()
@@ -86,6 +89,7 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
             // 점프
             Transform myTr = _mashine.transform;
             _mashine.Ani.Play(_attackInfo.HashJump);
+            _mashine.SoundPlay(_soundJump);
             _mashine.Collider.enabled = false;
             _mashine.Nav.enabled = false;
             CreateAttackObject(_attackInfo.JumpEffect, 1f, myTr.position, Quaternion.identity);
@@ -114,6 +118,8 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
             spTr.localPosition = Vector2.zero;
             _mashine.Collider.enabled = true;
             _mashine.Collider.isTrigger = true;
+            // ※ 재생 중지 추가 예정 (한번 재생시 중지안됨)
+            //_mashine.SoundPlay(_soundDrill);
 
             // 진행방향
             bool isLeftGo = LR[RandomLR] > 0;
@@ -125,6 +131,8 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
 
                 isLeftGo = !isLeftGo;
             }
+
+            // ※ 드릴 재생 중지 추가 필요
 
             myTr.position = _mashine.Target.position;
             _mashine.Collider.enabled = false;
