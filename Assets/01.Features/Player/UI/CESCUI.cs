@@ -227,7 +227,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
         _backGround.SetActive(false);
         _Scene.ChangeScreenAsync(EScene.Menu).Forget();
-
     }
 
     #endregion

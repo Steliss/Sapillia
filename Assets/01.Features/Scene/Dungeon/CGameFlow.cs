@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,6 +72,14 @@ public class CGameFlow : MonoBehaviour
         _playerData.OnHPChanged -= DefeatGame;
     }
 
+    private void Update()
+    {
+        if (_data != null || !_stopActive)
+        {
+            _data.CurrentFlow.AddPlaytime(Time.deltaTime);
+        }
+    }
+
     private void DefeatGame(int currentHP, int maxHP)
     {
         if (currentHP > 0)
@@ -90,12 +99,17 @@ public class CGameFlow : MonoBehaviour
 
     private void ReloadText(bool win)
     {
-        if (_stopActive == false)
+        if (_stopActive)
+        {
+            return;
+        }
+        else
         {
             Time.timeScale = 0f;
+            _stopActive = true;
         }
 
-        _stopActive = true;
+        TimeSpan time = TimeSpan.FromSeconds(_data.CurrentFlow.Playerplaytime);
 
         _canvas.SetActive(true);
 
@@ -103,8 +117,9 @@ public class CGameFlow : MonoBehaviour
         _title.text = _localization.GetText(win ? "scene.wintext.text" : "scene.defeattext.text");
 
         _liveTimeText.text = _localization.GetText("scene.livetime.text");
-        //_liveTitmeTime.text = _data.CurrentFlow.; 
-        _locationText.text = _localization.GetText("scene.location.text"); 
+
+        _liveTitmeTime.text = $"{(int)time.TotalHours:00}:{time.Minutes:00}:{time.Seconds:00}";
+        _locationText.text = _localization.GetText("scene.location.text");
 
 
         if (_data.CurrentFlow.CurrentScene == EScene.stage1)
@@ -125,13 +140,13 @@ public class CGameFlow : MonoBehaviour
 
         _SappireText.text = _localization.GetText("scene.sappire.text");
         _SappireCount.text = _data.CurrentFlow.Sapphire.ToString();
-        _SappireEarn.text = _data.CurrentFlow.CurrentGameSapphire.ToString();
+        _SappireEarn.text = $"(+{_data.CurrentFlow.CurrentGameSapphire})";
     }
 
     private void RetryButton()
     {
-        Time.timeScale = 1f;
         _data.ResetPlayer();
+        Time.timeScale = 1f;
         _scene.ChangeScreenAsync(EScene.Town).Forget();
     }
 }

@@ -124,7 +124,6 @@ public class CSceneManager : MonoBehaviour
         {
             _fadeCanvas.SetActive(false);
             _isChanging = false;
-            _dataManger.SaveGame(_dataManger.CurrentFlow.SaveSlot);
         }
     }
 
