@@ -16,6 +16,8 @@ public class CEnemyProjectile_FallingRock : MonoBehaviour
     private float _fallingTimeMax = 2f;
     private float _fallingTime;
     private bool _isEnd;
+    private CSoundManager _soundManager;
+    private string _soundEnd = "StoningStone";
     #endregion
 
     private void Awake()
@@ -57,6 +59,7 @@ public class CEnemyProjectile_FallingRock : MonoBehaviour
             _ani.Play(_hashEnd);
             _isEnd = true;
             DamageGive();
+            SoundPlay();
             return;
         }
 
@@ -91,6 +94,23 @@ public class CEnemyProjectile_FallingRock : MonoBehaviour
 
             player.TakeDamage(info);
         }
+    }
+
+    private void SoundPlay()
+    {
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance != null)
+            {
+                _soundManager = CManagerDontDestroy.Instance.Sound;
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        _soundManager?.PlayEffect(_soundEnd, transform.position);
     }
 
 }

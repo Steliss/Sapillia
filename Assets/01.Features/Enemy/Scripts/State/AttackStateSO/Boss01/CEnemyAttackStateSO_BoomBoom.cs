@@ -46,6 +46,7 @@ public class CEnemyAttackStateSO_BoomBoom : CEnemyAttackStateSO
     #region 인스펙터
     [SerializeField] private SAttackInfo _attackInfo;
     [SerializeField] private SBulletInfo _bulletInfo;
+    [SerializeField] private string _soundJump = "MoleJump";
     #endregion
 
     private void OnEnable()
@@ -67,6 +68,7 @@ public class CEnemyAttackStateSO_BoomBoom : CEnemyAttackStateSO
             // 점프
             Transform myTr = _mashine.transform;
             _mashine.Ani.Play(_attackInfo.HashJump);
+            _mashine.SoundPlay(_soundJump);
             _mashine.Collider.enabled = false;
             _mashine.Nav.enabled = false;
             CreateAttackObject(_attackInfo.JumpEffect, 1f, myTr.position, Quaternion.identity);

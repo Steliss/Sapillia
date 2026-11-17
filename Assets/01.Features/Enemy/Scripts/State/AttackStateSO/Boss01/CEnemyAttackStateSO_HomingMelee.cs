@@ -36,6 +36,10 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
     [SerializeField] private SLineInfo[] _lineinfos;
     #endregion
 
+    #region 내부 변수
+    private string _soundMelee = "AttackSpear_Dash";
+    #endregion
+
 
     #region 이벤트 함수
     private void OnEnable()
@@ -68,6 +72,7 @@ public class CEnemyAttackStateSO_HomingMelee : CEnemyAttackStateSO
 
                 // 공격
                 _mashine.Ani.Play(_attackInfos[i].HashAttack);
+                _mashine.SoundPlay(_soundMelee);
                 await Attack(ct, aimAngle, _attackInfos[i]);
 
                 // 후딜레이

@@ -39,6 +39,7 @@ public class CEnemyAttackStateSO_Charge : CEnemyAttackStateSO
     #region 인스펙터
     [SerializeField] private SAttackInfo_Square[] _attackInfos;
 	[SerializeField] private SLineInfo[] _lineInfo;
+    [SerializeField] private string _soundShot = "MoleThrowDynamite";
     #endregion
 
     private void OnEnable()
@@ -64,6 +65,7 @@ public class CEnemyAttackStateSO_Charge : CEnemyAttackStateSO
                 // 공격과 투사체 생성
 
                 _mashine.Ani.Play(_attackInfos[i].HashAttack);
+                _mashine.SoundPlay(_soundShot);
                 Attack_Square(_mashine.transform.position, _lineInfo[i].SquareRange);
                 for (int j = 0; j < _attackInfos[i].BulletInfos.Length; j++)
                 {

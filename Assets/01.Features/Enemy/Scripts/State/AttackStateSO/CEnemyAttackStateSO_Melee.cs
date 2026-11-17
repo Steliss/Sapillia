@@ -22,7 +22,7 @@ public class CEnemyAttackStateSO_Melee : CEnemyAttackStateSO
     [Space(10)]
     [Header("===== 전조 =====")]
     [SerializeField] private SLineInfo _lineInfo;
-    [Header("===== 전조 =====")]
+    [Header("===== 사운드 =====")]
     [SerializeField] private string _soundMelee = "AttackSpear_Dash";
     #endregion
 

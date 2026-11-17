@@ -35,6 +35,11 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
     [SerializeField] private string _stateJump = "Jump";
     [SerializeField] private string _stateJumpAttack = "JumpAttack";
 
+    [Header("사운드")]
+    [SerializeField] private string _soundJumpReady = "AttackSkeletonGoatJump01";
+    [SerializeField] private string _soundJump01 = "AttackSkeletonGoatJump02";
+    [SerializeField] private string _soundJump02 = "VoiceSkeletonEliteJump";
+    [SerializeField] private string _soundJumpAttack = "AttackSkeletonGoatJump03";
     #endregion
 
     #region 내부 변수
@@ -73,12 +78,15 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
 
             // ===== 선딜레이 ===== 
             _mashine.Ani.Play(_hashJumpAttReady);
+            _mashine.SoundPlay(_soundJumpReady);
             bool isLeft = targetPos.x < _mashine.transform.position.x;
             _mashine.SpriteFlipX(isLeft);
             await UniTask.Delay(TimeSpan.FromSeconds(_beforeDelay), cancellationToken: ct);
 
             //  ===== 점프 ===== 
             _mashine.Ani.Play(_hashJump);
+            _mashine.SoundPlay(_soundJump01);
+            _mashine.SoundPlay(_soundJump02);
 
             Vector3 startPos = _mashine.transform.position;
             for (float time = 0f; time < _jumpTime; time += Time.deltaTime)
@@ -98,6 +106,7 @@ public class CEnemyAttackStateSO_JumpAttack : CEnemyAttackStateSO
 
             // ===== 공격과 투사체 생성 ===== 
             _mashine.Ani.Play(_hashJumpAttack);
+            _mashine.SoundPlay(_soundJumpAttack);
 
             // 히트판정
             Collider2D[] hits = Physics2D.OverlapBoxAll(targetPos, _range, 0f, _mashine.TargetLayer);
