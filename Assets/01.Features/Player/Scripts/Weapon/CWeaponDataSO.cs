@@ -6,7 +6,7 @@ public class CWeaponDataSO : ScriptableObject
     #region 인스펙터
     [Header("기본 공격력")]
     [Min(0)]
-    [SerializeField] private int _baseDamage = 10;
+    [SerializeField] private int _baseDamage = 1;
 
     [Header("기본 콤보 공격")]
     [SerializeField] private CWeaponAttackDataSO[] _normalAttacks = new CWeaponAttackDataSO[3];
