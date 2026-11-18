@@ -95,7 +95,7 @@ public class CDungeonGenerator : MonoBehaviour
 
         SetCurrentFloor(currentFloor);
 
-        Debug.LogWarning($"저장된 진행도: {progress}, 생성할 층: {_currentFloor}");
+        Debug.Log($"저장된 진행도: {progress}, 생성할 층: {_currentFloor}");
 
         GenerateNewDungeon();
 
@@ -134,7 +134,6 @@ public class CDungeonGenerator : MonoBehaviour
 
         ClearGeneratedDungeon();
 
-        // 던전 재생성 전 방랑상인 초기화
         if (_wanderingMerchant == null)
         {
             FindWanderingMerchant();
@@ -145,7 +144,7 @@ public class CDungeonGenerator : MonoBehaviour
             _wanderingMerchant.SetActive(false);
         }
 
-        int maxAttempts = 50;
+        int maxAttempts = 70;
 
         for (int attempt = 0; attempt < maxAttempts; attempt++)
         {
@@ -699,34 +698,37 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        if (floorData == null || floorData.RoomPool == null)
+        CRoomData[] merchantRoomPrefabs = floorData?.RoomPool?.MerchantRoomPrefabs;
+
+        if (merchantRoomPrefabs == null || merchantRoomPrefabs.Length == 0)
         {
-            Debug.LogWarning("방랑상인 방 데이터가 없습니다.");
+            Debug.LogWarning("방랑상인 방 프리팹이 없습니다.");
             return false;
         }
 
-        CRoomData merchantRoom = floorData.RoomPool.MerchantRoomPrefab;
+        List<CRoomData> RoomList = new List<CRoomData>(merchantRoomPrefabs);
 
-        if (merchantRoom == null)
+        while (RoomList.Count > 0)
         {
-            Debug.LogWarning("방랑상인 방 프리팹이 등록되지 않았습니다.");
-            return false;
+            int randomIndex = Random.Range(0, RoomList.Count);
+
+            CRoomData merchantRoom = RoomList[randomIndex];
+            RoomList.RemoveAt(randomIndex);
+
+            if (merchantRoom == null || merchantRoom.RoomType != ERoomType.Merchant)
+            {
+                continue;
+            }
+
+            if (TryAddRoom(merchantRoom))
+            {
+                Debug.Log($"방랑상인 방 배치 성공: {merchantRoom.name}");
+                return true;
+            }
         }
 
-        if (merchantRoom.RoomType != ERoomType.Merchant)
-        {
-            Debug.LogWarning("방랑상인 방의 RoomType이 Merchant가 아닙니다.");
-            return false;
-        }
-
-        if (!TryAddRoom(merchantRoom))
-        {
-            Debug.LogWarning("방랑상인 방 배치 실패");
-            return false;
-        }
-
-        Debug.Log("방랑상인 방 배치 성공");
-        return true;
+        Debug.LogWarning("방랑상인 방을 배치할 수 없습니다.");
+        return false;
     }
 
     private bool TryAddMiniBossRoom()
