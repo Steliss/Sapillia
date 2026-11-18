@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System;
+using System.Globalization;
 using System.IO;
 using TMPro;
 using UnityEngine;
@@ -283,7 +284,11 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
                 _saveSlots[slot].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
                 _saveSlots[slot].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
                 _saveSlots[slot].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
-                _saveSlots[slot].PlayerPlayTimeSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerSaveTime}");
+
+                if (DateTime.TryParseExact(_dataManger.CurrentFlow.PlayerSaveTime.ToString(), "yyyyMMddHHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime saveTime))
+                {
+                    _saveSlots[slot].PlayerPlayTimeSOText.text = saveTime.ToString("yyyyMMdd/ HH시 mm분");
+                }
             }
             else
             {

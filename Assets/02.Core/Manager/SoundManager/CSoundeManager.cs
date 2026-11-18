@@ -24,21 +24,78 @@ public class CSoundManager : MonoBehaviour
     private EventInstance _playBgm;
     private EventReference _currentBGM;
 
+    private readonly Dictionary<string, List<EventInstance>> _playEffects = new();
+
+
     /// <summary>
-    ///  이펙트 사운드, 필요시 Vector3값 없으면 zero
+    ///  이펙트 사운드, 필요시 Vector3값 없으면 zero, Loop의 경우 stop을 활용 컨트롤
     /// </summary>
     /// <param name="name"></param>
     /// <param name="position"></param>
-    public void PlayEffect(string name, Vector3 position = default)
+    public void PlayEffect(string name, Vector3 position = default, bool stop = false)
     {
         if (!TryFindSound(_catalog.Effect, name, out EventReference sound))
         {
-            CLog.Error("Effect Sound가 재생목록에 없음");
+            CLog.Error($"Effect Sound가 재생목록에 없음: {name}");
             return;
         }
 
-        RuntimeManager.PlayOneShot(sound, position);
+        // 정지할 필요 없는 효과음
+        if (!stop)
+        {
+            RuntimeManager.PlayOneShot(sound, position);
+            return;
+        }
+
+        // 정지할 효과음
+        EventInstance instance = RuntimeManager.CreateInstance(sound);
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+
+        FMOD.RESULT result = instance.start();
+
+        if (result != FMOD.RESULT.OK)
+        {
+            instance.release();
+            CLog.Error($"Effect 재생 실패: {name}, {result}");
+            return;
+        }
+
+        // 딕셔너리 검색 후 없으면 추가
+        if (!_playEffects.TryGetValue(name, out List<EventInstance> instances))
+        {
+            instances = new List<EventInstance>();
+            _playEffects.Add(name, instances);
+        }
+
+        instances.Add(instance);
     }
+
+    /// <summary>
+    /// 루프 이펙트 사운드 정지 코드 정지 시 딕셔너리안의 같은 이름의 사운드 전부 정지 
+    /// </summary>
+    /// <param name="name"></param>
+    public void StopEffect(string name)
+    {
+        if (!_playEffects.TryGetValue(name, out List<EventInstance> instances))
+        {
+            CLog.Error($"Effect 정지 실패: {name}");
+            return;
+        }
+
+        foreach (EventInstance instance in instances)
+        {
+            if (!instance.isValid())
+            {
+                continue;
+            }
+
+            instance.stop(FMOD.Studio.STOP_MODE.IMMEDIATE);
+            instance.release();
+        }
+
+        _playEffects.Remove(name);
+    }
+
 
 
     /// <summary>
