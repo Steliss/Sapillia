@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CArtifactRewardUI : MonoBehaviour
 {
@@ -23,10 +24,15 @@ public class CArtifactRewardUI : MonoBehaviour
     [SerializeField] private Sprite _rareBackground;
     [SerializeField] private Sprite _legendaryBackground;
 
-
-
     [Header("데이터 매니저")]
     [SerializeField] private CDataManger _dataManager;
+
+    [Header("리롤 버튼")]
+    [SerializeField] private Button _rerollButton;
+
+    [Header("리롤 횟수 텍스트")]
+    [SerializeField] private TextMeshProUGUI _rerollCountText;
+
     #endregion
 
     #region 내부변수
@@ -50,11 +56,6 @@ public class CArtifactRewardUI : MonoBehaviour
 
 
 
-
-
-    /// <summary>
-    /// 랜덤 아티팩트 4개 선택 및 표시
-    /// </summary>
     public void ShowRewards(CArtifactReward reward)
     {
         if (_currentReward != reward)
@@ -64,12 +65,17 @@ public class CArtifactRewardUI : MonoBehaviour
 
         _currentReward = reward;
 
-        if (_isRewardGenerated)
+        if (!_isRewardGenerated)
         {
-            gameObject.SetActive(true);
-            return;
+            GenerateRewardCandidates();
         }
 
+        gameObject.SetActive(true);
+        UpdateRerollText();
+    }
+
+    private void GenerateRewardCandidates()
+    {
         _selectedArtifacts.Clear();
 
         // 중복된 ID를 제거하고 후보 목록 생성
@@ -91,7 +97,7 @@ public class CArtifactRewardUI : MonoBehaviour
             return;
         }
 
-        // 후보 중 중복 없이 4개 선택
+        // 중복 없이 4개 선택
         for (int i = 0; i < 4; i++)
         {
             int randomIndex = Random.Range(0, candidates.Count);
@@ -100,30 +106,25 @@ public class CArtifactRewardUI : MonoBehaviour
             candidates.RemoveAt(randomIndex);
         }
 
+        // 버튼과 이미지 갱신
         for (int i = 0; i < 4; i++)
         {
-            // 아티팩트 아이콘
             Image image = _artifactImages[i];
 
             image.sprite = _selectedArtifacts[i].Icon;
             image.enabled = image.sprite != null;
 
-            // 등급별 배경
             Image background = _rewardButtons[i].image;
             background.sprite = GetGradeBackground(_selectedArtifacts[i].Grade);
 
-            // 기존 클릭 이벤트 제거
             _rewardButtons[i].onClick.RemoveAllListeners();
 
             int index = i;
             _rewardButtons[i].onClick.AddListener(() => SelectArtifact(index));
         }
 
-
         _isRewardGenerated = true;
-        gameObject.SetActive(true);
     }
-
 
     /// <summary>
     /// 선택한 아티팩트 획득
@@ -209,4 +210,58 @@ public class CArtifactRewardUI : MonoBehaviour
         }
     }
 
+    public void RerollRewards()
+    {
+        if (_dataManager == null)
+        {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData = _dataManager.PlayerData?.GetPlayerData();
+
+        if (playerData == null)
+        {
+            return;
+        }
+
+        if (!playerData.TrySpendDice(1))
+        {
+            return;
+        }
+
+        GenerateRewardCandidates();
+        UpdateRerollText();
+    }
+
+
+    private void UpdateRerollText()
+    {
+        if (_dataManager == null)
+        {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData = _dataManager.PlayerData?.GetPlayerData();
+
+        if (playerData == null)
+        {
+            return;
+        }
+
+        // 현재 주사위 개수 표시
+        _rerollCountText.text = $"   리롤({playerData.Dice}회)";
+
+        // 주사위가 없으면 리롤 버튼 비활성화
+        _rerollButton.interactable = playerData.Dice > 0;
+    }
 }
