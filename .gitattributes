@@ -1,3 +1,20 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 *.plist text eol=lf
+
+*.cs text eol=lf
+*.shader text eol=lf
+*.json text eol=lf
+*.asset text eol=lf
+*.meta text eol=lf
+*.prefab text eol=lf
+*.unity text eol=lf
+
+*.png binary
+*.jpg binary
+*.fbx binary
+*.ttf binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.bank binary
