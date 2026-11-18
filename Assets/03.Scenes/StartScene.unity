@@ -2764,6 +2764,8 @@ MonoBehaviour:
     _sapphire: 0
     _playerplaytime: 0
     _saveSlot: 0
+    _currentGameSapphire: 0
+    _playerSaveTime: 0
   _currentFlow:
     _currentScene: 0
     _name: 
@@ -2772,6 +2774,8 @@ MonoBehaviour:
     _sapphire: 0
     _playerplaytime: 0
     _saveSlot: 0
+    _currentGameSapphire: 0
+    _playerSaveTime: 0
   _playerData: {fileID: 2057100753}
   _inventoryData: {fileID: 1043294126}
 --- !u!4 &154711373
@@ -28621,6 +28625,22 @@ MonoBehaviour:
         Data3: -1537165379
         Data4: 450969144
       Path: event:/Scene/moleBigBombMissileExplosion_big
+  - _name: HitSlash
+    _sound:
+      Guid:
+        Data1: -1660331549
+        Data2: 1212629196
+        Data3: -1297012325
+        Data4: 322640380
+      Path: event:/Scene/hitSlash
+  - _name: StealthEnd
+    _sound:
+      Guid:
+        Data1: 1047950636
+        Data2: 1252592356
+        Data3: -2042287447
+        Data4: -1865425484
+      Path: event:/Scene/StealthEnd
   _enviroment: []
 --- !u!1 &2129691444
 GameObject:

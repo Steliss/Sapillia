@@ -236,6 +236,7 @@ GameObject:
   - component: {fileID: 4688652764581564112}
   - component: {fileID: 3256040622483224611}
   - component: {fileID: 3388831079329234903}
+  - component: {fileID: 1841438211228477015}
   m_Layer: 7
   m_Name: Boss01_Phase02
   m_TagString: Untagged
@@ -381,6 +382,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1836807539459432379}
   m_CullTransparentMesh: 1
+--- !u!114 &1841438211228477015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1836807539459432379}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 79028674
+      Data2: 1113316135
+      Data3: 1923102363
+      Data4: 1780417184
+    Path: event:/Scene/drillMole_Loop
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 3
+  OverrideMaxDistance: 21
 --- !u!1 &2493078933236602110
 GameObject:
   m_ObjectHideFlags: 0

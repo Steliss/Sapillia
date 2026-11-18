@@ -55,6 +55,7 @@ public class CEnemyProjectile : MonoBehaviour
         _rb.simulated = false;
         _rb.velocity = Vector2.zero;
         _ani.Play(_hashEnd);
+        EndSoundPlay();
     }
 
     public virtual void DamageSet(float damage, Vector2 dir, float attackTime)
@@ -97,10 +98,7 @@ public class CEnemyProjectile : MonoBehaviour
             CLog.Log($"[EnemyAttack 적중 대상 : {collision.name}");
             CLog.Log($"[EnemyAttack Damage : {info.Damage}");
             CLog.Log($"[EnemyAttack Direction: {info.IncomingDirection}");
-            return;
         }
-
-        
 
         HitEnd();
     }
@@ -108,6 +106,11 @@ public class CEnemyProjectile : MonoBehaviour
 
     // 데미지를 준 후 처리가 필요하면 상속받은 후 HitEnd 함수를 오버라이드
     protected virtual void HitEnd()
+    {
+
+    }
+
+    protected virtual void EndSoundPlay()
     {
 
     }
