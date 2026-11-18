@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CTabletRewardUI : MonoBehaviour
 {
@@ -24,6 +25,12 @@ public class CTabletRewardUI : MonoBehaviour
 
     [Header("데이터 매니저")]
     [SerializeField] private CDataManger _dataManager;
+
+    [Header("리롤 버튼")]
+    [SerializeField] private Button _rerollButton;
+
+    [Header("리롤 횟수 텍스트")]
+    [SerializeField] private TextMeshProUGUI _rerollCountText;
 
     #endregion
 
@@ -54,14 +61,21 @@ public class CTabletRewardUI : MonoBehaviour
 
         _currentReward = reward;
 
-        if (_isRewardGenerated)
+        if (!_isRewardGenerated)
         {
-            gameObject.SetActive(true);
-            return;
+            if (!GenerateRewardCandidates())
+            {
+                _currentReward?.CancelReward();
+                return;
+            }
         }
 
-        _selectedTablets.Clear();
+        gameObject.SetActive(true);
+        UpdateRerollText();
+    }
 
+    private bool GenerateRewardCandidates()
+    {
         List<CTabletSO> candidates = new();
         HashSet<int> usedIDs = new();
 
@@ -81,10 +95,12 @@ public class CTabletRewardUI : MonoBehaviour
         if (candidates.Count < 4)
         {
             Debug.LogWarning("[CTabletRewardUI] 석판 후보가 4개 미만입니다.");
-            _currentReward?.CancelReward();
-            return;
+            return false;
         }
 
+        _selectedTablets.Clear();
+
+        // 중복 없이 석판 4개 선택
         for (int i = 0; i < 4; i++)
         {
             int randomIndex = Random.Range(0, candidates.Count);
@@ -93,6 +109,7 @@ public class CTabletRewardUI : MonoBehaviour
             candidates.RemoveAt(randomIndex);
         }
 
+        // 석판 아이콘 및 등급별 배경 갱신
         for (int i = 0; i < 4; i++)
         {
             Image image = _tabletImages[i];
@@ -110,7 +127,8 @@ public class CTabletRewardUI : MonoBehaviour
         }
 
         _isRewardGenerated = true;
-        gameObject.SetActive(true);
+
+        return true;
     }
 
     private void SelectTablet(int index)
@@ -184,5 +202,84 @@ public class CTabletRewardUI : MonoBehaviour
             default:
                 return _normalBackground;
         }
+    }
+
+    public void RerollRewards()
+    {
+        if (_dataManager == null)
+        {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData =
+            _dataManager.PlayerData?.GetPlayerData();
+
+        if (playerData == null)
+        {
+            return;
+        }
+
+        // 주사위가 없는 경우
+        if (playerData.Dice < 1)
+        {
+            UpdateRerollText();
+            return;
+        }
+
+        // 현재 석판 후보가 정상적으로 생성되어 있는지 확인
+        if (_selectedTablets.Count != 4)
+        {
+            return;
+        }
+
+        // 주사위 1개 소비
+        if (!playerData.TrySpendDice(1))
+        {
+            UpdateRerollText();
+            return;
+        }
+
+        // 석판 후보 다시 추첨
+        if (!GenerateRewardCandidates())
+        {
+            // 추첨 실패 시 주사위 반환
+            playerData.AddDice(1);
+            UpdateRerollText();
+            return;
+        }
+
+        UpdateRerollText();
+
+    }
+
+
+    private void UpdateRerollText()
+    {
+        if (_dataManager == null)
+        {
+            _dataManager = CManagerDontDestroy.Instance?.DataManger;
+        }
+
+        if (_dataManager == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData =
+            _dataManager.PlayerData?.GetPlayerData();
+
+        if (playerData == null)
+        {
+            return;
+        }
+
+        _rerollCountText.text = $"리롤({playerData.Dice}회)";
+
+        _rerollButton.interactable = playerData.Dice > 0;
     }
 }
