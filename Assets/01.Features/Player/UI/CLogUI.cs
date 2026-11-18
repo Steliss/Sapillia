@@ -111,10 +111,10 @@ public class CLogUI : MonoBehaviour, IInputCommand
     public void ActiveUI(bool active)
     {
         _inputField.DeactivateInputField();
-        _logUI.SetActive(false);
+        _logUI.SetActive(active);
 
         _time = 0f;
-        _isActive = false;
+        _isActive = active;
     }
 
 
@@ -130,11 +130,13 @@ public class CLogUI : MonoBehaviour, IInputCommand
         AddMessage($"<color=#FFFF00>{itemName}</color>을 획득했습니다.");
     }
 
-    private void AddTalk(string talkKey)
+    public void AddTalk(string talkKey)
     {
         string talk = _localization.GetText(talkKey);
 
         AddMessage($"<color=#FFFFFF>{talk}</color>");
+
+        ActiveUI(true);
     }
 
     // 로그 추가
