@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -33,18 +34,51 @@ public class CSwordAndShieldAim : MonoBehaviour
     [Header("랜더링 순서조정")]
     [SerializeField] private SpriteRenderer _playerRenderer;
     [SerializeField] private SortingGroup _weaponSortingGroup;
+    [SerializeField] private SortingGroup _shieldSortingGroup;
 
     [Header("방향별 렌더링 순서")]
     [SerializeField] private int _upperSortingOffset = -1;
     [SerializeField] private int _lowerSortingOffset = 1;
+    [SerializeField] private int _shieldSortingOffset = 2;
+
+    [Header("무기 대기 흔들림")]
+    [SerializeField] private CPlayerMovement _movement;
+    [SerializeField] private Vector2 _idleSwayAxis = Vector2.right;
+    [Min(0f)]
+    [SerializeField] private float _idleSwayDistance = 0.03f;
+    [Min(0f)]
+    [SerializeField] private float _idleSwayFrequency = 0.8f;
+    [Min(0f)]
+    [SerializeField] private float _idleBlendSpeed = 4f;
+
+    [Header("방패 대기 흔들림")]
+    [Min(0f)]
+    [SerializeField] private float _shieldSwayDistance = 0.015f;
+    [Min(0f)]
+    [SerializeField] private float _shieldSwayFrequency = 0.8f;
+    [SerializeField] private float _shieldSwayPhase = 0f;
+
+    [Header("방패 Transform")]
+    [SerializeField] private Transform _shieldPivot;
+
+    [Header("방향별 방패 위치 보정")]
+    [SerializeField] private Vector2 _shieldRightUpOffset;
+    [SerializeField] private Vector2 _shieldLeftUpOffset;
+    [SerializeField] private Vector2 _shieldLeftDownOffset;
+    [SerializeField] private Vector2 _shieldRightDownOffset;
     #endregion
 
     #region 변수
     private Vector2 _aimDirection = Vector2.right;
     private Vector3 _initialPivotLocalPosition;
 
+    private float _idleSwayTime;
+    private float _idleSwayWeight = 1f;
+
     private float _currentAimAngle;
     private float _currentWeaponAngle;
+
+    private Vector3 _initialShieldLocalPosition;
 
     // 무기 회전 잠금(전투)
     private bool _isAimLocked;
@@ -74,6 +108,11 @@ public class CSwordAndShieldAim : MonoBehaviour
             _camera = Camera.main;
         }
 
+        if (_shieldPivot != null)
+        {
+            _initialShieldLocalPosition = _shieldPivot.localPosition;
+        }
+
         _initialPivotLocalPosition = _weaponPivot.localPosition;
     }
 
@@ -84,13 +123,12 @@ public class CSwordAndShieldAim : MonoBehaviour
         {
             return;
         }
-        /*
-        UpdateWeaponPlacement();
-        UpdateWeaponRotation();
-        UpdateWeaponSorting();
-        */
+     
 
         UpdateAimDirection();
+        // 대기 움직임 계산
+        UpdateIdleSway();
+        // 무기 위치, 조준각, 렌더링 갱신
         ApplyAimPose();
 
     }
@@ -172,13 +210,21 @@ public class CSwordAndShieldAim : MonoBehaviour
             // 오른쪽 아래로 지나치게 회전하지 않음
             weaponAngle = Mathf.Max(angle, 180 + _maxDownAngle);
         }
-
-        // 플레이어 기준 손 위치
-        _weaponPivot.localPosition = _initialPivotLocalPosition + new Vector3(offset.x, offset.y, 0f);
-
-        // 조준 방향 회전
+                
+        // 현재 조준 회전 적용
         _weaponPivot.rotation = Quaternion.Euler(0f, 0f, weaponAngle);
 
+        // 검의 축 방향으로 흔들림 거리 계산
+        float sway = Mathf.Sin(_idleSwayTime * Mathf.PI * 2f * _idleSwayFrequency) * _idleSwayDistance * _idleSwayWeight;
+
+        // 검 로컬 방향을 월드 방향으로 변환
+        Vector3 swayWorld = _weaponPivot.rotation * (Vector3)(_idleSwayAxis.normalized * sway);
+
+        // WeaponPivot 부모의 로컬 좌표로 변환
+        Vector3 swayLocal = _weaponPivot.parent != null ? _weaponPivot.parent.InverseTransformVector(swayWorld) : swayWorld;
+
+        // 방향별 손 위치 + 대기 흔들림
+        _weaponPivot.localPosition = _initialPivotLocalPosition + new Vector3(offset.x, offset.y, 0f) + swayLocal;
         _currentWeaponAngle = weaponAngle;
 
         // 플레이어 방향
@@ -187,29 +233,13 @@ public class CSwordAndShieldAim : MonoBehaviour
             _playerFacing.UpdateFacing(_aimDirection);
         }
 
+        // 방패는 위치만 변경
+        UpdateShieldPlacement(angle);
         // 무기 앞뒤 관계
         UpdateWeaponSorting(angle);
     }
 
     #endregion
-
-    #region 렌더링
-
-    private void UpdateWeaponSorting(float angle)
-    {
-        if (_playerRenderer == null || _weaponSortingGroup == null)
-        {
-            return;
-        }
-
-        bool isUpper = angle < 180f;
-
-        _weaponSortingGroup.sortingLayerID = _playerRenderer.sortingLayerID;
-        _weaponSortingGroup.sortingOrder = _playerRenderer.sortingOrder + (isUpper ? _upperSortingOffset : _lowerSortingOffset);
-    }
-
-    #endregion
-
 
     #region 무기 잠금
 
@@ -223,9 +253,9 @@ public class CSwordAndShieldAim : MonoBehaviour
 
         // 공격 시작 순간의 최신 방향 반영
         UpdateAimDirection();
-        ApplyAimPose();
-
         _isAimLocked = true;
+
+        ApplyAimPose();
     }
 
     public void UnlockAim()
@@ -242,18 +272,91 @@ public class CSwordAndShieldAim : MonoBehaviour
 
     #region 렌더링 조정
 
-    private void UpdateWeaponSorting()
+    private void UpdateWeaponSorting(float angle)
     {
-        if (_playerRenderer == null || _weaponSortingGroup == null)
+        if (_playerRenderer == null)
         {
             return;
         }
 
-        // 위쪽을 바라보면 무기를 플레이어 뒤로
-        bool isBehind = _aimDirection.x < 0f;
+        int playerOrder = _playerRenderer.sortingOrder;
+        int layerID = _playerRenderer.sortingLayerID;
 
-        _weaponSortingGroup.sortingLayerID = _playerRenderer.sortingLayerID;
-        _weaponSortingGroup.sortingOrder = _playerRenderer.sortingOrder + (isBehind ? 1 : -1);
+        // 검: 위쪽/아래쪽 조준에 따라 앞뒤 변경
+        if (_weaponSortingGroup != null)
+        {
+            bool isUpper = angle < 180f;
+
+            _weaponSortingGroup.sortingLayerID = layerID;
+            _weaponSortingGroup.sortingOrder = playerOrder + (isUpper ? _upperSortingOffset : _lowerSortingOffset);
+        }
+
+        // 방패: 항상 플레이어 앞
+        if (_shieldSortingGroup != null)
+        {
+            _shieldSortingGroup.sortingLayerID = layerID;
+            _shieldSortingGroup.sortingOrder = playerOrder + _shieldSortingOffset;
+        }
     }
+    #endregion
+
+    #region 대기 움직임 계산
+    private void UpdateIdleSway()
+    {
+        // Movement가 없으면 이동 여부와 무관하게 흔들림
+        bool isIdle = _movement == null || _movement.MoveState == EPlayerMoveState.Idle;
+
+        float targetWeight = isIdle ? 1f : 0f;
+
+        // 이동 시작/정지 시 자연스럽게 전환
+        _idleSwayWeight = Mathf.MoveTowards(_idleSwayWeight, targetWeight, _idleBlendSpeed * Time.deltaTime);
+        _idleSwayTime += Time.deltaTime;
+    }
+
+    #endregion
+
+    #region 방패 위치 변경
+    private void UpdateShieldPlacement(float angle)
+    {
+        if (_shieldPivot == null)
+        {
+            return;
+        }
+
+        Vector2 offset;
+
+        // 오른쪽 위
+        if (angle < 90f)
+        {
+            offset = _shieldRightUpOffset;
+        }
+        // 왼쪽 위
+        else if (angle < 180f)
+        {
+            offset = _shieldLeftUpOffset;
+        }
+        // 왼쪽 아래
+        else if (angle < 270f)
+        {
+            offset = _shieldLeftDownOffset;
+        }
+        // 오른쪽 아래
+        else
+        {
+            offset = _shieldRightDownOffset;
+        }
+
+        // 대기 상태에서만 흔들림 적용
+        float sway = 0f;
+
+        if (!_isAimLocked)
+        {
+            sway = Mathf.Sin(_idleSwayTime * Mathf.PI * 2f * _shieldSwayFrequency + _shieldSwayPhase) * _shieldSwayDistance * _idleSwayWeight;
+        }
+
+        // 초기 위치 + 방향별 보정
+        _shieldPivot.localPosition = _initialShieldLocalPosition + new Vector3(offset.x, offset.y + sway, 0f);
+    }
+
     #endregion
 }
