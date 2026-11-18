@@ -43,7 +43,6 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     private bool _isEnchantMode;
     private bool _isActive;
 
-
     public bool IsActive => _isActive;
     public bool IsEnchantMode => _isEnchantMode;
 
@@ -317,7 +316,18 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         _infoImage.sprite = item.Icon;
         _infoTitle.text = _localization.GetText(item.NameKey);
-        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues());
+
+        if (item is CArtifactSO artifact)
+        {
+            int totalLevel = data.EnhanceLevel + data.InchantLevel;
+
+            _infoDesc.text = _localization.GetText(item.DescriptionKey, artifact.GetDescriptionValues(totalLevel));
+        }
+        else
+        {
+            _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues());
+        }
+
 
         if (_merchant.IsActive)
         {
