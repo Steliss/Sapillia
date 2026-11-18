@@ -25,8 +25,11 @@ public class CStageNodeButton : MonoBehaviour
         _nodeData = nodeData;
 
         // 보상 아이콘
-        _rewardIcon.sprite = rewardSprite;
-        _rewardIcon.gameObject.SetActive(rewardSprite != null);
+        if (_rewardIcon != null)
+        {
+            _rewardIcon.sprite = rewardSprite;
+            _rewardIcon.gameObject.SetActive(rewardSprite != null);
+        }
 
         // 방랑상인 아이본
         if (_specialIcon != null)
