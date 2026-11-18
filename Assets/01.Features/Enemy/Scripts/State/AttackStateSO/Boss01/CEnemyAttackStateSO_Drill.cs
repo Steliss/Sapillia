@@ -121,6 +121,7 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
             spTr.localPosition = Vector2.zero;
             _mashine.Collider.enabled = true;
             _mashine.Collider.isTrigger = true;
+            // 루프 사운드 재생
             if (_emitter == null)
             {
                 _emitter = _mashine.GetComponent<FMODUnity.StudioEventEmitter>();
@@ -137,12 +138,7 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
 
                 isLeftGo = !isLeftGo;
             }
-
-            // ※ 드릴 재생 중지 추가 필요
-            if (_emitter == null)
-            {
-                _emitter = _mashine.GetComponent<FMODUnity.StudioEventEmitter>();
-            }
+            // 루프 사운드 재생정지
             _emitter?.Stop();
 
             myTr.position = _mashine.Target.position;
