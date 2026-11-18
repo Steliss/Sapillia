@@ -23,37 +23,30 @@ public class CEnemySpawner : MonoBehaviour
     [SerializeField] private Vector2 _rewardPosPlus;
     [Header("전투 시작 이펙트")]
     [SerializeField] private GameObject _startEffect;
-
+    [SerializeField] private Animator _ani;
+    [SerializeField] private string _aniClose = "Close";
+    [SerializeField] private string _aniOpen = "Open";
+    [SerializeField] private string _soundGate = "GateOpenBone";
     #endregion
 
     #region 내부 변수
     private int _aliveEnemys = 0;
     private bool _isBattle = false;
     private CObjectPoolManager _pool;
+    private int _hashClose;
+    private int _hashOpen;
 
-    //private CUniTaskOnes _dataTask = new CUniTaskOnes();
-    //private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
     #endregion
-    /*
+
     private void OnEnable()
     {
-        if (_playerData == null)
+        if (_ani != null)
         {
-            _dataTask.Run(async token =>
-            {
-                _data = await CManagerDontDestroy.DataMangerAsync(token);
-                _playerData = _data.PlayerData.GetPlayerData();
-                CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
-            });
+            _hashClose = Animator.StringToHash(_aniClose);
+            _hashOpen = Animator.StringToHash(_aniOpen);
         }
     }
-    
-    private void OnDisable()
-    {
-        _dataTask?.Cancel();
-    }
-    */
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -94,6 +87,15 @@ public class CEnemySpawner : MonoBehaviour
         for (int i = 0; i < _doors.Length; i++)
         {
             _doors[i].SetActive(true);
+        }
+
+        if (_ani != null)
+        {
+            _ani.Play(_hashClose);
+            if (CManagerDontDestroy.Instance != null)
+            {
+                CManagerDontDestroy.Instance.Sound.PlayEffect(_soundGate, transform.position);
+            }
         }
 
         // 몬스터 스폰
@@ -147,6 +149,14 @@ public class CEnemySpawner : MonoBehaviour
                 Instantiate(_reward, pos, Quaternion.identity);
             }
 
+            if (_ani != null)
+            {
+                _ani.Play(_hashOpen);
+                if (CManagerDontDestroy.Instance != null)
+                {
+                    CManagerDontDestroy.Instance.Sound.PlayEffect(_soundGate, transform.position);
+                }
+            }
 
             CLog.Log("전투 종료!");
         }

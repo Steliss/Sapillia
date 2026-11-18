@@ -121,7 +121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6548493375190303068}
   - component: {fileID: 4552336334990878924}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -281,7 +281,7 @@ GameObject:
   - component: {fileID: 1604508848136420227}
   - component: {fileID: 1089644659264907637}
   - component: {fileID: 7705730319386134104}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Sprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -591,7 +591,8 @@ GameObject:
   - component: {fileID: 2177021324548675322}
   - component: {fileID: 5094731939292845788}
   - component: {fileID: 563840943800903455}
-  m_Layer: 0
+  - component: {fileID: 6963330929063245224}
+  m_Layer: 7
   m_Name: Boss01_Phase01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -640,6 +641,7 @@ MonoBehaviour:
   _phaseSO: {fileID: 11400000, guid: 9c7213475e704e843813e99bacc63b6a, type: 2}
   _hpBar: {fileID: 6971820304724862544}
   _superArmorBar: {fileID: 8809223242130375074}
+  _damageFont: {fileID: 3843404139033265110, guid: 6aff49033e850ef4bbe636485fc06016, type: 3}
   _exp: {fileID: 0}
   _expMini: {fileID: 0}
   _money: {fileID: 0}
@@ -736,6 +738,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7094784635822526525}
   m_CullTransparentMesh: 1
+--- !u!114 &6963330929063245224
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7094784635822526525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a6610d2e704f1648819acc8d7460285, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CollisionTag: 
+  EventReference:
+    Guid:
+      Data1: 79028674
+      Data2: 1113316135
+      Data3: 1923102363
+      Data4: 1780417184
+    Path: event:/Scene/drillMole_Loop
+  Event: 
+  EventPlayTrigger: 0
+  EventStopTrigger: 0
+  AllowFadeout: 1
+  TriggerOnce: 0
+  Preload: 0
+  NonRigidbodyVelocity: 0
+  Params: []
+  OverrideAttenuation: 0
+  OverrideMinDistance: 3
+  OverrideMaxDistance: 21
 --- !u!1 &7173708123011470786
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +779,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4823714850362334233}
   - component: {fileID: 8903346757209100482}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: SubSprite
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -976,7 +976,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 1475883565}
         m_TargetAssemblyTypeName: CStateMashine, Assembly-CSharp
         m_MethodName: TakeDamage
         m_Mode: 3
@@ -1520,11 +1520,26 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8339571533254688919, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.40281582
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
+--- !u!114 &1475883565 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3098646167983071563, guid: 71081d85f0b91df4a8a6f15d847a7524, type: 3}
+  m_PrefabInstance: {fileID: 1062711943}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1538da89f7b6a0c469c628148e18ae6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1520569761
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1640,8 +1655,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.46153852, y: 0.1428571}
-    oldSize: {x: 2.4375, y: 1.75}
+    pivot: {x: 0.43720126, y: 0.56279856}
+    oldSize: {x: 1.9904848, y: 1.990485}
     newSize: {x: 2.4375, y: 1.75}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -1659,7 +1674,7 @@ Transform:
   m_GameObject: {fileID: 1614566648}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 13.7, y: 5.5, z: 0}
+  m_LocalPosition: {x: 14.97, y: 6.26, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1706,7 +1721,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: e52a9915262c2e94a970d0a223d8239a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f07b291cce6289d4e8f3f797cf9c110f, type: 2}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

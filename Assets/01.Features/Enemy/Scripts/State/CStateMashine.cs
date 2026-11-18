@@ -29,6 +29,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     [Header("체력 바")]
     [SerializeField] private Slider _hpBar;
     [SerializeField] private Slider _superArmorBar;
+    [SerializeField] private GameObject _damageFont;
 
 
     [Header("애니메이터 스테이트")]
@@ -61,6 +62,8 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private readonly int _outLineId = Shader.PropertyToID("_OutlineOn");
     private List<GameObject> _gameObjects = new List<GameObject>();
     private CSoundManager _soundManager;
+    private string _soundHurt = "HitSlash";
+    private string _soundDie = "DieMonster";
     #endregion
 
     #region 스테이트
@@ -334,31 +337,21 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     // 피격 피드백
     private void HultFeedback()
     {
-        _hurtUni.Cancel();
         _hurtUni.Run(async ct =>
         {
-            float t = 0f;
             float tMax = 0.1f;
-            try
+            for (float time = 0f; time < tMax; time += Time.deltaTime)
             {
-                while (t < tMax)
-                {
-                    _sprite.color = Color.red;
-                    t += Time.deltaTime;
-                    float t1510 = Mathf.Lerp(1.5f, 1f, t/tMax);
+                await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                _sprite.color = Color.red;
+                float t1510 = Mathf.Lerp(1.5f, 1f, time / tMax); 
+                Vector3 scale = _startScale;
+                scale.y = t1510;
+                _sprite.transform.localScale = scale;
 
-                    Vector3 scale = _startScale;
-                    scale.y = t1510;
-                    _sprite.transform.localScale = scale;
-
-                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
-                }
             }
-            finally
-            {
-                _sprite.transform.localScale = _startScale;
-                _sprite.color = _startColor;
-            }
+            _sprite.transform.localScale = _startScale;
+            _sprite.color = _startColor;
         });
     }
 
@@ -566,6 +559,13 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
 
         _hp -= finalDamage * reduction;
 
+        if (CObjectPoolManager.Instance != null && _damageFont != null)
+        {
+            GameObject damageFont = CObjectPoolManager.Instance.GetPoolObject(_damageFont);
+            CDamageFont font = damageFont.GetComponent<CDamageFont>();
+            font.SetDamageFont(finalDamage, transform.position);
+        }
+
         CLog.Log($"데미지 : {finalDamage} / 감소율 : {reduction} / 최종값 {finalDamage * reduction}");
 
         HpBarUpdate();
@@ -573,26 +573,18 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
         if (_hp <= 0)
         {
             _hp = 0f;
-            _sprite.color = Color.gray;
-            // 7초뒤 비활성화 예약
-            _hurtUni.Run(async ct =>
-            {
-                await UniTask.Delay(TimeSpan.FromSeconds(7), cancellationToken: ct);
-                CEnemySpawner spawner = GetComponentInParent<CEnemySpawner>();
-                if (spawner != null)
-                {
-                    spawner.EnemyDie();
-                }
-                CLog.Warn("예외 발생! 강제 비활성화");
-                gameObject.SetActive(false);
-            });
-            DropItem();
+            _hurtUni.Cancel();
             _attackUni.Cancel();
+            GameObjectsListClear();
+            _sprite.color = Color.gray;
+            DropItem();
+            SoundPlay(_soundDie);
             StateChanged(_airbornState);
             return;
         }
 
         HultFeedback();
+        SoundPlay(_soundHurt);
 
         // 순찰중에 맞은 경우 플레이어를 강제로 찾기
         if (_isPatrol)

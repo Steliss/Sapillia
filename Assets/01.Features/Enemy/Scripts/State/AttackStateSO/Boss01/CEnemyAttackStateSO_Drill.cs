@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System;
 using System.Threading;
+using Unity.VisualScripting;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "SO/Enemy/AttackState/Drill", fileName = "Enemy_Attack_Drill_")]
@@ -64,6 +65,7 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
     #region 내부 변수
     private string _soundJump = "MoleJump";
     private string _soundDrill = "DrillMole_Loop";
+    private FMODUnity.StudioEventEmitter _emitter;
     #endregion
 
     private void OnEnable()
@@ -73,6 +75,7 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
         _attackInfo.HashDrill = Animator.StringToHash(_attackInfo.AniDrill);
         _attackInfo.HashLanding = Animator.StringToHash(_attackInfo.AniLanding);
         _attackInfo.HashLandingEnd = Animator.StringToHash(_attackInfo.AniLandingEnd);
+        
     }
 
     public override void StateEnter()
@@ -118,8 +121,12 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
             spTr.localPosition = Vector2.zero;
             _mashine.Collider.enabled = true;
             _mashine.Collider.isTrigger = true;
-            // ※ 재생 중지 추가 예정 (한번 재생시 중지안됨)
-            //_mashine.SoundPlay(_soundDrill);
+            // 루프 사운드 재생
+            if (_emitter == null)
+            {
+                _emitter = _mashine.GetComponent<FMODUnity.StudioEventEmitter>();
+            }
+            _emitter?.Play();
 
             // 진행방향
             bool isLeftGo = LR[RandomLR] > 0;
@@ -131,8 +138,8 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
 
                 isLeftGo = !isLeftGo;
             }
-
-            // ※ 드릴 재생 중지 추가 필요
+            // 루프 사운드 재생정지
+            _emitter?.Stop();
 
             myTr.position = _mashine.Target.position;
             _mashine.Collider.enabled = false;

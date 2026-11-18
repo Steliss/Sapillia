@@ -427,6 +427,7 @@ GameObject:
   - component: {fileID: 8539873792459339147}
   - component: {fileID: 4241432134853901835}
   - component: {fileID: 529795320622074643}
+  - component: {fileID: 5262564620073248331}
   m_Layer: 8
   m_Name: Obstacle
   m_TagString: Untagged
@@ -606,6 +607,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &5262564620073248331
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4555270279774648829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &6495806340343454400
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,6 +821,7 @@ GameObject:
   - component: {fileID: 6221477887138411816}
   - component: {fileID: 1095249218087165009}
   - component: {fileID: 6354544897157232187}
+  - component: {fileID: 2329438722267038524}
   m_Layer: 0
   m_Name: Pit
   m_TagString: Untagged
@@ -1363,6 +1381,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &2329438722267038524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6864649752059026164}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &7255981977086672588
 GameObject:
   m_ObjectHideFlags: 0
@@ -4316,6 +4350,7 @@ GameObject:
   - component: {fileID: 4247663901859813591}
   - component: {fileID: 3640031682081760300}
   - component: {fileID: 4790053123424738839}
+  - component: {fileID: 7049483531570116103}
   m_Layer: 8
   m_Name: Roof
   m_TagString: Untagged
@@ -6419,6 +6454,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &7049483531570116103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7443114925451517284}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1 &7963616780769717480
 GameObject:
   m_ObjectHideFlags: 0
@@ -6608,6 +6659,7 @@ GameObject:
   - component: {fileID: 1695096379099111396}
   - component: {fileID: 6065351991882817502}
   - component: {fileID: 4807818102167538165}
+  - component: {fileID: 6970092252259983921}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -7159,6 +7211,22 @@ TilemapCollider2D:
   m_MaximumTileChangeCount: 1000
   m_ExtrusionFactor: 0
   m_UseDelaunayMesh: 0
+--- !u!114 &6970092252259983921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8813449657200741780}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9809bf1345abc5648af68b3a82653f08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_OverrideArea: 1
+  m_Area: 1
+  m_IgnoreFromBuild: 0
+  m_AffectedAgents: ffffffff
 --- !u!1001 &2274897530287940881
 PrefabInstance:
   m_ObjectHideFlags: 0
