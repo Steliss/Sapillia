@@ -82,6 +82,7 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
         if (_isActive)
         {
             _data.CurrentFlow.AddProgress(1);
+            _data.SaveGame(_data.CurrentFlow.SaveSlot);
             _sceneManager.ChangeScreenAsync(EScene.stage1).Forget();
         }
     }

@@ -153,6 +153,7 @@ public class CDataManger : MonoBehaviour
     // 게임 진행 + 플레이어 인벤토리 저장 
     public bool SaveGame(int slot)
     {
+        _currentFlow.SetSaveTime();
         CPlayerGamingDataSO player = _playerData.GetPlayerData();
         CInventoryData inventory = _inventoryData.GetInventoryData();
 
@@ -218,8 +219,11 @@ public class CDataManger : MonoBehaviour
     {
         _playerData.SetPlayerData(); 
         _inventoryData.SetInventoryData();
+
         _currentFlow.SetProgress(0);
         _currentFlow.AddRetryCount(1);
+        _currentFlow.ResetCurrentGameSapphire();
+        _currentFlow.ResetPlaytime();
 
         return SaveGame(CurrentFlow.SaveSlot);
     }

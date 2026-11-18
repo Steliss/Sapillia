@@ -138,8 +138,13 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         }
 
         _isActive = !_isActive;
+
         _backGround.SetActive(_isActive);
 
+        if (_isActive)
+        {
+            //Time.timeScale = 0f;
+        }
     }
 
     public void Execute()
@@ -222,7 +227,6 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
         _backGround.SetActive(false);
         _Scene.ChangeScreenAsync(EScene.Menu).Forget();
-
     }
 
     #endregion

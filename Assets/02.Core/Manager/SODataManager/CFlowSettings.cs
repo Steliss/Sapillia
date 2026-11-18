@@ -233,12 +233,14 @@ public class CFlowGame
 {
     [SerializeField] private EScene _currentScene = EScene.Menu;
     [SerializeField] private string _name = string.Empty;
-    [SerializeField] private int _playerprogress = 0; // 스테이지 진행도 애로 쓸까?
+    [SerializeField] private int _playerprogress = 0;
     [SerializeField] private int _playerretrycount = 0;
     [SerializeField] private int _sapphire = 0;
-    [SerializeField] private long _playerplaytime = 0;
+    [SerializeField] private float _playerplaytime = 0;
     [SerializeField] private byte _saveSlot = 0;
 
+    [SerializeField] private int _currentGameSapphire = 0;
+    [SerializeField] private long _playerSaveTime = 0;
 
 
     public EScene CurrentScene => _currentScene;
@@ -246,9 +248,11 @@ public class CFlowGame
     public string PlayerName => _name;
     public int PlayerProgress => _playerprogress;
     public int PlayerRetrycount => _playerretrycount;
-    public long Playerplaytime => _playerplaytime;
+    public float Playerplaytime => _playerplaytime;
     public byte SaveSlot => _saveSlot;
     public int Sapphire => _sapphire;
+    public int CurrentGameSapphire => _currentGameSapphire;
+    public long PlayerSaveTime => _playerSaveTime;
 
 
     public event Action<int> OnSapphireChanged;
@@ -299,6 +303,7 @@ public class CFlowGame
             return;
         }
 
+        _currentGameSapphire += amount;
         _sapphire += amount;
         OnSapphireChanged?.Invoke(_sapphire);
     }
@@ -320,5 +325,25 @@ public class CFlowGame
         OnSapphireChanged?.Invoke(_sapphire);
 
         return true;
+    }
+
+    public void ResetCurrentGameSapphire()
+    {
+        _currentGameSapphire = 0;
+    }
+
+    public void AddPlaytime(float time)
+    {
+        _playerplaytime += time;
+    }
+
+    public void ResetPlaytime()
+    {
+        _playerplaytime = 0f;
+    }
+
+    public void SetSaveTime()
+    {
+        _playerSaveTime = long.Parse(DateTime.Now.ToString("yyyyMMddHHmm"));
     }
 }
