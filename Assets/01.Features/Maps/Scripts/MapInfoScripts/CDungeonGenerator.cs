@@ -34,6 +34,7 @@ public class CDungeonGenerator : MonoBehaviour
     [Header("네브메쉬")]
     [SerializeField] private CNavmeshControler _nav;
 
+
     #endregion
 
     #region 내부 변수
@@ -54,7 +55,8 @@ public class CDungeonGenerator : MonoBehaviour
     private HashSet<CRoomData> _usedRoomPrefabs = new HashSet<CRoomData>();
 
     private bool _isReady = false;
-    
+
+    private GameObject _wanderingMerchant;
     #endregion
 
     #region 프로퍼티
@@ -79,6 +81,22 @@ public class CDungeonGenerator : MonoBehaviour
 
     private void Start()
     {
+        CDataManger dataManager = FindFirstObjectByType<CDataManger>();
+
+        if (dataManager == null)
+        {
+            Debug.LogError("CDataManger를 찾을 수 없습니다.");
+            return;
+        }
+
+        int progress = dataManager.CurrentFlow.PlayerProgress;
+
+        int currentFloor = Mathf.Clamp(progress, 1, 5);
+
+        SetCurrentFloor(currentFloor);
+
+        Debug.LogWarning($"저장된 진행도: {progress}, 생성할 층: {_currentFloor}");
+
         GenerateNewDungeon();
 
     }
@@ -115,6 +133,17 @@ public class CDungeonGenerator : MonoBehaviour
         );
 
         ClearGeneratedDungeon();
+
+        // 던전 재생성 전 방랑상인 초기화
+        if (_wanderingMerchant == null)
+        {
+            FindWanderingMerchant();
+        }
+
+        if (_wanderingMerchant != null)
+        {
+            _wanderingMerchant.SetActive(false);
+        }
 
         int maxAttempts = 50;
 
@@ -666,6 +695,39 @@ public class CDungeonGenerator : MonoBehaviour
         return false;
     }
 
+    private bool TryAddMerchantRoom()
+    {
+        CFloorDataSO floorData = GetCurrentFloorData();
+
+        if (floorData == null || floorData.RoomPool == null)
+        {
+            Debug.LogWarning("방랑상인 방 데이터가 없습니다.");
+            return false;
+        }
+
+        CRoomData merchantRoom = floorData.RoomPool.MerchantRoomPrefab;
+
+        if (merchantRoom == null)
+        {
+            Debug.LogWarning("방랑상인 방 프리팹이 등록되지 않았습니다.");
+            return false;
+        }
+
+        if (merchantRoom.RoomType != ERoomType.Merchant)
+        {
+            Debug.LogWarning("방랑상인 방의 RoomType이 Merchant가 아닙니다.");
+            return false;
+        }
+
+        if (!TryAddRoom(merchantRoom))
+        {
+            Debug.LogWarning("방랑상인 방 배치 실패");
+            return false;
+        }
+
+        Debug.Log("방랑상인 방 배치 성공");
+        return true;
+    }
 
     private bool TryAddMiniBossRoom()
     {
@@ -791,6 +853,33 @@ public class CDungeonGenerator : MonoBehaviour
                 MovePlayerToStartRoom(spawnedRoom);
             }
 
+            // 방랑상인 활성화 및 이동
+            if (spawnedRoom.RoomType == ERoomType.Merchant)
+            {
+                CMerchantRoom merchantRoom = spawnedRoom.GetComponent<CMerchantRoom>();
+
+                if (merchantRoom == null || merchantRoom.MerchantSpawnPoint == null)
+                {
+                    Debug.LogWarning("방랑상인 방의 생성 위치가 설정되지 않았습니다.");
+                }
+                else if (_wanderingMerchant == null && !FindWanderingMerchant())
+                {
+                    Debug.LogWarning("방랑상인 NPC를 찾을 수 없어 배치하지 못했습니다.");
+                }
+                else
+                {
+                    _wanderingMerchant.SetActive(false);
+
+                    _wanderingMerchant.transform.position =
+                        merchantRoom.MerchantSpawnPoint.position;
+
+                    _wanderingMerchant.SetActive(true);
+
+                    Debug.Log("방랑상인 NPC 이동 및 활성화 완료");
+                }
+            }
+
+
             // 보상 방인 경우 선택된 보상 정보 전달
             if (spawnedRoom.RoomType == ERoomType.Reward)
             {
@@ -868,7 +957,9 @@ public class CDungeonGenerator : MonoBehaviour
         AddRoomPassages(startRoom, Vector3.zero);
         _roomDepths.Add(firstGridPos, 0);
 
-        int combatTargetCount = targetRoomCount - 2;
+        bool hasMerchant = (_currentFloor == 2 || _currentFloor == 3) && _spawnWanderingMerchant;
+
+        int combatTargetCount = targetRoomCount - 2 - (hasMerchant ? 1 : 0);
         int currentRoomCount = 1;
 
         while (currentRoomCount < combatTargetCount)
@@ -896,6 +987,15 @@ public class CDungeonGenerator : MonoBehaviour
             if (!TryAddMiniBossRoom())
             {
                 Debug.LogWarning("4층 중간보스 방 배치 실패");
+                return false;
+            }
+        }
+
+        if (hasMerchant)
+        {
+            if (!TryAddMerchantRoom())
+            {
+                Debug.LogWarning("방랑상인 방 배치 실패");
                 return false;
             }
         }
@@ -984,6 +1084,23 @@ public class CDungeonGenerator : MonoBehaviour
         );
     }
 
+    private bool FindWanderingMerchant()
+    {
+        CMerchant merchant = FindFirstObjectByType<CMerchant>(FindObjectsInactive.Include);
+
+        if (merchant == null)
+        {
+            Debug.LogWarning("방랑상인 NPC를 찾을 수 없습니다.");
+            return false;
+        }
+
+        _wanderingMerchant = merchant.gameObject;
+
+        return true;
+    }
+
+
+
     private ERewardType ConvertRewardType(EStageNodeReward reward)
     {
         switch (reward)
@@ -1035,4 +1152,6 @@ public class CDungeonGenerator : MonoBehaviour
 
         NevmashBake();
     }
+
+
 }

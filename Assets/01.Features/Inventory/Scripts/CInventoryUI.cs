@@ -38,9 +38,14 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
 
+    private CRewardEnchant _currentEnchant;
 
+    private bool _isEnchantMode;
     private bool _isActive;
+
+
     public bool IsActive => _isActive;
+    public bool IsEnchantMode => _isEnchantMode;
 
     private void OnEnable()
     {
@@ -113,6 +118,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         if (!active)
         {
             _drag.CancelDrag();
+            _isEnchantMode = false;
+            _currentEnchant = null;
         }
 
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
@@ -169,7 +176,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     /// <returns></returns>
     public void TryMoveSlot(CInventorySlotUI fromSlot, CInventorySlotUI toSlot)
     {
-        if (!_isActive || fromSlot == toSlot)
+        if (!_isActive || _isEnchantMode || fromSlot == toSlot)
         {
             return;
         }
@@ -331,6 +338,74 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     public void HideItemInfo()
     {
         _InventoryInfo.SetActive(false);
+    }
+
+
+
+    /// <summary>
+    /// 인챈트 모드 활성화 및 비활성화
+    /// </summary>
+    public void SetEnchantMode(bool active)
+    {
+        _isEnchantMode = active;
+
+        if (active)
+        {
+            RefreshInventoryUI();
+            ActiveUI(true);
+        }
+    }
+
+
+
+    /// <summary>
+    /// 인챈트 모드에서 선택한 아티팩트 강화
+    /// </summary>
+    public void TryEnchantSlot(CInventorySlotUI slotUI)
+    {
+        if (!_isEnchantMode || !_isActive || _inventoryData == null || _currentEnchant == null || _currentEnchant.RemainCount <= 0)
+        {
+            return;
+        }
+
+        if (!TryFindSlot(slotUI, out var dataList, out int index))
+        {
+            return;
+        }
+
+        if (dataList != _inventoryData.InventorySlots)
+        {
+            return;
+        }
+
+        CInventorySlotData slotData = dataList[index];
+
+
+        bool success = _inventoryData.TryEnchantArtifact(slotData);
+
+        if (success)
+        {
+            Debug.Log($"인챈트 성공! 아이템 ID: {slotData.ItemID}, 인챈트 레벨: {slotData.InchantLevel}");
+
+            _currentEnchant?.OnEnchantSuccess();
+        }
+        else
+        {
+            Debug.Log("인챈트 실패: 강화할 수 없는 아티팩트입니다.");
+        }
+    }
+
+
+    public void StartEnchant(CRewardEnchant enchant)
+    {
+        if (enchant == null || enchant.RemainCount <= 0)
+        {
+            return;
+        }
+
+        _currentEnchant = enchant;
+
+        SetEnchantMode(true);
     }
 
 }
