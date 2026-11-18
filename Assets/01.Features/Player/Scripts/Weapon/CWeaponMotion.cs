@@ -231,7 +231,7 @@ public class CWeaponMotion : MonoBehaviour
             attackMultiplier = attack.DamageMultiplier * stats.Damage_Normal;
         }
 
-        float damage = baseDamage * stats.Damage_All * stats.Damage_Weapon * attackMultiplier;
+        float damage = baseDamage * stats.GetAttributePower(EAttribute.Physical) * stats.Damage_All * stats.Damage_Weapon * attackMultiplier;
 
         return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
     }
