@@ -24,7 +24,7 @@ public class CInputManager : MonoBehaviour
     [SerializeField] private InputActionReference _presetSettingAction;
     [SerializeField] private InputActionReference _chattingAction;
     [SerializeField] private InputActionReference _reloadingAction;
-    [SerializeField] private InputActionReference _pingAction;
+    [SerializeField] private InputActionReference _rewardAction;
     [SerializeField] private InputActionReference _choosePotionAction;
     [SerializeField] private InputActionReference _beforeAction;
     [SerializeField] private InputActionReference _nextAction;
@@ -45,7 +45,7 @@ public class CInputManager : MonoBehaviour
     public event Action OnPresetSetting;
     public event Action OnChatting;
     public event Action OnReloading;
-    public event Action OnPing;
+    public event Action OnReward;
     public event Action OnChoosePotion;
     public event Action OnBefore;
     public event Action OnNext;
@@ -77,7 +77,7 @@ public class CInputManager : MonoBehaviour
         _presetSettingAction.action.performed += presetSettingAction;
         _chattingAction.action.performed += chattingAction;
         _reloadingAction.action.performed += reloadingAction;
-        _pingAction.action.performed += pingAction;
+        _rewardAction.action.performed += pingAction;
         _choosePotionAction.action.performed += choosePotionAction;
         _beforeAction.action.performed += beforeAction;
         _nextAction.action.performed += nextAction;
@@ -98,7 +98,7 @@ public class CInputManager : MonoBehaviour
         _presetSettingAction.action.Enable();
         _chattingAction.action.Enable();
         _reloadingAction.action.Enable();
-        _pingAction.action.Enable();
+        _rewardAction.action.Enable();
         _choosePotionAction.action.Enable();
         _beforeAction.action.Enable();
         _nextAction.action.Enable();
@@ -130,7 +130,7 @@ public class CInputManager : MonoBehaviour
         _presetSettingAction.action.performed -= presetSettingAction;
         _chattingAction.action.performed -= chattingAction;
         _reloadingAction.action.performed -= reloadingAction;
-        _pingAction.action.performed -= pingAction;
+        _rewardAction.action.performed -= pingAction;
         _choosePotionAction.action.performed -= choosePotionAction;
         _beforeAction.action.performed -= beforeAction;
         _nextAction.action.performed -= nextAction;
@@ -151,7 +151,7 @@ public class CInputManager : MonoBehaviour
         _presetSettingAction.action.Disable();
         _chattingAction.action.Disable();
         _reloadingAction.action.Disable();
-        _pingAction.action.Disable();
+        _rewardAction.action.Disable();
         _choosePotionAction.action.Disable();
         _beforeAction.action.Disable();
         _nextAction.action.Disable();
@@ -258,7 +258,7 @@ public class CInputManager : MonoBehaviour
 
     private void pingAction(InputAction.CallbackContext ctx)
     {
-        OnPing?.Invoke();
+        OnReward?.Invoke();
     }
 
     private void choosePotionAction(InputAction.CallbackContext ctx)
