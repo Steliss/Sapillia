@@ -195,13 +195,19 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         {
             case EIm.Exp:
                 _data.AddEXP(_amount);
+
                 break;
             case EIm.Money:
                 _data.AddMoney(_amount);
                 break;
+
             case EIm.Sapphire:
-                // ※ 사파이어 접근할 곳 필요
+                if (CManagerDontDestroy.Instance != null)
+                {
+                    CManagerDontDestroy.Instance.DataManger.CurrentFlow.AddSapphire(_amount);
+                }
                 break;
+
             case EIm.Dice:
                 _data.AddDice(_amount);
                 break;
