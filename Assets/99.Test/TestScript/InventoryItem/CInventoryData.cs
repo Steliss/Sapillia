@@ -76,6 +76,7 @@ public class CInventorySlotData
     }
 
 
+
     /// <summary>
     /// 석판 회전함수
     /// </summary>
