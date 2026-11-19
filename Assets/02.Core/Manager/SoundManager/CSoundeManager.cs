@@ -40,6 +40,12 @@ public class CSoundManager : MonoBehaviour
             return;
         }
 
+        // 정지할 효과음
+        EventInstance instance = RuntimeManager.CreateInstance(sound);
+        instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
+        instance.setProperty(EVENT_PROPERTY.MINIMUM_DISTANCE, 10f);
+        instance.setProperty(EVENT_PROPERTY.MAXIMUM_DISTANCE, 30f);
+
         // 정지할 필요 없는 효과음
         if (!stop)
         {
@@ -47,9 +53,6 @@ public class CSoundManager : MonoBehaviour
             return;
         }
 
-        // 정지할 효과음
-        EventInstance instance = RuntimeManager.CreateInstance(sound);
-        instance.set3DAttributes(RuntimeUtils.To3DAttributes(position));
 
         FMOD.RESULT result = instance.start();
 

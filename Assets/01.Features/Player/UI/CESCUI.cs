@@ -11,6 +11,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     [SerializeField] private CInventoryUI inventoryUI;
     [SerializeField] private CLogUI logUI;
     [SerializeField] private CMerchant merchantUI;
+    [SerializeField] private CNPCTalkUI npcTalkUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
@@ -44,7 +45,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     public bool IsActive => _isActive;
 
     // 플레이어 행동 제어 변수 
-    public bool IsAnyUIOpen => _isActive || logUI.IsActive || _settingUI.IsActive || inventoryUI.IsActive || playerStatsUI.IsActive;
+    public bool IsAnyUIOpen => _isActive || logUI.IsActive || _settingUI.IsActive || inventoryUI.IsActive || playerStatsUI.IsActive || merchantUI.IsActive;
 
     private void OnEnable()
     {
@@ -111,6 +112,13 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
                 merchantUI.ActiveUI(false);
                 return;
             }
+        }
+
+        if (npcTalkUI != null && npcTalkUI.IsActive)
+        {
+            npcTalkUI.CloseTalk();
+            logUI.ActiveUI(false);
+            return;
         }
 
         if (logUI.IsActive)
