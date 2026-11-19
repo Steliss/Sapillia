@@ -1,8 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum EMarchant
+{
+    None,
+    Cow,
+    Rat,
+    Turtle
+}
+
+
 public class CMerchant : CTriggerPlayer, IInputCommand
 {
+    [SerializeField] private EMarchant _type;
     [SerializeField] private GameObject _shopUI;
     [SerializeField] private CInventoryUI _inventoryUI;
     [SerializeField] private CItemDatabaseSO _itemData;
@@ -10,6 +20,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
     [Header("협상력")]
     [SerializeField] private int bargain = 10;
+    [SerializeField] private int _money = 2000;
 
     private CInputCommandHub _input;
     private CDataManger _data;
@@ -23,8 +34,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     private bool _isActive;
     private bool _isNear;
 
-    private int _money = 2000;
-    private int _bargain = 0;
+    private int _bargain = 0; // 계산용
 
     public bool IsActive => _isActive;
     public int Money => _money;
@@ -119,18 +129,29 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     {
         _shopSlots.Clear();
 
-        AddShopItem(EItemType.Potion);
-        AddShopItem(EItemType.Potion);
-        AddShopItem(EItemType.Potion);
-        AddShopItem(EItemType.Potion);
-        AddShopItem(EItemType.Potion);
-        AddShopItem(EItemType.Potion);
+        if (_type == EMarchant.Cow)
+        {
+            AddShopItem(2001,3); // 기본 포션 
+            AddShopItem(EItemType.Potion);
 
-        AddShopItem(EItemType.Artifact);
-        AddShopItem(EItemType.Artifact);
-        AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
 
-        AddShopItem(EItemType.Tablet);
+            AddShopItem(EItemType.Tablet);
+        }
+        else if (_type == EMarchant.Rat)
+        {
+            AddShopItem(2001, 3); // 기본 포션 
+        }
+        else if (_type == EMarchant.Turtle)
+        {
+            AddShopItem(2001, 3); // 기본 포션 
+        }
+        else
+        {
+            AddShopItem(2001, 3); // 기본 포션 
+        }
     }
 
     // 상점 아이템 생성
@@ -145,6 +166,20 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         }
 
         _shopSlots.Add(CreateShopSlot(item));
+    }
+
+
+    private void AddShopItem(int itemID, int count)
+    {
+        CItemSO item = _itemData.SetItem(itemID);
+
+        if (item == null)
+        {
+            _shopSlots.Add(new CInventorySlotData());
+            return;
+        }
+
+        _shopSlots.Add(CreateShopSlot(item, count));
     }
 
     public void AddMoney(int value)
