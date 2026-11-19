@@ -36,6 +36,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private string _aniIdle = "Idle";
     [SerializeField] private string _aniJumpJump = "JumpJump";
     [SerializeField] private string _aniJumpJumpReady = "JumpJumpReady";
+    [SerializeField] private string _aniSkipByeBye = "SkipByeBye";
     [Header("사운드")]
     [SerializeField] private string _soundJumpJump = "MoleDance";
     [SerializeField] private string _soundSpeech = "DialogueBlip";
@@ -54,6 +55,8 @@ public class CEnemyBoss01Production : MonoBehaviour
     private int _hashJumpJump;
     private int _hashJumpJumpReady;
     private int _hashLandingDie;
+    private int _hashSkipByeBye;
+    private bool _isProduction = false;
     private CLocalizationManager _speechData;
     private CSoundManager _soundManager;
     private Transform _target;
@@ -70,6 +73,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         _hashJumpJumpReady = Animator.StringToHash(_aniJumpJumpReady);
         _hashJumpJump = Animator.StringToHash(_aniJumpJump);
         _hashLandingDie = Animator.StringToHash(_aniLandingDie);
+        _hashSkipByeBye = Animator.StringToHash(_aniSkipByeBye);
 
         _noise = _zoomOutCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
@@ -91,7 +95,7 @@ public class CEnemyBoss01Production : MonoBehaviour
             _noise.m_AmplitudeGain = 0;
         }
 
-        if (_target != null)
+        if (_target != null && _isProduction)
         {
             bool isLeft = _target.position.x < _ani.transform.position.x;
             if (_sp.flipX != isLeft)
@@ -131,6 +135,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     {
         _target = target;
         _zoomInCamera.Priority = 12;
+        _isProduction = true;
 
         for (float time = 0f; time < _zoomInTime; time += Time.deltaTime)
         {
@@ -139,6 +144,21 @@ public class CEnemyBoss01Production : MonoBehaviour
 
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
+
+        if (CManagerDontDestroy.Instance != null)
+        {
+            if (CManagerDontDestroy.Instance.DataManger.CurrentSetting.SkipBoss)
+            {
+                _zoomInCamera.Priority = 1;
+                FadeOut().Forget();
+                _ani.Play(_hashJump);
+                await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
+                _isProduction = false;
+                return;
+            }
+        }
+
+
 
         _textBubble.gameObject.SetActive(true);
         _textBox.gameObject.SetActive(true);
@@ -184,8 +204,7 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         FadeOut().Forget();
         _zoomInCamera.Priority = 1;
-
-        
+        _isProduction = false;
     }
 
     private async UniTask FadeOut()
@@ -304,6 +323,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     {
         _uni.Cancel();
         _zoomInCamera.Priority = 11;
+        _isProduction = true;
         for (float time = 0f; time < _zoomInTime; time += Time.deltaTime)
         {
             float t = time / _zoomInTime;
@@ -314,6 +334,21 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         _ani.Play(_hashLandingDie);
         await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: ct);
+
+        if (CManagerDontDestroy.Instance != null)
+        {
+            if (CManagerDontDestroy.Instance.DataManger.CurrentSetting.SkipBoss)
+            {
+                _zoomInCamera.Priority = 1;
+                FadeOut().Forget();
+                await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
+                _ani.Play(_hashSkipByeBye);
+                _flag.SetActive(true);
+                _isProduction = false;
+                return;
+            }
+        }
+
 
 
         _textBubble.gameObject.SetActive(true);
@@ -359,6 +394,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         _zoomInCamera.Priority = 1;
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
         _flag.SetActive(true);
+        _isProduction = false;
     }
 
 

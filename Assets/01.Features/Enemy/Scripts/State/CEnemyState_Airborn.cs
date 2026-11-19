@@ -6,8 +6,8 @@ public class CEnemyState_Airborn : IEnemyState
 {
     private CStateMashine _mashine;
     private CUniTaskOnes _uni = new CUniTaskOnes();
-    private float _airbornTimeMax = 1.5f;
-    private float _downTime = 2f;
+    private float _airbornTimeMax = 1f;
+    private float _downTime = 1f;
     private Transform _tr;
 
     public CEnemyState_Airborn(CStateMashine mashine)
