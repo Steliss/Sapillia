@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 1116941954307639978}
   - component: {fileID: -5090309822534363869}
   m_Layer: 0
-  m_Name: Stamp_FX
+  m_Name: Stamp_Jump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -133,4 +133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9ce26a78bf9d734591d660bfcca01a9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _playSound: MoleDance
+  _playSound:
+  - MoleDance
+  - MoleJump

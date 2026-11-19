@@ -37,7 +37,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private string _aniJumpJump = "JumpJump";
     [SerializeField] private string _aniJumpJumpReady = "JumpJumpReady";
     [Header("사운드")]
-    [SerializeField] private string _soundJump = "MoleJump";
+    [SerializeField] private string _soundJumpJump = "MoleDance";
     [SerializeField] private string _soundSpeech = "DialogueBlip";
 
     [Header("대사 번역 테이블")]
@@ -178,7 +178,6 @@ public class CEnemyBoss01Production : MonoBehaviour
         _textBubble.gameObject.SetActive(false);
 
         _ani.Play(_hashJump);
-        SoundPlay(_soundJump);
 
         await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
 
@@ -258,6 +257,7 @@ public class CEnemyBoss01Production : MonoBehaviour
                 );
             targetRanPos += (Vector2)_target.transform.position;
             _ani.Play(_hashJumpJump);
+            SoundPlay(_soundJumpJump);
             FallingRock(randomPos1);
             FallingRock(randomPos2);
             FallingRock(targetRanPos);
@@ -270,7 +270,6 @@ public class CEnemyBoss01Production : MonoBehaviour
         await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
 
         _ani.Play(_hashJump);
-        SoundPlay(_soundJump);
 
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
 
