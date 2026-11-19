@@ -1,127 +1,247 @@
 {
-    "items": [
+  "items": [
 
-        {
-            "key": "item.tablet.cantrotate",
-            "value": "회전불가"
-        },
-        {
-            "key": "item.tablet.1001.name",
-            "value": "건조"
-        },
-        {
-            "key": "item.tablet.1002.name",
-            "value": "근사"
-        },
-        {
-            "key": "item.tablet.1003.name",
-            "value": "기사도"
-        },
-        {
-            "key": "item.tablet.1010.name",
-            "value": "경쟁"
-        },
-        {
-            "key": "item.tablet.1011.name",
-            "value": "과거"
-        },
-        {
-            "key": "item.tablet.1012.name",
-            "value": "쌍성"
-        },
-        {
-            "key": "item.tablet.1020.name",
-            "value": "기반"
-        },
-        {
-            "key": "item.tablet.1021.name",
-            "value": "동시성"
-        },
-        {
-            "key": "item.tablet.1022.name",
-            "value": "반항"
-        },
-        {
-            "key": "item.tablet.1030.name",
-            "value": "가시"
-        },
-        {
-            "key": "item.tablet.1031.name",
-            "value": "기적"
-        },
-        {
-            "key": "item.potion.2000.name",
-            "value": "재생의 포션 (맛보기 샘플)"
-        },
-        {
-            "key": "item.potion.2000.desc",
-            "value": "HP {0:0}% 회복"
-        },
-        {
-            "key": "item.potion.2000.story",
-            "value": "시음 전용. 병값이 내용물보다 비싸다."
-        },
-        {
-            "key": "item.potion.2001.name",
-            "value": "재생의 포션"
-        },
-        {
-            "key": "item.potion.2001.desc",
-            "value": "HP {0:0}% 회복"
-        },
-        {
-            "key": "item.potion.2001.story",
-            "value": "체력을 회복한다."
-        },
-        {
-            "key": "item.potion.2010.name",
-            "value": "템프라니요의 열정"
-        },
-        {
-            "key": "item.potion.2010.desc",
-            "value": "화염속성 피해 + {0}"
-        },
-        {
-            "key": "item.potion.2010.story",
-            "value": "마시면 손과 발이 따뜻해진다."
-        },
-        {
-            "key": "item.potion.2011.name",
-            "value": "우니 블랑의 안개"
-        },
-        {
-            "key": "item.potion.2011.desc",
-            "value": "얼음속성 피해 + {0}"
-        },
-        {
-            "key": "item.potion.2011.story",
-            "value": "마시면 손과 발이 시원해진다."
-        },
-        {
-            "key": "item.potion.2012.name",
-            "value": "말벡의 짙음"
-        },
-        {
-            "key": "item.potion.2012.desc",
-            "value": "번개 속성 피해 + {0}"
-        },
-        {
-            "key": "item.potion.2012.story",
-            "value": "마시면 손과 발이 저릿해진다."
-        },
-        {
-            "key": "item.potion.2013.name",
-            "value": "네비올로의 완강"
-        },
-        {
-            "key": "item.potion.2013.desc",
-            "value": "물리 피해 + {0}"
-        },
-        {
-            "key": "item.potion.2013.story",
-            "value": "마시면 힘이 샘솟는다."
-        }
-    ],
+    {
+      "key": "item.tablet.cantrotate",
+      "value": "회전불가"
+    },
+    {
+      "key": "item.tablet.1001.name",
+      "value": "건조"
+    },
+    {
+      "key": "item.tablet.1002.name",
+      "value": "근사"
+    },
+    {
+      "key": "item.tablet.1003.name",
+      "value": "기사도"
+    },
+    {
+      "key": "item.tablet.1010.name",
+      "value": "경쟁"
+    },
+    {
+      "key": "item.tablet.1011.name",
+      "value": "과거"
+    },
+    {
+      "key": "item.tablet.1012.name",
+      "value": "쌍성"
+    },
+    {
+      "key": "item.tablet.1020.name",
+      "value": "기반"
+    },
+    {
+      "key": "item.tablet.1021.name",
+      "value": "동시성"
+    },
+    {
+      "key": "item.tablet.1022.name",
+      "value": "반항"
+    },
+    {
+      "key": "item.tablet.1030.name",
+      "value": "가시"
+    },
+    {
+      "key": "item.tablet.1031.name",
+      "value": "기적"
+    },
+    {
+      "key": "item.potion.2000.name",
+      "value": "재생의 포션 (맛보기 샘플)"
+    },
+    {
+      "key": "item.potion.2000.desc",
+      "value": "HP {0:0}% 회복"
+    },
+    {
+      "key": "item.potion.2000.story",
+      "value": "시음 전용. 병값이 내용물보다 비싸다."
+    },
+    {
+      "key": "item.potion.2001.name",
+      "value": "재생의 포션"
+    },
+    {
+      "key": "item.potion.2001.desc",
+      "value": "HP {0:0}% 회복"
+    },
+    {
+      "key": "item.potion.2001.story",
+      "value": "체력을 회복한다."
+    },
+    {
+      "key": "item.potion.2010.name",
+      "value": "템프라니요의 열정"
+    },
+    {
+      "key": "item.potion.2010.desc",
+      "value": "화염속성 피해 + {0}"
+    },
+    {
+      "key": "item.potion.2010.story",
+      "value": "마시면 손과 발이 따뜻해진다."
+    },
+    {
+      "key": "item.potion.2011.name",
+      "value": "우니 블랑의 안개"
+    },
+    {
+      "key": "item.potion.2011.desc",
+      "value": "얼음속성 피해 + {0}"
+    },
+    {
+      "key": "item.potion.2011.story",
+      "value": "마시면 손과 발이 시원해진다."
+    },
+    {
+      "key": "item.potion.2012.name",
+      "value": "말벡의 짙음"
+    },
+    {
+      "key": "item.potion.2012.desc",
+      "value": "번개 속성 피해 + {0}"
+    },
+    {
+      "key": "item.potion.2012.story",
+      "value": "마시면 손과 발이 저릿해진다."
+    },
+    {
+      "key": "item.potion.2013.name",
+      "value": "네비올로의 완강"
+    },
+    {
+      "key": "item.potion.2013.desc",
+      "value": "물리 피해 + {0}"
+    },
+    {
+      "key": "item.potion.2013.story",
+      "value": "마시면 힘이 샘솟는다."
+    },
+    {
+      "key": "item.133a",
+      "value": "아그마 투영검 190,191번"
+    },
+    {
+      "key": "item.133b",
+      "value": "물리 피해 +{0}"
+    },
+    {
+      "key": "item.133c",
+      "value": "190번째. 형태는 검과 흡사하다. 에너지는 대칭적인 형태로만 드러나며, 칼날 자체는 나타나지 않는다. -아그마"
+    },
+    {
+      "key": "item.137a",
+      "value": "푸른 손목 보호대"
+    },
+    {
+      "key": "item.137b",
+      "value": "특수 공격 피해 +{0}%"
+    },
+    {
+      "key": "item.137c",
+      "value": "시간을 느리게 만들기 위해서 만들어진 수많은 실패작 중 하나."
+    },
+    {
+      "key": "item.101a",
+      "value": "힘의 부적"
+    },
+    {
+      "key": "item.101b",
+      "value": "물리 피해 +{0}"
+    },
+    {
+      "key": "item.101c",
+      "value": "믿음직스럽지 않게 '힘'이라 적혀있다."
+    },
+    {
+      "key": "item.104a",
+      "value": "전사의 증표"
+    },
+    {
+      "key": "item.104b",
+      "value": "물리 피해 {0} \n공격 속도 +{1}%"
+    },
+    {
+      "key": "item.104c",
+      "value": "어린 도마뱀들이 첫 사냥을 나갈 때 수여하는 특별한 증표."
+    },
+    {
+      "key": "item.135a",
+      "value": "토끼마을 경비병 투구"
+    },
+    {
+      "key": "item.135b",
+      "value": "무기 피해량 +{0}% \n회피 -{1}"
+    },
+    {
+      "key": "item.135c",
+      "value": "평균 크기 토끼의 얼굴에만 맞습니다."
+    },
+    {
+      "key": "item.102a",
+      "value": "방패술 교본"
+    },
+    {
+      "key": "item.102b",
+      "value": "특수 공격 피해 +{0}%"
+    },
+    {
+      "key": "item.102c",
+      "value": "'어린 동물에게 보여주지 마시오'라고 쓰여있다."
+    },
+    {
+      "key": "item.128a",
+      "value": "가시 부적"
+    },
+    {
+      "key": "item.128b",
+      "value": "치명타 확률 +{0}% \n물리 피해 +{1}"
+    },
+    {
+      "key": "item.128c",
+      "value": "가방에 넣어두면 가시가 삐져나올 것 같다."
+    },
+    {
+      "key": "item.112a",
+      "value": "베고니아 향 주머니"
+    },
+    {
+      "key": "item.112b",
+      "value": "일반 공격 피해 +{0}%"
+    },
+    {
+      "key": "item.112c",
+      "value": "가방에 넣어두면 자연스러운 꽃향기가 납니다."
+    },
+    {
+      "key": "item.134a",
+      "value": "신비한 무게 추"
+    },
+    {
+      "key": "item.134b",
+      "value": "일반 공격 피해 +{0}% \n공격 속도 -{1}%"
+    },
+    {
+      "key": "item.134c",
+      "value": "천칭의 맞은편 물건의 무게를 그대로 따라 하는 마법이 걸려 있습니다."
+    },
+    {
+      "key": "item.136a",
+      "value": "소태도 야쿠모"
+    },
+    {
+      "key": "item.136b",
+      "value": "대시 공격 피해 +{0}% \n대시 회복 속도+{1}%"
+    },
+    {
+      "key": "item.136c",
+      "value": "구름 위를 나는 듯 가벼운 기운이어라."
+    }
+  ],
 
     "talk": [
         {
