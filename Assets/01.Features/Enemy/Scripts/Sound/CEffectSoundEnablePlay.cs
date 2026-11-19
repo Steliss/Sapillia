@@ -3,7 +3,7 @@ using UnityEngine;
 public class CEffectSoundEnablePlay : MonoBehaviour
 {
     private CSoundManager _soundManager;
-    [SerializeField] private string _playSound;
+    [SerializeField] private string[] _playSound;
 
     private void OnEnable()
     {
@@ -17,13 +17,15 @@ public class CEffectSoundEnablePlay : MonoBehaviour
             }
         }
 
-        if (string.IsNullOrWhiteSpace(_playSound))
+        for (int i = 0; i < _playSound.Length; i++)
         {
-            return;
+            if (string.IsNullOrWhiteSpace(_playSound[i]))
+            {
+                continue;
+            }
+
+            _soundManager.PlayEffect(_playSound[i], transform.position);
         }
-
-        _soundManager.PlayEffect(_playSound, transform.position);
-
     }
 
 }
