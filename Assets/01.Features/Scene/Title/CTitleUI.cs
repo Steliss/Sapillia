@@ -290,7 +290,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
                 _saveSlots[slot].PlayerProgressText.text = _localization.GetText("scene.playerprogress.text");
                 _saveSlots[slot].PlayerProgressSOText.text = $"{_dataManger.CurrentFlow.PlayerProgress}";
                 _saveSlots[slot].PlayerRetryCountText.text = _localization.GetText("scene.playerretrycount.text");
-                _saveSlots[slot].PlayerRetryCountSOText.text = _localization.GetText($"{_dataManger.CurrentFlow.PlayerRetrycount}");
+                _saveSlots[slot].PlayerRetryCountSOText.text = $"{_dataManger.CurrentFlow.PlayerRetrycount}";
                 _saveSlots[slot].PlayerPlayTimeText.text = _localization.GetText("scene.playerplaytime.text");
 
                 if (DateTime.TryParseExact(_dataManger.CurrentFlow.PlayerSaveTime.ToString(), "yyyyMMddHHmm", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime saveTime))

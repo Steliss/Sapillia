@@ -82,7 +82,7 @@ public class CTownGateEnter : CTriggerPlayer, IInputCommand
         if (_isActive)
         {
             _data.CurrentFlow.AddProgress(1);
-            _data.SaveGame(_data.CurrentFlow.SaveSlot);
+            _data.SaveGame(_data.CurrentFlow.SaveSlot); // 던전에서 저장
             _sceneManager.ChangeScreenAsync(EScene.stage1).Forget();
         }
     }

@@ -224,6 +224,7 @@ public class CDataManger : MonoBehaviour
         _currentFlow.AddRetryCount(1);
         _currentFlow.ResetCurrentGameSapphire();
         _currentFlow.ResetPlaytime();
+        _currentFlow.SetCurrentScene(EScene.Town);
 
         return SaveGame(CurrentFlow.SaveSlot);
     }

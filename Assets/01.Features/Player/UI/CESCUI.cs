@@ -229,6 +229,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             // 패배 관련 띄우기 여부 
 
+            Time.timeScale = 1f;
             _Scene.ChangeScreenAsync(EScene.Town).Forget();
         }
         else
@@ -247,6 +248,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
         _backGround.SetActive(false);
+        Time.timeScale = 1f;
         _Scene.ChangeScreenAsync(EScene.Menu).Forget();
     }
 
