@@ -36,6 +36,10 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private string _aniIdle = "Idle";
     [SerializeField] private string _aniJumpJump = "JumpJump";
     [SerializeField] private string _aniJumpJumpReady = "JumpJumpReady";
+    [Header("사운드")]
+    [SerializeField] private string _soundJump = "MoleJump";
+    [SerializeField] private string _soundSpeech = "DialogueBlip";
+
     [Header("대사 번역 테이블")]
     [SerializeField] private string[] _openingSpeech;
     [SerializeField] private string[] _closeingSpeech;
@@ -51,6 +55,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     private int _hashJumpJumpReady;
     private int _hashLandingDie;
     private CLocalizationManager _speechData;
+    private CSoundManager _soundManager;
     private Transform _target;
     private CObjectPoolManager _op;
     private CinemachineBasicMultiChannelPerlin _noise;
@@ -69,9 +74,6 @@ public class CEnemyBoss01Production : MonoBehaviour
         _noise = _zoomOutCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
-    private void Start()
-    {
-    }
 
     private void OnDisable()
     {
@@ -98,6 +100,25 @@ public class CEnemyBoss01Production : MonoBehaviour
             }
         }
 
+    }
+
+    private void SoundPlay(string soundName)
+    {
+        if (string.IsNullOrWhiteSpace(soundName))
+        {
+            return;
+        }
+
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance == null)
+            {
+                return;
+            }
+            _soundManager = CManagerDontDestroy.Instance.Sound;
+        }
+
+        _soundManager.PlayEffect(soundName, transform.position);
     }
 
     public void CameraShaking(float power)
@@ -129,22 +150,25 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         for (int i = 0; i < _openingSpeech.Length; i++)
         {
+            _textBox.text = _speechData?.GetText(_openingSpeech[i]);
             int count = 0;
             float t = 0f;
             _textBox.maxVisibleCharacters = count;
             _textBox.ForceMeshUpdate();
-            _textBox.text = _speechData?.GetText(_openingSpeech[i]);
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
-                t += Time.deltaTime;
-                if (t > 0.1f)
+                if (count < _textBox.text.Length)
                 {
-                    count++;
-                    t = 0f;
-                    _textBox.maxVisibleCharacters = count;
-                    _textBox.ForceMeshUpdate();
+                    t += Time.deltaTime;
+                    if (t > 0.1f)
+                    {
+                        count++;
+                        t = 0f;
+                        _textBox.maxVisibleCharacters = count;
+                        _textBox.ForceMeshUpdate();
+                        SoundPlay(_soundSpeech);
+                    }
                 }
-
 
 
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
@@ -154,6 +178,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         _textBubble.gameObject.SetActive(false);
 
         _ani.Play(_hashJump);
+        SoundPlay(_soundJump);
 
         await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
 
@@ -245,6 +270,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
 
         _ani.Play(_hashJump);
+        SoundPlay(_soundJump);
 
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
 
@@ -308,13 +334,17 @@ public class CEnemyBoss01Production : MonoBehaviour
             _textBox.text = _speechData?.GetText(_closeingSpeech[i]);
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
-                t += Time.deltaTime;
-                if (t > 0.1f)
+                if (count < _textBox.text.Length)
                 {
-                    count++;
-                    t = 0f;
-                    _textBox.maxVisibleCharacters = count;
-                    _textBox.ForceMeshUpdate();
+                    t += Time.deltaTime;
+                    if (t > 0.1f)
+                    {
+                        count++;
+                        t = 0f;
+                        _textBox.maxVisibleCharacters = count;
+                        _textBox.ForceMeshUpdate();
+                        SoundPlay(_soundSpeech);
+                    }
                 }
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
