@@ -15,44 +15,26 @@ MonoBehaviour:
   _duration: 0.3
   _recovery: 0.18
   _damageMultiplier: 1
-  _gripOffset: {x: 0.2, y: 0.5}
+  _gripOffset: {x: 0, y: 0.49}
   _hitDistance: 1
   _hitRadius: 0.28
   _angleCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.000021412037
-      value: -240
-      inSlope: 47.233936
-      outSlope: 47.233936
+      time: 0
+      value: -60
+      inSlope: 60
+      outSlope: 60
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.17220458
-      value: -231.86711
-      inSlope: 39.966522
-      outSlope: 39.966522
-      tangentMode: 136
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 0.8139915
-      value: -30.207186
-      inSlope: -0.041340247
-      outSlope: -0.041340247
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.26842308
-    - serializedVersion: 3
-      time: 0.9984741
-      value: -30.261795
-      inSlope: -0.2960132
-      outSlope: -0.2960132
+      time: 0.5
+      value: -30
+      inSlope: 60
+      outSlope: 60
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -68,32 +50,30 @@ MonoBehaviour:
       value: 0
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.5
-      value: 0.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: 0.0009460449
+      value: 0
       inSlope: 0
       outSlope: 0
-      tangentMode: 0
+      tangentMode: 34
       weightedMode: 0
-      inWeight: 0
+      inWeight: 0.33333334
       outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   _hitStart: 0.15
   _hitEnd: 0.8
-  _slashSprite: {fileID: 21300000, guid: 8c990290233bb1e41b9254b58a6b5ab0, type: 3}
+  _slashSprite: {fileID: 0}
+  _effects:
+  - Prefab: {fileID: 8660152726777881259, guid: 947d4840ff30a0c4b8ed94a37a0e4c17, type: 3}
+    StartProgress: 0
+    Anchor: 0
+    RotationMode: 1
+    Offset: {x: 1, y: 0}
+    AngleOffset: 270
   _slashScale: 1

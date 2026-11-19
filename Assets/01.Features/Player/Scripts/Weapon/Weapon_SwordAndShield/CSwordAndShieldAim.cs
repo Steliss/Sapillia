@@ -93,7 +93,7 @@ public class CSwordAndShieldAim : MonoBehaviour
     public float CurrentWeaponAngle => _currentWeaponAngle;
     // 이펙트에 전달할 최종 무기 조준 회전
     public Quaternion EffectAimRotation => _weaponPivot != null ? _weaponPivot.rotation : Quaternion.identity;
-
+    public Transform WeaponPivot => _weaponPivot;
     #endregion
 
     private void Awake()
@@ -245,6 +245,14 @@ public class CSwordAndShieldAim : MonoBehaviour
 
     public void LockAim()
     {
+        CLog.Log(
+        $"[Aim BEFORE] ID:{GetInstanceID()} / " +
+        $"Locked:{_isAimLocked} / " +
+        $"Enabled:{isActiveAndEnabled} / " +
+        $"Pivot:{(_weaponPivot != null ? _weaponPivot.name : "NULL")} / " +
+        $"Rotation:{(_weaponPivot != null ? _weaponPivot.eulerAngles.z : 0f):F1}");
+
+
 
         if (_isAimLocked)
         {
@@ -253,9 +261,16 @@ public class CSwordAndShieldAim : MonoBehaviour
 
         // 공격 시작 순간의 최신 방향 반영
         UpdateAimDirection();
-        _isAimLocked = true;
 
         ApplyAimPose();
+
+        CLog.Log(
+        $"[Aim AFTER] " +
+        $"마우스각:{_currentAimAngle:F1} / " +
+        $"계산각:{_currentWeaponAngle:F1} / " +
+        $"실제회전:{_weaponPivot.eulerAngles.z:F1}");
+
+        _isAimLocked = true;
     }
 
     public void UnlockAim()

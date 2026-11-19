@@ -34,6 +34,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Min(0.01f)]
     [SerializeField] private float _dashAttackWindow = 0.25f;
 
+    // 테스트
+    [Header("공격 방향 확인")]
+    [SerializeField] private CSwordAndShieldAim _aim;
 
     #endregion
 
@@ -208,7 +211,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         }
 
         // 우클릭이 없으면 기존 일반공격
-        if (_weaponMotion == null)
+        if (_weaponMotion == null || _weaponData == null)
         {
             CLog.Warn("[PlayerAttack] WeaponMotion 누락");
             return;
@@ -376,12 +379,20 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return false;
         }
 
+        // TryPlay에서 LockAim이 실행된 뒤의 조준값
+        if (_aim != null)
+        {
+            float aimAngle = Mathf.Atan2(_aim.AimDirection.y, _aim.AimDirection.x) * Mathf.Rad2Deg;
+
+            CLog.Log($"[PlayerAttack] 마우스 방향 : {aimAngle:F1}° / 무기 회전 : {_aim.EffectAimRotation.eulerAngles.z:F1}°");
+        }
+        /*
         // 실제 무기 공격이 시작됐을 때 애니메이션 재생
         if (_playerAnimation != null)
         {
             _playerAnimation.PlayAttack(_nextComboIndex + 1, stats.Attack_Speed);
         }
-
+        */
         // 다음 공격 인덱스
         _nextComboIndex = (_nextComboIndex + 1) % _weaponData.AttackCount;
 
