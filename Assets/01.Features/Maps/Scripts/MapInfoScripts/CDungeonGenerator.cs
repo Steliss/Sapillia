@@ -850,7 +850,7 @@ public class CDungeonGenerator : MonoBehaviour
             );
 
             // 플레이어 위치지정
-            if ((spawnedRoom.RoomType == ERoomType.Start) || (spawnedRoom.RoomType == ERoomType.Anvil))
+            if ((spawnedRoom.RoomType == ERoomType.Start) || (spawnedRoom.RoomType == ERoomType.Anvil) || (spawnedRoom.RoomType == ERoomType.Boss))
             {
                 MovePlayerToStartRoom(spawnedRoom);
             }
