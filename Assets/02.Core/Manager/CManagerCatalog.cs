@@ -63,7 +63,7 @@ public enum EKeyAction
     PresetSetting,
     Chatting,
     Reloading,
-    Ping,
+    Reward,
     ChoosePotion,
     Before,
     Next,
