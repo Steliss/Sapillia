@@ -65,6 +65,7 @@ public class CPlayerGamingDataSO
     public int EquippedWeaponTier => _equippedWeaponTier;
     public int CurrentAmmo => _currentAmmo;
     public int MaxAmmo => _stats.Ammo_Cap;
+    public int LevelUpRewardCount { get; set; }
 
     // 예비 탄창 수
     public int ReserveMagazineCount => Mathf.Max(0, _currentCount - 1);
@@ -441,14 +442,14 @@ public class CPlayerGamingDataSO
     private void LevelUp()
     {
         _level++;
-
+        LevelUpRewardCount++;
         float growth = _expGrowthMultiplier;
 
         // Mathf.CeilToInt()는 소수점 이하를 올림하여 int로 변환
         _requiredEXP = Mathf.Max(1, Mathf.CeilToInt(_requiredEXP * growth));
 
         Heal(Mathf.RoundToInt(_stats.Levelup_Heal));
-
+        
         OnLevelChanged?.Invoke(_level);
     }
 
