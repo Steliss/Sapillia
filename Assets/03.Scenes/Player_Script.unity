@@ -668,7 +668,7 @@ MonoBehaviour:
   _presetSettingAction: {fileID: -1207298698489875335, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
   _chattingAction: {fileID: 3482209823841290629, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
   _reloadingAction: {fileID: 8459253343192779557, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
-  _pingAction: {fileID: -2932518709213286940, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
+  _rewardAction: {fileID: 0}
   _choosePotionAction: {fileID: -1356359924033364122, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
   _beforeAction: {fileID: -668416955517265663, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
   _nextAction: {fileID: -3217178006621530774, guid: be624e16556617749b3b94abd6f3e3f6, type: 3}
@@ -1176,6 +1176,10 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3938743736761266172, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
+      propertyPath: merchantUI
+      value: 
+      objectReference: {fileID: 2063170777}
     - target: {fileID: 5393507191287825717, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_fontAsset
       value: 
@@ -1852,9 +1856,9 @@ MonoBehaviour:
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
-    _ping:
-      _actionName: Ping
-      _primary: <Mouse>/middleButton
+    _reward:
+      _actionName: Reward
+      _primary: <Keyboard>/T
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
@@ -1996,9 +2000,9 @@ MonoBehaviour:
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
-    _ping:
-      _actionName: Ping
-      _primary: <Mouse>/middleButton
+    _reward:
+      _actionName: Reward
+      _primary: <Keyboard>/T
       _secondary: 
       _primaryIndex: 0
       _secondaryIndex: 1
@@ -2954,6 +2958,74 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1566947518}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &2063170776
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -6.5742455
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 11.176236
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542778909429455449, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: m_Name
+      value: Merchant
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+--- !u!114 &2063170777 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+  m_PrefabInstance: {fileID: 2063170776}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3b5865c5fcc5647945f2808f550eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2073225160
 GameObject:
   m_ObjectHideFlags: 0
@@ -3412,3 +3484,4 @@ SceneRoots:
   - {fileID: 2079976303}
   - {fileID: 749117093}
   - {fileID: 1753908941}
+  - {fileID: 2063170776}

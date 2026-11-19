@@ -102,7 +102,7 @@ public class CPlayerCostumeApplier : MonoBehaviour
     private void ApplyCostume(CCostumeDataSO costume)
     {
         // 필수 참조
-        if (costume == null || _playerController == null || _playerController.PlayerData == null || !_playerController.PlayerData.IsInitialized)
+        if (costume == null || _playerController == null || _playerController.PlayerData == null)
         {
             CLog.Warn("[CPlayerCostumeApplier] 필수 참조 비어있음");
             return;
