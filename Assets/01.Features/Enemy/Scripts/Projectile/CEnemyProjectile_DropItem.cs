@@ -195,8 +195,8 @@ public class CEnemyProjectile_DropItem : MonoBehaviour
         {
             case EIm.Exp:
                 _data.AddEXP(_amount);
-
                 break;
+
             case EIm.Money:
                 _data.AddMoney(_amount);
                 break;
