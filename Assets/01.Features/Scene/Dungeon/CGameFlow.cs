@@ -26,17 +26,19 @@ public class CGameFlow : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _SappireEarn;
 
     [SerializeField] private GameObject _defeatObject;
-    //[SerializeField] private GameObject _winObject;
+    [SerializeField] private GameObject _winObject;
 
 
     private CLocalizationManager _localization;
     private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
     private CSceneManager _scene;
+    private CSoundManager _sound;
 
     private CUniTaskOnes _dataTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
+    private CUniTaskOnes _soundTask = new CUniTaskOnes();
 
     private bool _stopActive;
 
@@ -59,6 +61,11 @@ public class CGameFlow : MonoBehaviour
             _scene = await CManagerDontDestroy.SceneManagerAsync(token);
             CLog.Log("CGameFlow _sceneTask OnEnable 작업 완료");
         });
+        _soundTask.Run(async token =>
+        {
+            _sound = await CManagerDontDestroy.SoundAsync(token);
+            CLog.Log("CGameFlow _soundTask OnEnable 작업 완료");
+        });
 
         _retryButton.onClick.AddListener(RetryButton);
     }
@@ -67,6 +74,8 @@ public class CGameFlow : MonoBehaviour
     {
         _dataTask?.Cancel();
         _localizationTask?.Cancel();
+        _sceneTask?.Cancel();    
+        _soundTask?.Cancel();
 
         _retryButton.onClick.RemoveListener(RetryButton);
         _playerData.OnHPChanged -= DefeatGame;
@@ -87,14 +96,16 @@ public class CGameFlow : MonoBehaviour
             return;
         }
 
+        _sound.PlayBGM(EBGM.Defeat);
         ReloadText(false);
         _defeatObject.SetActive(true);
     }
 
-    private void WinGame()
+    public void WinGame()
     {
+        _sound.PlayBGM(EBGM.Win);
         ReloadText(true);
-        //_winObject.SetActive(true);
+        _winObject.SetActive(true);
     }
 
     private void ReloadText(bool win)

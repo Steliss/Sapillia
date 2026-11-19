@@ -113,6 +113,12 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     [SerializeField] private CSaveSlotUI[] _saveSlots = new CSaveSlotUI[3];
 
+    [SerializeField] private TextMeshProUGUI _startButtonText;
+    [SerializeField] private TextMeshProUGUI _settingButtonText;
+    [SerializeField] private TextMeshProUGUI _exitButtonText;
+    [SerializeField] private TextMeshProUGUI _discordButtonText;
+    [SerializeField] private TextMeshProUGUI _credditButtonText;
+
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CUniTaskOnes _sceneTask = new CUniTaskOnes();
     private CUniTaskOnes _localizationTask = new CUniTaskOnes();
@@ -132,10 +138,6 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
     private Button _exitButton;
 
     private int _createSlot = -1;
-
-    //private EReady _ready = EReady.None;
-    //private EReady _requiredReady = EReady.Input | EReady.Scene | EReady.Input | EReady.Data | EReady.Data;
-    //private bool _isReady;
 
     private void OnEnable()
     {
@@ -225,17 +227,14 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _saveSlots[1].StartGameStartButton = SetButton2(_saveSlots[1].StartGameStartButton, _saveSlots[1].StartButtonBackImage);
         _saveSlots[2].StartGameStartButton = SetButton2(_saveSlots[2].StartGameStartButton, _saveSlots[2].StartButtonBackImage);
     }
-
+    
 
 
     // ESC키
     public void ExecuteESC()
     {
-
         _startGameUI.SetActive(false);
         _settingUI.ActiveUI(false);
-
-        //CLog.Log("CTitleUI ESC 실행");
     }
 
     public void Execute()
@@ -255,6 +254,15 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
         _nameInputYesText.text = _localization.GetText("scene.yes.text");
         _nameInputNoText.text = _localization.GetText("scene.no.text");
         _createPlayerTitle.text = _localization.GetText("scene.createplayertitle.text");
+
+
+        _startButtonText.text = _localization.GetText("scene.startbutton.text");
+        _settingButtonText.text = _localization.GetText("scene.settingbutton.text");
+        _exitButtonText.text = _localization.GetText("scene.exitbutton.text"); ;
+        _discordButtonText.text = _localization.GetText("scene.discordbutton.text"); ;
+        _credditButtonText.text = _localization.GetText("scene.credditbutton.text"); ;
+
+
     }
 
 
@@ -357,17 +365,23 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
     // 람다식 구독 문제로 인한 함수 생성
     private void GameStart0()
     {
-        // 슬롯이 비었으면 새 캐릭터 생성, 있으면 해당 케릭터로 로딩
-
-        if(!File.Exists(Path.Combine(Application.persistentDataPath, "Game_0.json")))
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_0.json")))
         {
             OpenCreateSave(0);
             return;
         }
 
         _dataManger.LoadGame(0);
-        //_cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+
+        if (_dataManger.CurrentFlow.CurrentScene == EScene.Menu || _dataManger.CurrentFlow.CurrentScene == EScene.Start)
+        {
+            _cSceneManager.ChangeScreenAsync(EScene.Town).Forget();
+            return;
+        }
+
+        _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
     }
+    
     private void GameStart1()
     {
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_1.json")))
@@ -386,6 +400,7 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
         _cSceneManager.ChangeScreenAsync(_dataManger.CurrentFlow.CurrentScene).Forget();
     }
+
     private void GameStart2()
     {
         if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_2.json")))
@@ -463,19 +478,24 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     private void DiscordOpen()
     {
-        GameStart0();
-        _cSceneManager.ChangeScreenAsync(EScene.stage1).Forget();
+        Application.OpenURL("https://discord.gg/4GEMVYzzZ");
     }
 
     private void CreditOpen()
     {
-        GameStart0();
+        if (!File.Exists(Path.Combine(Application.persistentDataPath, "Game_0.json")))
+        {
+            OpenCreateSave(0);
+            return;
+        }
+
+        _dataManger.LoadGame(0);
         _cSceneManager.ChangeScreenAsync(EScene.Test).Forget();
     }
 
     private void GameExit()
     {
-        // 게임 종료
+        Application.Quit();
     }
 
 

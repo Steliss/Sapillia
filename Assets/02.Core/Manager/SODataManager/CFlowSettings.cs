@@ -50,7 +50,7 @@ public class CSettings
     [SerializeField] private CKeyBindingData _presetSetting = new CKeyBindingData("PresetSetting", "<Keyboard>/b");
     [SerializeField] private CKeyBindingData _chatting = new CKeyBindingData("Chatting", "<Keyboard>/enter");
     [SerializeField] private CKeyBindingData _reloading = new CKeyBindingData("Reloading", "<Keyboard>/g");
-    [SerializeField] private CKeyBindingData _reward = new CKeyBindingData("reward", "<Keyboard>/T");
+    [SerializeField] private CKeyBindingData _reward = new CKeyBindingData("Reward", "<Keyboard>/T");
     [SerializeField] private CKeyBindingData _choosePotion = new CKeyBindingData("ChoosePotion", "<Keyboard>/backquote");
     [SerializeField] private CKeyBindingData _before = new CKeyBindingData("Before", "<Keyboard>/q");
     [SerializeField] private CKeyBindingData _next = new CKeyBindingData("Next", "<Keyboard>/e");

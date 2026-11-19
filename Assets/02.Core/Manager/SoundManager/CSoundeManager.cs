@@ -9,7 +9,9 @@ public enum EBGM
 {
     MainTheme,
     TownTheme,
-    PlaceDungeonMole
+    PlaceDungeonMole,
+    Defeat,
+    Win
 }
 
 
