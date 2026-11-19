@@ -43,6 +43,7 @@ public class CArtifactRewardUI : MonoBehaviour
 
     private bool _isRewardGenerated = false;
 
+    private bool _isLevelUpReward = false;
     #endregion
 
 
@@ -58,6 +59,9 @@ public class CArtifactRewardUI : MonoBehaviour
 
     public void ShowRewards(CArtifactReward reward)
     {
+        _isLevelUpReward = false;
+
+
         if (_currentReward != reward)
         {
             _isRewardGenerated = false;
@@ -162,6 +166,19 @@ public class CArtifactRewardUI : MonoBehaviour
             return;
         }
 
+        // 레벨업 보상획득 시 횟수 감소
+        if (_isLevelUpReward)
+        {
+            CPlayerGamingDataSO playerData = _dataManager.PlayerData?.GetPlayerData();
+
+            if (playerData != null && playerData.LevelUpRewardCount > 0)
+            {
+                playerData.LevelUpRewardCount--;
+
+            }
+        }
+
+
         Debug.Log($"선택한 아티팩트 획득: {artifact.ItemID}");
 
         // 보상 선택 UI 닫기
@@ -263,5 +280,17 @@ public class CArtifactRewardUI : MonoBehaviour
 
         // 주사위가 없으면 리롤 버튼 비활성화
         _rerollButton.interactable = playerData.Dice > 0;
+    }
+
+    public void ShowLevelUpRewards()
+    {
+        _isLevelUpReward = true;
+        _currentReward = null;
+        _isRewardGenerated = false;
+
+        GenerateRewardCandidates();
+
+        gameObject.SetActive(true);
+        UpdateRerollText();
     }
 }
