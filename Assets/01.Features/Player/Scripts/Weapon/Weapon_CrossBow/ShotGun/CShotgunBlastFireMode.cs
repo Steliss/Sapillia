@@ -115,17 +115,18 @@ public class CShotgunBlastFireMode : MonoBehaviour
             }
 
             // 벽 뒤의 몬스터는 타격하지 않음
-            if (Physics2D.Linecast(
-                origin,
-                targetPosition,
-                _wallLayers))
+            if (Physics2D.Linecast
+                (
+                    origin,
+                    targetPosition,
+                    _wallLayers
+                ))
             {
                 continue;
             }
 
             // 몬스터의 자식 콜라이더도 처리
-            IDamageable target =
-                hit.GetComponentInParent<IDamageable>();
+            IDamageable target = hit.GetComponentInParent<IDamageable>();
 
             if (target == null)
             {
