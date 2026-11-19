@@ -49,6 +49,8 @@ public class CSettingSoundUI : MonoBehaviour
         ReloadData();
         ReloadText();
 
+        _localization.OnLanguageChanged += ReloadText;
+
         _masterSlider.Slider.onValueChanged.AddListener(ChangeMaster);
         _bgmSlider.Slider.onValueChanged.AddListener(ChangeBGM);
         _effectSlider.Slider.onValueChanged.AddListener(ChangeEffect);
@@ -57,6 +59,8 @@ public class CSettingSoundUI : MonoBehaviour
 
     private void OnDisable()
     {
+        _localization.OnLanguageChanged -= ReloadText;
+
         _masterSlider.Slider.onValueChanged.RemoveListener(ChangeMaster);
         _bgmSlider.Slider.onValueChanged.RemoveListener(ChangeBGM);
         _effectSlider.Slider.onValueChanged.RemoveListener(ChangeEffect);

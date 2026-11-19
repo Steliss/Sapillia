@@ -50,7 +50,7 @@ public class CSettings
     [SerializeField] private CKeyBindingData _presetSetting = new CKeyBindingData("PresetSetting", "<Keyboard>/b");
     [SerializeField] private CKeyBindingData _chatting = new CKeyBindingData("Chatting", "<Keyboard>/enter");
     [SerializeField] private CKeyBindingData _reloading = new CKeyBindingData("Reloading", "<Keyboard>/g");
-    [SerializeField] private CKeyBindingData _ping = new CKeyBindingData("Ping", "<Mouse>/middleButton");
+    [SerializeField] private CKeyBindingData _reward = new CKeyBindingData("Reward", "<Keyboard>/T");
     [SerializeField] private CKeyBindingData _choosePotion = new CKeyBindingData("ChoosePotion", "<Keyboard>/backquote");
     [SerializeField] private CKeyBindingData _before = new CKeyBindingData("Before", "<Keyboard>/q");
     [SerializeField] private CKeyBindingData _next = new CKeyBindingData("Next", "<Keyboard>/e");
@@ -190,8 +190,8 @@ public class CSettings
             case EKeyAction.Reloading:
                 return _reloading;
 
-            case EKeyAction.Ping:
-                return _ping;
+            case EKeyAction.Reward:
+                return _reward;
 
             case EKeyAction.ChoosePotion:
                 return _choosePotion;
@@ -296,7 +296,7 @@ public class CFlowGame
     /// 사파이어 획득
     /// </summary>
     /// <param name="amount"></param>
-    public void AddDice(int amount)
+    public void AddSapphire(int amount)
     {
         if (amount <= 0)
         {
@@ -313,7 +313,7 @@ public class CFlowGame
     /// </summary>
     /// <param name="amount"></param>
     /// <returns></returns>
-    public bool TrySpendDice(int amount)
+    public bool TrySpendSapphire(int amount)
     {
         if (amount < 0 || _sapphire < amount)
         {

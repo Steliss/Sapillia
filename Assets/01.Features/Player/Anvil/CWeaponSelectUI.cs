@@ -34,6 +34,8 @@ public class CWeaponSelectUI : MonoBehaviour
     private bool _isOpen;
     private readonly List<CWeaponUpgradeOptionSO> _cachedOptions = new List<CWeaponUpgradeOptionSO>();
     private CWeaponUpgradeOptionSO _selectedOption;
+    private CUniTaskOnes _source = new CUniTaskOnes();
+    private CDataManger _data;
     #endregion
 
     #region 프로퍼티
@@ -71,6 +73,18 @@ public class CWeaponSelectUI : MonoBehaviour
 
     private void OnEnable()
     {
+        // 만약 인스펙터 연결되지 않았을 경우
+        if(_weaponManager == null)
+        {
+            _weaponManager = FindAnyObjectByType<CWeaponManager>();
+            CLog.Log("[CWeaponSelectUI] WeaponManager 연동완료");
+        }
+        if(_playerController == null)
+        {
+            _playerController = FindAnyObjectByType<CPlayerController>();
+            CLog.Log("[CWeaponSelectUI] CPlayerController 연동완료");
+        }
+
         if (_weaponManager != null)
         {
             _weaponManager.OnWeaponChanged += HandleWeaponChanged;
@@ -90,6 +104,7 @@ public class CWeaponSelectUI : MonoBehaviour
         {
             _noButton.onClick.AddListener(CloseConfirm);
         }
+
         
     }
 
@@ -143,8 +158,7 @@ public class CWeaponSelectUI : MonoBehaviour
             return;
         }
 
-        if (_playerController == null ||
-            _playerController.PlayerData == null)
+        if (_playerController == null || _playerController.PlayerData == null)
         {
             Debug.LogWarning("[WeaponUI] PlayerData 참조 없음");
             return;
@@ -360,6 +374,7 @@ public class CWeaponSelectUI : MonoBehaviour
     {
         if (option == null || _confirmRoot == null)
         {
+            CLog.Warn("[CWeaponSelectUI 옵션이나 컨펌루트가 비어있음]");
             return;
         }
 

@@ -78,8 +78,6 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
 
         _input?.Unregister(EKeyAction.Interaction, this);
 
-        EndTalk();
-
         _isNear = false;
     }
 
@@ -243,6 +241,7 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
         _dialogueIndex = 0;
 
         _headUI.SetActive(false);
+        _logUI.ActiveUI(false);
 
         if (_talkUI != null && _talkUI.IsOwner(this))
         {

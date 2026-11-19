@@ -12,6 +12,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     [SerializeField] private CLogUI logUI;
     [SerializeField] private CMerchant merchantUI;
     [SerializeField] private CNPCTalkUI npcTalkUI;
+    [SerializeField] private CCostumeSelectUI costumeUI;
 
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
@@ -105,6 +106,14 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     public void ExecuteESC()
     {
+        if(costumeUI != null)
+        {
+            if(costumeUI.IsOpen)
+            {
+                return;
+            }
+        }
+
         if (merchantUI != null)
         {
             if (merchantUI.IsActive)
@@ -151,7 +160,11 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
         if (_isActive)
         {
-            //Time.timeScale = 0f;
+            Time.timeScale = 0f;
+        }
+        else
+        {
+            Time.timeScale = 1f;
         }
     }
 
@@ -216,6 +229,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             // 패배 관련 띄우기 여부 
 
+            Time.timeScale = 1f;
             _Scene.ChangeScreenAsync(EScene.Town).Forget();
         }
         else
@@ -234,6 +248,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
         _backGround.SetActive(false);
+        Time.timeScale = 1f;
         _Scene.ChangeScreenAsync(EScene.Menu).Forget();
     }
 

@@ -23,8 +23,6 @@ public class CBGMScene : MonoBehaviour
         _soundTask.Run(async token =>
         {
             _sound = await CManagerDontDestroy.SoundAsync(token);
-            token.ThrowIfCancellationRequested();
-
             CLog.Log("CBGMScene _soundTask OnEnable 작업 완료");
             SetReady(EReady.Sound, BGM);
         });
@@ -32,8 +30,6 @@ public class CBGMScene : MonoBehaviour
         _dataTask.Run(async token =>
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
-            token.ThrowIfCancellationRequested();
-
             CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
             SetReady(EReady.Data, BGM);
         });

@@ -10,5 +10,6 @@ public enum ERoomType
     Reward,
     Miniboss,
     Anvil,
-    Merchant
+    Merchant,
+    Boss
 }

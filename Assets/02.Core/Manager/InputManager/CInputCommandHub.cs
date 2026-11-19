@@ -54,7 +54,7 @@ public class CInputCommandHub : MonoBehaviour
         _inputManager.OnPresetSetting += PresetSetting;
         _inputManager.OnChatting += Chatting;
         _inputManager.OnReloading += Reloading;
-        _inputManager.OnPing += Ping;
+        _inputManager.OnReward += Reward;
         _inputManager.OnChoosePotion += ChoosePotion;
         _inputManager.OnBefore += Before;
         _inputManager.OnNext += Next;
@@ -88,7 +88,7 @@ public class CInputCommandHub : MonoBehaviour
             _inputManager.OnPresetSetting -= PresetSetting;
             _inputManager.OnChatting -= Chatting;
             _inputManager.OnReloading -= Reloading;
-            _inputManager.OnPing -= Ping;
+            _inputManager.OnReward -= Reward;
             _inputManager.OnChoosePotion -= ChoosePotion;
             _inputManager.OnBefore -= Before;
             _inputManager.OnNext -= Next;
@@ -176,9 +176,9 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EKeyAction.Reloading);
     }
 
-    private void Ping()
+    private void Reward()
     {
-        Execute(EKeyAction.Ping);
+        Execute(EKeyAction.Reward);
     }
 
     private void ChoosePotion()

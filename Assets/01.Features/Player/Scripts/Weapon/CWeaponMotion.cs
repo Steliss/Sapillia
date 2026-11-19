@@ -9,6 +9,9 @@ public class CWeaponMotion : MonoBehaviour
     [SerializeField] private Transform _weaponSwing;
     [SerializeField] private Transform _hitPoint;
 
+    [Header("공격 좌표계")]
+    [SerializeField] private Transform _attackSpace;
+
     // ※
     [Header("무기 조준")]
     [SerializeField] private CSwordAndShieldAim _aim;
@@ -23,12 +26,14 @@ public class CWeaponMotion : MonoBehaviour
     [SerializeField] private CWeaponAttackDataSO _attackData;
 
     [Header("공격자 위치 Transform")]
-    [SerializeField] private Transform _attacker;   
+    [SerializeField] private Transform _attacker;
 
+    [Header("기본 검기 보정")]
+    [SerializeField] private Vector2 _slashOffset;
+    [SerializeField] private float _slashAngleOffset;
 
-    // ※ 테스트 용도
-    [Header("테스트 용도")]
-    [SerializeField] CWeaponAttackDataSO _previewAttack;
+    [Header("디버그")]
+    [SerializeField] private bool _debugAttackDirection;
     #endregion
 
     #region 내부변수
@@ -46,6 +51,9 @@ public class CWeaponMotion : MonoBehaviour
     private Vector3 _initialLocalPosition;
     private Quaternion _initialLocalRotation;
     private Vector3 _initialHitPointPosition;
+
+    private Vector3 _slashInitialScale;
+    private Color _slashInitialColor;
 
     private bool _hasInitialPose;
 
@@ -65,16 +73,22 @@ public class CWeaponMotion : MonoBehaviour
     public bool IsHolding => _isHolding;
     public bool CanStart => isActiveAndEnabled && !_isAttacking && Time.time >= _nextAttackTime;
     public float Progress => _duration > 0f ? Mathf.Clamp01(_elapsedTime / _duration) : 1f;
- 
+
     #endregion
 
+    #region Unity
     private void Awake()
     {
-        if (_weaponSwing == null || _hitPoint == null)
+        if (_weaponSwing == null || _hitPoint == null || _attackSpace == null || _aim == null)
         {
             CLog.Error("[WeaponMotion] Weapon 참조 누락");
             enabled = false;
             return;
+        }
+
+        if (_weaponSwing.parent != _attackSpace)
+        {
+            CLog.Warn("[WeaponMotion] WeaponSwing의 부모와 AttackSpace가 다름. 공격 좌표계를 확인하세요.");
         }
 
         // 최초 무기 위치 및 회전 저장
@@ -82,6 +96,9 @@ public class CWeaponMotion : MonoBehaviour
 
         if (_slashRenderer != null)
         {
+            _slashInitialScale = _slashRenderer.transform.localScale;
+            _slashInitialColor = _slashRenderer.color;
+
             _slashRenderer.enabled = false;
         }
     }
@@ -102,6 +119,59 @@ public class CWeaponMotion : MonoBehaviour
         UpdateAttack(Time.deltaTime);
     }
 
+    private void LateUpdate()
+    {
+        if (!_debugAttackDirection || !_isAttacking || _weaponSwing == null)
+        {
+            return;
+        }
+
+        // 매 프레임 로그가 쌓이지 않도록 제한
+        if (Time.frameCount % 10 != 0)
+        {
+            return;
+        }
+
+        float pivotAngle = _aim != null ? _aim.EffectAimRotation.eulerAngles.z : 0f;
+        float swingAngle =  _weaponSwing.eulerAngles.z;
+
+        CLog.Log($"[WeaponMotion] Pivot : {pivotAngle:F1}° / SwordGrip : {swingAngle:F1}°");
+
+        // Scene 뷰에서 실제 검끝 방향 표시
+        if (_hitPoint != null)
+        {
+            Debug.DrawLine(_weaponSwing.position, _hitPoint.position, Color.yellow);
+        }
+
+    }
+
+    private void OnDisable()
+    {
+        _isAttacking = false;
+        _isHolding = false;
+
+        _elapsedTime = 0f;
+        _holdTimer = 0f;
+
+        _hitTargets.Clear();
+
+        if (_slashRenderer != null)
+        {
+            _slashRenderer.enabled = false;
+        }
+
+        ResetPose();
+
+        // 무기 교체 또는 오브젝트 비활성화 시 조준 잠금 해제
+        if (_aim != null)
+        {
+            _aim.UnlockAim();
+        }
+
+    }
+
+
+    #endregion
     // Inspector에서 설정한 최초 Transform 저장
     private void SaveInitialPose()
     {
@@ -288,13 +358,16 @@ public class CWeaponMotion : MonoBehaviour
     // 검 끝의 월드 좌표 계산
     private Vector2 EvaluateHitPosition(float progress)
     {
+        // SO에 설정된 공격 모션
         float angle = _attackData.EvaluateAngle(progress);
         float reach = _attackData.EvaluateReach(progress);
 
+        // WeaponPivot 기준 손잡이 위치
         Vector3 grip = (Vector3)(_attackData.GripOffset + Vector2.right * reach);
+        // 공격 커브에 따른 검끝 위치
         Vector3 localTip = grip + Quaternion.Euler(0f, 0f, angle) * Vector3.right * _attackData.HitDistance;
                 
-        return transform.TransformPoint(localTip);
+        return _attackSpace.TransformPoint(localTip);
     }
 
     #endregion
@@ -432,9 +505,8 @@ public class CWeaponMotion : MonoBehaviour
         Vector2 incomingDircetion = (Vector2)targetCollider.bounds.center - (Vector2)_attacker.position;
         SDamageInfo damageInfo = new SDamageInfo(_damage, incomingDircetion);
 
-        CDamageUtility.DealDamage(target, damageInfo);                       
-
-        target.TakeDamage(_damage);
+        CDamageUtility.DealDamage(target, damageInfo);
+        
         CLog.Log($"[PlayerAttack] 몬스터 적중\n Damage : {_damage}\n Direction : {damageInfo.IncomingDirection}");
     }
 
@@ -445,12 +517,13 @@ public class CWeaponMotion : MonoBehaviour
     // 검로 이펙트
     private void UpdateSlashEffect(float progress)
     {
-        if (_slashRenderer == null || _attackData == null)
+        if (_slashRenderer == null || _weaponSwing == null || _attackData == null)
         {
             return;
         }
 
         bool active = _attackData.SlashSprite != null && progress >= _attackData.HitStart && progress <= _attackData.HitEnd;
+
         _slashRenderer.enabled = active;
 
         if (!active)
@@ -458,21 +531,25 @@ public class CWeaponMotion : MonoBehaviour
             return;
         }
 
-        // 검과 같은 위치·회전 사용
-        _slashRenderer.transform.localPosition = _weaponSwing.localPosition;
-        _slashRenderer.transform.localRotation = _weaponSwing.localRotation;
-        _slashRenderer.transform.localScale = Vector3.one * _attackData.SlashScale;
+        Transform slashTransform = _slashRenderer.transform;
+        // SwordSwing 기준 위치 보정
+        Vector3 position = _weaponSwing.TransformPoint(_slashOffset);
 
-        // 타격 구간 동안 나타났다 사라지는 효과
-        float t = Mathf.InverseLerp
-            (
-                _attackData.HitStart,
-                _attackData.HitEnd,
-                progress
-            );
+        // SwordSwing 월드 회전 + 검기 자체 회전 보정
+        Quaternion rotation = _weaponSwing.rotation *  Quaternion.Euler(0f, 0f, _slashAngleOffset);
 
-        Color color = _slashRenderer.color;
-        color.a = Mathf.Sin(t * Mathf.PI);
+        // 부모 계층에 관계없이 월드 위치/회전을 일치시킴
+        slashTransform.SetPositionAndRotation(position, rotation);
+
+        // 초기 스케일을 유지하면서 SO 배율 적용
+        slashTransform.localScale = _slashInitialScale * _attackData.SlashScale;
+
+        // 타격 구간에서 나타났다가 사라지는 알파 효과
+        float t = Mathf.InverseLerp(_attackData.HitStart, _attackData.HitEnd, progress);
+        float alpha = Mathf.Sin(t * Mathf.PI);
+
+        Color color = _slashInitialColor;
+        color.a *= alpha;
 
         _slashRenderer.color = color;
     }
@@ -486,8 +563,7 @@ public class CWeaponMotion : MonoBehaviour
 
     private void UpdateAttackEffects(float progress)
     {
-        if (_attackData == null ||
-            _effectPlayed == null)
+        if (_attackData == null || _effectPlayed == null)
         {
             return;
         }
@@ -548,11 +624,18 @@ public class CWeaponMotion : MonoBehaviour
         {
             return;
         }
+                
+        Transform effectTransform = effectObject.transform;
 
-        Vector3 position = anchor.TransformPoint(effect.Offset);
+        // 부모를 따라 위치 이동
+        effectTransform.SetParent(anchor, false);
+        effectTransform.localPosition = effect.Offset;
+
+        // 생성 순간의 월드 회전 계산
         Quaternion rotation = GetEffectRotation(effect, anchor);
+        effectTransform.rotation = rotation;
 
-        effectObject.transform.SetPositionAndRotation(position, rotation);
+        effectTransform.localRotation = Quaternion.Euler(0f, 0f, effect.AngleOffset);
 
         CWeaponEffectFollow follow = effectObject.GetComponent<CWeaponEffectFollow>();
 
@@ -561,7 +644,7 @@ public class CWeaponMotion : MonoBehaviour
             follow.Initialize(anchor, _aim, effect);
         }
 
-        Destroy(effectObject, 0.2f);
+        Destroy(effectObject, 0.5f);
     }
 
     #region 이펙트 효과 회전
@@ -585,58 +668,9 @@ public class CWeaponMotion : MonoBehaviour
 
 
 
-    private void OnDisable()
-    {
-        _isAttacking = false;
-        _isHolding = false;
 
-        _elapsedTime = 0f;
-        _holdTimer = 0f;
 
-        _hitTargets.Clear();
-
-        if (_slashRenderer != null)
-        {
-            _slashRenderer.enabled = false;
-        }
-
-        ResetPose();
-    }
-
-    // 검 궤적 미리보기
-    private void OnDrawGizmosSelected()
-    {
-        if (_previewAttack == null)
-        {
-            return;
-        }
-        const int segments = 40;
-        Vector3 previous = Vector3.zero;
-
-        for (int i = 0; i <= segments; i++)
-        {
-            float t = (float)i / segments;
-
-            float angle = _previewAttack.EvaluateAngle(t);
-            float reach = _previewAttack.EvaluateReach(t);
-
-            Vector3 grip = (Vector3)(_previewAttack.GripOffset + Vector2.right * reach);
-            Vector3 tip = grip + Quaternion.Euler(0f, 0f, angle) * Vector3.right * _previewAttack.HitDistance;
-            Vector3 world = transform.TransformPoint(tip);
-
-            // 타격 가능한 구간은 빨간색
-            bool active = t >= _previewAttack.HitStart && t <= _previewAttack.HitEnd;
-
-            Gizmos.color = active ? Color.red : Color.yellow;
-
-            if (i > 0)
-            {
-                Gizmos.DrawLine(previous, world);
-            }
-
-            previous = world;
-        }
-    }
+    
 
 
 }
