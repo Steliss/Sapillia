@@ -3,7 +3,7 @@ public static class CDamageUtility
 {
    public static void DealDamage(IDamageable target, SDamageInfo damageInfo)
     {
-        if(target ==null || damageInfo.Damage <= 0)
+        if(target == null || damageInfo.Damage <= 0)
         {
             return;
         }
@@ -11,6 +11,7 @@ public static class CDamageUtility
         if(target is IDamageInfoReceiver reciver)
         {
             reciver.TakeDamage(damageInfo);
+            return;
         }
 
         target.TakeDamage(damageInfo.Damage);

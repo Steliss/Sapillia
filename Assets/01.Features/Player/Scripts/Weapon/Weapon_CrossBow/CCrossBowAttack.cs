@@ -142,7 +142,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         SPlayerStats stats = _player.PlayerData.Stats;
 
         // 공격력 계산
-        float damage = _crossbowData.BaseDamage * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Normal;
+        float damage = stats.GetAttributePower(EAttribute.Physical) + _crossbowData.BaseDamage * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Normal;
 
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 

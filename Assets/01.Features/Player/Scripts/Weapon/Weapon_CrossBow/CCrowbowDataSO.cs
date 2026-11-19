@@ -20,7 +20,7 @@ public class CCrossbowDataSO : ScriptableObject
 
     [Header("공격 데이터")]
     [Min(0)]
-    [SerializeField] private int _baseDamage = 10;
+    [SerializeField] private float _baseDamage = 10;
     [Min(0.01f)]
     [SerializeField] private float _attackInterval = 0.5f;
 
@@ -91,7 +91,7 @@ public class CCrossbowDataSO : ScriptableObject
     public int Tier => _tier;
     public string WeaponName => _weaponName;
 
-    public int BaseDamage => _baseDamage;
+    public float BaseDamage => _baseDamage;
     public float AttackInterval => _attackInterval;
     public float ReloadDuration => _reloadDuration;
     public GameObject ProjectilePrefab => _projectilePrefab;
