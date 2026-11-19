@@ -40,6 +40,11 @@ public class CAnvilInteractable :
             _inputHub.Register(EKeyAction.Interaction, (IInputCommand)this);
             _inputHub.Register(EKeyAction.ESC, (IInputCommand)this);
         });
+
+        if(_playerCollider == null)
+        {
+            _playerCollider = FindAnyObjectByType<Collider2D>();
+        }
     }
 
     private void OnDisable()

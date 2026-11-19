@@ -15,7 +15,7 @@ MonoBehaviour:
   _duration: 0.42
   _recovery: 0.18
   _damageMultiplier: 1.5
-  _gripOffset: {x: -0.1, y: 0.55}
+  _gripOffset: {x: -0.5, y: 0.5}
   _hitDistance: 1.2
   _hitRadius: 0.35
   _angleCurve:
@@ -23,54 +23,36 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: -30
-      inSlope: 1023.69653
-      outSlope: 1023.69653
+      value: 30
+      inSlope: 50
+      outSlope: 50
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.10256946
-      value: 75
-      inSlope: 0.4181781
-      outSlope: 0.4181781
-      tangentMode: 0
+      time: 0.2
+      value: 40
+      inSlope: -96.42857
+      outSlope: -96.42857
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.1519027
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.2050336
-      value: 75
-      inSlope: -5.3688035
-      outSlope: -5.3688035
-      tangentMode: 0
+      time: 0.9
+      value: -130
+      inSlope: 533.5712
+      outSlope: 533.5712
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.09822192
-    - serializedVersion: 3
-      time: 0.4973566
-      value: -165
-      inSlope: -0.3338303
-      outSlope: -0.3338303
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.22151934
-    - serializedVersion: 3
-      time: 0.6
-      value: -120
-      inSlope: 1.1805391
-      outSlope: 1.1805391
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.37374243
       outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
-      value: -120
-      inSlope: 0
-      outSlope: 0
+      value: 1
+      inSlope: 1309.9996
+      outSlope: 1309.9996
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
@@ -83,35 +65,33 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
+      value: -0.3
+      inSlope: 2.3
+      outSlope: 2.3
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0
-      outWeight: 0
+      outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.5
-      value: 0.2
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0
-      outWeight: 0
-    - serializedVersion: 3
-      time: 0.99072266
-      value: 0.2962265
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 136
+      time: 1
+      value: 2
+      inSlope: 2.3
+      outSlope: 2.3
+      tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.33333334
+      outWeight: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
   _hitStart: 0.3
   _hitEnd: 0.85
-  _slashSprite: {fileID: 21300000, guid: 11f0f948d5227c0468de079bf05ce250, type: 2}
+  _slashSprite: {fileID: 0}
+  _effects:
+  - Prefab: {fileID: 4168851365519347557, guid: e65513dd8bb66b34cb13ac194713365f, type: 3}
+    StartProgress: 0
+    Anchor: 0
+    RotationMode: 1
+    Offset: {x: 1, y: 0}
+    AngleOffset: 270
   _slashScale: 1
