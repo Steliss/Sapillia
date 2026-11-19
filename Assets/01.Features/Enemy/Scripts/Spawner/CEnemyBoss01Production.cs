@@ -24,7 +24,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [Header("시네마틱 UI")]
     [SerializeField] private CanvasGroup _cinematic;
     [SerializeField] private Canvas _textBubble;
-    [SerializeField] private TextMeshProUGUI[] _texts;
+    [SerializeField] private TextMeshProUGUI _textBox;
     [Header("애니메이터")]
     [SerializeField] private GameObject _flag;
     [SerializeField] private Animator _ani;
@@ -36,6 +36,9 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private string _aniIdle = "Idle";
     [SerializeField] private string _aniJumpJump = "JumpJump";
     [SerializeField] private string _aniJumpJumpReady = "JumpJumpReady";
+    [Header("대사 번역 테이블")]
+    [SerializeField] private string[] _openingSpeech;
+    [SerializeField] private string[] _closeingSpeech;
     #endregion
 
     #region 내부 변수
@@ -47,7 +50,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     private int _hashJumpJump;
     private int _hashJumpJumpReady;
     private int _hashLandingDie;
-
+    private CLocalizationManager _speechData;
     private Transform _target;
     private CObjectPoolManager _op;
     private CinemachineBasicMultiChannelPerlin _noise;
@@ -117,14 +120,20 @@ public class CEnemyBoss01Production : MonoBehaviour
         }
 
         _textBubble.gameObject.SetActive(true);
+        _textBox.gameObject.SetActive(true);
 
-        for (int i = 0; i < 2; i++)
+        if (CManagerDontDestroy.Instance != null && _speechData == null)
         {
-            _texts[i].gameObject.SetActive(true);
+            _speechData = CManagerDontDestroy.Instance.LocalizationData;
+        }
+
+        for (int i = 0; i < _openingSpeech.Length; i++)
+        {
             int count = 0;
             float t = 0f;
-            _texts[i].maxVisibleCharacters = count;
-            _texts[i].ForceMeshUpdate();
+            _textBox.maxVisibleCharacters = count;
+            _textBox.ForceMeshUpdate();
+            _textBox.text = _speechData?.GetText(_openingSpeech[i]);
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
                 t += Time.deltaTime;
@@ -132,16 +141,16 @@ public class CEnemyBoss01Production : MonoBehaviour
                 {
                     count++;
                     t = 0f;
-                    _texts[i].maxVisibleCharacters = count;
-                    _texts[i].ForceMeshUpdate();
+                    _textBox.maxVisibleCharacters = count;
+                    _textBox.ForceMeshUpdate();
                 }
 
 
 
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
-            _texts[i].gameObject.SetActive(false);
         }
+        _textBox.gameObject.SetActive(false);
         _textBubble.gameObject.SetActive(false);
 
         _ani.Play(_hashJump);
@@ -280,15 +289,23 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         _ani.Play(_hashLandingDie);
         await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: ct);
-        _textBubble.gameObject.SetActive(true);
 
-        for (int i = 2; i < 4; i++)
+
+        _textBubble.gameObject.SetActive(true);
+        _textBox.gameObject.SetActive(true);
+
+        if (CManagerDontDestroy.Instance != null && _speechData == null)
         {
-            _texts[i].gameObject.SetActive(true);
+            _speechData = CManagerDontDestroy.Instance.LocalizationData;
+        }
+
+        for (int i = 0; i < _closeingSpeech.Length; i++)
+        {
             int count = 0;
             float t = 0f;
-            _texts[i].maxVisibleCharacters = count;
-            _texts[i].ForceMeshUpdate();
+            _textBox.maxVisibleCharacters = count;
+            _textBox.ForceMeshUpdate();
+            _textBox.text = _speechData?.GetText(_closeingSpeech[i]);
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
                 t += Time.deltaTime;
@@ -296,17 +313,15 @@ public class CEnemyBoss01Production : MonoBehaviour
                 {
                     count++;
                     t = 0f;
-                    _texts[i].maxVisibleCharacters = count;
-                    _texts[i].ForceMeshUpdate();
+                    _textBox.maxVisibleCharacters = count;
+                    _textBox.ForceMeshUpdate();
                 }
-
-
-
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
-            _texts[i].gameObject.SetActive(false);
         }
+        _textBox.gameObject.SetActive(false);
         _textBubble.gameObject.SetActive(false);
+
 
         _ani.Play(_hashDie);
 
