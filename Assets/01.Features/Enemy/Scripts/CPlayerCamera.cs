@@ -86,6 +86,12 @@ public class CPlayerCamera : MonoBehaviour
     /// <param name="power">흔드는 힘</param>
     public void PlayerCameraShaking(float power)
     {
+        if (CManagerDontDestroy.Instance != null)
+        {
+            float multi = CManagerDontDestroy.Instance.DataManger.CurrentSetting.CameraShakeMultiplier;
+            power *= multi;
+        }
+
         _noise.m_AmplitudeGain = power;
     }
 
