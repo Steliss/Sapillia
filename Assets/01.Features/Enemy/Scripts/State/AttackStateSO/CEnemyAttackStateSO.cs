@@ -117,11 +117,14 @@ public abstract class CEnemyAttackStateSO : ScriptableObject, IEnemyState
         {
             float xGap = Mathf.Lerp(info.yLineLength * 0.5f, range05.x, time / moveTime);
             float yGap = Mathf.Lerp(info.xLineLength * 0.5f, range05.y, time / moveTime);
+            pos = _mashine.transform.position;
 
             for (int i = 0; i < 2; i++)
             {
                 xLines[i].transform.position = pos + (Vector2.right * xGap * sides[i]);
-                yLines[i].transform.position = pos + (Vector2.up * yGap * sides[i]);
+                yLines[i].transform.position = pos + (Vector2.up * yGap * sides[i]); 
+                xLines[i+2].transform.position = pos + (new Vector2(range05.x, 0f) * sides[i]);
+                yLines[i+2].transform.position = pos + (new Vector2(0f, range05.y) * sides[i]);
             }
 
             await UniTask.Yield(PlayerLoopTiming.Update, ct);

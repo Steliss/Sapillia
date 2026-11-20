@@ -71,8 +71,8 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
                 // 선 딜레이
                 _mashine.Ani.Play(_attackInfos[i].HashAttReady);
                 // 전조 표시
-                WarningLine_FireAngle(ct, _lineInfo[i]).Forget();
-                await WarningLine_Square(ct, myPos, _lineInfo[i]);
+                WarningLine_Square(ct, myPos, _lineInfo[i]).Forget();
+                float angle = await WarningLine_FireAngle(ct, _lineInfo[i]);
 
                 // 공격과 투사체 생성
                 _mashine.Ani.Play(_attackInfos[i].HashAttack);
@@ -84,7 +84,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
                 Attack_Square(myPos, _lineInfo[i].SquareRange);                                     // 공격 판정
                 for (int j = 0; j < _attackInfos[i].BulletInfos.Length; j++)
                 {
-                    BulletFire_Homing(_attackInfos[i].BulletInfos[j]);                              // 투사체 생성
+                    BulletFire_Homing(_attackInfos[i].BulletInfos[j], angle);                       // 투사체 생성
                 }
 
                 await UniTask.Delay(TimeSpan.FromSeconds(_lineInfo[i].AfterDelay), cancellationToken: ct);
@@ -101,7 +101,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
 
 
     #region 공격 함수
-    protected void BulletFire_Homing(SBulletInfo info)
+    protected void BulletFire_Homing(SBulletInfo info, float angle)
     {
         GameObject bullet = CreateAttackObject
             (
@@ -114,9 +114,7 @@ public class CEnemyAttackStateSO_Strike : CEnemyAttackStateSO
         CEnemyProjectile_Homing homing =
                 bullet.GetComponent<CEnemyProjectile_Homing>();
 
-        Vector2 dir = _mashine.Target.position - _mashine.transform.position;
-        float angle = DirToAngle(dir) + info.AnglePlus;
-        dir = AngleToDir(angle);
+        Vector2 dir = AngleToDir(angle + info.AnglePlus);
 
         if (homing != null)
         {

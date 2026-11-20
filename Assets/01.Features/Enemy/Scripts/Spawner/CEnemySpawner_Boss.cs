@@ -31,28 +31,9 @@ public class CEnemySpawner_Boss : MonoBehaviour
     private Transform _targetTr;
     private int _phase = 0;
     private CUniTaskOnes _uni = new CUniTaskOnes();
-
-    //private CDataManger _data;
     private CPlayerGamingDataSO _playerData;
-    //private CUniTaskOnes _dataTask = new CUniTaskOnes();
     #endregion
 
-    /*
-    private void OnEnable()
-    {
-        _dataTask.Run(async token =>
-        {
-            _data = await CManagerDontDestroy.DataMangerAsync(token);
-            _playerData = _data.PlayerData.GetPlayerData();
-            // ReloadData();
-            CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
-        });
-    }
-    private void OnDisable()
-    {
-        _dataTask?.Cancel();
-    }
-    */
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (_isBattle)
