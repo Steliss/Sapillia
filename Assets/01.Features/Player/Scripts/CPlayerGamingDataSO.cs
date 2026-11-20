@@ -35,6 +35,11 @@ public class CPlayerGamingDataSO
 
     [SerializeField] private float _mpRegenProgress;
     [SerializeField] private float _dashRegenProgress;
+    [SerializeField, Min(0f)] private float _hitInvincibleDuration = 0.7f;
+
+    // 런타임에서만 사용하는 무적 종료 시각
+    [NonSerialized] private float _dashInvincibleUntil;
+    [NonSerialized] private float _hitInvincibleUntil;
 
     // 탄약 수 / 탄창 수
     [SerializeField] private int _currentAmmo = 10;
@@ -78,7 +83,12 @@ public class CPlayerGamingDataSO
    
     public void SetIsBattle(bool b)
     {
-        _isBattle = b;    }
+        _isBattle = b;   
+    }
+
+    public bool IsDashInvincible => Time.time < _dashInvincibleUntil;
+    public bool IsHitInvincible => Time.time < _hitInvincibleUntil;
+    public bool IsInvincible => IsDashInvincible || IsHitInvincible;
 
     #endregion
 
@@ -134,8 +144,13 @@ public class CPlayerGamingDataSO
 
         _money = _startMoney;
 
+        // 대시 회복 및 마나 회복
         _mpRegenProgress = 0f;
         _dashRegenProgress = 0f;
+
+        // 대시 무적
+        _dashInvincibleUntil = 0f;
+        _hitInvincibleUntil = 0f;
 
         // 현재 탄창을 가득 채운 상태로 시작
         _currentAmmo = _stats.Ammo_Cap;
@@ -304,13 +319,40 @@ public class CPlayerGamingDataSO
     // 플레이어가 받는 데미지 처리
     public void TakeDamage(int damage)
     {
-        if (damage <= 0)
+        if (damage <= 0 || _currentHP <= 0)
         {
             return;
         }
 
+        // 대시 무적 또는 피격 무적이면 데미지 차단
+        if (IsInvincible)
+        {
+            return;
+        }
+
+        // 실제 데미지 적용
         _currentHP = Mathf.Max(0, _currentHP - damage);
         OnHPChanged?.Invoke(_currentHP, _stats.MaxHP);
+
+        // 사망 상태가 아니고 피격을 받았을 경우 변경
+        if (_currentHP > 0)
+        {
+            _hitInvincibleUntil = Time.time + Mathf.Max(0f, _hitInvincibleDuration);
+        }
+    }
+
+    // 크리티컬 유무
+    public bool IsCritical(float damage)
+    {
+        int criticalNum = 0;
+        criticalNum = UnityEngine.Random.Range(0, 101);
+
+        if(criticalNum > Stats.Critical_Rate)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     // 체력 회복
@@ -632,6 +674,24 @@ public class CPlayerGamingDataSO
 
     #endregion
 
+    #region 무적 처리
+
+    public void StartDashInvincibility(float duration)
+    {
+        if (!IsInitialized || duration <= 0f)
+        {
+            return;
+        }
+
+        _dashInvincibleUntil = Mathf.Max(_dashInvincibleUntil, Time.time + duration);
+    }
+
+    public void CancelDashInvincibility()
+    {
+        _dashInvincibleUntil = 0f;
+    }
+
+    #endregion
 
 
     public void PrintBonusStats()
