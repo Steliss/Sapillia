@@ -68,8 +68,8 @@ MonoBehaviour:
     LineLength: 5
     Interbal: 0.5
     Distanse: 0
-    IsTracking: 0
-    TrackingSpeed: 0
+    IsTracking: 1
+    TrackingSpeed: 120
     xLineLength: 1
     yLineLength: 2
     SquareRange: {x: 6, y: 3}
@@ -95,3 +95,4 @@ MonoBehaviour:
     xLineLength: 1
     yLineLength: 2
     SquareRange: {x: 8, y: 4}
+  _soundStrike: MoleBigBombMissileExplosion_Big
