@@ -117,10 +117,12 @@ public class CArtifactSO : CItemSO
 
                 case EArtifactDescriptionStat.Critical_Rate:
                     value = stats.Critical_Rate;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Critical_Damage:
                     value = stats.Critical_Damage;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Attack_Speed:
@@ -130,10 +132,12 @@ public class CArtifactSO : CItemSO
 
                 case EArtifactDescriptionStat.Movement_Speed:
                     value = stats.Movement_Speed;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Run_SpeedMulitplier:
                     value = stats.Run_SpeedMulitplier;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Bargain:
@@ -146,6 +150,7 @@ public class CArtifactSO : CItemSO
 
                 case EArtifactDescriptionStat.RequiredEXP:
                     value = stats.RequiredEXP;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.EXP_multiplier:
@@ -160,6 +165,7 @@ public class CArtifactSO : CItemSO
 
                 case EArtifactDescriptionStat.Levelup_Heal:
                     value = stats.Levelup_Heal;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Damage_All:
@@ -173,10 +179,12 @@ public class CArtifactSO : CItemSO
 
                 case EArtifactDescriptionStat.Damage_Break:
                     value = stats.Damage_Break;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Damage_Reflect:
                     value = stats.Damage_Reflect;
+                    isPercent = true;
                     break;
 
                 case EArtifactDescriptionStat.Damage_Weapon:
