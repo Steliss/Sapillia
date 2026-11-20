@@ -177,7 +177,20 @@ MonoBehaviour:
   _inventoryUI: {fileID: 0}
   _itemData: {fileID: 11400000, guid: 7c257969594313b42aeef4804eb7b22c, type: 2}
   _merchantUI: {fileID: 2091679094787073654}
-  bargain: -20
+  _merchantDatas:
+  - _type: 1
+    _controller: {fileID: 22100000, guid: 78546ba04216f024d80b43b1918f8773, type: 2}
+    bargain: 10
+    _money: 1500
+  - _type: 2
+    _controller: {fileID: 22100000, guid: d0e16cc1ef06ec44ea75089e2150621b, type: 2}
+    bargain: 30
+    _money: 2000
+  - _type: 3
+    _controller: {fileID: 22100000, guid: c460a225b784f7346bac869f220d59ab, type: 2}
+    bargain: 0
+    _money: 1000
+  _controller: {fileID: 7269596983489827173}
 --- !u!114 &2091679094787073654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,7 +591,7 @@ GameObject:
   - component: {fileID: 5915608398560413798}
   - component: {fileID: 7269596983489827173}
   m_Layer: 0
-  m_Name: BabaMerchant
+  m_Name: Merchant
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -662,7 +675,7 @@ Animator:
   m_GameObject: {fileID: 3707467388442576572}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 22100000, guid: 78546ba04216f024d80b43b1918f8773, type: 2}
+  m_Controller: {fileID: 9100000, guid: 6adef7af1a04a75498e05e704a5ff93a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

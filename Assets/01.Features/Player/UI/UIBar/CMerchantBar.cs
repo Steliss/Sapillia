@@ -86,9 +86,9 @@ public class CMerchantBar : CUIBar, IPointerEnterHandler, IPointerExitHandler
 
     private void HandleMoneyChanged(int currentMoney)
     {
-        _merchantText.text = $"{_merchant.Money}";
+        _merchantText.text = $"{_merchant.CurrentMerchant.Money}";
         _playerText.text = $"{_playerData.Money}";
-        SetValue(_merchant.Money, (_merchant.Money + _playerData.Money));
+        SetValue(_merchant.CurrentMerchant.Money, (_merchant.CurrentMerchant.Money + _playerData.Money));
     }
 
 }
