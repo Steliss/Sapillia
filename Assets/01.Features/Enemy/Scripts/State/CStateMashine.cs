@@ -64,6 +64,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
     private CSoundManager _soundManager;
     private string _soundHurt = "HitSlash";
     private string _soundDie = "DieMonster";
+    private string _soundBreak = "BreakArmor";
     #endregion
 
     #region 스테이트
@@ -550,6 +551,7 @@ public class CStateMashine : MonoBehaviour, IDamageInfoReceiver
             {
                 _superArmor = 0f;
                 _attackUni.Cancel();
+                SoundPlay(_soundBreak);
                 StateChanged(_airbornState);
                 _sprite.material.SetFloat(_outLineId, 0f);
             }

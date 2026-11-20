@@ -64,7 +64,11 @@ public class CDungeonGenerator : MonoBehaviour
 
     #endregion
 
+    #region 이벤트
 
+    public event System.Action OnDungeonGenerated;
+
+    #endregion
 
     private void Awake()
     {
@@ -188,6 +192,7 @@ public class CDungeonGenerator : MonoBehaviour
                 SpawnRooms();
                 StartCoroutine(BakeNavMeshNextFrame());
                 _isReady = true;
+                OnDungeonGenerated?.Invoke();
                 return;
             }
         }

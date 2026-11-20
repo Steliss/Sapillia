@@ -41,7 +41,7 @@ public class CEnemyProjectile_Strike : CEnemyProjectile_Homing
             return;
         }
 
-        _attackTime = 0f;
+        gameObject.SetActive(false);
     }
 
 

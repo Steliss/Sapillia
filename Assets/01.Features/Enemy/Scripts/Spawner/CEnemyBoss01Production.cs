@@ -24,7 +24,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     [Header("시네마틱 UI")]
     [SerializeField] private CanvasGroup _cinematic;
     [SerializeField] private Canvas _textBubble;
-    [SerializeField] private TextMeshProUGUI[] _texts;
+    [SerializeField] private TextMeshProUGUI _textBox;
     [Header("애니메이터")]
     [SerializeField] private GameObject _flag;
     [SerializeField] private Animator _ani;
@@ -36,6 +36,14 @@ public class CEnemyBoss01Production : MonoBehaviour
     [SerializeField] private string _aniIdle = "Idle";
     [SerializeField] private string _aniJumpJump = "JumpJump";
     [SerializeField] private string _aniJumpJumpReady = "JumpJumpReady";
+    [SerializeField] private string _aniSkipByeBye = "SkipByeBye";
+    [Header("사운드")]
+    [SerializeField] private string _soundJumpJump = "MoleDance";
+    [SerializeField] private string _soundSpeech = "DialogueBlip";
+
+    [Header("대사 번역 테이블")]
+    [SerializeField] private string[] _openingSpeech;
+    [SerializeField] private string[] _closeingSpeech;
     #endregion
 
     #region 내부 변수
@@ -47,7 +55,10 @@ public class CEnemyBoss01Production : MonoBehaviour
     private int _hashJumpJump;
     private int _hashJumpJumpReady;
     private int _hashLandingDie;
-
+    private int _hashSkipByeBye;
+    private bool _isProduction = false;
+    private CLocalizationManager _speechData;
+    private CSoundManager _soundManager;
     private Transform _target;
     private CObjectPoolManager _op;
     private CinemachineBasicMultiChannelPerlin _noise;
@@ -62,13 +73,11 @@ public class CEnemyBoss01Production : MonoBehaviour
         _hashJumpJumpReady = Animator.StringToHash(_aniJumpJumpReady);
         _hashJumpJump = Animator.StringToHash(_aniJumpJump);
         _hashLandingDie = Animator.StringToHash(_aniLandingDie);
+        _hashSkipByeBye = Animator.StringToHash(_aniSkipByeBye);
 
         _noise = _zoomOutCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
-    private void Start()
-    {
-    }
 
     private void OnDisable()
     {
@@ -86,7 +95,7 @@ public class CEnemyBoss01Production : MonoBehaviour
             _noise.m_AmplitudeGain = 0;
         }
 
-        if (_target != null)
+        if (_target != null && _isProduction)
         {
             bool isLeft = _target.position.x < _ani.transform.position.x;
             if (_sp.flipX != isLeft)
@@ -95,6 +104,25 @@ public class CEnemyBoss01Production : MonoBehaviour
             }
         }
 
+    }
+
+    private void SoundPlay(string soundName)
+    {
+        if (string.IsNullOrWhiteSpace(soundName))
+        {
+            return;
+        }
+
+        if (_soundManager == null)
+        {
+            if (CManagerDontDestroy.Instance == null)
+            {
+                return;
+            }
+            _soundManager = CManagerDontDestroy.Instance.Sound;
+        }
+
+        _soundManager.PlayEffect(soundName, transform.position);
     }
 
     public void CameraShaking(float power)
@@ -107,6 +135,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     {
         _target = target;
         _zoomInCamera.Priority = 12;
+        _isProduction = true;
 
         for (float time = 0f; time < _zoomInTime; time += Time.deltaTime)
         {
@@ -116,32 +145,56 @@ public class CEnemyBoss01Production : MonoBehaviour
             await UniTask.Yield(PlayerLoopTiming.Update, ct);
         }
 
-        _textBubble.gameObject.SetActive(true);
-
-        for (int i = 0; i < 2; i++)
+        if (CManagerDontDestroy.Instance != null)
         {
-            _texts[i].gameObject.SetActive(true);
+            if (CManagerDontDestroy.Instance.DataManger.CurrentSetting.SkipBoss)
+            {
+                _zoomInCamera.Priority = 1;
+                FadeOut().Forget();
+                _ani.Play(_hashJump);
+                await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
+                _isProduction = false;
+                return;
+            }
+        }
+
+
+
+        _textBubble.gameObject.SetActive(true);
+        _textBox.gameObject.SetActive(true);
+
+        if (CManagerDontDestroy.Instance != null && _speechData == null)
+        {
+            _speechData = CManagerDontDestroy.Instance.LocalizationData;
+        }
+
+        for (int i = 0; i < _openingSpeech.Length; i++)
+        {
+            _textBox.text = _speechData?.GetText(_openingSpeech[i]);
             int count = 0;
             float t = 0f;
-            _texts[i].maxVisibleCharacters = count;
-            _texts[i].ForceMeshUpdate();
+            _textBox.maxVisibleCharacters = count;
+            _textBox.ForceMeshUpdate();
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
-                t += Time.deltaTime;
-                if (t > 0.1f)
+                if (count < _textBox.text.Length)
                 {
-                    count++;
-                    t = 0f;
-                    _texts[i].maxVisibleCharacters = count;
-                    _texts[i].ForceMeshUpdate();
+                    t += Time.deltaTime;
+                    if (t > 0.1f)
+                    {
+                        count++;
+                        t = 0f;
+                        _textBox.maxVisibleCharacters = count;
+                        _textBox.ForceMeshUpdate();
+                        SoundPlay(_soundSpeech);
+                    }
                 }
-
 
 
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
-            _texts[i].gameObject.SetActive(false);
         }
+        _textBox.gameObject.SetActive(false);
         _textBubble.gameObject.SetActive(false);
 
         _ani.Play(_hashJump);
@@ -151,8 +204,7 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         FadeOut().Forget();
         _zoomInCamera.Priority = 1;
-
-        
+        _isProduction = false;
     }
 
     private async UniTask FadeOut()
@@ -224,6 +276,7 @@ public class CEnemyBoss01Production : MonoBehaviour
                 );
             targetRanPos += (Vector2)_target.transform.position;
             _ani.Play(_hashJumpJump);
+            SoundPlay(_soundJumpJump);
             FallingRock(randomPos1);
             FallingRock(randomPos2);
             FallingRock(targetRanPos);
@@ -270,6 +323,7 @@ public class CEnemyBoss01Production : MonoBehaviour
     {
         _uni.Cancel();
         _zoomInCamera.Priority = 11;
+        _isProduction = true;
         for (float time = 0f; time < _zoomInTime; time += Time.deltaTime)
         {
             float t = time / _zoomInTime;
@@ -280,33 +334,58 @@ public class CEnemyBoss01Production : MonoBehaviour
 
         _ani.Play(_hashLandingDie);
         await UniTask.Delay(TimeSpan.FromSeconds(1.5f), cancellationToken: ct);
-        _textBubble.gameObject.SetActive(true);
 
-        for (int i = 2; i < 4; i++)
+        if (CManagerDontDestroy.Instance != null)
         {
-            _texts[i].gameObject.SetActive(true);
+            if (CManagerDontDestroy.Instance.DataManger.CurrentSetting.SkipBoss)
+            {
+                _zoomInCamera.Priority = 1;
+                FadeOut().Forget();
+                await UniTask.Delay(TimeSpan.FromSeconds(2f), cancellationToken: ct);
+                _ani.Play(_hashSkipByeBye);
+                _flag.SetActive(true);
+                _isProduction = false;
+                return;
+            }
+        }
+
+
+
+        _textBubble.gameObject.SetActive(true);
+        _textBox.gameObject.SetActive(true);
+
+        if (CManagerDontDestroy.Instance != null && _speechData == null)
+        {
+            _speechData = CManagerDontDestroy.Instance.LocalizationData;
+        }
+
+        for (int i = 0; i < _closeingSpeech.Length; i++)
+        {
             int count = 0;
             float t = 0f;
-            _texts[i].maxVisibleCharacters = count;
-            _texts[i].ForceMeshUpdate();
+            _textBox.maxVisibleCharacters = count;
+            _textBox.ForceMeshUpdate();
+            _textBox.text = _speechData?.GetText(_closeingSpeech[i]);
             for (float time = 0f; time < 5f; time += Time.deltaTime)
             {
-                t += Time.deltaTime;
-                if (t > 0.1f)
+                if (count < _textBox.text.Length)
                 {
-                    count++;
-                    t = 0f;
-                    _texts[i].maxVisibleCharacters = count;
-                    _texts[i].ForceMeshUpdate();
+                    t += Time.deltaTime;
+                    if (t > 0.1f)
+                    {
+                        count++;
+                        t = 0f;
+                        _textBox.maxVisibleCharacters = count;
+                        _textBox.ForceMeshUpdate();
+                        SoundPlay(_soundSpeech);
+                    }
                 }
-
-
-
                 await UniTask.Yield(PlayerLoopTiming.Update, ct);
             }
-            _texts[i].gameObject.SetActive(false);
         }
+        _textBox.gameObject.SetActive(false);
         _textBubble.gameObject.SetActive(false);
+
 
         _ani.Play(_hashDie);
 
@@ -315,6 +394,7 @@ public class CEnemyBoss01Production : MonoBehaviour
         _zoomInCamera.Priority = 1;
         await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: ct);
         _flag.SetActive(true);
+        _isProduction = false;
     }
 
 
