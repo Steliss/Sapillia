@@ -215,6 +215,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
         _moveState = EPlayerMoveState.Idle;
 
+        if (_playerData != null)
+        {
+            _playerData.CancelDashInvincibility();
+        }
+
         // 참조 해제
         _playerData = null;
         _warnedMissingData = false;
@@ -222,6 +227,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         // 반동 상태 초기화
         _recoilVelocity = Vector2.zero;
         _recoilDeceleration = 0f;
+
+
     }
 
     #endregion
@@ -367,6 +374,9 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _dashTimer = stats.DashDuration;
         _dashCooldownTimer = stats.DashCooldown;
 
+        // 대시 시간 동안 무적 적용
+        _playerData.StartDashInvincibility(stats.DashDuration);   
+        
         // 대시 공격 판정용
         _lastDashStartTime = Time.time;
         _dashSequence++;
