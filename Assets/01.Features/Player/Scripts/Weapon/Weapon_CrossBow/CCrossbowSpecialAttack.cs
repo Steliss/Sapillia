@@ -132,7 +132,7 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         SPlayerStats stats = playerData.Stats;
 
         // 석궁 기본 데미지 × 플레이어 특수공격 배율
-        float damage = _crossbowData.BaseDamage * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Special;
+        float damage = stats.GetAttributePower(EAttribute.Physical) * _crossbowData.BaseDamage * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Special;
 
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
