@@ -699,9 +699,9 @@ public class CPlayerGamingDataSO
         CLog.Log
             (
                 $"[PlayerData] 무기 보너스 적용 / " +
-                $"Str:{_stats.Str} / " +
-                $"Def:{_stats.Def} / " +
-                $"DamageWeapon:{_stats.Damage_Weapon}"
+                $"무기 :{_weaponType} / " +
+                $"Def:{_stats.Def} / "
+
             );
     }
 }
