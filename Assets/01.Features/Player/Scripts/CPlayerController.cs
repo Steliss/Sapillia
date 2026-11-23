@@ -1,5 +1,3 @@
-using Cysharp.Threading.Tasks;
-using System;
 using UnityEngine;
 
 public class CPlayerController : MonoBehaviour,IInputCommand
@@ -14,6 +12,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CDataManger _dataManager;
     private CInputCommandHub _inputHub;
+    private bool _isInputRegistered;
     #endregion
 
 
@@ -25,39 +24,38 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
     private void Awake()
     {
-        if(_playerCostume == null)
+                                 
+
+    }
+
+    private void OnEnable()
+    {
+        if (_playerCostume == null)
         {
             _playerCostume = GetComponentInChildren<CPlayerCostume>(true);
-        }
-
-        _dataManager = FindAnyObjectByType<CDataManger>();
-
+        }                      
+        
         _inputTask.Run(async token =>
         {
-            
-            _dataManager = await CManagerDontDestroy.DataMangerAsync(token);
-            CLog.Log("CPlayerAttack OnEnable 작업 완료");
-            // await UniTask.Delay(1000);
-            
 
-            // 중복 연결 방지
-            if (PlayerData != null)
+            CDataManger manager = await CManagerDontDestroy.DataMangerAsync(token);
+            CLog.Log("CPlayerAttack OnEnable 작업 완료");
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled)
             {
                 return;
             }
 
-            PlayerData = _dataManager.PlayerData.GetPlayerData();
-
-            if (PlayerData == null)
+            if (manager == null)
             {
-                CLog.Warn("[PlayerController] PlayerData 연결 실패");
+                CLog.Error("[PlayerController] DataManager 연결 실패");
+                return;
             }
 
-            
+            _dataManager = manager;
 
-            CLog.Log("[PlayerController] PlayerData 연결 성공");
-            CLog.Log($"HP : {PlayerData.CurrentHP}");
-            CLog.Log($"MP : {PlayerData.CurrentMP}");
+            // 기존 런타임 데이터 연결 시도
+            TryBindPlayerData();
 
             _inputHub = await CManagerDontDestroy.InputCommandHubAsync(token);
 
@@ -75,17 +73,34 @@ public class CPlayerController : MonoBehaviour,IInputCommand
             RegisterInput();
             CLog.Log("[CPlayerMovement] 모든 초기화 완료");
         });
-
     }
 
     private void OnDisable()
     {
+        // 비동기 초기화 중단
+        _inputTask.Cancel();
+
         UnRegisterInput();
+
+        _inputHub = null;
+        _dataManager = null;
     }
 
   
     private void Update()
     {
+        // 런 세션 데이터가 늦게 준비되거나 교체된 경우 연결
+        // 다만 계속 호출이 될 수도 있기 때문에 주의해야할 사항
+        if (_dataManager != null)
+        {            
+            TryBindPlayerData();
+        }
+
+        if (PlayerData == null || !PlayerData.IsInitialized)
+        {
+            return;
+        }
+
         if (_ui.IsAnyUIOpen)
         {
             return;
@@ -100,7 +115,14 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
     private void RegisterInput()
     {
+        if (_inputHub == null || _isInputRegistered)
+        {
+            return;
+        }
+
+
         _inputHub.Register(EKeyAction.UsePotion, (IInputCommand)this);
+        _isInputRegistered = true;
     }
 
     private void UnRegisterInput()
@@ -111,6 +133,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         }
 
         _inputHub.Unregister(EKeyAction.UsePotion, (IInputCommand)this);
+        _isInputRegistered = false;
     }
 
     public void Execute()
@@ -121,6 +144,31 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         }
 
         _potion.UseCurrentPotion(PlayerData);
+    }
+
+    private void TryBindPlayerData()
+    {
+        if (_dataManager == null || _dataManager.PlayerData == null)
+        {
+            return;
+        }
+        
+        CPlayerGamingDataSO currentData = _dataManager.PlayerData.GetPlayerData();
+
+        if (currentData == null || !currentData.IsInitialized)
+        {
+            return;
+        }
+
+        // 이미 같은 런타임 객체를 사용 중이라면 아무것도 하지 않음
+        if (ReferenceEquals(PlayerData, currentData))
+        {
+            return;
+        }
+
+        // 기존 런 세션의 객체 참조만 연결
+        PlayerData = currentData;
+       
     }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)

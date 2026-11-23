@@ -128,19 +128,19 @@ public struct SPlayerStats
         switch (attribute)
         {
             case EAttribute.Physical:
-                Attribute_Physical = Mathf.Max(0, Attribute_Physical + amount + (int)((Attribute_Physical + amount) * Attribute_Physical_Multiplier));
+                Attribute_Physical = Mathf.Max(0, Attribute_Physical + amount);
                 break;
 
             case EAttribute.Fire:
-                Attribute_Fire = Mathf.Max(0, Attribute_Fire + amount + (int)((Attribute_Fire + amount) * Attribute_Fire_Multiplier));
+                Attribute_Fire = Mathf.Max(0, Attribute_Fire + amount);
                 break;
 
             case EAttribute.Ice:
-                Attribute_Ice = Mathf.Max(0, Attribute_Ice + amount + (int)((Attribute_Ice + amount) * Attribute_Ice_Multiplier));
+                Attribute_Ice = Mathf.Max(0, Attribute_Ice + amount);
                 break;
 
             case EAttribute.Lightning:
-                Attribute_Lightning = Mathf.Max(0, Attribute_Lightning + amount + (int)((Attribute_Lightning + amount) * Attribute_Lightning_Multiplier));
+                Attribute_Lightning = Mathf.Max(0, Attribute_Lightning + amount);
                 break;
         }
     }

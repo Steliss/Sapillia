@@ -21,20 +21,33 @@ public class CPlayerCostumeApplier : MonoBehaviour
     #region 내부 변수
     private CUniTaskOnes _initTask = new CUniTaskOnes();
     private CDataManger _data;
+    private CCostumeDataSO _dataSO;
+    #endregion
+
+    #region 프로퍼티
+    public CCostumeDataSO costumeDataSO {  get; private set; }
     #endregion
 
     #region Unity
 
     private void Awake()
+    {        
+        
+    }
+
+    private void Start()
     {
-        if (_playerAnimator != null)
+        if (_costumeManager.CurrentCostume == null)
         {
+
         }
+        // 초기 코스튬 적용
+        ApplyCostume(_costumeManager.CurrentCostume);
     }
 
     private void OnEnable()
     {
-        if (_costumeManager == null)
+        if (_costumeManager == null || _playerController == null || _playerAnimator == null)
         {
             CLog.Warn("[CostumeApplier] CostumeManager 참조 없음");
             return;
@@ -54,27 +67,25 @@ public class CPlayerCostumeApplier : MonoBehaviour
                 await UniTask.WaitUntil
                 (
                     () =>
-                        _playerController != null &&
                         _playerController.PlayerData != null &&
-                        _playerController.PlayerData.IsInitialized,
+                        _playerController.PlayerData.IsInitialized &&
+                        _costumeManager.CurrentCostume != null,
                         cancellationToken: token
-                );
-
-                token.ThrowIfCancellationRequested();
-
-                if (!isActiveAndEnabled)
-                {
-                    return;
-                }
-
-                // 초기 코스튬 적용
-                ApplyCostume(_costumeManager.CurrentCostume);
+                );                
             }
             catch (OperationCanceledException)
             {
                 CLog.Warn("[CostumeAppier] 예외발생");
                 // 오브젝트 비활성화 시 대기 취소
             }
+
+            if (token.IsCancellationRequested || !isActiveAndEnabled)
+            {
+                return;
+            }
+
+            // 초기 외형 적용
+            ApplyCostume(_costumeManager.CurrentCostume);
         });
 
         CLog.Log($"[CostumeAppier] OnEnable 종료");
@@ -88,6 +99,8 @@ public class CPlayerCostumeApplier : MonoBehaviour
         {
             _costumeManager.OnCostumeChanged -= HandleCostumeChanged;
         }
+
+        costumeDataSO = null;
     }
 
     #endregion
@@ -101,10 +114,29 @@ public class CPlayerCostumeApplier : MonoBehaviour
 
     private void ApplyCostume(CCostumeDataSO costume)
     {
+        /*
         // 필수 참조
         if (costume == null || _playerController == null || _playerController.PlayerData == null)
         {
             CLog.Warn("[CPlayerCostumeApplier] 필수 참조 비어있음");
+            return;
+        }
+        */
+        if (costume == null)
+        {
+            CLog.Warn("[CPlayerCostumeApplier] costume 필수 참조 비어있음");
+            return;
+        }
+
+        // 초기화가 늦었다면 OnEnable의 대기 작업에서 준비 완료 후 다시 적용함
+        if (_playerController == null || _playerController.PlayerData == null || !_playerController.PlayerData.IsInitialized)
+        {
+            return;
+        }
+
+        if (_playerAnimator == null)
+        {
+            CLog.Warn("[CostumeApplier] Animator 참조 없음");
             return;
         }
 
@@ -114,21 +146,17 @@ public class CPlayerCostumeApplier : MonoBehaviour
             return;
         }
 
-        // 플레이어 외형 변경
-        if (_playerAnimator != null)
+        // 이미 동일한 외형이 적용됐다면 생략
+        if (costumeDataSO == costume && _playerAnimator.runtimeAnimatorController == costume.AnimatorOverride)
         {
-            _playerAnimator.runtimeAnimatorController = costume.AnimatorOverride;
-            CLog.Log("[CPlayerCostumeApplier] 코스튬 외형 변경 완료");
+            return;
         }
 
-        CLog.Log($"[CostumeApplier] 외형 적용 : {costume.CostumeName} / " +
-        $"Animator : {_playerAnimator.gameObject.name} / " +
-        $"Controller : {_playerAnimator.runtimeAnimatorController.name}");
+        // 플레이어 외형 변경
+        _playerAnimator.runtimeAnimatorController = costume.AnimatorOverride;
+        costumeDataSO = costume;
 
-        // 코스튬 추가 능력치 반영
-        _playerController.PlayerData.SetCostumeBonus(costume.Bonus);
-        _data.SaveGame(_data.CurrentFlow.SaveSlot);
-        CLog.Log($"[CostumeApplier] 코스튬 적용 완료 : " + $"{costume.CostumeName}");
+        CLog.Log($"[CostumeApplier] 외형 적용 완료 : {costume.CostumeName}");        
     }
 
     #endregion
