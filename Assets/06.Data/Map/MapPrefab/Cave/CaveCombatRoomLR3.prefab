@@ -5821,6 +5821,7 @@ Transform:
   m_Children:
   - {fileID: 4982000025796216492}
   - {fileID: 5027602450398206147}
+  - {fileID: 6471122971458398657}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-5987521362300462892
@@ -5845,7 +5846,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 1
   _right2: 0
-  _playerSpawnPoint: {fileID: 0}
+  _playerSpawnPoint: {fileID: 6471122971458398657}
 --- !u!1 &4701237801508603158
 GameObject:
   m_ObjectHideFlags: 0
@@ -6588,6 +6589,37 @@ TilemapRenderer:
   m_Mode: 0
   m_DetectChunkCullingBounds: 0
   m_MaskInteraction: 0
+--- !u!1 &5002659060845279697
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6471122971458398657}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6471122971458398657
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5002659060845279697}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 7.64, y: 7.79, z: 0.18406679}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2077406825897371793}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5631529172372984192
 GameObject:
   m_ObjectHideFlags: 0

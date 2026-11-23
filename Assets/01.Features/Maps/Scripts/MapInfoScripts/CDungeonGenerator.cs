@@ -57,10 +57,14 @@ public class CDungeonGenerator : MonoBehaviour
     private bool _isReady = false;
 
     private GameObject _wanderingMerchant;
+
+    private List<CRoomData> _spawnedRooms = new List<CRoomData>();
     #endregion
 
     #region 프로퍼티
     public bool IsReady => _isReady;
+
+    public List<SRoomPlacement> RoomPlacements => _roomPlacements;
 
     #endregion
 
@@ -188,7 +192,7 @@ public class CDungeonGenerator : MonoBehaviour
 
             if (success)
             {
-                Debug.Log($"던전 생성 성공! 시도 횟수: {attempt + 1}");
+                Debug.Log($"던전 생성 성공. 시도 횟수: {attempt + 1}");
                 SpawnRooms();
                 StartCoroutine(BakeNavMeshNextFrame());
                 _isReady = true;
@@ -845,14 +849,19 @@ public class CDungeonGenerator : MonoBehaviour
 
     private void SpawnRooms()
     {
+        _spawnedRooms.Clear();
+
         foreach (SRoomPlacement placement in _roomPlacements)
         {
+
             CRoomData spawnedRoom = Instantiate(
                 placement.RoomPrefab,
                 placement.WorldPosition,
                 Quaternion.identity,
                 _generatedDungeonRoot
             );
+
+            _spawnedRooms.Add(spawnedRoom);
 
             // 플레이어 위치지정
             if ((spawnedRoom.RoomType == ERoomType.Start) || (spawnedRoom.RoomType == ERoomType.Anvil) || (spawnedRoom.RoomType == ERoomType.Boss))
@@ -1093,7 +1102,7 @@ public class CDungeonGenerator : MonoBehaviour
 
     private bool FindWanderingMerchant()
     {
-        CMerchant merchant = FindFirstObjectByType<CMerchant>(FindObjectsInactive.Include);
+        CFindMerchant merchant = FindFirstObjectByType<CFindMerchant>(FindObjectsInactive.Include);
 
         if (merchant == null)
         {
@@ -1104,6 +1113,17 @@ public class CDungeonGenerator : MonoBehaviour
         _wanderingMerchant = merchant.gameObject;
 
         return true;
+    }
+
+
+    public CRoomData GetSpawnedRoom(int index)
+    {
+        if (index < 0 || index >= _spawnedRooms.Count)
+        {
+            return null;
+        }
+
+        return _spawnedRooms[index];
     }
 
 
