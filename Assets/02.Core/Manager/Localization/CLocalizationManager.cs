@@ -153,6 +153,11 @@ public class CLocalizationManager : MonoBehaviour
         return string.Format(text, values);
     }
 
+    public string GetText(string key, string color)
+    {
+        string text = GetText(key);
 
+        return $"<color={color}>{text}</color>";
+    }
 
 }

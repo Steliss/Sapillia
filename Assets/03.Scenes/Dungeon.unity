@@ -2208,6 +2208,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Merchant
       objectReference: {fileID: 0}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _drag
+      value: 
+      objectReference: {fileID: 1753913641}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _infoDesc
+      value: 
+      objectReference: {fileID: 1753913643}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _infoImage
+      value: 
+      objectReference: {fileID: 1753913645}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _infoTitle
+      value: 
+      objectReference: {fileID: 1753913644}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _inventoryUI
+      value: 
+      objectReference: {fileID: 1753913642}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _InventoryInfo
+      value: 
+      objectReference: {fileID: 1753913646}
     - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _drag
       value: 
@@ -2232,10 +2256,30 @@ PrefabInstance:
       propertyPath: _InventoryInfo
       value: 
       objectReference: {fileID: 1753913646}
+    - target: {fileID: 2735650972213048275, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _inventoryUI
+      value: 
+      objectReference: {fileID: 1753913642}
+    - target: {fileID: 2735650972213048275, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _dungeonGenerator
+      value: 
+      objectReference: {fileID: 1833521144}
+    - target: {fileID: 5198366690651962640, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _ui
+      value: 
+      objectReference: {fileID: 1753913642}
+    - target: {fileID: 5198366690651962640, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _log
+      value: 
+      objectReference: {fileID: 1290389390}
     - target: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _inventoryUI
       value: 
       objectReference: {fileID: 1753913642}
+    - target: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _dungeonGenerator
+      value: 
+      objectReference: {fileID: 1833521144}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2243,7 +2287,7 @@ PrefabInstance:
   m_SourcePrefab: {fileID: 100100000, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
 --- !u!114 &1270016120 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+  m_CorrespondingSourceObject: {fileID: 2735650972213048275, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
   m_PrefabInstance: {fileID: 1270016119}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
@@ -2323,6 +2367,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 09a2e11761accd14a8e7e1b230073f0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1290389390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6839211765370621633, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
+  m_PrefabInstance: {fileID: 1753913639}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03b55790b3bb0f241a97ced580dde4fb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1299645148
@@ -2808,7 +2863,7 @@ PrefabInstance:
     - target: {fileID: 635742260016701644, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: _merchant
       value: 
-      objectReference: {fileID: 1270016120}
+      objectReference: {fileID: 0}
     - target: {fileID: 1203616343196040860, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_Name
       value: SceneUI
@@ -2820,7 +2875,7 @@ PrefabInstance:
     - target: {fileID: 4587693274352788637, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: _merchant
       value: 
-      objectReference: {fileID: 1270016120}
+      objectReference: {fileID: 0}
     - target: {fileID: 5514361699723605691, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

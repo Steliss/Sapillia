@@ -41406,17 +41406,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: db83abeec6e05554fab17190e3afe60e, type: 3}
---- !u!114 &659268341 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
-  m_PrefabInstance: {fileID: 5500275816540512981}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ad3b5865c5fcc5647945f2808f550eb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &664800341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6185461261552444107, guid: 6e6a6f15dc942304c98056c10aa8071c, type: 3}
@@ -55937,37 +55926,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 583660076934734629, guid: 303c5ffcaece95c4aa7d74a40b256fc3, type: 3}
   m_PrefabInstance: {fileID: 2134668670}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &2137616661
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2137616662}
-  m_Layer: 0
-  m_Name: AddInventory
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2137616662
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2137616661}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5500275816540512982}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5500275816540512981
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56020,47 +55978,58 @@ PrefabInstance:
       propertyPath: m_Name
       value: Merchant
       objectReference: {fileID: 0}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _drag
       value: 
       objectReference: {fileID: 6300441129374152512}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _infoDesc
       value: 
       objectReference: {fileID: 6300441129374152509}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _infoImage
       value: 
       objectReference: {fileID: 6300441129374152511}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _infoTitle
       value: 
       objectReference: {fileID: 6300441129374152510}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _inventoryUI
       value: 
       objectReference: {fileID: 6300441129374152515}
-    - target: {fileID: 2091679094787073654, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 1856940324806759749, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _InventoryInfo
       value: 
       objectReference: {fileID: 637298492}
-    - target: {fileID: 7491630784572670772, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+    - target: {fileID: 2735650972213048275, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
       propertyPath: _inventoryUI
       value: 
       objectReference: {fileID: 6300441129374152515}
+    - target: {fileID: 5198366690651962640, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _ui
+      value: 
+      objectReference: {fileID: 6300441129374152515}
+    - target: {fileID: 5198366690651962640, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+      propertyPath: _log
+      value: 
+      objectReference: {fileID: 2131775078}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2137616662}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
---- !u!4 &5500275816540512982 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1442255003290596375, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
+--- !u!114 &5500275816540512986 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2735650972213048275, guid: 59157bdd68568734bbfcf80391aaa749, type: 3}
   m_PrefabInstance: {fileID: 5500275816540512981}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad3b5865c5fcc5647945f2808f550eb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &6300441129374152507
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -56072,7 +56041,7 @@ PrefabInstance:
     - target: {fileID: 635742260016701644, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: _merchant
       value: 
-      objectReference: {fileID: 659268341}
+      objectReference: {fileID: 5500275816540512986}
     - target: {fileID: 1203616343196040860, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_Name
       value: SceneUI
@@ -56092,11 +56061,11 @@ PrefabInstance:
     - target: {fileID: 3938743736761266172, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: merchantUI
       value: 
-      objectReference: {fileID: 659268341}
+      objectReference: {fileID: 5500275816540512986}
     - target: {fileID: 4587693274352788637, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: _merchant
       value: 
-      objectReference: {fileID: 659268341}
+      objectReference: {fileID: 5500275816540512986}
     - target: {fileID: 5514361699723605691, guid: bb9b1c9dbe514144d882631fee44288d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

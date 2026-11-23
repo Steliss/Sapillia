@@ -19,6 +19,8 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     [SerializeField] private CMerchantData[] _merchantDatas;
     [SerializeField] private Animator _controller;
 
+    [SerializeField] private CDungeonGenerator _dungeonGenerator;
+
     private CInputCommandHub _input;
     private CDataManger _data;
     private CInventoryData _inventoryData;
@@ -58,6 +60,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
             CLog.Log("CMerchant _dataTask OnEnable 작업 완료");
         });
+
+        if(_dungeonGenerator != null)
+        {
+            _dungeonGenerator.OnDungeonGenerated += CreateShoppingList;
+        }
     }
 
     private void OnDisable()
@@ -66,6 +73,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _dataTask.Cancel();
 
         _input?.Unregister(EKeyAction.Interaction, this);
+
+        if (_dungeonGenerator != null)
+        {
+            _dungeonGenerator.OnDungeonGenerated -= CreateShoppingList;
+        }
     }
 
     private void Start()
@@ -180,7 +192,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         }
         else
         {
-            AddShopItem(2001, 3); // 기본 포션 
+            AddShopItem(2001, 5); // 기본 포션 
         }
     }
 
