@@ -12,15 +12,14 @@ public enum EMarchant
 
 public class CMerchant : CTriggerPlayer, IInputCommand
 {
-    [SerializeField] private EMarchant _type;
     [SerializeField] private GameObject _shopUI;
     [SerializeField] private CInventoryUI _inventoryUI;
     [SerializeField] private CItemDatabaseSO _itemData;
     [SerializeField] private CMerchantUI _merchantUI;
+    [SerializeField] private CMerchantData[] _merchantDatas;
+    [SerializeField] private Animator _controller;
 
-    [Header("협상력")]
-    [SerializeField] private int bargain = 10;
-    [SerializeField] private int _money = 2000;
+    [SerializeField] private CDungeonGenerator _dungeonGenerator;
 
     private CInputCommandHub _input;
     private CDataManger _data;
@@ -31,15 +30,18 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
     private List<CInventorySlotData> _shopSlots = new();
 
+
     private bool _isActive;
     private bool _isNear;
 
     private int _bargain = 0; // 계산용
 
+    private CMerchantData _currentMerchant;
+
     public bool IsActive => _isActive;
-    public int Money => _money;
     public int Bargain => _bargain;
     public List<CInventorySlotData> ShopSlots => _shopSlots;
+    public CMerchantData CurrentMerchant => _currentMerchant;
 
     private void OnEnable()
     {
@@ -56,11 +58,13 @@ public class CMerchant : CTriggerPlayer, IInputCommand
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
 
-            CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
-            _bargain = playerdata.Stats.Bargain - bargain;
-
             CLog.Log("CMerchant _dataTask OnEnable 작업 완료");
         });
+
+        if(_dungeonGenerator != null)
+        {
+            _dungeonGenerator.OnDungeonGenerated += CreateShoppingList;
+        }
     }
 
     private void OnDisable()
@@ -69,6 +73,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _dataTask.Cancel();
 
         _input?.Unregister(EKeyAction.Interaction, this);
+
+        if (_dungeonGenerator != null)
+        {
+            _dungeonGenerator.OnDungeonGenerated -= CreateShoppingList;
+        }
     }
 
     private void Start()
@@ -89,6 +98,9 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
     public void Execute()
     {
+        CPlayerGamingDataSO playerdata = _data.PlayerData.GetPlayerData();
+        _bargain = playerdata.Stats.Bargain - _currentMerchant.Bargain;
+
         if (_isNear && _inventoryData != null)
         {
             ActiveUI(true);
@@ -127,9 +139,25 @@ public class CMerchant : CTriggerPlayer, IInputCommand
     // 초기 상점 세팅
     private void CreateShoppingList()
     {
+        if (_merchantDatas == null || _merchantDatas.Length == 0)
+        {
+            CLog.Warn("상인 데이터가 없음");
+            return;
+        }
+
+        _currentMerchant = _merchantDatas[Random.Range(0, _merchantDatas.Length)];
+
+        if (_currentMerchant == null)
+        {
+            CLog.Warn("선택된 상인 데이터가 비어 있음");
+            return;
+        }
+
+        _controller.runtimeAnimatorController = _currentMerchant.Controller;
+
         _shopSlots.Clear();
 
-        if (_type == EMarchant.Cow)
+        if (_currentMerchant.Type == EMarchant.Cow)
         {
             AddShopItem(2001,3); // 기본 포션 
             AddShopItem(EItemType.Potion);
@@ -140,17 +168,31 @@ public class CMerchant : CTriggerPlayer, IInputCommand
 
             AddShopItem(EItemType.Tablet);
         }
-        else if (_type == EMarchant.Rat)
+        else if (_currentMerchant.Type == EMarchant.Rat)
         {
             AddShopItem(2001, 3); // 기본 포션 
+            AddShopItem(EItemType.Potion);
+            AddShopItem(EItemType.Potion);
+
+            AddShopItem(EItemType.Artifact);
+
+            AddShopItem(EItemType.Tablet);
+            AddShopItem(EItemType.Tablet);
         }
-        else if (_type == EMarchant.Turtle)
+        else if (_currentMerchant.Type == EMarchant.Turtle)
         {
             AddShopItem(2001, 3); // 기본 포션 
+
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+
+            AddShopItem(EItemType.Tablet);
+            AddShopItem(EItemType.Tablet);
         }
         else
         {
-            AddShopItem(2001, 3); // 기본 포션 
+            AddShopItem(2001, 5); // 기본 포션 
         }
     }
 
@@ -180,11 +222,6 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         }
 
         _shopSlots.Add(CreateShopSlot(item, count));
-    }
-
-    public void AddMoney(int value)
-    {
-        _money += value;
     }
 
 
@@ -372,16 +409,16 @@ public class CMerchant : CTriggerPlayer, IInputCommand
                 return false;
             }
 
-            AddMoney(price);
+            _currentMerchant.AddMoney(price);
         }
         else
         {
-            if (_money < price)
+            if (_currentMerchant.Money < price)
             {
                 return false;
             }
 
-            AddMoney(-price);
+            _currentMerchant.AddMoney(-price);
             playerdata.ToMarchantAddMoney(price);
         }
 

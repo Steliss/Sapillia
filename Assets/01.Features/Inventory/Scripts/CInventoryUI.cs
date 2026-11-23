@@ -59,8 +59,6 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _localizationTask.Run(async token =>
         {
             _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
-            _localization.OnLanguageChanged += ReloadText;
-            ReloadText();
 
             CLog.Log("CInventoryUI _localizationTask OnEnable 작업 완료");
         });
@@ -87,14 +85,10 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
                 
         _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
-        _localization.OnLanguageChanged -= ReloadText;
         _input.Unregister(EKeyAction.Inventory, this);
     }
 
 
-    private void ReloadText()
-    {
-    }
 
     // 인벤토리 열고 닫기
     public void Execute()
@@ -166,6 +160,24 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
             slot.gameObject.SetActive(true);
         }
     }
+
+    /// <summary>
+    /// 인벤토리 슬롯 추가 후 UI 갱신
+    /// </summary>
+    public void AddSlots()
+    {
+        for (int i = _inventorySlotUI.Count; i < _inventoryData.InventorySlots.Count; i++)
+        {
+            CInventorySlotUI slot = Instantiate(_slotPrefab, _inventoryRoot);
+
+            slot.SetInventoryUI(this);
+            slot.BindSlot(_inventoryData.InventorySlots[i]);
+
+            _inventorySlotUI.Add(slot);
+            slot.gameObject.SetActive(true);
+        }
+    }
+
 
     /// <summary>
     /// 출발과 도착칸의 데이터를 바꾸고 화면에서 갱신

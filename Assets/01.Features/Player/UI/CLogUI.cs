@@ -123,7 +123,7 @@ public class CLogUI : MonoBehaviour, IInputCommand
         AddMessage($"<color=#80FF80>{message}</color>");
     }
 
-    private void AddItem(string nameKey)
+    public void AddItem(string nameKey)
     {
         string itemName = _localization.GetText(nameKey);
 
@@ -135,6 +135,15 @@ public class CLogUI : MonoBehaviour, IInputCommand
         string talk = _localization.GetText(talkKey);
 
         AddMessage($"<color=#FFFFFF>{talk}</color>");
+
+        ActiveUI(true);
+    }
+
+    public void AddSystem(string MessageKey)
+    {
+        string message = _localization.GetText(MessageKey);
+
+        AddMessage($"<color=#FFFFFF>{message}</color>");
 
         ActiveUI(true);
     }
