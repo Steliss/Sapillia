@@ -36,6 +36,12 @@ public struct SPlayerStats
     [Min(0)] public int Attribute_Fire;
     [Min(0)] public int Attribute_Ice;
     [Min(0)] public int Attribute_Lightning;
+
+    [Min(1)] public float Attribute_Physical_Multiplier;
+    [Min(1)] public float Attribute_Fire_Multiplier;
+    [Min(1)] public float Attribute_Ice_Multiplier;
+    [Min(1)] public float Attribute_Lightning_Multiplier;
+    
     #endregion
 
     #region 능력치
@@ -122,19 +128,44 @@ public struct SPlayerStats
         switch (attribute)
         {
             case EAttribute.Physical:
-                Attribute_Physical = Mathf.Max(0, Attribute_Physical + amount);
+                Attribute_Physical = Mathf.Max(0, Attribute_Physical + amount + (int)((Attribute_Physical + amount) * Attribute_Physical_Multiplier));
                 break;
 
             case EAttribute.Fire:
-                Attribute_Fire = Mathf.Max(0, Attribute_Fire + amount);
+                Attribute_Fire = Mathf.Max(0, Attribute_Fire + amount + (int)((Attribute_Fire + amount) * Attribute_Fire_Multiplier));
                 break;
 
             case EAttribute.Ice:
-                Attribute_Ice = Mathf.Max(0, Attribute_Ice + amount);
+                Attribute_Ice = Mathf.Max(0, Attribute_Ice + amount + (int)((Attribute_Ice + amount) * Attribute_Ice_Multiplier));
                 break;
 
             case EAttribute.Lightning:
-                Attribute_Lightning = Mathf.Max(0, Attribute_Lightning + amount);
+                Attribute_Lightning = Mathf.Max(0, Attribute_Lightning + amount + (int)((Attribute_Lightning + amount) * Attribute_Lightning_Multiplier));
+                break;
+        }
+    }
+
+    public void AddAttributePowerMultiplier(EAttribute attribute, float amount)
+    {
+        switch (attribute)
+        {
+            case EAttribute.Physical:
+                Attribute_Physical_Multiplier += amount;
+                AddAttributePower(EAttribute.Physical, 0);
+                break;
+            case EAttribute.Fire:
+                Attribute_Fire_Multiplier += amount;
+                AddAttributePower(EAttribute.Fire, 0);
+                break;
+            case EAttribute.Ice:
+                Attribute_Ice_Multiplier += amount;
+                AddAttributePower(EAttribute.Ice, 0);
+                break;
+            case EAttribute.Lightning:
+                Attribute_Lightning_Multiplier += amount;
+                AddAttributePower(EAttribute.Lightning, 0);
+                break;
+            default:
                 break;
         }
     }
@@ -214,6 +245,11 @@ public struct SPlayerStats
             Attribute_Ice = 20,
             Attribute_Lightning = 20,
 
+            Attribute_Physical_Multiplier = 1.0f,
+            Attribute_Fire_Multiplier = 1.0f,
+            Attribute_Ice_Multiplier = 1.0f,
+            Attribute_Lightning_Multiplier= 1.0f,
+
             Def = 0,
             Str = 0,
             Evasion = 0,
@@ -251,6 +287,7 @@ public struct SPlayerStats
             Ammo_Speed = 3f,
             Ammo_ReloadSpeed = 1f
         };
+
     }
 
 }
