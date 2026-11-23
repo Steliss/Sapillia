@@ -24,6 +24,7 @@ public class CWeaponMotion : MonoBehaviour
 
     [Header("공격 데이터")]
     [SerializeField] private CWeaponAttackDataSO _attackData;
+    [SerializeField] private CPlayerGamingDataSO _player;
 
     [Header("공격자 위치 Transform")]
     [SerializeField] private Transform _attacker;
@@ -300,10 +301,16 @@ public class CWeaponMotion : MonoBehaviour
             // 일반공격
             attackMultiplier = attack.DamageMultiplier * stats.Damage_Normal;
         }
-
+                        
         float damage = baseDamage * stats.GetAttributePower(EAttribute.Physical) * stats.Damage_All * stats.Damage_Weapon * attackMultiplier;
 
-        return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
+        if (_player.IsCritical())
+        {
+            CLog.Log($"[CWeaponMotion] 크리티컬 확인");
+            damage = damage * stats.Critical_Damage;
+        }
+
+            return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
     }
 
 

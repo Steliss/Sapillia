@@ -136,14 +136,19 @@ public class CCrossbowProjectile : MonoBehaviour
         // 충돌한 대상의 데미지 인터페이스 검색
         IDamageable target = other.GetComponentInParent<IDamageable>();
 
-        if(target == null)
+        if (target == null)
         {
             return;
-        }        
-               
-        CLog.Log($"{other.gameObject.name}에게 {_damage}를 줌");
+        }
+
+        // 동일 몬스터 중복 피격 차단
+        if (!_hitTargets.Add(target))
+        {
+            return;
+        }
+
+        // 최종 데미지 적용
         target.TakeDamage(_damage);
-                
     }
 
     #endregion

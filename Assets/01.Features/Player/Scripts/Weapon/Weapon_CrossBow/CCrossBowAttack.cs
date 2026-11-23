@@ -146,6 +146,19 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
+        // 크리티컬 판정 - 한 번만 실행
+        bool isCritical = _player.PlayerData.IsCritical();
+
+        if(isCritical)
+        {            
+            float multiplier = stats.Critical_Damage;
+
+            finalDamage = Mathf.Max(0, Mathf.RoundToInt(finalDamage * multiplier));
+
+            CLog.Log($"[Crossbow] Critical! Damage : {finalDamage}");
+        }
+
+
         bool fired = false;
 
         switch (_crossbowData.FireMode)

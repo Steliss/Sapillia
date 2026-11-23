@@ -255,7 +255,7 @@ public struct SPlayerStats
             Evasion = 0,
 
             Critical_Rate = 0f,
-            Critical_Damage = 50f,
+            Critical_Damage = 1.5f,
 
             Attack_Speed = 1f,
             Movement_Speed = 3f,
