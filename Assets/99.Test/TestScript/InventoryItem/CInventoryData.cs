@@ -185,6 +185,10 @@ public class CInventoryData
             {
                 for (int i = 0; i < artifact.Synergies.Count; i++)
                 {
+                    if (!synergyCounts.ContainsKey(artifact.Synergies[i]))
+                    {
+                        synergyCounts[artifact.Synergies[i]] = 0;
+                    }
                     synergyCounts[artifact.Synergies[i]] += 1;
                 }
             }
@@ -281,6 +285,7 @@ public class CInventoryData
                     break;
             }
             totalStats = CPlayerStatsCalculator.Add(totalStats, stat);
+            CLog.Log($"시너지 {key} : {synergyCounts[key]}개");
         }
 
         return totalStats;
