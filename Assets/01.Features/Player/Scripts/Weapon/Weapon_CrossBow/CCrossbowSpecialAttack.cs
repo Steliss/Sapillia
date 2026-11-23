@@ -134,6 +134,13 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         // 석궁 기본 데미지 × 플레이어 특수공격 배율
         float damage = stats.GetAttributePower(EAttribute.Physical) * _crossbowData.BaseDamage * stats.Damage_All * stats.Damage_Weapon * stats.Damage_Special;
 
+        bool isCritical = playerData.IsCritical();
+
+        if (isCritical)
+        {
+            damage = damage * stats.Critical_Damage;
+        }
+
         int finalDamage = Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
 
         // 공용 풀에서 스킬 투사체 한 개 획득
