@@ -19,6 +19,9 @@ public class CPlayerGamingDataSO
     [SerializeField] private SPlayerStats _artifactBonus; // 아티팩트 추가 능력치
     [SerializeField] private SPlayerStats _stats; // 최종 능력치
     [SerializeField] private EWeaponType _weaponType = EWeaponType.SwordShield; // 들고 있는 무기(초기값 : 검과 방패)
+    [SerializeField] private Costume _costumeType = Costume.Pink;
+
+    [NonSerialized] private CCostumeDataSO _costumeData;
 
     [SerializeField] private int _equippedWeaponTier = 1; // 현재 장착 무기 티어
 
@@ -71,6 +74,8 @@ public class CPlayerGamingDataSO
     public int CurrentAmmo => _currentAmmo;
     public int MaxAmmo => _stats.Ammo_Cap;
     public int LevelUpRewardCount { get; set; }
+    public Costume CostumeType => _costumeType;
+    public CCostumeDataSO CostumeData => _costumeData;
 
     // 예비 탄창 수
     public int ReserveMagazineCount => Mathf.Max(0, _currentCount - 1);
@@ -132,7 +137,7 @@ public class CPlayerGamingDataSO
         _equippedWeaponTier = 1;
 
         _stats = _coreStats;
-
+        
         // 최소값 보장 및 자원 초기화
         _currentHP = Mathf.Max(1, _stats.MaxHP);
         _currentMP = Mathf.Max(0, _stats.MaxMP);
@@ -204,6 +209,29 @@ public class CPlayerGamingDataSO
 
         NotifyAll();
     }
+    public void CostumeSO(CCostumeDataSO data)
+    {
+        if(data != null)
+        {
+            _costumeData = data;
+        }
+
+        _costumeData = data;
+
+        // 기존 코스튬 보너스를 새 보너스로 교체
+        SetCostumeBonus(data.Bonus);
+    }
+
+    public void CostumeSO(CCostumeDataSO data, Costume type)
+    {
+        if (data == null)
+        {
+            return;
+        }
+
+        _costumeType = type;
+        CostumeSO(data);
+    }
 
     // 코스튬 효과 가져오기
     public void SetCostumeBonus(SCostumeStatBonus bonus)
@@ -247,7 +275,7 @@ public class CPlayerGamingDataSO
         RecalculateStats();
     }
 
-    // 코스튬 및 무기 효과 적용하기
+    // 스텟 적용하기
     private void RecalculateStats()
     {
         if (!IsInitialized)
