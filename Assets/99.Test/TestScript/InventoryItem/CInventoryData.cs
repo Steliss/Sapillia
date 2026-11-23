@@ -107,11 +107,12 @@ public class CInventoryData
     [SerializeField] private List<CInventorySlotData> inventorySlots = new List<CInventorySlotData>(); // 인벤토리
     [SerializeField] private List<CInventorySlotData> potionSlots = new List<CInventorySlotData>();    // 포션
     [SerializeField] private List<CInventorySlotData> extraInventorySlots = new List<CInventorySlotData>(); // 벨트
+    [SerializeField] private Dictionary<EArtifactSynergy, int> synergyCounts = new Dictionary<EArtifactSynergy, int>(); // 시너지
 
     public List<CInventorySlotData> InventorySlots => inventorySlots;
     public List<CInventorySlotData> PotionSlots => potionSlots;
     public List<CInventorySlotData> ExtraInventorySlots => extraInventorySlots;
-
+    public IReadOnlyDictionary<EArtifactSynergy, int> SynergyCounts => synergyCounts;
 
     public const int _width = 6; // 인벤토리의 가로 칸 수
 
@@ -174,12 +175,112 @@ public class CInventoryData
     public SPlayerStats GetTotalArtifactStats()
     {
         SPlayerStats totalStats = default;
+        synergyCounts.Clear();
 
         foreach (CInventorySlotData slot in inventorySlots)
         {
             SPlayerStats slotStats = slot.GetArtifactStats();
 
+            if (slot.ItemSO is CArtifactSO artifact)
+            {
+                for (int i = 0; i < artifact.Synergies.Count; i++)
+                {
+                    synergyCounts[artifact.Synergies[i]] += 1;
+                }
+            }
             totalStats = CPlayerStatsCalculator.Add(totalStats, slotStats);
+        }
+        SPlayerStats synergyStats = GetSynergyStats();
+        totalStats = CPlayerStatsCalculator.Add(totalStats, synergyStats);
+
+        return totalStats;
+    }
+
+    private SPlayerStats GetSynergyStats()
+    {
+        SPlayerStats totalStats = default;
+
+        foreach (EArtifactSynergy key in synergyCounts.Keys)
+        {
+            if (synergyCounts[key] <= 0)
+            {
+                continue;
+            }
+
+            SPlayerStats stat = default;
+            switch (key)
+            {
+                case EArtifactSynergy.Robust:
+                    if (synergyCounts[key] >= 2)
+                    {
+                        stat.Attribute_Physical += 2;
+                    }
+                    if (synergyCounts[key] >= 4)
+                    {
+                        stat.Attribute_Physical += 4;
+                    }
+                    if (synergyCounts[key] >= 6)
+                    {
+                        stat.Attribute_Physical += 6;
+                    }
+                    if (synergyCounts[key] >= 8)
+                    {
+                        stat.Attribute_Physical += 8;
+                    }
+                    if (synergyCounts[key] >= 10)
+                    {
+                        stat.Attribute_Physical_Multiplier += 0.15f;
+                    }
+                    break;
+
+                case EArtifactSynergy.Precision:
+                    if (synergyCounts[key] >= 2)
+                    {
+                        stat.Critical_Rate += 0.04f;
+                    }
+                    if (synergyCounts[key] >= 4)
+                    {
+                        stat.Critical_Rate += 0.06f;
+                    }
+                    if (synergyCounts[key] >= 6)
+                    {
+                        stat.Critical_Rate += 0.08f;
+                    }
+                    if (synergyCounts[key] >= 8)
+                    {
+                        stat.Critical_Rate += 0.10f;
+                    }
+                    if (synergyCounts[key] >= 10)
+                    {
+                        stat.Critical_Damage += 0.3f;
+                    }
+                    break;
+
+                case EArtifactSynergy.WindSong:
+                    if (synergyCounts[key] >= 2)
+                    {
+                        stat.Attack_Speed += 0.08f;
+                    }
+                    if (synergyCounts[key] >= 4)
+                    {
+                        stat.Attack_Speed += 0.12f;
+                    }
+                    if (synergyCounts[key] >= 6)
+                    {
+                        stat.Attack_Speed += 0.16f;
+                    }
+                    if (synergyCounts[key] >= 8)
+                    {
+                        stat.Attack_Speed += 0.20f;
+                    }
+                    if (synergyCounts[key] >= 10)
+                    {
+                        stat.Damage_Weapon += 0.15f;
+                        stat.DashCount += 1;
+                    }
+                    break;
+            }
+            totalStats = CPlayerStatsCalculator.Add(totalStats, stat);
         }
 
         return totalStats;

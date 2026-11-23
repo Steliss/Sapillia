@@ -282,6 +282,8 @@ public class CPlayerGamingDataSO
 
         result.Validate();
 
+        result.Attribute_Physical = (int)(result.Attribute_Physical * result.Attribute_Physical_Multiplier);
+
         _stats = result;
 
         // 탄창 보정
