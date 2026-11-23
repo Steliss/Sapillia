@@ -372,17 +372,12 @@ public class CPlayerGamingDataSO
     }
 
     // 크리티컬 유무
-    public bool IsCritical(float damage)
+    public bool IsCritical()
     {
-        int criticalNum = 0;
-        criticalNum = UnityEngine.Random.Range(0, 101);
+        float criticalRate =
+        Mathf.Clamp(Stats.Critical_Rate, 0f, 100f);
 
-        if(criticalNum > Stats.Critical_Rate)
-        {
-            return true;
-        }
-
-        return false;
+        return UnityEngine.Random.value < criticalRate / 100f;
     }
 
     // 체력 회복
