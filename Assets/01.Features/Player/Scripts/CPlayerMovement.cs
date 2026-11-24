@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public enum EPlayerMoveState
@@ -20,6 +19,8 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private CPlayerDashDust _dashDustSpawner;
     [SerializeField] private CESCUI _ui;
+
+    [SerializeField] private CPlayerSound _playerSound;
 
     [Header("달리기 설정")]
     [Min(0.1f)]
@@ -237,6 +238,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     private bool TryBindPlayerData()
     {
+        if (_session == null)
+        {
+            return false;
+        }
+
         CPlayerGamingDataSO currentData = _session.PlayerData;
 
         if(currentData == null || !currentData.IsInitialized)
@@ -252,23 +258,11 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
                 _dashTimer = 0f;
                 _dashCooldownTimer = 0f;
             }
-        }
 
-        // Controller가 관리하는 현재 런타임 SO 참조
-        _playerData = _session.PlayerData;
-
-        if (_playerData == null)
-        {
             if (!_warnedMissingData)
             {
                 CLog.Warn("[Movement] PlayerData 연결 대기 중");
                 _warnedMissingData = true;
-            }
-
-            if (_warnedMissingData)
-            {
-                CLog.Log("[Movement] PlayerData 연결 완료");
-                _warnedMissingData = false;
             }
 
             return false;
@@ -381,6 +375,10 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
         _lastDashStartTime = Time.time;
         _dashSequence++;
 
+        // 대시 성공 시 효과음
+        _playerSound?.PlayDash();
+
+        // 먼지 효과
         if (_dashDustSpawner != null)
         {
             _dashDustSpawner.PlayDust(_dashDirection);
@@ -460,6 +458,35 @@ public class CPlayerMovement : MonoBehaviour, IInputCommand<Vector2>, IInputComm
 
     #endregion
 
+    #region FootSound    
+    // Walk / Run Animation Event에서 호출
+    public void PlayFootstepFromAnimation()
+    {
+        // UI가 열려 있으면 재생하지 않음
+        if (_ui != null && _ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
+        // 걷기 또는 달리기 상태에서만 재생
+        if (_moveState != EPlayerMoveState.Walk && _moveState != EPlayerMoveState.Run)
+        {
+            return;
+        }
+
+        // 이동 입력이 없으면 재생하지 않음
+        if (_moveDirection.sqrMagnitude < 0.0001f)
+        {
+            return;
+        }
+
+        _playerSound?.PlayFootstep();
+        CLog.Log("[CPlayerMovement] 걷기 효과음 재생완료");
+    }
+
+    
+    
+    #endregion
 
 
     #region 반동
