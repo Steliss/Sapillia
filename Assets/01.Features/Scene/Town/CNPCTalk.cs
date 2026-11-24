@@ -13,7 +13,7 @@ public enum ENPC
     Mayerson
 }
 
-public class CNPCTalk : CTriggerPlayer, IInputCommand
+public class CNPCTalk : CTriggerPlayer, IInputCommand, IESCCommand
 {
     [Header("NPC")]
     [SerializeField] private ENPC npc;
@@ -77,6 +77,7 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
         _localizationTask.Cancel();
 
         _input?.Unregister(EKeyAction.Interaction, this);
+        _input.UnregisterOpenedUI(this);
 
         _isNear = false;
     }
@@ -147,6 +148,13 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
         ShowDialogue();
     }
 
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            EndTalk();
+        }
+    }
 
     // 종료만 기입 타 함수에서 true 호툴할 일 있을시 수정 필요
     public void ActiveUI(bool active)
@@ -167,6 +175,8 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
         _talkUI.Show(this, _npcSprite);
 
         ShowDialogue();
+
+        _input.RegisterOpenedUI(this);
     }
 
     private void ShowDialogue()
@@ -247,5 +257,7 @@ public class CNPCTalk : CTriggerPlayer, IInputCommand
         {
             _talkUI.Hide();
         }
+
+        _input.UnregisterOpenedUI(this);
     }
 }

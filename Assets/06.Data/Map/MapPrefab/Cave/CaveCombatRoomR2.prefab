@@ -3846,6 +3846,37 @@ Grid:
   m_CellGap: {x: 0, y: 0, z: 0}
   m_CellLayout: 0
   m_CellSwizzle: 0
+--- !u!1 &4765942715545771195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2249521721064519491}
+  m_Layer: 0
+  m_Name: SpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2249521721064519491
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4765942715545771195}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 13.2, y: 6.4, z: 0.027841475}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5724751842000887223}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5466310818438058598
 GameObject:
   m_ObjectHideFlags: 0
@@ -6859,6 +6890,7 @@ Transform:
   m_Children:
   - {fileID: 1415709949529303568}
   - {fileID: 7598405777963473200}
+  - {fileID: 2249521721064519491}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7251849214584297528
@@ -6883,7 +6915,7 @@ MonoBehaviour:
   _left2: 0
   _right1: 1
   _right2: 0
-  _playerSpawnPoint: {fileID: 0}
+  _playerSpawnPoint: {fileID: 2249521721064519491}
 --- !u!1 &8121034230309154365
 GameObject:
   m_ObjectHideFlags: 0

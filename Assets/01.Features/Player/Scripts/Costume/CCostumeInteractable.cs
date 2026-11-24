@@ -41,9 +41,6 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
 
             // F키
             _inputHub.Register(EKeyAction.Interaction, (IInputCommand)this);
-
-            // Esc키
-            _inputHub.Register(EKeyAction.ESC, (IInputCommand)this);
         });
 
         CLog.Log("[CCostumeInteractable] Input매니저 등록 완료");
@@ -56,8 +53,7 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.Interaction, (IInputCommand)this);
-
-            _inputHub.Unregister(EKeyAction.ESC, (IInputCommand)this);
+            _inputHub.UnregisterOpenedUI(this);
         }
 
         _isPlayerNearby = false;
@@ -90,7 +86,7 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
     // F키 입력
     public void Execute()
     {
-        if (!_isPlayerNearby || _costumeUI == null)
+        if (!_isPlayerNearby || _costumeUI == null || _inputHub == null)
         {
             return;
         }
@@ -98,15 +94,17 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
         if (!_costumeUI.IsOpen)
         {
             _costumeUI.Open();
+            _inputHub.RegisterOpenedUI(this);
         }
     }
 
     // Esc키 입력
     public void ExecuteESC()
     {
-        if (_costumeUI != null && _costumeUI.IsOpen)
+        if (_costumeUI != null && _costumeUI.IsOpen && _inputHub != null)
         {
             _costumeUI.Close();
+            _inputHub.UnregisterOpenedUI(this);
         }
     }
 

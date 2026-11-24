@@ -43,10 +43,11 @@ public class CSettingButtonSlot
 }
 
 
-public class CSettingUI : MonoBehaviour
+public class CSettingUI : MonoBehaviour, IESCCommand
 {
     [SerializeField] private CLocalizationManager _localization;
     [SerializeField] private CDataManger _dataManger;
+    [SerializeField] private CInputCommandHub _input;
 
     [SerializeField] private GameObject _UICanvas;
 
@@ -67,6 +68,7 @@ public class CSettingUI : MonoBehaviour
     [SerializeField] private Button _keySettingsSlotButton;
     [SerializeField] private GameObject _keySettingTap;
 
+
     private bool _isActive = false;
 
     public bool IsActive => _isActive;
@@ -74,6 +76,7 @@ public class CSettingUI : MonoBehaviour
     private void OnEnable()
     {
         _localization.OnLanguageChanged += ReloadText;
+        _input.RegisterOpenedUI(this);
 
         _gamePlaySlotButton.onClick.AddListener(GamePlaySlotOpen);
         _soundSlotButton.onClick.AddListener(SoundSlotOpen);
@@ -110,6 +113,15 @@ public class CSettingUI : MonoBehaviour
         ReloadText();
     }
 
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            ActiveUI(false);
+        }
+    }
+
+
     /// <summary>
     ///  설정 UI 캔버스 열기
     /// </summary>
@@ -118,6 +130,18 @@ public class CSettingUI : MonoBehaviour
     {
         _isActive = con;
         _UICanvas.SetActive(con);
+
+        if (_input != null)
+        {
+            if (con)
+            {
+                _input.RegisterOpenedUI(this);
+            }
+            else
+            {
+                _input.UnregisterOpenedUI(this);
+            }
+        }
     }
 
 
