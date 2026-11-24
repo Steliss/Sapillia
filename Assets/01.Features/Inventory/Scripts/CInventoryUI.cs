@@ -3,7 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CInventoryUI : MonoBehaviour, IInputCommand
+public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CMerchant _merchant;
     [SerializeField] private CESCUI _esc;
@@ -86,6 +86,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
         _input.Unregister(EKeyAction.Inventory, this);
+        _input.UnregisterOpenedUI(this);
     }
 
 
@@ -100,6 +101,14 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         RefreshInventoryUI();
         ActiveUI(!_isActive);
+    }
+
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            ActiveUI(false);
+        }
     }
 
     public void ActiveUI(bool active)
@@ -117,6 +126,15 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
         _UICanvas.SetActive(active);
+
+        if (active)
+        {
+            _input.RegisterOpenedUI(this);
+        }
+        else
+        {
+            _input.UnregisterOpenedUI(this);
+        }
     }
 
     // UI 슬롯 최초 생성

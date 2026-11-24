@@ -56,11 +56,11 @@ public class CWeaponChange : CTriggerPlayer, IInputCommand
 
         if(_type == EWeaponType.SwordShield)
         {
-            _weapon.TestEquipSwordShield();
+            _weapon.TrySwapWeapon(EWeaponType.SwordShield, 1);
         }
         else if(_type == EWeaponType.Crossbow)
         {
-            _weapon.TestEquipCrossbow();
+            _weapon.TrySwapWeapon(EWeaponType.Crossbow, 1);
         }
         else
         {

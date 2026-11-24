@@ -232,9 +232,18 @@ public class CTitleUI : MonoBehaviour, IInputCommand, IESCCommand
 
     // ESC키
     public void ExecuteESC()
-    {
-        _startGameUI.SetActive(false);
-        _settingUI.ActiveUI(false);
+
+    {    // 이름 입력 창이 열려 있으면 먼저 닫기
+        if (_nameInput.activeSelf)
+        {
+            CancelCreateSave();
+            return;
+        }
+
+        if (_startGameUI.activeSelf)
+        {
+            _startGameUI.SetActive(false);
+        }
     }
 
     public void Execute()

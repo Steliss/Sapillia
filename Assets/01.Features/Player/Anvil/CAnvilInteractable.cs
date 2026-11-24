@@ -44,7 +44,6 @@ public class CAnvilInteractable :
             _inputHub = hub;
 
             _inputHub.Register(EKeyAction.Interaction, (IInputCommand)this);
-            _inputHub.Register(EKeyAction.ESC, (IInputCommand)this);
         });
 
         
@@ -57,7 +56,7 @@ public class CAnvilInteractable :
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.Interaction, (IInputCommand)this);
-            _inputHub.Unregister(EKeyAction.ESC, (IInputCommand)this);
+            _inputHub.UnregisterOpenedUI(this);
         }
 
         _isPlayerNearby = false;
@@ -91,7 +90,7 @@ public class CAnvilInteractable :
     // F키
     public void Execute()
     {
-        if (!_isPlayerNearby || _weaponUI == null)
+        if (!_isPlayerNearby || _weaponUI == null || _inputHub == null)
         {
             return;
         }
@@ -99,15 +98,19 @@ public class CAnvilInteractable :
         if (!_weaponUI.IsOpen)
         {
             _weaponUI.Open();
+
+            _inputHub.RegisterOpenedUI(this);
         }
     }
 
     // Esc키
     public void ExecuteESC()
     {
-        if (_weaponUI != null && _weaponUI.IsOpen)
+        if (_weaponUI != null && _weaponUI.IsOpen && _inputHub != null)
         {
             _weaponUI.Close();
+
+            _inputHub.UnregisterOpenedUI(this);
         }
     }
 
