@@ -72,8 +72,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand, IESCCommand
         _inputTask.Cancel();
         _dataTask.Cancel();
 
-        _input?.Unregister(EKeyAction.Interaction, this);
-        _input.UnregisterOpenedUI(this);
+        if(_input != null)
+        {
+            _input.Unregister(EKeyAction.Interaction, this);
+            _input.UnregisterOpenedUI(this);
+        }
 
         if (_dungeonGenerator != null)
         {

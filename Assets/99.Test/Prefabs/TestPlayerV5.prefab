@@ -714,6 +714,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
+    - target: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _dashDustSpawner
       value: 
       objectReference: {fileID: 7577350606055717420}
@@ -772,6 +776,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5520276936133700637, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 856057097819942599}
+    - targetCorrespondingSourceObject: {fileID: 5520276936133700637, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 282952054924907189}
     - targetCorrespondingSourceObject: {fileID: 208784805843836038, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6737078434836745669}
@@ -1019,6 +1026,33 @@ MonoBehaviour:
   _playerController: {fileID: 4395221656971624870}
   _playerCostume: {fileID: 1833618578605448587}
   _playerAnimator: {fileID: 8038977919181618630}
+--- !u!114 &282952054924907189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038108863413336287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a388da0ca034aa8408c47c9143e8ac35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerController: {fileID: 4395221656971624870}
+  _soundPoint: {fileID: 987996336819194392}
+  _dash: dashMove
+  _footstep: footstepDirt
+  _swordNormal: attackswish01
+  _swordNormal3: swordandshield03
+  _swordSpecial: attackSpin
+  _swordDash: attackBash
+  _crossbowNormal: crossbow_Normal
+  _crossbowSpecial: attackBowMagical
+  _shotgunNormal: crossbow_Shotgun
+  _reloadStart: crossbowReload1
+  _reloadComplete: crossbowReload2
+  _hit: PlayerHit
+  _death: diePlayer
 --- !u!114 &2341777939036392585 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
