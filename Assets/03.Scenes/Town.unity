@@ -37826,10 +37826,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2038108863413336287, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 317980715}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
 --- !u!114 &317980710 stripped
 MonoBehaviour:
@@ -37857,44 +37854,12 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3374168676818066584, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
   m_PrefabInstance: {fileID: 317980709}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 317980714}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e86941d2dd4c1e04fad7729b9bde4186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &317980714 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2038108863413336287, guid: 0da6c47094952e446932b4e205eaaaee, type: 3}
-  m_PrefabInstance: {fileID: 317980709}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &317980715
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 317980714}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a388da0ca034aa8408c47c9143e8ac35, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _playerController: {fileID: 0}
-  _soundPoint: {fileID: 0}
-  _dash: dashMove
-  _footstep: footstepDirt
-  _swordNormal: attackswish01
-  _swordNormal3: swordandshield03
-  _swordSpecial: attackSpin
-  _swordDash: attackBash
-  _crossbowNormal: crossbow_Normal
-  _crossbowSpecial: attackBowMagical
-  _shotgunNormal: crossbow_Shotgun
-  _reloadStart: crossbowReload1
-  _reloadComplete: crossbowReload2
-  _hit: PlayerHit
-  _death: diePlayer
 --- !u!1001 &322751320
 PrefabInstance:
   m_ObjectHideFlags: 0
