@@ -76,7 +76,11 @@ public class CSettingUI : MonoBehaviour, IESCCommand
     private void OnEnable()
     {
         _localization.OnLanguageChanged += ReloadText;
-        _input.RegisterOpenedUI(this);
+
+        if (_isActive)
+        {
+            _input.RegisterOpenedUI(this);
+        }
 
         _gamePlaySlotButton.onClick.AddListener(GamePlaySlotOpen);
         _soundSlotButton.onClick.AddListener(SoundSlotOpen);
