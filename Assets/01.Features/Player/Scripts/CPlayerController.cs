@@ -6,6 +6,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
     [SerializeField] private CPlayerCostume _playerCostume;
     [SerializeField] private CESCUI _ui;
     [SerializeField] private CPotionList _potion;
+    [SerializeField] private CPlayerSound _playerSound;
     #endregion
 
     #region 내부변수
@@ -163,12 +164,16 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         // 이미 같은 런타임 객체를 사용 중이라면 아무것도 하지 않음
         if (ReferenceEquals(PlayerData, currentData))
         {
+            // 데이터가 같아도 사운드 연결 상태 확인
+            _playerSound?.BindPlayerData(currentData);
             return;
         }
 
         // 기존 런 세션의 객체 참조만 연결
         PlayerData = currentData;
-       
+
+        // 피격 / 사망 이벤트 연결
+        _playerSound?.BindPlayerData(PlayerData);
     }
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)
@@ -181,8 +186,11 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
         PlayerData = player;
 
+        // 사운드 이벤트 연결
+        _playerSound?.BindPlayerData(PlayerData);
+
         // 외형 변경
-        if(_playerCostume != null)
+        if (_playerCostume != null)
         {
             _playerCostume.ApplyCostume(costume);
         }

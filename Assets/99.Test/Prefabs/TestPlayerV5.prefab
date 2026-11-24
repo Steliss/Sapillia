@@ -478,6 +478,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1606168197963988484}
     - target: {fileID: 810116179662201751, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
+    - target: {fileID: 810116179662201751, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _specialAttack
       value: 
       objectReference: {fileID: 3151387335311265592}
@@ -713,6 +717,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7795116713815676260, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
     - target: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _playerSound
       value: 
@@ -907,6 +915,7 @@ MonoBehaviour:
   _player: {fileID: 4395221656971624870}
   _firePoint: {fileID: 9080156954050221521}
   _playerMovement: {fileID: 2341777939036392585}
+  _playerSound: {fileID: 282952054924907189}
   _crossbowData: {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
   _shotgunBlast: {fileID: 3524604666158055938}
 --- !u!70 &1925077086592268795
@@ -961,6 +970,7 @@ MonoBehaviour:
   _movement: {fileID: 2341777939036392585}
   _crossbowAim: {fileID: 6737078434836745669}
   _firePoint: {fileID: 9080156954050221521}
+  _playerSound: {fileID: 282952054924907189}
 --- !u!114 &3524604666158055938
 MonoBehaviour:
   m_ObjectHideFlags: 0
