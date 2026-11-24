@@ -10,7 +10,7 @@ public enum EMarchant
 }
 
 
-public class CMerchant : CTriggerPlayer, IInputCommand
+public class CMerchant : CTriggerPlayer, IInputCommand, IESCCommand
 {
     [SerializeField] private GameObject _shopUI;
     [SerializeField] private CInventoryUI _inventoryUI;
@@ -73,6 +73,7 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _dataTask.Cancel();
 
         _input?.Unregister(EKeyAction.Interaction, this);
+        _input.UnregisterOpenedUI(this);
 
         if (_dungeonGenerator != null)
         {
@@ -107,6 +108,14 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         }
     }
 
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            ActiveUI(false);
+        }
+    }
+
     // 상점과 인벤토리 열고 닫기
     public void ActiveUI(bool active)
     {
@@ -120,6 +129,14 @@ public class CMerchant : CTriggerPlayer, IInputCommand
         _inventoryUI.ActiveUI(active);
         _shopUI.SetActive(active);
 
+        if (active)
+        {
+            _input.RegisterOpenedUI(this);
+        }
+        else
+        {
+            _input.UnregisterOpenedUI(this);
+        }
     }
 
     // 아이템 원본으로 상품 슬롯 생성

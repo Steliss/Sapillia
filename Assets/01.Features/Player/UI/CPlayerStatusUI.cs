@@ -67,7 +67,7 @@ public class CPlayerStatsUI
 }
 
 // ※ : TODO : 이미지랑 UI 쪽 이미지 넣으려면 계층구조랑 싹 수정할 필요가 있음
-public class CPlayerStatusUI : MonoBehaviour, IInputCommand
+public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CESCUI _esc;
 
@@ -125,7 +125,8 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
     [SerializeField] private CPlayerStatsUI _damage_DashUI;
     [SerializeField] private CPlayerStatsUI _damage_SpecialUI;
 
-    private CDataManger _data;
+    private CDataManger _data; 
+    private CInventoryData _inventory;
     private CLocalizationManager _localization;
     private CInputCommandHub _input;
     private CPlayerGamingDataSO _playerData;
@@ -138,8 +139,8 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
 
     public bool IsActive => _isActive;
 
-    
 
+  
     private void OnEnable()
     {
         _inputTask.Run(async token =>
@@ -152,16 +153,17 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
         {
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _playerData = _data.PlayerData.GetPlayerData();
-            // ReloadData();
+            _inventory = _data.InventoryData.GetInventoryData();
+            _inventory.OnInventoryChanged += ReloadText;
             CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
         });
         _localizationTask.Run(async token =>
         {
             _localization = await CManagerDontDestroy.LocalizationDataAsync(token);
             _localization.OnLanguageChanged += ReloadText;
-            // ReloadText();
             CLog.Log("CPlayerUI _localizationTask OnEnable 작업 완료");
         });
+
 
         _commonStatsButton.onClick.AddListener(SetAsLastSiblingCommonStats);
         _specialStatsButton.onClick.AddListener(SetAsLastSiblingSpecialStats);
@@ -174,7 +176,10 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
         _dataTask?.Cancel();
         _localizationTask?.Cancel();
 
+        _inventory.OnInventoryChanged -= ReloadText;
+
         _input.Unregister(EKeyAction.PlayerStats, this);
+        _input.UnregisterOpenedUI(this);
 
         _localization.OnLanguageChanged -= ReloadText;
 
@@ -259,21 +264,20 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
     // 플레이어 스텟창 오픈
     public void Execute()
     {
-        if(_esc.IsActive)
+        if (_esc.IsActive)
         {
             return;
         }
 
-        _isActive = !_isActive;
+        ActiveUI(!_isActive);
+    }
 
-        // 창을 열 때만 정보 갱신
+    public void ExecuteESC()
+    {
         if (_isActive)
         {
-            ReloadData();
-            ReloadText();
+            ActiveUI(false);
         }
-
-        _UICanvas.SetActive(_isActive);
     }
 
 
@@ -281,7 +285,23 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand
     public void ActiveUI(bool active)
     {
         _isActive = active;
+
+        if (active)
+        {
+            ReloadData();
+            ReloadText();
+        }
+
         _UICanvas.SetActive(active);
+
+        if (active)
+        {
+            _input.RegisterOpenedUI(this);
+        }
+        else
+        {
+            _input.UnregisterOpenedUI(this);
+        }
     }
 
     // SetButton 이벤트에 따른 이벤트 해제
