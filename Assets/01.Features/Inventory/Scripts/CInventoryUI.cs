@@ -16,6 +16,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
     [SerializeField] private TextMeshProUGUI _infoTitle;
     [SerializeField] private TextMeshProUGUI _infoDesc;
 
+    [SerializeField] private CInventorySynergyUI _synergyUI;  // 시너지 UI 추가
     [Header("슬롯 프리팹")]
     [SerializeField] private CInventorySlotUI _slotPrefab;
 
@@ -321,6 +322,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             slot.Refresh();
         }
+        _synergyUI?.SetSynergy(_inventoryData.SynergyCounts);
     }
 
     /// <summary>
