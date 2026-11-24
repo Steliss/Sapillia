@@ -187,9 +187,9 @@ public class CWeaponManager : MonoBehaviour
     #region StartWeapon Equip
     public void InitializeStartingWeapon()
     {
-        if (!TrySwapWeapon(_startingWeaponType, _startingTier))
+        if (!TrySwapWeapon(_player.PlayerData.WeaponType, _player.PlayerData.EquippedWeaponTier))
         {
-            CLog.Warn($"[WeaponManager] 시작 무기 장착 실패 : " + $"{_startingWeaponType} / Tier {_startingTier}");
+            CLog.Warn($"[WeaponManager] 시작 무기 장착 실패 : " + $"{_player.PlayerData.WeaponType} / Tier {_player.PlayerData.EquippedWeaponTier}");
         }
     }
 
