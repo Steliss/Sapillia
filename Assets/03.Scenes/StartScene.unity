@@ -28765,19 +28765,19 @@ MonoBehaviour:
   - _name: diePlayer
     _sound:
       Guid:
-        Data1: -288251650
-        Data2: 1186741200
-        Data3: -466792018
-        Data4: 377933493
-      Path: event:/Scene/diePlayer
-  - _name: PlayerHit
-    _sound:
-      Guid:
         Data1: -174994250
         Data2: 1282449740
         Data3: -1922788172
         Data4: -308298993
       Path: event:/Scene/PlayerHit
+  - _name: PlayerHit
+    _sound:
+      Guid:
+        Data1: -1744903885
+        Data2: 1239961382
+        Data3: -774765936
+        Data4: 644538771
+      Path: event:/System/MpShieldHit
   _enviroment: []
 --- !u!1 &2129691444
 GameObject:

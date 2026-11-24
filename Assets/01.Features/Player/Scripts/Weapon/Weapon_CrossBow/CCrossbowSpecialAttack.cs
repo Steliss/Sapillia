@@ -16,6 +16,8 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
 	[SerializeField] private CCrossbowAim _crossbowAim;
 	[SerializeField] private Transform _firePoint;
 
+    [Header("사운드")]
+    [SerializeField] private CPlayerSound _playerSound;
 	#endregion
 
 	#region 내부 변수
@@ -173,6 +175,8 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
                 finalDamage,
                 _player.transform
             );
+
+        _playerSound.PlayCrossbowSpecial();
 
         // 발사 방향의 반대로 반동
         _movement.ApplyRecoil(-fireDirection, _crossbowData.SpecialRecoilSpeed, _crossbowData.SpecialRecoilDeceleration);

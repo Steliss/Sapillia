@@ -34,6 +34,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Min(0.01f)]
     [SerializeField] private float _dashAttackWindow = 0.25f;
 
+    [Header("사운드")]
+    [SerializeField] private CPlayerSound _playerSound;
+
     // 테스트
     [Header("공격 방향 확인")]
     [SerializeField] private CSwordAndShieldAim _aim;
@@ -300,6 +303,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
 
+        // 특수공격 시작 성공 효과음
+        _playerSound?.PlaySwordSpecial();
+
         // 4. 특수공격 성공 시 기존 콤보 초기화
         ResetCombo();
 
@@ -379,6 +385,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return false;
         }
 
+        // 실제 공격이 시작됐을 때 효과음 재생
+        _playerSound?.PlaySwordNormal(_nextComboIndex);
+
         // TryPlay에서 LockAim이 실행된 뒤의 조준값
         if (_aim != null)
         {
@@ -386,14 +395,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
             CLog.Log($"[PlayerAttack] 마우스 방향 : {aimAngle:F1}° / 무기 회전 : {_aim.EffectAimRotation.eulerAngles.z:F1}°");
         }
-        /*
-        // 실제 무기 공격이 시작됐을 때 애니메이션 재생
-        if (_playerAnimation != null)
-        {
-            _playerAnimation.PlayAttack(_nextComboIndex + 1, stats.Attack_Speed);
-        }
-        */
-        // 다음 공격 인덱스
+        
         _nextComboIndex = (_nextComboIndex + 1) % _weaponData.AttackCount;
 
         // 공격 속도 반영
@@ -471,6 +473,9 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         {
             return false;
         }
+
+        // 대시 공격이 실제 시작됐을 때 효과음
+        _playerSound?.PlaySwordDashAttack();
 
         // 이번 대시에서 공격 기회 사용
         _lastDashAttackSequence = dashSequence;
