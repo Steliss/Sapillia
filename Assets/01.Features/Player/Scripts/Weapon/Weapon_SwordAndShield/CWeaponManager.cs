@@ -33,6 +33,7 @@ public class CWeaponManager : MonoBehaviour
     [SerializeField] private CPlayerSpecialAttack _specialAttack;
     [SerializeField] private CPlayerGuard _playerGuard;
     [SerializeField] private CWeaponMotion _weaponMotion;
+    [SerializeField] private CPlayerAmmoUI _weaponAmmoUI;
 
     [Header("강화 후보")]
     [SerializeField] private CWeaponUpgradeOptionSO[] _upgradeOptions;
@@ -366,6 +367,8 @@ public class CWeaponManager : MonoBehaviour
         _playerData.SetEquippedWeapon(EWeaponType.Crossbow, crossbow.Tier);
         _playerData.SetWeaponStatBonus(crossbow.StatBonus);
         _playerData.InitializeCrossbowAmmo();
+        _weaponAmmoUI.Initialize(_playerData.CurrentAmmo, _playerData.MaxAmmo);
+
         CLog.Log($"[CWeaponManager] 탄 개수 : {_playerData.CurrentAmmo}");
 
         // 석궁 입력 활성화
