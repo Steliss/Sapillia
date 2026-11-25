@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +35,8 @@ public class CCostumeSelectUI : MonoBehaviour
     #region 프로퍼티
     public bool IsOpen => _isOpen;
     public CCostumeDataSO CurrentCostume => _costumeManager != null ? _costumeManager.CurrentCostume : null;
+
+    public event Action OnClosed;
 
     #endregion
 
@@ -122,6 +125,8 @@ public class CCostumeSelectUI : MonoBehaviour
         {
             _panelRoot.SetActive(false);
         }
+
+        OnClosed?.Invoke();
     }
 
     #endregion
