@@ -177,7 +177,7 @@ public class CDungeonGenerator : MonoBehaviour
             else
             {
                 CRoomData startRoom = GetRandomRoomFromPool(
-                    floorData.RoomPool?.StartRoomPrefabs
+                    floorData.RoomPool.StartRoomPrefabs
                 );
 
                 if (startRoom == null)
@@ -543,7 +543,7 @@ public class CDungeonGenerator : MonoBehaviour
             return false;
         }
 
-        // 1. 보스 방을 원점에 배치
+        // 보스 방을 원점에 배치
         Vector3 bossPosition = Vector3.zero;
         Vector2Int bossGridPos = Vector2Int.zero;
 
@@ -624,7 +624,7 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        CRoomData[] roomPrefabs = floorData?.RoomPool?.CombatRoomPrefabs;
+        CRoomData[] roomPrefabs = floorData.RoomPool.CombatRoomPrefabs;
 
         if (roomPrefabs == null || roomPrefabs.Length == 0)
         {
@@ -671,7 +671,7 @@ public class CDungeonGenerator : MonoBehaviour
         CFloorDataSO floorData = GetCurrentFloorData();
 
         CRoomData[] rewardRoomPrefabs =
-            floorData?.RoomPool?.RewardRoomPrefabs;
+            floorData.RoomPool.RewardRoomPrefabs;
 
         if (rewardRoomPrefabs == null || rewardRoomPrefabs.Length == 0)
         {
@@ -707,7 +707,7 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        CRoomData[] merchantRoomPrefabs = floorData?.RoomPool?.MerchantRoomPrefabs;
+        CRoomData[] merchantRoomPrefabs = floorData.RoomPool.MerchantRoomPrefabs;
 
         if (merchantRoomPrefabs == null || merchantRoomPrefabs.Length == 0)
         {
@@ -744,7 +744,7 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        CRoomData[] miniBossPrefabs = floorData?.RoomPool?.MiniBossRoomPrefabs;
+        CRoomData[] miniBossPrefabs = floorData.RoomPool.MiniBossRoomPrefabs;
 
         if (miniBossPrefabs == null || miniBossPrefabs.Length == 0)
         {
@@ -781,7 +781,7 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        CRoomData[] exitRoomPrefabs = floorData?.RoomPool?.ExitRoomPrefabs;
+        CRoomData[] exitRoomPrefabs = floorData.RoomPool.ExitRoomPrefabs;
 
         if (exitRoomPrefabs == null || exitRoomPrefabs.Length == 0)
         {
@@ -822,7 +822,7 @@ public class CDungeonGenerator : MonoBehaviour
     {
         CFloorDataSO floorData = GetCurrentFloorData();
 
-        CRoomData[] exitRoomPrefabs = floorData?.RoomPool?.ExitRoomPrefabs;
+        CRoomData[] exitRoomPrefabs = floorData.RoomPool.ExitRoomPrefabs;
 
         if (exitRoomPrefabs == null || exitRoomPrefabs.Length == 0)
         {

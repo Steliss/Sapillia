@@ -374,8 +374,7 @@ public class CPlayerGamingDataSO
     // 크리티컬 유무
     public bool IsCritical()
     {
-        float criticalRate =
-        Mathf.Clamp(Stats.Critical_Rate, 0f, 100f);
+        float criticalRate = Mathf.Clamp(Stats.Critical_Rate, 0f, 100f);
 
         return UnityEngine.Random.value < criticalRate / 100f;
     }
