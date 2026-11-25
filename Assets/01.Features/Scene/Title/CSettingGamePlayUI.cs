@@ -106,6 +106,7 @@ public class CSettingGamePlayUI : MonoBehaviour
 
         _cameraShake.TitleText.text = _localization.GetText("scene.optioncamerashake.text");
         _effect.TitleText.text = _localization.GetText("scene.optioneffecttitle.text");
+        _cameraShake.ContentsText.text = $"{_dataManger.CurrentSetting.CameraShakeMultiplier * 100} %";
     }
 
     private void LanguageUp()
@@ -153,15 +154,34 @@ public class CSettingGamePlayUI : MonoBehaviour
         );
     }
 
-    // ※ : TODO : 카메라랑 이펙트 관련 기능이 없어서 일단 넘어감
     private void CameraShakeUp()
     {
+        float multiplier = _dataManger.CurrentSetting.CameraShakeMultiplier + 0.25f;
+
+        if (multiplier > 1f)
+        {
+            multiplier = 0f;
+        }
+
+        _dataManger.CurrentSetting.SetCameraShakeMultiplier(multiplier);
+        _cameraShake.ContentsText.text = $"{multiplier * 100} %";
     }
 
     private void CameraShakeDown()
     {
+        float multiplier = _dataManger.CurrentSetting.CameraShakeMultiplier - 0.25f;
+
+        if (multiplier < 0f)
+        {
+            multiplier = 1f;
+        }
+
+        _dataManger.CurrentSetting.SetCameraShakeMultiplier(multiplier);
+        _cameraShake.ContentsText.text = $"{multiplier * 100} %";
     }
 
+
+    // ※ : TODO : 이펙트 기능이 구현 불가
     private void EffectUp()
     {
     }
