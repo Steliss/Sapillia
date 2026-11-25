@@ -17,6 +17,9 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
     [Header("석궁 데이터")]
     [SerializeField] private CCrossbowDataSO _crossbowData;
     [SerializeField] private CShotgunBlastFireMode _shotgunBlast;
+
+    [Header("Ammo UI")]
+    [SerializeField] private CPlayerAmmoUI _ammoUI;
     #endregion
 
     #region 내부변수
@@ -24,7 +27,6 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
     // 입력 시스템 / 탄창 시스템
     private CUniTaskOnes _inputTask = new CUniTaskOnes();
     private CUniTaskOnes _reloadTask = new CUniTaskOnes();
-
     private bool _isReloading;
 
     private bool _isFireHeld;
@@ -77,6 +79,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         _isFireHeld = false;
         _isReloading = false;
         _nextFireTime = 0f;
+        _ammoUI.SetVisible(false);
     }
 
     private void Update()
@@ -195,7 +198,10 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         }
 
         // 발사 성공 시 탄약 소비
-        _player.PlayerData.TryConsumeAmmo(1);
+        if (_player.PlayerData.TryConsumeAmmo(1))
+        {
+            RefreshAmmoUI();
+        }
 
         // 반동 구현
         Vector2 recoilDirection = -_firePoint.right;
@@ -262,6 +268,13 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         _isFireHeld = false;
         _nextFireTime = 0f;
 
+        if (_ammoUI != null && _player != null && _player.PlayerData != null)
+        {
+            CPlayerGamingDataSO playerData = _player.PlayerData;
+
+            _ammoUI.Initialize(playerData.MaxAmmo, playerData.CurrentAmmo);
+        }
+
         CLog.Log($"[Crossbow] {data.WeaponName} 데이터 적용");
     }
 
@@ -278,8 +291,6 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
         CPlayerGamingDataSO playerData = _player.PlayerData;
 
-        // 예비 탄창이 없으면 재장전 불가
-        // 현재 탄약이 가득 찼는지는 검사하지 않음
         if (!playerData.CanReloadMagazine)
         {
             CLog.Log("[Crossbow] 예비 탄창 없음");
@@ -315,10 +326,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
                 // 완료 시 탄창 교체
                 if (playerData.TryReloadMagazine())
                 {
-                    CLog.Log(
-                        $"[Crossbow] 재장전 완료 / " +
-                        $"Ammo : {playerData.CurrentAmmo}/" +
-                        $"{playerData.MaxAmmo} / ");
+                    RefreshAmmoUI();
                 }
 
                 _isReloading = false;
@@ -330,5 +338,25 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         });
     }
 
+    #endregion
+
+    #region AmmoUI
+    private void RefreshAmmoUI()
+    {
+        if (_ammoUI == null || _player == null || _player.PlayerData == null)
+        {
+            return;
+        }
+
+        CPlayerGamingDataSO playerData = _player.PlayerData;
+
+        if (_ammoUI._isInitialized)
+        {
+            _ammoUI.Initialize(playerData.CurrentAmmo, playerData.MaxAmmo);
+            return;
+        }
+
+        _ammoUI.UpdateAmmo(playerData.CurrentAmmo);
+    }
     #endregion
 }
