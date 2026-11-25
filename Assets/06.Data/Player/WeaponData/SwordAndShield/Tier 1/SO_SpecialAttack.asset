@@ -15,9 +15,9 @@ MonoBehaviour:
   _duration: 0.3
   _recovery: 0.1
   _damageMultiplier: 1
-  _gripOffset: {x: 0.2, y: 0.25}
+  _gripOffset: {x: 0, y: 1}
   _hitDistance: 0.8
-  _hitRadius: 0.25
+  _hitRadius: 2
   _angleCurve:
     serializedVersion: 2
     m_Curve:
@@ -94,4 +94,4 @@ MonoBehaviour:
     RotationMode: 0
     Offset: {x: 0, y: 0}
     AngleOffset: 0
-  _slashScale: 1
+  _slashScale: 5
