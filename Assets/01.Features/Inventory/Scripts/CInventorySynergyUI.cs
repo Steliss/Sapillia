@@ -60,7 +60,7 @@ public class CInventorySynergyUI : MonoBehaviour
             }
 
             // 시너지 레벨 0이면 끄기
-            if (synergys[key] == 0)
+            if (_synergyLevelMap[key] < 1)
             {
                 _synergyElementMap[key].SetActive(false);
                 continue;
@@ -72,7 +72,8 @@ public class CInventorySynergyUI : MonoBehaviour
                 _textData = CManagerDontDestroy.Instance.LocalizationData;
             }
 
-            string text = "<color=green>" + _textData?.GetText(_synergyInfoMap[key].Name) + $"</color>\n{synergys[key]} / {_synergyInfoMap[key].MaxLevel}";
+            string text = "<color=green>" + _textData?.GetText(_synergyInfoMap[key].Name) 
+                + $"</color>\n{synergys[key]} / {_synergyInfoMap[key].MaxLevel}";
             _synergyElementMap[key].SetSynergyLevel(text);
 
         }
@@ -89,6 +90,11 @@ public class CInventorySynergyUI : MonoBehaviour
             for (int i = 0; i < _synergyInfo.Length; i++)
             {
                 _synergyInfoMap[_synergyInfo[i].Synergy] = _synergyInfo[i];
+            }
+
+            if (_synergyInfoMap.Count == 0)
+            {
+                return false;
             }
         }
 
