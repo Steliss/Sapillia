@@ -478,6 +478,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1606168197963988484}
     - target: {fileID: 810116179662201751, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
+    - target: {fileID: 810116179662201751, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _specialAttack
       value: 
       objectReference: {fileID: 3151387335311265592}
@@ -561,6 +565,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5968808288942310508, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _damageFont
+      value: 
+      objectReference: {fileID: 3843404139033265110, guid: 6aff49033e850ef4bbe636485fc06016, type: 3}
     - target: {fileID: 5968808288942310508, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _playerGuard
       value: 
@@ -713,6 +721,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7795116713815676260, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
+    - target: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      propertyPath: _playerSound
+      value: 
+      objectReference: {fileID: 282952054924907189}
     - target: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       propertyPath: _dashDustSpawner
       value: 
@@ -772,6 +788,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5520276936133700637, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 856057097819942599}
+    - targetCorrespondingSourceObject: {fileID: 5520276936133700637, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 282952054924907189}
     - targetCorrespondingSourceObject: {fileID: 208784805843836038, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6737078434836745669}
@@ -781,6 +800,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8290147169831543872, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
       insertIndex: -1
       addedObject: {fileID: 475817316530457602}
+    - targetCorrespondingSourceObject: {fileID: 3468819522394349484, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7689547819507752203}
   m_SourcePrefab: {fileID: 100100000, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
 --- !u!4 &987996336819194392 stripped
 Transform:
@@ -900,6 +922,7 @@ MonoBehaviour:
   _player: {fileID: 4395221656971624870}
   _firePoint: {fileID: 9080156954050221521}
   _playerMovement: {fileID: 2341777939036392585}
+  _playerSound: {fileID: 282952054924907189}
   _crossbowData: {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
   _shotgunBlast: {fileID: 3524604666158055938}
 --- !u!70 &1925077086592268795
@@ -954,6 +977,7 @@ MonoBehaviour:
   _movement: {fileID: 2341777939036392585}
   _crossbowAim: {fileID: 6737078434836745669}
   _firePoint: {fileID: 9080156954050221521}
+  _playerSound: {fileID: 282952054924907189}
 --- !u!114 &3524604666158055938
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1019,6 +1043,33 @@ MonoBehaviour:
   _playerController: {fileID: 4395221656971624870}
   _playerCostume: {fileID: 1833618578605448587}
   _playerAnimator: {fileID: 8038977919181618630}
+--- !u!114 &282952054924907189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2038108863413336287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a388da0ca034aa8408c47c9143e8ac35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _playerController: {fileID: 4395221656971624870}
+  _soundPoint: {fileID: 987996336819194392}
+  _dash: dashMove
+  _footstep: footstepDirt
+  _swordNormal: attackswish01
+  _swordNormal3: swordandshield03
+  _swordSpecial: attackSpin
+  _swordDash: attackBash
+  _crossbowNormal: crossbow_Normal
+  _crossbowSpecial: attackBowMagical
+  _shotgunNormal: crossbow_Shotgun
+  _reloadStart: crossbowReload1
+  _reloadComplete: crossbowReload2
+  _hit: PlayerHit
+  _death: diePlayer
 --- !u!114 &2341777939036392585 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8119019493025912907, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
@@ -1151,6 +1202,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f368610f035014743a1eecd083df6cb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1 &6985258311194315630 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3468819522394349484, guid: f66d96a599e0f4647aa03b23550cf843, type: 3}
+  m_PrefabInstance: {fileID: 5824042271293854914}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7689547819507752203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6985258311194315630}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1be9ce8f67c08fe49b2453154c17b585, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &7545604311327677403 stripped

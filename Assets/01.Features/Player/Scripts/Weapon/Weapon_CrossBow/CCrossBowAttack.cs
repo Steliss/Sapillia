@@ -12,6 +12,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
     [SerializeField] private CPlayerController _player;
     [SerializeField] private Transform _firePoint;
     [SerializeField] private CPlayerMovement _playerMovement;
+    [SerializeField] private CPlayerSound _playerSound;
 
     [Header("석궁 데이터")]
     [SerializeField] private CCrossbowDataSO _crossbowData;
@@ -178,6 +179,21 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
             return;
         }
 
+        // 발사 성공 시 FireMode에 맞는 사운드 출력
+        if (_playerSound != null)
+        {
+            switch (_crossbowData.FireMode)
+            {
+                case ECrossbowFireMode.Projectile:
+                    _playerSound.PlayCrossbowNormal();
+                    break;
+
+                case ECrossbowFireMode.Blast:
+                    _playerSound.PlayShotgunNormal();
+                    break;
+            }
+        }
+
         // 발사 성공 시 탄약 소비
         _player.PlayerData.TryConsumeAmmo(1);
 
@@ -225,6 +241,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
                 damage,
                 _player.transform
             );
+
 
         return true;
 
@@ -277,6 +294,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         float reloadTime = Mathf.Max(0.01f, _crossbowData.ReloadDuration / reloadSpeed);
 
         _isReloading = true;
+        _playerSound.PlayReloadStart();
 
         CLog.Log($"[Crossbow] 재장전 시작 : {reloadTime:F2}초");
 
@@ -304,6 +322,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
                 }
 
                 _isReloading = false;
+                _playerSound.PlayReloadComplete();
             }
             catch (OperationCanceledException)
             {

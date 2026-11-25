@@ -1,7 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
-
 
 public class CInputCommandHub : MonoBehaviour
 {
@@ -15,6 +13,11 @@ public class CInputCommandHub : MonoBehaviour
 
     private readonly Dictionary<EKeyAction, IInputCommand<Vector2>> _vectorCommands = new Dictionary<EKeyAction, IInputCommand<Vector2>>();
     private readonly Dictionary<EKeyAction, IInputCommand<float>> _floatCommands = new Dictionary<EKeyAction, IInputCommand<float>>();
+
+    // 실제 UI를 연 순서
+    private readonly List<IESCCommand> _openedUI = new();
+
+    public int OpenedUICount => _openedUI.Count;
 
     private bool _subscribed;
     #endregion
@@ -246,6 +249,21 @@ public class CInputCommandHub : MonoBehaviour
         Unregister(key);
         _floatCommands[key] = command;
     }
+
+    // UI를 실제로 열었을 때 호출
+    public void RegisterOpenedUI(IESCCommand command)
+    {
+        // UI 가 등록되 있다면 return
+        if (command == null || _openedUI.Contains(command))
+        {
+            return;
+        }
+
+        _openedUI.Add(command);
+    }
+
+
+
     #endregion
 
 
@@ -288,26 +306,40 @@ public class CInputCommandHub : MonoBehaviour
             _floatCommands.Remove(key);
         }
     }
+
+    // ESC, 닫기 버튼, 단축키 등으로 UI를 닫았을 때 호출
+    public void UnregisterOpenedUI(IESCCommand command)
+    {
+        _openedUI.Remove(command);
+    }
+
     #endregion
 
 
     #region 커맨드 실행
     public void ExecuteESC(EKeyAction key)
     {
-        if (!_commands.TryGetValue(key, out var commands))
+        // 마지막에 열린 UI 하나만 종료 요청
+        if (_openedUI.Count > 0)
         {
+            _openedUI[_openedUI.Count - 1].ExecuteESC();
             return;
         }
 
-        foreach (var command in commands)
+        // 열린 UI가 없으면 등록된 ESC 명령 실행
+        if (_commands.TryGetValue(key, out var commands))
         {
-            if (command is IESCCommand escCommand)
+            foreach (var command in commands)
             {
-                escCommand.ExecuteESC();
+                if (command is IESCCommand escCommand)
+                {
+                    escCommand.ExecuteESC();
+                    return;
+                }
             }
         }
     }
-    
+
     public void Execute(EKeyAction key)
     {
         if (!_commands.TryGetValue(key, out var commands))

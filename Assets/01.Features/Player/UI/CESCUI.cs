@@ -7,13 +7,6 @@ using UnityEngine.SceneManagement;
 
 public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 {
-    [SerializeField] private CPlayerStatusUI playerStatsUI;
-    [SerializeField] private CInventoryUI inventoryUI;
-    [SerializeField] private CLogUI logUI;
-    [SerializeField] private CMerchant merchantUI;
-    [SerializeField] private CNPCTalkUI npcTalkUI;
-    [SerializeField] private CCostumeSelectUI costumeUI;
-
     [SerializeField] private GameObject _backGround;
     [SerializeField] private Button _continueButton;
     [SerializeField] private TextMeshProUGUI _continueText;
@@ -41,12 +34,12 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     private bool _isInitialize = false;
 
     private EReady _ready = EReady.None;
-    private EReady RequiredReady = EReady.Localization | EReady.Data;
+    private EReady RequiredReady = EReady.Localization | EReady.Scene;
 
     public bool IsActive => _isActive;
 
     // 플레이어 행동 제어 변수 
-    public bool IsAnyUIOpen => _isActive || logUI.IsActive || _settingUI.IsActive || inventoryUI.IsActive || playerStatsUI.IsActive || merchantUI.IsActive;
+    public bool IsAnyUIOpen => _isActive || _input.OpenedUICount > 0;
 
     private void OnEnable()
     {
@@ -72,7 +65,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         _sceneTask.Run(async token =>
         {
             _Scene = await CManagerDontDestroy.SceneManagerAsync(token);
-            SetReady(EReady.Data);
+            SetReady(EReady.Scene);
             CLog.Log("CESCUI _sceneTask OnEnable 작업 완료");
         });
         _dataTask.Run(async token =>
@@ -106,71 +99,20 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
 
     public void ExecuteESC()
     {
-        if(costumeUI != null)
-        {
-            if(costumeUI.IsOpen)
-            {
-                return;
-            }
-        }
-
-        if (merchantUI != null)
-        {
-            if (merchantUI.IsActive)
-            {
-                merchantUI.ActiveUI(false);
-                return;
-            }
-        }
-
-        if (npcTalkUI != null && npcTalkUI.IsActive)
-        {
-            npcTalkUI.CloseTalk();
-            logUI.ActiveUI(false);
-            return;
-        }
-
-        if (logUI.IsActive)
-        {
-            logUI.ActiveUI(false);
-            return;
-        }
-
-        if (_settingUI.IsActive)
-        {
-            _settingUI.ActiveUI(false);
-            return;
-        }
-
-        if (inventoryUI.IsActive)
-        {
-            inventoryUI.ActiveUI(false);
-            return;
-        }
-
-        if (playerStatsUI.IsActive)
-        {
-            playerStatsUI.ActiveUI(false);
-            return;
-        }
-
-        _isActive = !_isActive;
-
-        _backGround.SetActive(_isActive);
-
-        if (_isActive)
-        {
-            Time.timeScale = 0f;
-        }
-        else
-        {
-            Time.timeScale = 1f;
-        }
+        ActiveUI(!_isActive);
     }
 
     public void Execute()
     {
 
+    }
+
+    public void ActiveUI(bool active)
+    {
+        _isActive = active;
+        _backGround.SetActive(active);
+
+        Time.timeScale = active ? 0f : 1f;
     }
 
     private void ReloadText()
@@ -211,8 +153,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     #region 버튼 명령
     private void Continue()
     {
-        _isActive = false;
-        _backGround.SetActive(false);
+        ActiveUI(false);
     }
 
     private void GiveUP()
@@ -229,7 +170,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
         {
             // 패배 관련 띄우기 여부 
 
-            Time.timeScale = 1f;
+            ActiveUI(false);
             _Scene.ChangeScreenAsync(EScene.Town).Forget();
         }
         else
@@ -247,8 +188,7 @@ public class CESCUI : MonoBehaviour, IInputCommand, IESCCommand
     {
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
 
-        _backGround.SetActive(false);
-        Time.timeScale = 1f;
+        ActiveUI(false);
         _Scene.ChangeScreenAsync(EScene.Menu).Forget();
     }
 

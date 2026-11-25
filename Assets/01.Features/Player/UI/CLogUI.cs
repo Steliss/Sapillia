@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 
-public class CLogUI : MonoBehaviour, IInputCommand
+public class CLogUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private GameObject _logUI;
     [SerializeField] private TMP_InputField _inputField;
@@ -57,6 +57,7 @@ public class CLogUI : MonoBehaviour, IInputCommand
         _dataTask?.Cancel();
 
         _input.Unregister(EKeyAction.Chatting, this);
+        _input.UnregisterOpenedUI(this);
 
         _inventory.OnArtifactAcquired -= AddItem;
     }
@@ -88,8 +89,7 @@ public class CLogUI : MonoBehaviour, IInputCommand
 
         if (!_isActive)
         {
-            _logUI.SetActive(true);
-            _isActive = true;
+            ActiveUI(true);
 
             _inputField.ActivateInputField();
             return;
@@ -108,6 +108,14 @@ public class CLogUI : MonoBehaviour, IInputCommand
         _inputField.text = "";
     }
 
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            ActiveUI(false);
+        }
+    }
+
     public void ActiveUI(bool active)
     {
         _inputField.DeactivateInputField();
@@ -115,6 +123,18 @@ public class CLogUI : MonoBehaviour, IInputCommand
 
         _time = 0f;
         _isActive = active;
+
+        if (_input != null)
+        {
+            if (active)
+            {
+                _input.RegisterOpenedUI(this);
+            }
+            else
+            {
+                _input.UnregisterOpenedUI(this);
+            }
+        }
     }
 
 

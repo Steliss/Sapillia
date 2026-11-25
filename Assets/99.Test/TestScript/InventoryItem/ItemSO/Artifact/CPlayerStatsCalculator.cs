@@ -216,6 +216,11 @@ public static class CPlayerStatsCalculator
 
         #endregion
 
+        result.Attribute_Physical_Multiplier = a.Attribute_Physical_Multiplier + b.Attribute_Physical_Multiplier;
+        result.Attribute_Fire_Multiplier = a.Attribute_Fire_Multiplier + b.Attribute_Fire_Multiplier;
+        result.Attribute_Ice_Multiplier = a.Attribute_Ice_Multiplier + b.Attribute_Ice_Multiplier;
+        result.Attribute_Lightning_Multiplier = a.Attribute_Lightning_Multiplier + b.Attribute_Lightning_Multiplier;
+
         return result;
     }
 

@@ -3,11 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CInventoryUI : MonoBehaviour, IInputCommand
+public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CMerchant _merchant;
     [SerializeField] private CESCUI _esc;
     [SerializeField] private GameObject _UICanvas;
+    [SerializeField] private GameObject _synergyCanvas;
     [SerializeField] private CInventoryDrag _drag;
     [SerializeField] private CItemDatabaseSO _itemdata;
 
@@ -15,6 +16,8 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
     [SerializeField] private Image _infoImage;
     [SerializeField] private TextMeshProUGUI _infoTitle;
     [SerializeField] private TextMeshProUGUI _infoDesc;
+
+    [SerializeField] private CInventorySynergyUI _synergyUI;  // 시너지 UI 추가
 
     [Header("슬롯 프리팹")]
     [SerializeField] private CInventorySlotUI _slotPrefab;
@@ -86,6 +89,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         _inventoryData.OnInventoryChanged -= RefreshInventoryUI;
 
         _input.Unregister(EKeyAction.Inventory, this);
+        _input.UnregisterOpenedUI(this);
     }
 
 
@@ -100,6 +104,14 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         RefreshInventoryUI();
         ActiveUI(!_isActive);
+    }
+
+    public void ExecuteESC()
+    {
+        if (_isActive)
+        {
+            ActiveUI(false);
+        }
     }
 
     public void ActiveUI(bool active)
@@ -117,6 +129,16 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
 
         _data.SaveGame(_data.CurrentFlow.SaveSlot);
         _UICanvas.SetActive(active);
+        _synergyCanvas.SetActive(active);
+
+        if (active)
+        {
+            _input.RegisterOpenedUI(this);
+        }
+        else
+        {
+            _input.UnregisterOpenedUI(this);
+        }
     }
 
     // UI 슬롯 최초 생성
@@ -303,6 +325,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand
         {
             slot.Refresh();
         }
+        _synergyUI?.SetSynergy(_inventoryData.SynergyCounts);
     }
 
     /// <summary>
