@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8d6593b65964b545b07501e10f9d1d4, type: 3}
   m_Name: SO_Slash01
   m_EditorClassIdentifier: 
-  _duration: 0.28
-  _recovery: 0.08
+  _duration: 0.4
+  _recovery: 0.18
   _damageMultiplier: 1
   _gripOffset: {x: 0, y: 0}
-  _hitDistance: 0.9
-  _hitRadius: 0.25
+  _hitDistance: 1.5
+  _hitRadius: 0.5
   _angleCurve:
     serializedVersion: 2
     m_Curve:
@@ -75,8 +75,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  _hitStart: 0.2
-  _hitEnd: 0.75
+  _hitStart: 0
+  _hitEnd: 1
   _slashSprite: {fileID: 0}
   _effects:
   - Prefab: {fileID: 4046188421132816848, guid: 212965c64cbfa824381b3e7fed81b51d, type: 3}
