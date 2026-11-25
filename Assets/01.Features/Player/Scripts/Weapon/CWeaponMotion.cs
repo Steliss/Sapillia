@@ -53,10 +53,18 @@ public class CWeaponMotion : MonoBehaviour
     private Quaternion _initialLocalRotation;
     private Vector3 _initialHitPointPosition;
 
+    private Quaternion _initialAttackSpaceRotation;
+
     private Vector3 _slashInitialScale;
     private Color _slashInitialColor;
 
     private bool _hasInitialPose;
+
+    // 검로가 표시 중인지
+    private bool _slashVisible;
+    // 검로가 처음 나타난 순간의 월드 회전
+    private Quaternion _slashLockedRotation;
+
 
     private int _damage;
     private bool[] _effectPlayed;
@@ -181,6 +189,9 @@ public class CWeaponMotion : MonoBehaviour
         _initialLocalRotation = _weaponSwing.localRotation;
         _initialHitPointPosition = _hitPoint.localPosition;
 
+        // AttackSpace의 초기 로컬 회전 저장
+        _initialAttackSpaceRotation = _attackSpace.localRotation;
+
         _hasInitialPose = true;
     }
 
@@ -193,11 +204,17 @@ public class CWeaponMotion : MonoBehaviour
 
         // 최초 손잡이 위치 복원
         _weaponSwing.localPosition = _initialLocalPosition;
-
         // 최초 무기 회전 복원
         _weaponSwing.localRotation = _initialLocalRotation;
 
-        if(_hitPoint != null)
+        // 공격 좌표계의 최초 로컬 회전 복원
+        if (_attackSpace != null)
+        {
+            _attackSpace.localRotation = _initialAttackSpaceRotation;
+        }
+
+
+        if (_hitPoint != null)
         {
             _hitPoint.localPosition = _initialHitPointPosition;
         }
@@ -259,6 +276,24 @@ public class CWeaponMotion : MonoBehaviour
         if (_aim != null)
         {
             _aim.LockAim();
+
+            // 보정되지 않은 실제 마우스 방향
+            Vector2 direction = _aim.AimDirection;
+
+            if (direction.sqrMagnitude < 0.0001f)
+            {
+                direction = Vector2.right;
+            }
+
+            float aimAngle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+            // 실제 마우스 각도를 공격 좌표계에 적용
+            _attackSpace.rotation = Quaternion.Euler(0f, 0f, aimAngle);
+
+            CLog.Log(
+                $"[WeaponMotion] AimDirection : {aimAngle:F1}° / " +
+                $"EffectAim : {_aim.EffectAimRotation.eulerAngles.z:F1}° / " +
+                $"AttackSpace : {_attackSpace.eulerAngles.z:F1}°");                        
         }
 
         _damage = CalculateDamage(attack, baseDamage, stats, isSpecial, isDash);       
@@ -271,6 +306,8 @@ public class CWeaponMotion : MonoBehaviour
             _slashRenderer.sprite = attack.SlashSprite;
             _slashRenderer.enabled = false;
         }
+
+        _slashVisible = false;
 
         ApplyPose(0f);
 
@@ -312,10 +349,6 @@ public class CWeaponMotion : MonoBehaviour
 
             return Mathf.Max(0, Mathf.RoundToInt(damage) + stats.Damage_Fixed);
     }
-
-
-
-
 
     private void EndAttack()
     {
@@ -535,19 +568,27 @@ public class CWeaponMotion : MonoBehaviour
 
         if (!active)
         {
+            _slashRenderer.enabled = false;
+            _slashVisible = false;
             return;
         }
 
         Transform slashTransform = _slashRenderer.transform;
+
+        // 처음 표시되는 순간에만 회전값 저장
+        if (!_slashVisible)
+        {
+            _slashLockedRotation = _attackSpace.rotation * Quaternion.Euler(0f, 0f, _slashAngleOffset);
+
+            _slashVisible = true;
+        }
+
         // SwordSwing 기준 위치 보정
-        Vector3 position = _weaponSwing.TransformPoint(_slashOffset);
+        Vector3 position = _attackSpace.TransformPoint(_slashOffset);
 
-        // SwordSwing 월드 회전 + 검기 자체 회전 보정
-        Quaternion rotation = _weaponSwing.rotation *  Quaternion.Euler(0f, 0f, _slashAngleOffset);
-
-        // 부모 계층에 관계없이 월드 위치/회전을 일치시킴
-        slashTransform.SetPositionAndRotation(position, rotation);
-
+        // 회전은 처음 나타났을 때의 월드 각도 유지
+        slashTransform.position = position;
+        slashTransform.rotation = _slashLockedRotation;
         // 초기 스케일을 유지하면서 SO 배율 적용
         slashTransform.localScale = _slashInitialScale * _attackData.SlashScale;
 
@@ -559,6 +600,7 @@ public class CWeaponMotion : MonoBehaviour
         color.a *= alpha;
 
         _slashRenderer.color = color;
+        _slashRenderer.enabled = true;
     }
 
     private void ResetAttackEffects()
@@ -636,13 +678,25 @@ public class CWeaponMotion : MonoBehaviour
 
         // 부모를 따라 위치 이동
         effectTransform.SetParent(anchor, false);
-        effectTransform.localPosition = effect.Offset;
-
+        if (effect.RotationMode == EWeaponEffectRotationMode.Anchor)
+        {
+            effectTransform.localPosition = effect.Offset;
+        }
+        else
+        {
+            effectTransform.localPosition = _aim.AimDirection * 1.2f;
+        }
         // 생성 순간의 월드 회전 계산
         Quaternion rotation = GetEffectRotation(effect, anchor);
         effectTransform.rotation = rotation;
 
-        effectTransform.localRotation = Quaternion.Euler(0f, 0f, effect.AngleOffset);
+        // 생성된 이펙트의 월드 회전 고정
+        CWeaponEffectRotationLock rotationLock = effectObject.GetComponent<CWeaponEffectRotationLock>();
+
+        if (rotationLock != null)
+        {
+            rotationLock.LockRotation(rotation);
+        }
 
         CWeaponEffectFollow follow = effectObject.GetComponent<CWeaponEffectFollow>();
 
@@ -665,6 +719,7 @@ public class CWeaponMotion : MonoBehaviour
         if (effect.RotationMode == EWeaponEffectRotationMode.MouseAim && _aim != null)
         {
             baseRotation = _aim.EffectAimRotation;
+            
         }
 
         // SO의 AngleOffset을 추가 보정값으로 적용

@@ -6,7 +6,7 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
 
     [Header("참조")]
     [SerializeField] private CPlayerController _playerController;
-
+    [SerializeField] private GameObject _damageFont;
     // ※
     [Header("테스트용도")]
     [SerializeField] private CPlayerGuard _playerGuard;
@@ -16,7 +16,6 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
     #region 내부변수
     // 현재 방패를 가진 무기인지?
     private IDamageDefense _currentDefense;
-
     #endregion
 
     #region 방어 기능 등록
@@ -51,6 +50,12 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
             return;
         }
 
+        // 무적 상태일 경우 리턴
+        if (_playerController.PlayerData.IsInvincible)
+        {
+            return;
+        }
+
         int finalDamage = damageInfo.Damage;
 
         CLog.Warn($"[PlayerDamageReceiver] 방어기능 : {_currentDefense}");
@@ -68,6 +73,14 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
         {
             _playerController.PlayerData.TakeDamage(finalDamage);
         }
+
+        if (CObjectPoolManager.Instance != null && _damageFont != null)
+        {
+            GameObject damageFont = CObjectPoolManager.Instance.GetPoolObject(_damageFont);
+            CDamageFont font = damageFont.GetComponent<CDamageFont>();
+            font.SetDamageFont(finalDamage, transform.position, false, true);
+        }
+         
 
         CLog.Log($"[PlayerDamage] 받은 공격 : {damageInfo.Damage}");
         CLog.Log($"최종 데미지 : {finalDamage}");
