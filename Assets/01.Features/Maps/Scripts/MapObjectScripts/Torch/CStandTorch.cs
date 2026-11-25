@@ -24,14 +24,6 @@ public class CStandTorch : MonoBehaviour
 
 
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            DestroyTorch();
-        }
-    }
-
 
 
     public void DestroyTorch()
