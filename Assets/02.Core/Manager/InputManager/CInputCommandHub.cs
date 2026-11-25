@@ -139,9 +139,9 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EKeyAction.Interaction);
     }
 
-    private void UsePotion()
+    private void UsePotion(float value)
     {
-        Execute(EKeyAction.UsePotion);
+        Execute(EKeyAction.UsePotion, value);
     }
 
     private void OpenMap()

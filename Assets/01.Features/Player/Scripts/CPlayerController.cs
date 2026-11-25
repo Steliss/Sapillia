@@ -1,12 +1,19 @@
 using UnityEngine;
 
-public class CPlayerController : MonoBehaviour,IInputCommand
+public class CPlayerController : MonoBehaviour, IInputCommand<float>
 {
     #region 인스펙터
+    [SerializeField] private GameObject _obPotion;
+    [SerializeField] private float _drinkShakeHeight = 0.03f;
+    [SerializeField] private float _drinkShakeSpeed = 12f;
+
+
     [SerializeField] private CPlayerCostume _playerCostume;
     [SerializeField] private CESCUI _ui;
     [SerializeField] private CPotionList _potion;
     [SerializeField] private CPlayerSound _playerSound;
+
+    [SerializeField] private float _drinkTime = 3f;
     #endregion
 
     #region 내부변수
@@ -14,6 +21,12 @@ public class CPlayerController : MonoBehaviour,IInputCommand
     private CDataManger _dataManager;
     private CInputCommandHub _inputHub;
     private bool _isInputRegistered;
+
+    private SpriteRenderer _potionRenderer;
+    private Vector3 _potionOriPos;
+    private Quaternion _potionOriRot;
+    private bool _isDrinking;
+    private float _delayTime = 0f;
     #endregion
 
 
@@ -25,8 +38,13 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
     private void Awake()
     {
-                                 
+        _potionRenderer = _obPotion.GetComponentInChildren<SpriteRenderer>(true);
 
+        // 기존 위치 저장
+        _potionOriPos = _obPotion.transform.localPosition;
+        _potionOriRot = _obPotion.transform.localRotation;
+
+        _obPotion.SetActive(false);
     }
 
     private void OnEnable()
@@ -34,8 +52,8 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         if (_playerCostume == null)
         {
             _playerCostume = GetComponentInChildren<CPlayerCostume>(true);
-        }                      
-        
+        }
+
         _inputTask.Run(async token =>
         {
 
@@ -81,31 +99,37 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         // 비동기 초기화 중단
         _inputTask.Cancel();
 
+        StopDrinking();
         UnRegisterInput();
 
         _inputHub = null;
         _dataManager = null;
     }
 
-  
+
     private void Update()
     {
         // 런 세션 데이터가 늦게 준비되거나 교체된 경우 연결
         // 다만 계속 호출이 될 수도 있기 때문에 주의해야할 사항
         if (_dataManager != null)
-        {            
+        {
             TryBindPlayerData();
         }
 
         if (PlayerData == null || !PlayerData.IsInitialized)
         {
+            StopDrinking();
             return;
         }
 
         if (_ui.IsAnyUIOpen)
         {
+            StopDrinking();
             return;
         }
+
+
+        UpdateDrinking();
 
         PlayerData.ReChargeDashperTime(Time.deltaTime);
         PlayerData.RecoverMPperTime(Time.deltaTime);
@@ -122,7 +146,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         }
 
 
-        _inputHub.Register(EKeyAction.UsePotion, (IInputCommand)this);
+        _inputHub.Register(EKeyAction.UsePotion, (IInputCommand<float>)this);
         _isInputRegistered = true;
     }
 
@@ -133,18 +157,40 @@ public class CPlayerController : MonoBehaviour,IInputCommand
             return;
         }
 
-        _inputHub.Unregister(EKeyAction.UsePotion, (IInputCommand)this);
+        _inputHub.Unregister(EKeyAction.UsePotion, (IInputCommand<float>)this);
         _isInputRegistered = false;
     }
 
-    public void Execute()
+    public void Execute(float value)
     {
-        if (_ui.IsAnyUIOpen)
+        // 키를 떼면 마시기 취소
+        if (value == 0f)
+        {
+            StopDrinking();
+            return;
+        }
+
+        if (_isDrinking || PlayerData == null || !PlayerData.IsInitialized || _ui.IsAnyUIOpen)
         {
             return;
         }
 
-        _potion.UseCurrentPotion(PlayerData);
+        Sprite potionSprite = _potion.SlotImage.sprite;
+
+        if (potionSprite == null)
+        {
+            return;
+        }
+
+        _potionRenderer.sprite = potionSprite;
+
+        _delayTime = 0f;
+        _isDrinking = true;
+
+        _obPotion.transform.localPosition = _potionOriPos;
+        _obPotion.transform.localRotation = _potionOriRot * Quaternion.Euler(0f, 0f, 120f);
+
+        _obPotion.SetActive(true);
     }
 
     private void TryBindPlayerData()
@@ -153,7 +199,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         {
             return;
         }
-        
+
         CPlayerGamingDataSO currentData = _dataManager.PlayerData.GetPlayerData();
 
         if (currentData == null || !currentData.IsInitialized)
@@ -178,7 +224,7 @@ public class CPlayerController : MonoBehaviour,IInputCommand
 
     public void Bind(CPlayerGamingDataSO player, CCostumeDataSO costume)
     {
-        if(player == null)
+        if (player == null)
         {
             CLog.Warn("[PlayerController] 전달받은 player 값이 NULL");
             return;
@@ -196,5 +242,44 @@ public class CPlayerController : MonoBehaviour,IInputCommand
         }
     }
 
-    
+    private void UpdateDrinking()
+    {
+        if (!_isDrinking)
+        {
+            return;
+        }
+
+        _playerSound.DrinkPotion();
+        _delayTime += Time.deltaTime;
+
+        // Y축 위아래 흔들기
+        float offsetY = Mathf.Sin(_delayTime * _drinkShakeSpeed) * _drinkShakeHeight;
+
+        _obPotion.transform.localPosition = _potionOriPos + Vector3.up * offsetY;
+
+        // 지정한 시간만큼 누르면 포션 사용
+        if (_delayTime >= _drinkTime)
+        {
+            StopDrinking();
+            _potion.UseCurrentPotion(PlayerData);
+        }
+    }
+
+    private void StopDrinking()
+    {
+        if (!_isDrinking)
+        {
+            return;
+        }
+
+        _isDrinking = false;
+        _delayTime = 0f;
+
+        _obPotion.SetActive(false);
+
+        // 원래 위치와 회전으로 복구
+        _obPotion.transform.localPosition = _potionOriPos;
+        _obPotion.transform.localRotation = _potionOriRot;
+    }
+
 }
