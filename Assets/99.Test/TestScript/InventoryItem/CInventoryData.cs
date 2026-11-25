@@ -175,7 +175,11 @@ public class CInventoryData
     public SPlayerStats GetTotalArtifactStats()
     {
         SPlayerStats totalStats = default;
-        synergyCounts.Clear();
+        
+        foreach (EArtifactSynergy synergy in Enum.GetValues(typeof(EArtifactSynergy)))
+        {
+            synergyCounts[synergy] = 0;
+        }
 
         foreach (CInventorySlotData slot in inventorySlots)
         {
@@ -185,10 +189,6 @@ public class CInventoryData
             {
                 for (int i = 0; i < artifact.Synergies.Count; i++)
                 {
-                    if (!synergyCounts.ContainsKey(artifact.Synergies[i]))
-                    {
-                        synergyCounts[artifact.Synergies[i]] = 0;
-                    }
                     synergyCounts[artifact.Synergies[i]] += 1;
                 }
             }
