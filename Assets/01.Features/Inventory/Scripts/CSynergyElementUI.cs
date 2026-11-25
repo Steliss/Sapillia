@@ -1,7 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class CSynergyElementUI : MonoBehaviour
@@ -11,37 +11,67 @@ public class CSynergyElementUI : MonoBehaviour
 	[SerializeField] private Image _backGround;
 	[SerializeField] private Image _icon;
 	[SerializeField] private TextMeshProUGUI _text;
-    [Header("시너지 아이콘 종류")]
-    [SerializeField] private Sprite _robust;
-    [SerializeField] private Sprite _precision;
-    [SerializeField] private Sprite _windsong;
+    [SerializeField] private Button _button;
+	#endregion
 
-    #endregion
+	private EArtifactSynergy _im;
 
-    public void SetSynergyInfo(EArtifactSynergy synergy, string text)
+	public event Action<EArtifactSynergy> OnMouseEnter;
+    public event Action OnMouseExit;
+
+    public void SetSynergyIcon(Sprite sprite, EArtifactSynergy synergy)
 	{
-		if (_backGround == null || _icon == null || _text == null)
-		{
-			CLog.Warn($"{name} : 인스펙터 연결 필요");
-			return;
-		}
+		_icon.sprite = sprite;
+		_im = synergy;
 
-        gameObject.SetActive(true);
-
-		switch (synergy)
-		{
-			case EArtifactSynergy.Robust:
-				_icon.sprite = _robust;
-                break;
-			case EArtifactSynergy.Precision:
-				_icon.sprite = _precision;
-                break;
-			case EArtifactSynergy.WindSong:
-				_icon.sprite = _windsong;
-                break;
-		}
-
-		_text.text = text;
-
+        SetButton(_button);
 	}
+
+	public void SetSynergyLevel(string text)
+	{
+        gameObject.SetActive(true);
+        _text.SetText(text);
+	}
+
+	public void SetActive(bool onOff)
+	{
+		gameObject.SetActive(onOff);
+	}
+
+	public EArtifactSynergy GetSynergy()
+	{
+		return _im;
+	}
+
+
+    // 마우스 이동에 따른 설명 UI 오픈
+    private void SetButton(Button button)
+    {
+        EventTrigger trigger = button.GetComponent<EventTrigger>();
+
+        if (trigger == null)
+        {
+            trigger = button.gameObject.AddComponent<EventTrigger>();
+        }
+
+        // 마우스 진입: 설명창 열기
+        EventTrigger.Entry enter = new EventTrigger.Entry();
+        enter.eventID = EventTriggerType.PointerEnter;
+        enter.callback.AddListener(eventData =>
+        {
+            OnMouseEnter.Invoke(_im);
+        });
+
+        // 마우스 이탈: 설명창 닫기
+        EventTrigger.Entry exit = new EventTrigger.Entry();
+        exit.eventID = EventTriggerType.PointerExit;
+        exit.callback.AddListener(eventData =>
+        {
+            OnMouseExit.Invoke();
+        });
+
+        // 이벤트에 대한 해제 이벤트가 추가되면 고민이 필요
+        trigger.triggers.Add(enter);
+        trigger.triggers.Add(exit);
+    }
 }

@@ -112,7 +112,7 @@ public class CInventoryData
     public List<CInventorySlotData> InventorySlots => inventorySlots;
     public List<CInventorySlotData> PotionSlots => potionSlots;
     public List<CInventorySlotData> ExtraInventorySlots => extraInventorySlots;
-    public Dictionary<EArtifactSynergy, int> SynergyCounts => synergyCounts;
+    public IReadOnlyDictionary<EArtifactSynergy, int> SynergyCounts => synergyCounts;
 
     public const int _width = 6; // 인벤토리의 가로 칸 수
 
