@@ -1,4 +1,4 @@
-
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -40,6 +40,8 @@ public class CWeaponSelectUI : MonoBehaviour
 
     #region 프로퍼티
     public bool IsOpen => _isOpen;
+
+    public event Action OnClosed;
 
     #endregion
 
@@ -211,6 +213,8 @@ public class CWeaponSelectUI : MonoBehaviour
         {
             _panelRoot.SetActive(false);
         }
+
+        OnClosed?.Invoke();
     }
 
     #endregion
