@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CMerchantBag : CTriggerPlayer, IInputCommand
+public class CMerchantBag : CTriggerPlayer, IInputCommand, IESCCommand
 {
     [SerializeField] private int _cost = 200;
 
@@ -26,6 +26,8 @@ public class CMerchantBag : CTriggerPlayer, IInputCommand
 
 
     private bool _isNear;
+    //private bool _isActive = false;
+
 
     private void OnEnable()
     {
@@ -82,7 +84,29 @@ public class CMerchantBag : CTriggerPlayer, IInputCommand
         if (_isNear)
         {
             ReloadText();
-            OpenBuyBag();
+            ActiveUI(true);
+        }
+    }
+
+    public void ExecuteESC()
+    {
+            ActiveUI(false);
+    }
+
+    public void ActiveUI(bool active)
+    {
+        _buyCanvas.SetActive(active);
+
+        if (_input != null)
+        {
+            if (active)
+            {
+                _input.RegisterOpenedUI(this);
+            }
+            else
+            {
+                _input.UnregisterOpenedUI(this);
+            }
         }
     }
 
@@ -91,11 +115,6 @@ public class CMerchantBag : CTriggerPlayer, IInputCommand
         _infoDesc.text = _localization.GetText("scene.bagbuy.des", _cost);
         _yesText.text = _localization.GetText("scene.yes.text", "#90EE90");
         _noText.text = _localization.GetText("scene.no.text", "#FF7F7F");
-    }
-
-    private void OpenBuyBag()
-    {
-        _buyCanvas.SetActive(true);
     }
 
     private void ButtonYes()
@@ -117,6 +136,7 @@ public class CMerchantBag : CTriggerPlayer, IInputCommand
 
     private void ButtonNo()
     {
-        _buyCanvas.SetActive(false);
+        ActiveUI(false);
     }
+
 }
