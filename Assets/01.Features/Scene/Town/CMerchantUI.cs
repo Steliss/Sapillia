@@ -111,16 +111,17 @@ public class CMerchantUI : MonoBehaviour
                 synergyNames.Add(_localization.GetText(key));
             }
 
-            _infoTitle.text = _localization.GetText(item.NameKey) + "\n <size=50%>" + string.Join(", ", synergyNames) + "</size>"; 
+            _infoTitle.text = _localization.GetText(item.NameKey) + "\n <size=50%>" + string.Join(", ", synergyNames) + "</size>";
+            _infoDesc.text = _localization.GetText(item.DescriptionKey, artifact.GetDescriptionValues(0)) + "\n\n" + _localization.GetText(item.StoryKey);
 
         }
         else
         {
             _infoTitle.text = _localization.GetText(item.NameKey);
+            _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues()) + "\n\n" + _localization.GetText(item.StoryKey);
         }
 
         _infoImage.sprite = item.Icon;
-        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues()) + "\n\n" + _localization.GetText(item.StoryKey);
         _InventoryInfo.SetActive(true);
     }
 
