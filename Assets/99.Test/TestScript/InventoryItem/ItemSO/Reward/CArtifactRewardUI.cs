@@ -45,11 +45,12 @@ public class CArtifactRewardUI : MonoBehaviour
     private bool _isRewardGenerated = false;
 
     private bool _isLevelUpReward = false;
+    #endregion
 
+    #region 이벤트
     public event Action<CItemSO> OnMouseEnter;
     public event Action OnMouseExit;
     #endregion
-
 
     private void Update()
     {
