@@ -1,8 +1,9 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class CArtifactRewardUI : MonoBehaviour
 {
@@ -44,6 +45,9 @@ public class CArtifactRewardUI : MonoBehaviour
     private bool _isRewardGenerated = false;
 
     private bool _isLevelUpReward = false;
+
+    public event Action<CItemSO> OnMouseEnter;
+    public event Action OnMouseExit;
     #endregion
 
 
@@ -104,7 +108,7 @@ public class CArtifactRewardUI : MonoBehaviour
         // 중복 없이 4개 선택
         for (int i = 0; i < 4; i++)
         {
-            int randomIndex = Random.Range(0, candidates.Count);
+            int randomIndex = UnityEngine.Random.Range(0, candidates.Count);
 
             _selectedArtifacts.Add(candidates[randomIndex]);
             candidates.RemoveAt(randomIndex);
@@ -122,12 +126,46 @@ public class CArtifactRewardUI : MonoBehaviour
             background.sprite = GetGradeBackground(_selectedArtifacts[i].Grade);
 
             _rewardButtons[i].onClick.RemoveAllListeners();
+            SetButton(_rewardButtons[i], _selectedArtifacts[i]);
 
             int index = i;
             _rewardButtons[i].onClick.AddListener(() => SelectArtifact(index));
         }
 
         _isRewardGenerated = true;
+    }
+
+    // 마우스 이동에 따른 설명 UI 오픈
+    private void SetButton(Button button, CItemSO itemSO)
+    {
+        EventTrigger trigger = button.GetComponent<EventTrigger>();
+
+        if (trigger == null)
+        {
+            trigger = button.gameObject.AddComponent<EventTrigger>();
+        }
+        // 이벤트 트리거 비우기
+        trigger.triggers.Clear();
+
+        // 마우스 진입
+        EventTrigger.Entry enter = new EventTrigger.Entry();
+        enter.eventID = EventTriggerType.PointerEnter;
+        enter.callback.AddListener(eventData =>
+        {
+            OnMouseEnter.Invoke(itemSO);
+        });
+
+        // 마우스 이탈
+        EventTrigger.Entry exit = new EventTrigger.Entry();
+        exit.eventID = EventTriggerType.PointerExit;
+        exit.callback.AddListener(eventData =>
+        {
+            OnMouseExit.Invoke();
+        });
+
+        // 이벤트에 대한 해제 이벤트가 추가되면 고민이 필요
+        trigger.triggers.Add(enter);
+        trigger.triggers.Add(exit);
     }
 
     /// <summary>
