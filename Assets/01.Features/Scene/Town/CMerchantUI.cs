@@ -101,10 +101,26 @@ public class CMerchantUI : MonoBehaviour
 
         CItemSO item = data.ItemSO;
 
-        _infoImage.sprite = item.Icon;
-        _infoTitle.text = _localization.GetText(item.NameKey);
-        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues()) + "\n\n" + _localization.GetText(item.StoryKey);
+        if (item is CArtifactSO artifact)
+        {
+            List<string> synergyNames = new();
 
+            foreach (EArtifactSynergy synergy in artifact.Synergies)
+            {
+                string key = $"item.synergy.name.{synergy.ToString().ToLowerInvariant()}";
+                synergyNames.Add(_localization.GetText(key));
+            }
+
+            _infoTitle.text = _localization.GetText(item.NameKey) + " \\ " + string.Join(", ", synergyNames); 
+
+        }
+        else
+        {
+            _infoTitle.text = _localization.GetText(item.NameKey);
+        }
+
+        _infoImage.sprite = item.Icon;
+        _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues()) + "\n\n" + _localization.GetText(item.StoryKey);
         _InventoryInfo.SetActive(true);
     }
 

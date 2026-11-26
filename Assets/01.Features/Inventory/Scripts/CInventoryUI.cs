@@ -350,16 +350,26 @@ public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
         CItemSO item = data.ItemSO;
 
         _infoImage.sprite = item.Icon;
-        _infoTitle.text = _localization.GetText(item.NameKey);
 
         if (item is CArtifactSO artifact)
         {
             int totalLevel = data.EnhanceLevel + data.InchantLevel;
 
+            List<string> synergyNames = new();
+
+            foreach (EArtifactSynergy synergy in artifact.Synergies)
+            {
+                string key = $"item.synergy.name.{synergy.ToString().ToLowerInvariant()}";
+                synergyNames.Add(_localization.GetText(key));
+            }
+
+            _infoTitle.text = _localization.GetText(item.NameKey) + " \\ " + string.Join(", ", synergyNames); // join = 리스트의 문자열들을 , 로 구분 합쳐줌
+
             _infoDesc.text = _localization.GetText(item.DescriptionKey, artifact.GetDescriptionValues(totalLevel));
         }
         else
         {
+            _infoTitle.text = _localization.GetText(item.NameKey);
             _infoDesc.text = _localization.GetText(item.DescriptionKey, item.GetDescriptionValues());
         }
 
