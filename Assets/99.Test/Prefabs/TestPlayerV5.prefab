@@ -674,7 +674,7 @@ GameObject:
   - component: {fileID: 4942067469890798995}
   m_Layer: 13
   m_Name: TestPlayerV5
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1268,6 +1268,7 @@ MonoBehaviour:
   _firePoint: {fileID: 9080156954050221521}
   _playerMovement: {fileID: 2341777939036392585}
   _playerSound: {fileID: 282952054924907189}
+  _ui: {fileID: 0}
   _crossbowData: {fileID: 11400000, guid: ede5de946a1fa614a8a5ce4d8a765098, type: 2}
   _shotgunBlast: {fileID: 3524604666158055938}
   _ammoUI: {fileID: 1320427774704588226}
@@ -1319,6 +1320,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputHub: {fileID: 0}
+  _ui: {fileID: 0}
   _player: {fileID: 4395221656971624870}
   _movement: {fileID: 2341777939036392585}
   _crossbowAim: {fileID: 6737078434836745669}
