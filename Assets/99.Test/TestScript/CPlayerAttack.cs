@@ -7,6 +7,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Header("입력 참조")]
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
+    [SerializeField] private CESCUI _ui;
 
     [Header("애니메이션")]
     [SerializeField] private CPlayerAnimation _playerAnimation;
@@ -37,7 +38,6 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Header("사운드")]
     [SerializeField] private CPlayerSound _playerSound;
 
-    // 테스트
     [Header("공격 방향 확인")]
     [SerializeField] private CSwordAndShieldAim _aim;
 
@@ -115,6 +115,11 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         if (_weaponMotion == null)
         {
             CLog.Warn($"{this} 무기 비어있음");
+            return;
+        }
+
+        if (_ui.IsAnyUIOpen)
+        {
             return;
         }
 
