@@ -233,4 +233,9 @@ public class CPlayerSound : MonoBehaviour
     }
 
     #endregion
+
+    public void DrinkPotion()
+    {
+        Play("drinkPotion");
+    }
 }

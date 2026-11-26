@@ -24,6 +24,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private CWeaponMotion _weaponMotion;
+    [SerializeField] private CESCUI _ui;
 
     [Header("가드 방향 조정")]
     [SerializeField] private Transform _playerTransform;
@@ -130,10 +131,9 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             return;
         }
 
-        // 테스트용: 실제 우클릭 입력 확인 ※
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        if (_ui.IsAnyUIOpen)
         {
-            CLog.Log("[Guard] 실제 마우스 우클릭 감지");
+            return;
         }
 
         // GuardBreak 상태 처리

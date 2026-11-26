@@ -23,6 +23,7 @@ public class CPotionList : MonoBehaviour, IInputCommand
 
     private int _index = 0; // 선택 인덱스
 
+    public Image SlotImage => _slotImage;
 
 
     private void OnEnable()

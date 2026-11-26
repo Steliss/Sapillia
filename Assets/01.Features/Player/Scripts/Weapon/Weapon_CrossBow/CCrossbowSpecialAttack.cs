@@ -7,8 +7,9 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
 	#region 인스펙터
 	[Header("입력")]
 	[SerializeField] private CInputCommandHub _inputHub;
+    [SerializeField] private CESCUI _ui;
 
-	[Header("플레이어")]
+    [Header("플레이어")]
 	[SerializeField] private CPlayerController _player;
 	[SerializeField] private CPlayerMovement _movement;
 
@@ -51,6 +52,15 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         }
 
         _isButtonHeld = false;
+    }
+
+    private void Update()
+    {
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
     }
 
     #endregion

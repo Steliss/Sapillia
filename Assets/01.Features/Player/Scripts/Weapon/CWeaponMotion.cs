@@ -12,7 +12,6 @@ public class CWeaponMotion : MonoBehaviour
     [Header("공격 좌표계")]
     [SerializeField] private Transform _attackSpace;
 
-    // ※
     [Header("무기 조준")]
     [SerializeField] private CSwordAndShieldAim _aim;
 

@@ -37,7 +37,7 @@ public class CInputManager : MonoBehaviour
     public event Action OnRapidCasting1;
     public event Action OnRapidCasting2;
     public event Action OnInteraction;
-    public event Action OnUsePotion;
+    public event Action<float> OnUsePotion;
     public event Action OnOpenMap;
     public event Action OnInventory;
     public event Action OnPlayerStats;
@@ -65,11 +65,13 @@ public class CInputManager : MonoBehaviour
 
         _specialAttackAction.action.performed += specialAttackAction;
         _specialAttackAction.action.canceled += specialAttackActionCanceled;
+        
+        _usePotionAction.action.performed += usePotionAction;
+        _usePotionAction.action.canceled += usePotionActionCanceled;
 
         _rapidCasting1Action.action.performed += rapidCasting1Action;
         _rapidCasting2Action.action.performed += rapidCasting2Action;
         _interactionAction.action.performed += interactionAction;
-        _usePotionAction.action.performed += usePotionAction;
         _openMapAction.action.performed += openMapAction;
         _inventoryAction.action.performed += inventoryAction;
         _playerStatsAction.action.performed += playerStatsAction;
@@ -119,10 +121,12 @@ public class CInputManager : MonoBehaviour
         _specialAttackAction.action.performed -= specialAttackAction;
         _specialAttackAction.action.canceled -= specialAttackActionCanceled;
 
+        _usePotionAction.action.performed -= usePotionAction;
+        _usePotionAction.action.canceled -= usePotionActionCanceled;
+        
         _rapidCasting1Action.action.performed -= rapidCasting1Action;
         _rapidCasting2Action.action.performed -= rapidCasting2Action;
         _interactionAction.action.performed -= interactionAction;
-        _usePotionAction.action.performed -= usePotionAction;
         _openMapAction.action.performed -= openMapAction;
         _inventoryAction.action.performed -= inventoryAction;
         _playerStatsAction.action.performed -= playerStatsAction;
@@ -218,7 +222,12 @@ public class CInputManager : MonoBehaviour
 
     private void usePotionAction(InputAction.CallbackContext ctx)
     {
-        OnUsePotion?.Invoke();
+        OnUsePotion?.Invoke(1f);
+    }
+
+    private void usePotionActionCanceled(InputAction.CallbackContext ctx)
+    {
+        OnUsePotion?.Invoke(0f);
     }
 
     private void openMapAction(InputAction.CallbackContext ctx)
