@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CNextStageTrigger : MonoBehaviour
+public class CNextStageTrigger : MonoBehaviour, IInputCommand
 {
     #region 인스펙터
 
@@ -16,27 +16,9 @@ public class CNextStageTrigger : MonoBehaviour
 
     private bool _isPlayerInside = false;
 
+    private CInputCommandHub _inputHub;
     #endregion
 
-
-
-    private void Update()
-    {
-        if (!_isPlayerInside)
-        {
-            return;
-        }
-
-        if (_stageNodeUI != null && _stageNodeUI.IsOpened)
-        {
-            return;
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            OpenNextStageNode();
-        }
-    }
 
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -71,9 +53,42 @@ public class CNextStageTrigger : MonoBehaviour
         _stageNodeUI.Open();
     }
 
+    private void OnEnable()
+    {
+        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+        if (_inputHub == null)
+        {
+            Debug.LogError("CInputCommandHub를 찾을 수 없습니다.", this);
+            return;
+        }
+
+        _inputHub.Register(EKeyAction.Interaction, this);
+    }
+
+    public void Execute()
+    {
+        if (!_isPlayerInside)
+        {
+            return;
+        }
+
+        if (_stageNodeUI != null && _stageNodeUI.IsOpened)
+        {
+            return;
+        }
+
+        OpenNextStageNode();
+    }
 
     private void OnDisable()
     {
+        if (_inputHub != null)
+        {
+            _inputHub.Unregister(EKeyAction.Interaction, this);
+        }
+
+
         _isPlayerInside = false;
     }
 }

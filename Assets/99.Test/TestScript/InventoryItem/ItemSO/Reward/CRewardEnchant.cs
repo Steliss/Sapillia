@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CRewardEnchant : MonoBehaviour
+public class CRewardEnchant : MonoBehaviour, IInputCommand
 {
     #region 인스펙터
 
@@ -19,6 +19,9 @@ public class CRewardEnchant : MonoBehaviour
     private bool _isPlayerInside;
 
     private int _remainCount;
+
+    private CInputCommandHub _inputHub;
+
     #endregion
 
     #region 프로퍼티
@@ -35,22 +38,42 @@ public class CRewardEnchant : MonoBehaviour
     }
 
 
-    private void Update()
+    private void OnEnable()
+    {
+        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+        if (_inputHub == null)
+        {
+            Debug.LogError("[CRewardEnchant] 입력 허브를 찾을 수 없습니다.", this);
+            return;
+        }
+
+        _inputHub.Register(EKeyAction.Interaction, this);
+    }
+
+    public void Execute()
     {
         if (!_isPlayerInside)
         {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (_inventoryUI == null || _inventoryUI.IsActive || _remainCount <= 0)
         {
-            if (_inventoryUI == null || _inventoryUI.IsActive || _remainCount <= 0)
-            {
-                return;
-            }
-
-            _inventoryUI.StartEnchant(this);
+            return;
         }
+
+        _inventoryUI.StartEnchant(this);
+    }
+
+    private void OnDisable()
+    {
+        if (_inputHub != null)
+        {
+            _inputHub.Unregister(EKeyAction.Interaction, this);
+        }
+
+        _isPlayerInside = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
