@@ -363,7 +363,7 @@ public class CInventoryUI : MonoBehaviour, IInputCommand, IESCCommand
                 synergyNames.Add(_localization.GetText(key));
             }
 
-            _infoTitle.text = _localization.GetText(item.NameKey) + " \\ " + string.Join(", ", synergyNames); // join = 리스트의 문자열들을 , 로 구분 합쳐줌
+            _infoTitle.text = _localization.GetText(item.NameKey) + "\n <size=50%>" + string.Join(", ", synergyNames) + "</size>"; // join = 리스트의 문자열들을 , 로 구분 합쳐줌
 
             _infoDesc.text = _localization.GetText(item.DescriptionKey, artifact.GetDescriptionValues(totalLevel));
         }

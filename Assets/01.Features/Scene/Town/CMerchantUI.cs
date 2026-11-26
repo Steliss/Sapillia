@@ -111,7 +111,7 @@ public class CMerchantUI : MonoBehaviour
                 synergyNames.Add(_localization.GetText(key));
             }
 
-            _infoTitle.text = _localization.GetText(item.NameKey) + " \\ " + string.Join(", ", synergyNames); 
+            _infoTitle.text = _localization.GetText(item.NameKey) + "\n <size=50%>" + string.Join(", ", synergyNames) + "</size>"; 
 
         }
         else
