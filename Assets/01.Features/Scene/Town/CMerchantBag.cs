@@ -132,6 +132,8 @@ public class CMerchantBag : CTriggerPlayer, IInputCommand, IESCCommand
             _log.AddSystem("scene.cantbuy.des");
             _buyCanvas.SetActive(false);
         }
+
+        _input.UnregisterOpenedUI(this);
     }
 
     private void ButtonNo()
