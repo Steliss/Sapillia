@@ -36,14 +36,14 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
 
-            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+            CLog.Log("CInventoryDrag _dataTask OnEnable 작업 완료");
         });
         _inputTask.Run(async token =>
         {
-            _input = await CManagerDontDestroy.InputCommandHubAsync(token); 
+            _input = await CManagerDontDestroy.InputCommandHubAsync(token);
             _input.Register(EKeyAction.UsePotion, (IInputCommand<float>)this);
 
-            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+            CLog.Warn("CInventoryDrag _inputTask OnEnable 작업 완료");
         });
     }
 
@@ -54,13 +54,16 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         _dataTask.Cancel();
         _inputTask.Cancel();
 
-        _input.Register(EKeyAction.UsePotion, (IInputCommand<float>)this);
+        _input.Unregister(EKeyAction.UsePotion, (IInputCommand<float>)this);
     }
 
     public void Execute(float value)
     {
-        if (value == 0f)
+        Debug.LogWarning("asdasd");
+
+        if (value <= 0f)
         {
+            Debug.LogWarning("asdasd123");
             return;
         }
 

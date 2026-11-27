@@ -12,12 +12,6 @@ public class CNextStageText : MonoBehaviour
 
     #endregion
 
-    #region 내부변수
-
-    private bool _isActive = false;
-
-    #endregion
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -41,13 +35,11 @@ public class CNextStageText : MonoBehaviour
 
     protected void OnPlayerEnter()
     {
-        _isActive = true;
         _interractObject.SetActive(true);
     }
 
     protected void OnPlayerExit()
     {
-        _isActive = false;
         _interractObject.SetActive(false);
     }
 
