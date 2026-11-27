@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Threading;
 using TMPro;
+using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,6 +25,9 @@ public class CSceneManager : MonoBehaviour
     private CancellationTokenSource _fadeCts;
     private GameObject _backGroundInstance;
     private bool _isChanging;
+
+
+    private CUniTaskOnes _task = new();
 
     public bool IsChanging => _isChanging;
 
@@ -146,13 +150,25 @@ public class CSceneManager : MonoBehaviour
             return;
         }
 
-        if(isActive)
+        if (isActive)
         {
             _backGroundInstance.SetActive(isActive);
         }
         else
         {
-            Destroy(_backGroundInstance);
+            CanvasGroup a = _backGroundInstance.GetComponentInChildren<CanvasGroup>();
+
+            _task.Run(async ct =>
+            {
+                for (float time = 0; time < 0.5f; time += Time.deltaTime)
+                {
+                    await UniTask.Yield(PlayerLoopTiming.Update, ct);
+                    float t = time / 0.5f;
+                    a.alpha = 1f - t;
+                }
+
+                Destroy(_backGroundInstance);
+            });
         }
     }
 
