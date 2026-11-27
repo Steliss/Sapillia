@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CArtifactRewardUI : MonoBehaviour
+public class CArtifactRewardUI : MonoBehaviour, IESCCommand
 {
     #region 인스펙터
 
@@ -45,6 +45,8 @@ public class CArtifactRewardUI : MonoBehaviour
     private bool _isRewardGenerated = false;
 
     private bool _isLevelUpReward = false;
+
+    private CInputCommandHub _inputHub;
     #endregion
 
     #region 이벤트
@@ -52,14 +54,31 @@ public class CArtifactRewardUI : MonoBehaviour
     public event Action OnMouseExit;
     #endregion
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+        if (_inputHub == null)
         {
-            CancelSelection();
+            Debug.LogError("CArtifactRewardUI 인풋 허브를 찾을 수 없습니다.");
+            return;
         }
+
+        _inputHub.RegisterOpenedUI(this);
     }
 
+    public void ExecuteESC()
+    {
+        CancelSelection();
+    }
+
+    private void OnDisable()
+    {
+        if (_inputHub != null)
+        {
+            _inputHub.UnregisterOpenedUI(this);
+        }
+    }
 
 
     public void ShowRewards(CArtifactReward reward)
