@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 
 public class CArtifactReward : MonoBehaviour, IInputCommand
 {
@@ -18,21 +20,30 @@ public class CArtifactReward : MonoBehaviour, IInputCommand
     private bool _isRewardOpened = false;
 
     private CInputCommandHub _inputHub;
-
+    private CancellationTokenSource _registerCts;
     #endregion
 
 
     private void OnEnable()
     {
-        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+        _registerCts = new CancellationTokenSource();
+        RegisterInputAsync(_registerCts.Token).Forget();
+    }
 
-        if (_inputHub == null)
+    private async UniTask RegisterInputAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
         {
-            Debug.Log("CArtifactReward 인풋허브오류");
-            return;
-        }
+            _inputHub = FindFirstObjectByType<CInputCommandHub>();
 
-        _inputHub.Register(EKeyAction.Interaction, this);
+            if (_inputHub != null)
+            {
+                _inputHub.Register(EKeyAction.Interaction, this);
+                return;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -47,6 +58,10 @@ public class CArtifactReward : MonoBehaviour, IInputCommand
 
     private void OnDisable()
     {
+        _registerCts?.Cancel();
+        _registerCts?.Dispose();
+        _registerCts = null;
+
         if (_inputHub != null)
         {
             _inputHub.Unregister(EKeyAction.Interaction, this);
