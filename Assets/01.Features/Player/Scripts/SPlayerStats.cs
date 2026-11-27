@@ -233,14 +233,14 @@ public struct SPlayerStats
             DashSpeed = 12f,
             DashDuration = 0.2f,
             DashCooldown = 0.5f,
-            DashCount = 2,
+            DashCount = 7,
             DashRegainSpeed = 0.5f,
 
-            MaxHP = 80,
+            MaxHP = 120,
             MaxMP = 40,
             MP_Regin = 6f,
 
-            Attribute_Physical = 20,
+            Attribute_Physical = 25,
             Attribute_Fire = 20,
             Attribute_Ice = 20,
             Attribute_Lightning = 20,

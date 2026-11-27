@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 
-public class CTabletRewardUI : MonoBehaviour
+public class CTabletRewardUI : MonoBehaviour, IESCCommand
 {
     #region 인스펙터
 
@@ -42,15 +44,49 @@ public class CTabletRewardUI : MonoBehaviour
 
     private bool _isRewardGenerated = false;
 
+    private CInputCommandHub _inputHub;
+    private CancellationTokenSource _registerCts;
     #endregion
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        _registerCts = new CancellationTokenSource();
+        RegisterInputAsync(_registerCts.Token).Forget();
+    }
+
+    private async UniTask RegisterInputAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
         {
-            CancelSelection();
+            _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+            if (_inputHub != null)
+            {
+                _inputHub.RegisterOpenedUI(this);
+                return;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
         }
     }
+
+    private void OnDisable()
+    {
+        _registerCts?.Cancel();
+        _registerCts?.Dispose();
+        _registerCts = null;
+
+        if (_inputHub != null)
+        {
+            _inputHub.UnregisterOpenedUI(this);
+        }
+    }
+
+    public void ExecuteESC()
+    {
+        CancelSelection();
+    }
+
 
     public void ShowRewards(CTabletReward reward)
     {
@@ -72,6 +108,8 @@ public class CTabletRewardUI : MonoBehaviour
 
         gameObject.SetActive(true);
         UpdateRerollText();
+
+        _inputHub.RegisterOpenedUI(this);
     }
 
     private bool GenerateRewardCandidates()
@@ -181,6 +219,8 @@ public class CTabletRewardUI : MonoBehaviour
         {
             _currentReward.CancelReward();
         }
+
+        _inputHub.UnregisterOpenedUI(this);
     }
 
     private Sprite GetGradeBackground(EArtifactGrade grade)

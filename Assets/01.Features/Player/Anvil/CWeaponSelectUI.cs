@@ -1,4 +1,4 @@
-
+using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -40,6 +40,8 @@ public class CWeaponSelectUI : MonoBehaviour
 
     #region 프로퍼티
     public bool IsOpen => _isOpen;
+
+    public event Action OnClosed;
 
     #endregion
 
@@ -137,40 +139,7 @@ public class CWeaponSelectUI : MonoBehaviour
     #region Open / Close
     public void Open()
     {
-        #region ※
-        Debug.Log("[WeaponUI] Open 호출됨");
-
-        if (_isOpen)
-        {
-            Debug.LogWarning("[WeaponUI] 이미 열려 있음");
-            return;
-        }
-
-        if (_panelRoot == null)
-        {
-            Debug.LogWarning("[WeaponUI] PanelRoot 없음");
-            return;
-        }
-
-        if (_weaponManager == null)
-        {
-            Debug.LogWarning("[WeaponUI] WeaponManager 없음");
-            return;
-        }
-
-        if (_playerController == null || _playerController.PlayerData == null)
-        {
-            Debug.LogWarning("[WeaponUI] PlayerData 참조 없음");
-            return;
-        }
-
-        if (!_playerController.PlayerData.IsInitialized)
-        {
-            Debug.LogWarning("[WeaponUI] PlayerData 초기화 전");
-            return;
-        }
-
-        #endregion
+        
 
         if (_panelRoot == null || _weaponManager == null || _playerController == null)
         {
@@ -211,6 +180,8 @@ public class CWeaponSelectUI : MonoBehaviour
         {
             _panelRoot.SetActive(false);
         }
+
+        OnClosed?.Invoke();
     }
 
     #endregion

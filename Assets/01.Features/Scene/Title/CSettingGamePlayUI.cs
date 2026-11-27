@@ -181,7 +181,6 @@ public class CSettingGamePlayUI : MonoBehaviour
     }
 
 
-    // ※ : TODO : 이펙트 기능이 구현 불가
     private void EffectUp()
     {
     }

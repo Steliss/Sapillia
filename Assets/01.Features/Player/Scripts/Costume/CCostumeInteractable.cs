@@ -32,7 +32,7 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
         {
             CInputCommandHub hub = await CManagerDontDestroy.InputCommandHubAsync(token);
 
-            if (token.IsCancellationRequested ||!isActiveAndEnabled || hub == null)
+            if (token.IsCancellationRequested || !isActiveAndEnabled || hub == null)
             {
                 return;
             }
@@ -42,6 +42,8 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
             // F키
             _inputHub.Register(EKeyAction.Interaction, (IInputCommand)this);
         });
+
+        _costumeUI.OnClosed += HandleCostumeClosed;
 
         CLog.Log("[CCostumeInteractable] Input매니저 등록 완료");
     }
@@ -60,6 +62,7 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
 
         if (_costumeUI != null)
         {
+            _costumeUI.OnClosed -= HandleCostumeClosed;
             _costumeUI.Close();
         }
     }
@@ -104,8 +107,13 @@ public class CCostumeInteractable : MonoBehaviour, IInputCommand, IESCCommand
         if (_costumeUI != null && _costumeUI.IsOpen && _inputHub != null)
         {
             _costumeUI.Close();
-            _inputHub.UnregisterOpenedUI(this);
         }
+    }
+    
+
+    private void HandleCostumeClosed()
+    {
+        _inputHub.UnregisterOpenedUI(this);
     }
 
     #endregion

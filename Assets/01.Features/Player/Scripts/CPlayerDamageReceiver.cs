@@ -7,8 +7,8 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
     [Header("참조")]
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private GameObject _damageFont;
-    // ※
-    [Header("테스트용도")]
+
+    [Header("방어")]
     [SerializeField] private CPlayerGuard _playerGuard;
     [SerializeField] private bool _isShield = true;
     #endregion
@@ -92,7 +92,7 @@ public class CPlayerDamageReceiver : MonoBehaviour, IDamageInfoReceiver
 
     #endregion
 
-    // 테스트용도※
+    
     private void Start()
     {
         if(_playerGuard == null)

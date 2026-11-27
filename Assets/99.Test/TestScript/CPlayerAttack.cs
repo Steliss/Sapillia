@@ -7,6 +7,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Header("입력 참조")]
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
+    [SerializeField] private CESCUI _ui;
 
     [Header("애니메이션")]
     [SerializeField] private CPlayerAnimation _playerAnimation;
@@ -37,7 +38,6 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
     [Header("사운드")]
     [SerializeField] private CPlayerSound _playerSound;
 
-    // 테스트
     [Header("공격 방향 확인")]
     [SerializeField] private CSwordAndShieldAim _aim;
 
@@ -118,6 +118,11 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
             return;
         }
 
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
         // 좌클릭을 떼기 전까지 일반공격 실행 방지
         if (_dashAttackConsumedHold)
         {
@@ -171,6 +176,11 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
     public void Execute(float value)
     {
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
         bool pressed = value > 0.5f;
         
         // 좌클릭 땜
@@ -332,7 +342,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         }
 
 
-        // ※ 테스트용도
+       
         if (_weaponData == null)
         {
             CLog.Warn("[PlayerAttack] WeaponData 누락");

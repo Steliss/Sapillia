@@ -20,13 +20,6 @@ public class CCrossbowProjectile : MonoBehaviour
     private Transform _ownerRoot;
     private bool _isLaunched;
 
-    // 최대 사거리
-    private float _maxRange;
-    // 발사 후 실제 이동한 거리
-    private float _travelledDistance;
-    // 직전 물리 프레임 위치
-    private Vector2 _lastPosition;
-
     private readonly HashSet<IDamageable> _hitTargets = new HashSet<IDamageable>();
     #endregion
 
@@ -60,13 +53,7 @@ public class CCrossbowProjectile : MonoBehaviour
         _damage = Mathf.Max(0, damage);
         _ownerRoot = owner != null ? owner.root : null;
 
-        _maxRange = Mathf.Max(0.01f, maxRange);
-        _travelledDistance = 0f;
-
         _hitTargets.Clear();
-
-        // 2. 현재 위치를 거리 계산 시작점으로 설정
-        _lastPosition = _rb.position;
 
         // 3. 발사 방향 계산
         Vector2 fireDirection = direction.normalized;
@@ -105,14 +92,14 @@ public class CCrossbowProjectile : MonoBehaviour
     {
         if (!_isLaunched || other == null)
         {
-            CLog.Warn("닿은 대상 없음");
+            //CLog.Warn("닿은 대상 없음");
             return;
         }
 
         // 발사한 플레이어 제외
         if (_ownerRoot != null && other.transform.root == _ownerRoot)
         {
-            CLog.Warn($"[CCrossbowProjectile] 플레이어 {other.gameObject.name}에 맞음");
+            //CLog.Warn($"[CCrossbowProjectile] 플레이어 {other.gameObject.name}에 맞음");
             return;
         }
 
@@ -161,10 +148,6 @@ public class CCrossbowProjectile : MonoBehaviour
 
         _damage = 0;
         _ownerRoot = null;
-
-        _maxRange = 0f;
-        _travelledDistance = 0f;
-        _lastPosition = Vector2.zero;
 
         _hitTargets.Clear();
     }

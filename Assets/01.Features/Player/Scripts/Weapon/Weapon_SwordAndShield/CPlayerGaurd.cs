@@ -24,6 +24,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     [SerializeField] private CInputCommandHub _inputHub;
     [SerializeField] private CPlayerController _playerController;
     [SerializeField] private CWeaponMotion _weaponMotion;
+    [SerializeField] private CESCUI _ui;
 
     [Header("가드 방향 조정")]
     [SerializeField] private Transform _playerTransform;
@@ -55,7 +56,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     // 특수공격 중 가드 차단
     private bool _specialAttackLocked;
     // 현재 우클릭에서 가드를 시작한 적이 있는지
-    private bool _guardStartedThisHold;
+    //private bool _guardStartedThisHold;
 
     private float _guardStartTime;
     private float _guardBreakEndTime;
@@ -113,7 +114,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         _buttonHeld = false;
         _guardInputArmed = false;
         _specialAttackLocked = false;
-        _guardStartedThisHold = false;
+        //_guardStartedThisHold = false;
         _perfectGuardUsed = false;
 
         if (!IsGuardBroken)
@@ -130,10 +131,9 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
             return;
         }
 
-        // 테스트용: 실제 우클릭 입력 확인 ※
-        if (Mouse.current != null && Mouse.current.rightButton.wasPressedThisFrame)
+        if (_ui.IsAnyUIOpen)
         {
-            CLog.Log("[Guard] 실제 마우스 우클릭 감지");
+            return;
         }
 
         // GuardBreak 상태 처리
@@ -156,24 +156,21 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
-        
-        bool pressed = value > 0.5f;
 
-        // 테스트 용 ※
-        CLog.Log
-            (
-                $"[Guard Input] Value: {value} / " +
-                $"Frame: {Time.frameCount} / " +
-                $"Broken: {IsGuardBroken} / " +
-                $"Locked: {_specialAttackLocked}"
-            );
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
+        bool pressed = value > 0.5f;
+                
 
         // 우클릭 해제
         if (!pressed)
         {
             _buttonHeld = false;
             _guardInputArmed = false;
-            _guardStartedThisHold = false;
+            //_guardStartedThisHold = false;
             _perfectGuardUsed = false;
 
             EndGuard();
@@ -192,9 +189,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 가드 허용 여부
         _guardInputArmed = !IsGuardBroken;
 
-        // 테스트 용 ※
-        CLog.Log($"[Guard] Held: {_buttonHeld} / " + $"Armed: {_guardInputArmed}");
-
+        
         if (_guardInputArmed)
         {
             TryStartGuard();

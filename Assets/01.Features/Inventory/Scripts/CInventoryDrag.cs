@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IInputCommand
+public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IInputCommand<float>
 {
     [SerializeField] private Image _dragIcon;
     [SerializeField] private CInventoryUI _inventoryUI;
@@ -36,14 +36,14 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _inventoryData = _data.InventoryData.GetInventoryData();
 
-            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+            CLog.Log("CInventoryDrag _dataTask OnEnable 작업 완료");
         });
         _inputTask.Run(async token =>
         {
             _input = await CManagerDontDestroy.InputCommandHubAsync(token);
-            _input.Register(EKeyAction.UsePotion, this);
+            _input.Register(EKeyAction.UsePotion, (IInputCommand<float>)this);
 
-            CLog.Log("CBGMScene _dataTask OnEnable 작업 완료");
+            CLog.Warn("CInventoryDrag _inputTask OnEnable 작업 완료");
         });
     }
 
@@ -54,11 +54,18 @@ public class CInventoryDrag : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         _dataTask.Cancel();
         _inputTask.Cancel();
 
-        _input.Unregister(EKeyAction.UsePotion, this);
+        _input.Unregister(EKeyAction.UsePotion, (IInputCommand<float>)this);
     }
 
-    public void Execute()
+    public void Execute(float value)
     {
+        Debug.LogWarning("asdasd");
+
+        if (value <= 0f)
+        {
+            Debug.LogWarning("asdasd123");
+            return;
+        }
 
         if (!_inventoryUI.IsActive || _inventoryUI.IsEnchantMode || _inventoryData == null || _fromSlot != null)
         {

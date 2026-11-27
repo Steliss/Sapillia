@@ -34,7 +34,7 @@ public class CPlayerGamingDataSO
     [SerializeField] private int _requiredMoney;
     [SerializeField] private int _level;
     [SerializeField] private int _money;
-    [SerializeField] private int _dice;
+    [SerializeField] private int _dice = 10;
 
     [SerializeField] private float _mpRegenProgress;
     [SerializeField] private float _dashRegenProgress;
@@ -52,7 +52,7 @@ public class CPlayerGamingDataSO
     [NonSerialized] private bool _isBattle;
     [NonSerialized] private bool _isAmmoInitialized;
 
-    [SerializeField] private int _startMoney = 500;
+    [SerializeField] private int _startMoney = 3000;
     [SerializeField] private float _expGrowthMultiplier = 1.2f;
     #endregion
 

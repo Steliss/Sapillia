@@ -43,6 +43,21 @@ public class CInventorySynergyUI : MonoBehaviour
     private readonly List<KeyValuePair<EArtifactSynergy, int>> _sortList = new List<KeyValuePair<EArtifactSynergy, int>>();
     #endregion
 
+    public IReadOnlyDictionary<EArtifactSynergy, SSynergyInfo> SynergyInfoMap => _synergyInfoMap;
+
+
+    private void Awake()
+    {
+        if (_synergyInfoMap.Count > 0)
+        {
+            return;
+        }
+        for (int i = 0; i < _synergyInfo.Length; i++)
+        {
+            _synergyInfoMap[_synergyInfo[i].Synergy] = _synergyInfo[i];
+        }
+    }
+
     /// <summary>
     /// UI에 시너지 종류와 레벨 표시
     /// </summary>

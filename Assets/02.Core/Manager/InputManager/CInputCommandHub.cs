@@ -10,9 +10,9 @@ public class CInputCommandHub : MonoBehaviour
     #region 내부변수
     // 중복 명령 처리를 위한 리스트
     private readonly Dictionary<EKeyAction, List<IInputCommand>> _commands = new();
+    private readonly Dictionary<EKeyAction, List<IInputCommand<float>>> _floatCommands = new();
 
     private readonly Dictionary<EKeyAction, IInputCommand<Vector2>> _vectorCommands = new Dictionary<EKeyAction, IInputCommand<Vector2>>();
-    private readonly Dictionary<EKeyAction, IInputCommand<float>> _floatCommands = new Dictionary<EKeyAction, IInputCommand<float>>();
 
     // 실제 UI를 연 순서
     private readonly List<IESCCommand> _openedUI = new();
@@ -121,7 +121,7 @@ public class CInputCommandHub : MonoBehaviour
 
     private void SpecialAttack(float value)
     {
-        Execute(EKeyAction.SpecialAttack,value);
+        Execute(EKeyAction.SpecialAttack, value);
     }
 
     private void RapidCasting1()
@@ -139,9 +139,9 @@ public class CInputCommandHub : MonoBehaviour
         Execute(EKeyAction.Interaction);
     }
 
-    private void UsePotion()
+    private void UsePotion(float value)
     {
-        Execute(EKeyAction.UsePotion);
+        Execute(EKeyAction.UsePotion, value);
     }
 
     private void OpenMap()
@@ -246,8 +246,16 @@ public class CInputCommandHub : MonoBehaviour
             return;
         }
 
-        Unregister(key);
-        _floatCommands[key] = command;
+        if (!_floatCommands.TryGetValue(key, out var commands))
+        {
+            commands = new List<IInputCommand<float>>();
+            _floatCommands.Add(key, commands);
+        }
+
+        if (!commands.Contains(command))
+        {
+            commands.Add(command);
+        }
     }
 
     // UI를 실제로 열었을 때 호출
@@ -300,8 +308,14 @@ public class CInputCommandHub : MonoBehaviour
 
     public void Unregister(EKeyAction key, IInputCommand<float> command)
     {
-        if (_floatCommands.TryGetValue(key, out var registered)
-            && ReferenceEquals(registered, command))
+        if (!_floatCommands.TryGetValue(key, out var commands))
+        {
+            return;
+        }
+
+        commands.Remove(command);
+
+        if (commands.Count == 0)
         {
             _floatCommands.Remove(key);
         }
@@ -364,7 +378,12 @@ public class CInputCommandHub : MonoBehaviour
 
     public void Execute(EKeyAction key, float value)
     {
-        if (_floatCommands.TryGetValue(key, out var command))
+        if (!_floatCommands.TryGetValue(key, out var commands))
+        {
+            return;
+        }
+
+        foreach (var command in commands)
         {
             command.Execute(value);
         }

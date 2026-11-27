@@ -1,6 +1,7 @@
+using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
+using UnityEngine.Windows;
 
 public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInputCommand
 {
@@ -13,6 +14,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
     [SerializeField] private Transform _firePoint;
     [SerializeField] private CPlayerMovement _playerMovement;
     [SerializeField] private CPlayerSound _playerSound;
+    [SerializeField] private CESCUI _ui;
 
     [Header("석궁 데이터")]
     [SerializeField] private CCrossbowDataSO _crossbowData;
@@ -38,6 +40,7 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
 
     public bool IsFiring => _isFireHeld;
     public bool IsReloading => _isReloading;
+ 
     #endregion
 
     #region Unity
@@ -93,6 +96,12 @@ public class CPlayerCrossbowAttack : MonoBehaviour, IInputCommand<float>, IInput
         {
             return;
         }
+
+        if (_ui.IsAnyUIOpen)
+        {            
+            return;
+        }
+
 
         TryFire();
     }

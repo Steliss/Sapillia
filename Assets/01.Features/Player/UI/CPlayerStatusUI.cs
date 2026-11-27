@@ -66,7 +66,7 @@ public class CPlayerStatsUI
 
 }
 
-// ※ : TODO : 이미지랑 UI 쪽 이미지 넣으려면 계층구조랑 싹 수정할 필요가 있음
+
 public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CESCUI _esc;
@@ -84,7 +84,6 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
     [SerializeField] private TextMeshProUGUI _playerNameText;
     [SerializeField] private TextMeshProUGUI _playerLevelText;
 
-    // ※ : TODO : 너도 수정대상이야
     [SerializeField] private TextMeshProUGUI _attribute_Physical;
     [SerializeField] private TextMeshProUGUI _attribute_Fire;
     [SerializeField] private TextMeshProUGUI _attribute_Ice;
@@ -154,7 +153,7 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
             _data = await CManagerDontDestroy.DataMangerAsync(token);
             _playerData = _data.PlayerData.GetPlayerData();
             _inventory = _data.InventoryData.GetInventoryData();
-            _inventory.OnInventoryChanged += ReloadText;
+            _inventory.OnInventoryChanged += ReloadData;
             CLog.Log("CPlayerUI _dataTask OnEnable 작업 완료");
         });
         _localizationTask.Run(async token =>
@@ -477,59 +476,83 @@ public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
         // 마우스 부분
         _HPUI.MouseTitleText.text = _localization.GetText("player.hp.mousetitle.Text");
         _HPUI.DescriptionText.text = _localization.GetText("player.hp.mousedescription.Text");
+        _HPUI.MousedataText.text = "";
         _MPUI.MouseTitleText.text = _localization.GetText("player.mp.mousetitle.Text");
         _MPUI.DescriptionText.text = _localization.GetText("player.mp.mousedescription.Text");
+        _MPUI.MousedataText.text = "";
         _MP_ReginUI.MouseTitleText.text = _localization.GetText("player.mpregin.mousetitle.Text");
         _MP_ReginUI.DescriptionText.text = _localization.GetText("player.mpregin.mousedescription.Text");
+        _MP_ReginUI.MousedataText.text = "";
 
         _defUI.MouseTitleText.text = _localization.GetText("player.def.mousetitle.Text");
         _defUI.DescriptionText.text = _localization.GetText("player.def.mousedescription.Text");
+        _defUI.MousedataText.text = "";
         _strUI.MouseTitleText.text = _localization.GetText("player.str.mousetitle.Text");
         _strUI.DescriptionText.text = _localization.GetText("player.str.mousedescription.Text");
+        _strUI.MousedataText.text = "";
         _evasionUI.MouseTitleText.text = _localization.GetText("player.evasion.mousetitle.Text");
         _evasionUI.DescriptionText.text = _localization.GetText("player.evasion.mousedescription.Text");
+        _evasionUI.MousedataText.text = "";
 
         _critical_RateUI.MouseTitleText.text = _localization.GetText("player.criticalrate.mousetitle.Text");
         _critical_RateUI.DescriptionText.text = _localization.GetText("player.criticalrate.mousedescription.Text");
+        _critical_RateUI.MousedataText.text = "";
         _critical_DamageUI.MouseTitleText.text = _localization.GetText("player.criticaldamage.mousetitle.Text");
         _critical_DamageUI.DescriptionText.text = _localization.GetText("player.criticaldamage.mousedescription.Text");
+        _critical_DamageUI.MousedataText.text = "";
 
         _attack_SpeedUI.MouseTitleText.text = _localization.GetText("player.attackspeed.mousetitle.Text");
         _attack_SpeedUI.DescriptionText.text = _localization.GetText("player.attackspeed.mousedescription.Text");
+        _attack_SpeedUI.MousedataText.text = "";
         _movement_SpeedUI.MouseTitleText.text = _localization.GetText("player.movementspeed.mousetitle.Text");
         _movement_SpeedUI.DescriptionText.text = _localization.GetText("player.movementspeed.mousedescription.Text");
+        _movement_SpeedUI.MousedataText.text = "";
         _run_SpeedMulitplierUI.MouseTitleText.text = _localization.GetText("player.runspeedmulitplier.mousetitle.Text");
         _run_SpeedMulitplierUI.DescriptionText.text = _localization.GetText("player.runspeedmulitplier.mousedescription.Text");
+        _run_SpeedMulitplierUI.MousedataText.text = "";
 
         _bargainUI.MouseTitleText.text = _localization.GetText("player.bargain.mousetitle.Text");
         _bargainUI.DescriptionText.text = _localization.GetText("player.bargain.mousedescription.Text");
+        _bargainUI.MousedataText.text = "";
         _luckUI.MouseTitleText.text = _localization.GetText("player.luck.mousetitle.Text");
         _luckUI.DescriptionText.text = _localization.GetText("player.luck.mousedescription.Text");
+        _luckUI.MousedataText.text = "";
 
         _requiredEXPUI.MouseTitleText.text = _localization.GetText("player.requiredexp.mousetitle.Text");
         _requiredEXPUI.DescriptionText.text = _localization.GetText("player.requiredexp.mousedescription.Text");
+        _requiredEXPUI.MousedataText.text = "";
         _requiredMoneyUI.MouseTitleText.text = _localization.GetText("player.requiredmoney.mousetitle.Text");
         _requiredMoneyUI.DescriptionText.text = _localization.GetText("player.requiredmoney.mousedescription.Text");
+        _requiredMoneyUI.MousedataText.text = "";
         _levelup_HealUI.MouseTitleText.text = _localization.GetText("player.levelupheal.mousetitle.Text");
         _levelup_HealUI.DescriptionText.text = _localization.GetText("player.levelupheal.mousedescription.Text");
+        _levelup_HealUI.MousedataText.text = "";
 
         _damage_AllUI.MouseTitleText.text = _localization.GetText("player.damageall.mousetitle.Text");
         _damage_AllUI.DescriptionText.text = _localization.GetText("player.damageall.mousedescription.Text");
+        _damage_AllUI.MousedataText.text = "";
         _damage_FixedUI.MouseTitleText.text = _localization.GetText("player.damagefixed.mousetitle.Text");
         _damage_FixedUI.DescriptionText.text = _localization.GetText("player.damagefixed.mousedescription.Text");
+        _damage_FixedUI.MousedataText.text = "";
         _damage_BreakUI.MouseTitleText.text = _localization.GetText("player.damagebreak.mousetitle.Text");
         _damage_BreakUI.DescriptionText.text = _localization.GetText("player.damagebreak.mousedescription.Text");
+        _damage_BreakUI.MousedataText.text = "";
         _damage_ReflectUI.MouseTitleText.text = _localization.GetText("player.damagereflect.mousetitle.Text");
         _damage_ReflectUI.DescriptionText.text = _localization.GetText("player.damagereflect.mousedescription.Text");
+        _damage_ReflectUI.MousedataText.text = "";
 
         _damage_WeaponUI.MouseTitleText.text = _localization.GetText("player.damageweapon.mousetitle.Text");
         _damage_WeaponUI.DescriptionText.text = _localization.GetText("player.damageweapon.mousedescription.Text");
+        _damage_WeaponUI.MousedataText.text = "";
         _damage_NormalUI.MouseTitleText.text = _localization.GetText("player.damagenormal.mousetitle.Text");
         _damage_NormalUI.DescriptionText.text = _localization.GetText("player.damagenormal.mousedescription.Text");
+        _damage_NormalUI.MousedataText.text = "";
         _damage_DashUI.MouseTitleText.text = _localization.GetText("player.damagedash.mousetitle.Text");
         _damage_DashUI.DescriptionText.text = _localization.GetText("player.damagedash.mousedescription.Text");
+        _damage_DashUI.MousedataText.text = "";
         _damage_SpecialUI.MouseTitleText.text = _localization.GetText("player.damagespecial.mousetitle.Text");
         _damage_SpecialUI.DescriptionText.text = _localization.GetText("player.damagespecial.mousedescription.Text");
+        _damage_SpecialUI.MousedataText.text = "";
     }
 
     // 버튼 누를시 해당 창이 앞에 오게 

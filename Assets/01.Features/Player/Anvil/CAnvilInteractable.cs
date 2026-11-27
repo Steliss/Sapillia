@@ -32,6 +32,8 @@ public class CAnvilInteractable :
         // 플레이어 참조 설정
         BindPlayer();
 
+        _weaponUI.OnClosed += HandleWeaponClosed;
+
         _inputTask.Run(async token =>
         {
             CInputCommandHub hub = await CManagerDontDestroy.InputCommandHubAsync(token);
@@ -63,6 +65,7 @@ public class CAnvilInteractable :
 
         if (_weaponUI != null)
         {
+            _weaponUI.OnClosed -= HandleWeaponClosed;
             _weaponUI.Close();
         }
     }
@@ -109,11 +112,13 @@ public class CAnvilInteractable :
         if (_weaponUI != null && _weaponUI.IsOpen && _inputHub != null)
         {
             _weaponUI.Close();
-
-            _inputHub.UnregisterOpenedUI(this);
         }
     }
 
+    private void HandleWeaponClosed()
+    {
+        _inputHub.UnregisterOpenedUI(this);
+    }
     #endregion
 
     #region 플레이어 참조
