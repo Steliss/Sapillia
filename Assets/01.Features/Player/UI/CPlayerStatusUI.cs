@@ -66,7 +66,7 @@ public class CPlayerStatsUI
 
 }
 
-// ※ : TODO : 이미지랑 UI 쪽 이미지 넣으려면 계층구조랑 싹 수정할 필요가 있음
+
 public class CPlayerStatusUI : MonoBehaviour, IInputCommand, IESCCommand
 {
     [SerializeField] private CESCUI _esc;
