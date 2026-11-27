@@ -10,7 +10,7 @@ public class CPlayerDataSO : ScriptableObject
 
     [Header("시작 재화")]
     [Min(0)]
-    [SerializeField] private int _startingMoney = 500;
+    [SerializeField] private int _startingMoney = 3000;
 
     [Header("경험치")]
     [Min(1f)]
