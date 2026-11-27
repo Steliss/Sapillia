@@ -124,10 +124,11 @@ public class CObjectPoolManager : MonoBehaviour
         else
         {
             go = pool.Dequeue();
-        }              
+        }
 
         // 초기 세팅 보장
-        go.transform.parent = null;
+        //go.transform.parent = null;
+        go.transform.SetParent(null);
         go.transform.localScale = prefeb.transform.localScale;
         go.transform.rotation = prefeb.transform.rotation;
 
@@ -279,7 +280,8 @@ public class CObjectPoolManager : MonoBehaviour
 
                 if (_lootMap[id] != null)
                 {
-                    go.transform.parent = _lootMap[id];
+                    //go.transform.parent = _lootMap[id];
+                    go.transform.SetParent(_lootMap[id], false);
                 }
 
                 _poolMap[id].Enqueue(go);
