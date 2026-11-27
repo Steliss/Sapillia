@@ -181,22 +181,28 @@ public class CMerchant : CTriggerPlayer, IInputCommand, IESCCommand
         {
             AddShopItem(2001,3); // 기본 포션 
             AddShopItem(EItemType.Potion);
+            AddShopItem(EItemType.Potion);
 
             AddShopItem(EItemType.Artifact);
             AddShopItem(EItemType.Artifact);
             AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
 
+            AddShopItem(EItemType.Tablet);
             AddShopItem(EItemType.Tablet);
         }
         else if (_currentMerchant.Type == EMarchant.Rat)
         {
             AddShopItem(2001, 3); // 기본 포션 
-            AddShopItem(EItemType.Potion);
+            AddShopItem(EItemType.Potion, 2);
+            AddShopItem(EItemType.Potion, 2);
             AddShopItem(EItemType.Potion);
 
             AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
 
-            AddShopItem(EItemType.Tablet);
             AddShopItem(EItemType.Tablet);
         }
         else if (_currentMerchant.Type == EMarchant.Turtle)
@@ -206,7 +212,11 @@ public class CMerchant : CTriggerPlayer, IInputCommand, IESCCommand
             AddShopItem(EItemType.Artifact);
             AddShopItem(EItemType.Artifact);
             AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
+            AddShopItem(EItemType.Artifact);
 
+            AddShopItem(EItemType.Tablet);
+            AddShopItem(EItemType.Tablet);
             AddShopItem(EItemType.Tablet);
             AddShopItem(EItemType.Tablet);
         }
@@ -228,6 +238,20 @@ public class CMerchant : CTriggerPlayer, IInputCommand, IESCCommand
         }
 
         _shopSlots.Add(CreateShopSlot(item));
+    }
+
+    // 포션만 쓸것!
+    private void AddShopItem(EItemType type, int count)
+    {
+        CItemSO item = _itemData.GetRandomItem(type);
+
+        if (item == null)
+        {
+            _shopSlots.Add(new CInventorySlotData());
+            return;
+        }
+
+        _shopSlots.Add(CreateShopSlot(item, count));
     }
 
 
