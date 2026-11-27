@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CLevelUpUI : MonoBehaviour
+public class CLevelUpUI : MonoBehaviour, IInputCommand
 {
     #region 인스펙터
 
@@ -17,6 +17,8 @@ public class CLevelUpUI : MonoBehaviour
     #region 내부변수
 
     private CPlayerGamingDataSO _playerData;
+
+    private CInputCommandHub _inputHub;
 
     #endregion
 
@@ -41,36 +43,48 @@ public class CLevelUpUI : MonoBehaviour
         UpdateLevelUpImage();
     }
 
+    private void OnEnable()
+    {
+        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+        if (_inputHub == null)
+        {
+            Debug.LogError("[CLevelUpUI] 입력 허브를 찾을 수 없습니다.", this);
+            return;
+        }
+
+        _inputHub.Register(EKeyAction.Reward, this);
+    }
+
+    private void OnDisable()
+    {
+        if (_inputHub != null)
+        {
+            _inputHub.Unregister(EKeyAction.Reward, this);
+        }
+    }
+
     private void Update()
     {
-        if (_playerData == null)
+        if (_playerData != null)
+        {
+            UpdateLevelUpImage();
+        }
+    }
+
+    public void Execute()
+    {
+        if (_playerData == null || _playerData.LevelUpRewardCount <= 0)
         {
             return;
         }
 
-        UpdateLevelUpImage();
-
-        // 레벨업 보상이 없으면 종료
-        if (_playerData.LevelUpRewardCount <= 0)
+        if (_artifactRewardUI == null || _artifactRewardUI.gameObject.activeInHierarchy)
         {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            if (_artifactRewardUI == null)
-            {
-                return;
-            }
-
-            // 이미 보상 UI가 열려 있으면 중복 실행 방지
-            if (_artifactRewardUI.gameObject.activeInHierarchy)
-            {
-                return;
-            }
-
-            _artifactRewardUI.ShowLevelUpRewards();
-        }
+        _artifactRewardUI.ShowLevelUpRewards();
     }
 
     private void UpdateLevelUpImage()
