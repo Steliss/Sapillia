@@ -342,7 +342,7 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
         }
 
 
-        // ※ 테스트용도
+       
         if (_weaponData == null)
         {
             CLog.Warn("[PlayerAttack] WeaponData 누락");

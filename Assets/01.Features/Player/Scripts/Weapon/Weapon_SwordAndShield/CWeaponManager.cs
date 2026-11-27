@@ -388,38 +388,15 @@ public class CWeaponManager : MonoBehaviour
             return;
         }
 
-        #region ※테스트
-        if (_swordRenderer == null || _shieldRenderer == null)
-        {
-            CLog.Warn("[WeaponSwap] Renderer 참조 누락");
-            return;
-        }
-
-        if (_swordRenderer == _shieldRenderer)
-        {
-            CLog.Warn("[WeaponSwap] 검과 방패 Renderer가 동일함");
-            return;
-        }
-
-        #endregion
-
+       
         // 검 방패 스프라이트 변경
         _swordRenderer.sprite = weaponSet.SwordSprite;
         _shieldRenderer.sprite = weaponSet.ShieldSprite;
 
         CLog.Log($"[WeaponSwap] Tier {weaponSet.Tier} 스프라이트 적용 완료");
 
-        #region ※테스트
-        CLog.Log($"[WeaponSwap] 방패 변경 후 : " + $"{_shieldRenderer.sprite?.name}");
-
-        // 참조하고 있는 GameObject 확인
-        CLog.Log($"[WeaponSwap] 방패 Renderer 오브젝트 : " + $"{_shieldRenderer.gameObject.name}");
-
-        // 현재 티어 데이터 확인
-        CLog.Log($"[WeaponSwap] Tier : {weaponSet.Tier} / " + $"SO 방패 : {weaponSet.ShieldSprite?.name}");
-
-        #endregion
-        // 변경 후 확인
+        
+        
     }
 
     #endregion
@@ -590,19 +567,18 @@ public class CWeaponManager : MonoBehaviour
 
     #region Weapon Swap Test
 
-    // Test : 1티어 석궁 장착 ※
+    
     public void TestEquipCrossbow()
     {
         TrySwapWeapon(EWeaponType.Crossbow, 1);
     }
 
-    // Test : 1티어 검·방패 장착 ※
+
     public void TestEquipSwordShield()
     {
         TrySwapWeapon(EWeaponType.SwordShield, 1);
     }
 
-    // 테스트 버튼을 누를 때마다 다음 티어 장착 ※
     public void TestSwapNextTier()
     {
         const int maxTier = 2;
