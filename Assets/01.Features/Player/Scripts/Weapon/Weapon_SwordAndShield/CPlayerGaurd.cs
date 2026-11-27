@@ -189,9 +189,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         // 가드 허용 여부
         _guardInputArmed = !IsGuardBroken;
 
-        // 테스트 용 ※
-        CLog.Log($"[Guard] Held: {_buttonHeld} / " + $"Armed: {_guardInputArmed}");
-
+        
         if (_guardInputArmed)
         {
             TryStartGuard();
