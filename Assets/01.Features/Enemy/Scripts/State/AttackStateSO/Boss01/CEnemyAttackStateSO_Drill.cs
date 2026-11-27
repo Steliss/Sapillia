@@ -64,7 +64,6 @@ public class CEnemyAttackStateSO_Drill : CEnemyAttackStateSO
 
     #region 내부 변수
     private string _soundJump = "MoleJump";
-    private string _soundDrill = "DrillMole_Loop";
     private FMODUnity.StudioEventEmitter _emitter;
     #endregion
 

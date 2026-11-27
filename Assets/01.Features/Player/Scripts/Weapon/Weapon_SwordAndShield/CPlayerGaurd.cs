@@ -156,17 +156,14 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
 
     public void Execute(float value)
     {
-        
-        bool pressed = value > 0.5f;
 
-        // 테스트 용 ※
-        CLog.Log
-            (
-                $"[Guard Input] Value: {value} / " +
-                $"Frame: {Time.frameCount} / " +
-                $"Broken: {IsGuardBroken} / " +
-                $"Locked: {_specialAttackLocked}"
-            );
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
+        bool pressed = value > 0.5f;
+                
 
         // 우클릭 해제
         if (!pressed)

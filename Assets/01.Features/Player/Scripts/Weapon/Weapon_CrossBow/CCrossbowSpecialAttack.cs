@@ -54,20 +54,18 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         _isButtonHeld = false;
     }
 
-    private void Update()
-    {
-        if (_ui.IsAnyUIOpen)
-        {
-            return;
-        }
-
-    }
+   
 
     #endregion
 
     #region Input
     public void Execute(float value)
     {
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
         bool pressed = value > 0.5f;
 
         // 우클릭 해제

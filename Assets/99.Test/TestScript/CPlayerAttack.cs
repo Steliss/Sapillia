@@ -176,6 +176,11 @@ public class CPlayerAttack : MonoBehaviour, IInputCommand<float>
 
     public void Execute(float value)
     {
+        if (_ui.IsAnyUIOpen)
+        {
+            return;
+        }
+
         bool pressed = value > 0.5f;
         
         // 좌클릭 땜
