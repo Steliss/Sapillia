@@ -38,6 +38,8 @@ public class CMinimapUI : MonoBehaviour
     private CanvasGroup _canvasGroup;
     private bool _isMapOpen = false;
 
+    private CPlayerGamingDataSO _playerData;
+
     #endregion
 
     private void Awake()
@@ -55,8 +57,40 @@ public class CMinimapUI : MonoBehaviour
         SetMinimapVisible(false);
     }
 
+    private void Start()
+    {
+        CDataManger dataManager = CManagerDontDestroy.Instance.DataManger;
+
+        if (dataManager == null)
+        {
+            Debug.LogError("미니맵DataManager가 없습니다.");
+            return;
+        }
+
+        _playerData = dataManager.PlayerData.GetPlayerData();
+
+        if (_playerData == null)
+        {
+            Debug.LogError("미니맵PlayerData가 없습니다.");
+        }
+    }
+
+
     private void Update()
     {
+        if (_playerData == null)
+            return;
+
+        if (_playerData.GetIsBattle)
+        {
+            if (_isMapOpen)
+            {
+                SetMinimapVisible(false);
+            }
+
+            return;
+        }
+
         if (Input.GetKeyDown(KeyCode.Tab))
         {
             SetMinimapVisible(!_isMapOpen);
@@ -240,6 +274,11 @@ public class CMinimapUI : MonoBehaviour
 
     private void SetMinimapVisible(bool visible)
     {
+        if (visible && (_playerData == null || _playerData.GetIsBattle))
+        {
+            return;
+        }
+
         _isMapOpen = visible;
 
         _canvasGroup.alpha = visible ? 1f : 0f;
