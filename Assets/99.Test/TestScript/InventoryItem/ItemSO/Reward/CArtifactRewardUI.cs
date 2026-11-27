@@ -64,7 +64,6 @@ public class CArtifactRewardUI : MonoBehaviour, IESCCommand
             return;
         }
 
-        _inputHub.RegisterOpenedUI(this);
     }
 
     public void ExecuteESC()
@@ -83,6 +82,8 @@ public class CArtifactRewardUI : MonoBehaviour, IESCCommand
 
     public void ShowRewards(CArtifactReward reward)
     {
+        _inputHub.RegisterOpenedUI(this);
+
         _isLevelUpReward = false;
 
 
@@ -151,6 +152,8 @@ public class CArtifactRewardUI : MonoBehaviour, IESCCommand
             int index = i;
             _rewardButtons[i].onClick.AddListener(() => SelectArtifact(index));
         }
+
+        _inputHub.UnregisterOpenedUI(this);
 
         _isRewardGenerated = true;
     }

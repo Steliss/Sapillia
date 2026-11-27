@@ -55,7 +55,6 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
             return;
         }
 
-        _inputHub.RegisterOpenedUI(this);
     }
 
     public void ExecuteESC()
@@ -91,6 +90,8 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
 
         gameObject.SetActive(true);
         UpdateRerollText();
+
+        _inputHub.RegisterOpenedUI(this);
     }
 
     private bool GenerateRewardCandidates()
@@ -200,6 +201,8 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
         {
             _currentReward.CancelReward();
         }
+
+        _inputHub.UnregisterOpenedUI(this);
     }
 
     private Sprite GetGradeBackground(EArtifactGrade grade)
