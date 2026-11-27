@@ -24,7 +24,6 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
 	#region 내부 변수
 	private CUniTaskOnes _inputTask = new CUniTaskOnes();
 	private CCrossbowDataSO _crossbowData;
-	private bool _isButtonHeld;
 	private float _nextSpecialTime;
     private float _lifeTime;
     #endregion
@@ -51,7 +50,6 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
             _inputHub.Unregister(EKeyAction.SpecialAttack, (IInputCommand<float>)this);
         }
 
-        _isButtonHeld = false;
     }
 
    
@@ -71,11 +69,9 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
         // 우클릭 해제
         if (!pressed)
         {
-            _isButtonHeld = false;
             return;
         }
 
-        _isButtonHeld = true;
 
         TrySpecialAttack();
     }
@@ -200,7 +196,6 @@ public class CCrossbowSpecialAttack : MonoBehaviour, IInputCommand<float>
     public void SetCrossbowData(CCrossbowDataSO data)
     {
         _crossbowData = data;
-        _isButtonHeld = false;
         _lifeTime = _crossbowData.SpecialLifeTime;
     }
 

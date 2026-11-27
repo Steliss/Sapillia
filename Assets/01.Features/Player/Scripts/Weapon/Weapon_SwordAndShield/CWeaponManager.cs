@@ -22,11 +22,8 @@ public class CWeaponManager : MonoBehaviour
     [Header("무기 세트 목록")]
     [SerializeField] private CSwordShieldSetSO[] _weaponSets;
 
-    [Header("시작 장비")]
-    [SerializeField] private EWeaponType _startingWeaponType = EWeaponType.SwordShield;
-
-    [Min(1)]
-    [SerializeField] private int _startingTier = 1;
+    //[Header("시작 장비")]
+   // [SerializeField] private EWeaponType _startingWeaponType = EWeaponType.SwordShield;
 
     [Header("전투 컴포넌트")]
     [SerializeField] private CPlayerAttack _playerAttack;
@@ -86,8 +83,8 @@ public class CWeaponManager : MonoBehaviour
 
     #region 이벤트
 
-    public event Action<CSwordShieldSetSO> OnWeaponSwapped;
-    public event Action<CCrossbowDataSO> OnCrossbowSwapped;
+   // public event Action<CSwordShieldSetSO> OnWeaponSwapped;
+   // public event Action<CCrossbowDataSO> OnCrossbowSwapped;
 
     // 무기 종류를 포함한 공통 이벤트
     public event Action<EWeaponType, int> OnWeaponChanged;
@@ -317,7 +314,7 @@ public class CWeaponManager : MonoBehaviour
         _playerGuard.enabled = true;
 
         // 장비 UI 등 외부 시스템에 변경 알림
-        OnWeaponSwapped?.Invoke(nextSet);
+  //      OnWeaponSwapped?.Invoke(nextSet);
         OnWeaponChanged?.Invoke(_currentWeaponType, _currentTier);
 
         CLog.Log($"[WeaponManager] 검·방패 {nextSet.SetName} 장착");
