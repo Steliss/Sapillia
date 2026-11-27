@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CDiceReward : MonoBehaviour
+public class CDiceReward : MonoBehaviour, IInputCommand
 {
     #region 인스펙터
 
@@ -28,6 +28,8 @@ public class CDiceReward : MonoBehaviour
     private bool _isPlayerNearby = false;
     private bool _isOpened = false;
 
+    private CInputCommandHub _inputHub;
+
     #endregion
 
     private void Start()
@@ -36,17 +38,37 @@ public class CDiceReward : MonoBehaviour
         _boxOpen.SetActive(false);
     }
 
-    private void Update()
+    private void OnEnable()
+    {
+        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+
+        if (_inputHub == null)
+        {
+            Debug.LogError("[CDiceReward] 입력 허브를 찾을 수 없습니다.", this);
+            return;
+        }
+
+        _inputHub.Register(EKeyAction.Interaction, this);
+    }
+
+    public void Execute()
     {
         if (!_isPlayerNearby || _isOpened)
         {
             return;
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        OpenBox();
+    }
+
+    private void OnDisable()
+    {
+        if (_inputHub != null)
         {
-            OpenBox();
+            _inputHub.Unregister(EKeyAction.Interaction, this);
         }
+
+        _isPlayerNearby = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 
 public class CTabletRewardUI : MonoBehaviour, IESCCommand
 {
@@ -43,19 +45,41 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
     private bool _isRewardGenerated = false;
 
     private CInputCommandHub _inputHub;
+    private CancellationTokenSource _registerCts;
     #endregion
 
     private void OnEnable()
     {
-        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+        _registerCts = new CancellationTokenSource();
+        RegisterInputAsync(_registerCts.Token).Forget();
+    }
 
-        if (_inputHub == null)
+    private async UniTask RegisterInputAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
         {
-            Debug.LogError("CTabletRewardUI 인풋 허브를 찾을 수 없습니다.");
-            return;
-        }
+            _inputHub = FindFirstObjectByType<CInputCommandHub>();
 
-        _inputHub.RegisterOpenedUI(this);
+            if (_inputHub != null)
+            {
+                _inputHub.RegisterOpenedUI(this);
+                return;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
+        }
+    }
+
+    private void OnDisable()
+    {
+        _registerCts?.Cancel();
+        _registerCts?.Dispose();
+        _registerCts = null;
+
+        if (_inputHub != null)
+        {
+            _inputHub.UnregisterOpenedUI(this);
+        }
     }
 
     public void ExecuteESC()
@@ -63,13 +87,6 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
         CancelSelection();
     }
 
-    private void OnDisable()
-    {
-        if (_inputHub != null)
-        {
-            _inputHub.UnregisterOpenedUI(this);
-        }
-    }
 
     public void ShowRewards(CTabletReward reward)
     {
@@ -91,6 +108,8 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
 
         gameObject.SetActive(true);
         UpdateRerollText();
+
+        _inputHub.RegisterOpenedUI(this);
     }
 
     private bool GenerateRewardCandidates()
@@ -200,6 +219,8 @@ public class CTabletRewardUI : MonoBehaviour, IESCCommand
         {
             _currentReward.CancelReward();
         }
+
+        _inputHub.UnregisterOpenedUI(this);
     }
 
     private Sprite GetGradeBackground(EArtifactGrade grade)

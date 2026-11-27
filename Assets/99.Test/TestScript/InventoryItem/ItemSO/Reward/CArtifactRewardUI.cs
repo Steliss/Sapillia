@@ -4,6 +4,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using System.Threading;
+using Cysharp.Threading.Tasks;
+
 
 public class CArtifactRewardUI : MonoBehaviour, IESCCommand
 {
@@ -47,6 +50,7 @@ public class CArtifactRewardUI : MonoBehaviour, IESCCommand
     private bool _isLevelUpReward = false;
 
     private CInputCommandHub _inputHub;
+    private CancellationTokenSource _registerCts;
     #endregion
 
     #region 이벤트
@@ -56,28 +60,41 @@ public class CArtifactRewardUI : MonoBehaviour, IESCCommand
 
     private void OnEnable()
     {
-        _inputHub = FindFirstObjectByType<CInputCommandHub>();
+        _registerCts = new CancellationTokenSource();
+        RegisterInputAsync(_registerCts.Token).Forget();
+    }
 
-        if (_inputHub == null)
+    private async UniTask RegisterInputAsync(CancellationToken token)
+    {
+        while (!token.IsCancellationRequested)
         {
-            Debug.LogError("CArtifactRewardUI 인풋 허브를 찾을 수 없습니다.");
-            return;
-        }
+            _inputHub = FindFirstObjectByType<CInputCommandHub>();
 
-        _inputHub.RegisterOpenedUI(this);
+            if (_inputHub != null)
+            {
+                _inputHub.RegisterOpenedUI(this);
+                return;
+            }
+
+            await UniTask.Yield(PlayerLoopTiming.Update, token);
+        }
+    }
+
+    private void OnDisable()
+    {
+        _registerCts?.Cancel();
+        _registerCts?.Dispose();
+        _registerCts = null;
+
+        if (_inputHub != null)
+        {
+            _inputHub.UnregisterOpenedUI(this);
+        }
     }
 
     public void ExecuteESC()
     {
         CancelSelection();
-    }
-
-    private void OnDisable()
-    {
-        if (_inputHub != null)
-        {
-            _inputHub.UnregisterOpenedUI(this);
-        }
     }
 
 
