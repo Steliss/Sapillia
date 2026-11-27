@@ -102,7 +102,10 @@ MonoBehaviour:
   _rb: {fileID: -1993994622285168578}
   _collisionLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4511
+  _wallLayers:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!50 &-1993994622285168578
 Rigidbody2D:
   serializedVersion: 4

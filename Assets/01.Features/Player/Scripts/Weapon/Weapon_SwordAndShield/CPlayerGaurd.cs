@@ -56,7 +56,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
     // 특수공격 중 가드 차단
     private bool _specialAttackLocked;
     // 현재 우클릭에서 가드를 시작한 적이 있는지
-    private bool _guardStartedThisHold;
+    //private bool _guardStartedThisHold;
 
     private float _guardStartTime;
     private float _guardBreakEndTime;
@@ -114,7 +114,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         _buttonHeld = false;
         _guardInputArmed = false;
         _specialAttackLocked = false;
-        _guardStartedThisHold = false;
+        //_guardStartedThisHold = false;
         _perfectGuardUsed = false;
 
         if (!IsGuardBroken)
@@ -170,7 +170,7 @@ public class CPlayerGuard : MonoBehaviour, IInputCommand<float>, IDamageDefense
         {
             _buttonHeld = false;
             _guardInputArmed = false;
-            _guardStartedThisHold = false;
+            //_guardStartedThisHold = false;
             _perfectGuardUsed = false;
 
             EndGuard();
