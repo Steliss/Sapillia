@@ -22996,6 +22996,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[0].Reward
+      value: 
+      objectReference: {fileID: 4485041170488495873, guid: d87a9a01502f46945a71eb796621092c, type: 3}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[1].Reward
+      value: 
+      objectReference: {fileID: 1849663816426219864, guid: 36963b3280dfa4c45b1aecd1db00aa0c, type: 3}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[0].PosPlus.x
+      value: -2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[0].PosPlus.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[1].PosPlus.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8903717639293953322, guid: f54ae47f14c5c014c93e894e33594203, type: 3}
+      propertyPath: _rewards.Array.data[1].PosPlus.y
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
